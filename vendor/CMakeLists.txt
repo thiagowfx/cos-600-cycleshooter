@@ -23,10 +23,10 @@ if (BUILD_TESTS)
         pthread
         )
 
-    GTEST_ADD_TESTS(
-        ${TEST_PROJECT_NAME}
-        ""
-        ${TEST_SRC_FILES}
+    add_custom_target(
+        run_tests
+        COMMAND "${TEST_PROJECT_NAME}"
+        WORKING_DIRECTORY "${DEST_DIR}/bin"
         )
 endif()
 
