@@ -26,9 +26,10 @@ Now, set the `DEPENDENCIES_READY` variable to `TRUE`. There are at least three w
 - `cmake -DDEPENDENCIES_READY=TRUE ..`
 
 Finally, just build your project:
+
 - `make install`
 
-This will place binaries under `<project_root>/dest/bin` by default.
+By default, this will place binaries under `<project_root>/dest/bin`.
 
 Additional custom targets:
 

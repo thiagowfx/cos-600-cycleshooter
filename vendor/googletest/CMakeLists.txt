@@ -9,8 +9,6 @@
 # - GTEST_BOTH_LIBRARIES - both libgtest & libgtest-main
 # - GTEST_LIBRARIES - libgtest
 # - GTEST_MAIN_LIBRARIES - libgtest-main
-#
-# - GTEST_ADD_TESTS cmake function
 
 project(googletest_builder C CXX)
 

@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 /*
- * Fixture test.
+ * Fixture tests.
  */
 class FixtureTest : public ::testing::Test {
     protected:
@@ -13,13 +13,9 @@ TEST_F(FixtureTest, TestName1) {
     EXPECT_EQ(1, 1);
 }
 
-TEST_F(FixtureTest, TestName2) {
-    EXPECT_EQ(1, 1);
-}
-
 /*
- * Discrete test.
+ * Discrete tests.
  */
-TEST(HelloTest, TestName1) {
+TEST(DiscreteTest, TestName1) {
     EXPECT_EQ(1, 1);
 }
