@@ -1,4 +1,8 @@
 /*
+-----------------------------------------------------------------------------
+Filename:    TutorialApplication.h
+-----------------------------------------------------------------------------
+
 This source file is part of the
    ___                 __    __ _ _    _
   /___\__ _ _ __ ___  / / /\ \ (_) | _(_)
@@ -14,16 +18,20 @@ http://www.ogre3d.org/wiki/
 #ifndef __TutorialApplication_h_
 #define __TutorialApplication_h_
 
+#include "BaseApplication.h"
+
 #include <Terrain/OgreTerrain.h>
 #include <Terrain/OgreTerrainGroup.h>
-#include "BaseApplication.h"
+
+#include "OgreBulletIntrospection.h"
+
+#include <iostream>
 
 //---------------------------------------------------------------------------
 
 class TutorialApplication : public BaseApplication
 {
 private:
-
     void defineTerrain(long x, long y);
     void initBlendMaps(Ogre::Terrain* terrain);
     void configureTerrainDefaults(Ogre::Light* light);
@@ -32,21 +40,26 @@ private:
     Ogre::TerrainGlobalOptions* mTerrainGlobals;
     Ogre::TerrainGroup* mTerrainGroup;
     bool mTerrainsImported;
-    OgreBites::Label* mInfoLabel;
-
 public:
     TutorialApplication(void);
     virtual ~TutorialApplication(void);
 
 protected:
-    virtual void createScene(void);
-    virtual void destroyScene(void);
+    // overriden from BaseApplication
+    virtual bool configure(void);
     virtual void createFrameListener(void);
+    virtual void createScene(void);
     virtual bool frameRenderingQueued(const Ogre::FrameEvent &evt);
-    virtual void createViewports();
-    virtual void createCamera();
+
+    // configurations
+    std::string cApplicationName = "OgreBulletApp";
+    std::string cWindowTitle = cApplicationName + " Render Window";
+    OgreBites::Label* mInfoLabel;
+    OgreBulletIntrospection* physicsIntegration;
 };
 
 //---------------------------------------------------------------------------
 
-#endif
+#endif // #ifndef __TutorialApplication_h_
+
+//---------------------------------------------------------------------------

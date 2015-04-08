@@ -1,4 +1,8 @@
 /*
+-----------------------------------------------------------------------------
+Filename:    TutorialApplication.cpp
+-----------------------------------------------------------------------------
+
 This source file is part of the
    ___                 __    __ _ _    _
   /___\__ _ _ __ ___  / / /\ \ (_) | _(_)
@@ -13,43 +17,37 @@ http://www.ogre3d.org/wiki/
 
 #include "TutorialApplication.h"
 
-
+//---------------------------------------------------------------------------
 TutorialApplication::TutorialApplication(void)
 {
+    physicsIntegration = new OgreBulletIntrospection();
 }
-
+//---------------------------------------------------------------------------
 TutorialApplication::~TutorialApplication(void)
 {
+    delete mInfoLabel;
+    delete physicsIntegration;
 }
 
+//---------------------------------------------------------------------------
+void TutorialApplication::createScene(void) {
 
-void TutorialApplication::createScene(void)
-{
     mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5f, 0.5f, 0.5f));
-    mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_MODULATIVE);
 
-    // Create an Entity
-    Ogre::Entity* ogreHead = mSceneMgr->createEntity("Head", "ogrehead.mesh");
-    //Ogre::Entity* ogreHead2 = mSceneMgr->createEntity("Head2", "ogrehead.mesh");
+    Ogre::Light* mainLight = mSceneMgr->createLight("MainLight");
+    mainLight->setType(Ogre::Light::LT_POINT);
+    mainLight->setPosition(Ogre::Vector3(1000.0, 1000.0, 1000.0));
 
-    //Creating a GroundPlane
-//    Ogre::Plane plane(Ogre::Vector3::UNIT_Y,0);
-//    Ogre::MeshManager::getSingleton().createPlane("ground", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-//        plane, 1500, 1500, 20, 20, true, 1, 5, 5, Ogre::Vector3::UNIT_Z);
-//    Ogre::Entity* ground = mSceneMgr->createEntity("GroundEntity","ground");
-//    mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(ground);
-//    ground->setMaterialName("Examples/Rockwall");
-//    ground->setCastShadows(true);
- 
-    // Create a SceneNode and attach the Entity to it
-    Ogre::SceneNode* headNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("HeadNode");
-    headNode->attachObject(ogreHead);
- 
+
+    Ogre::String sphereName = "Sphere";
+    Ogre::Entity* sphereEntity = mSceneMgr->createEntity(sphereName, "sphere.mesh");
+    sphereEntity->setMaterialName("Examples/SphereMappedRustySteel");
+
+    Ogre::SceneNode* sphereNode = mSceneMgr->getRootSceneNode()->createChildSceneNode(sphereName);
+    sphereNode->attachObject(sphereEntity);
+    sphereNode->setPosition(0.0, 1000.0, 0.0);
+
     // Create a Light and set its position
-    Ogre::Light* light = mSceneMgr->createLight("MainLight");
-    light->setPosition(20.0f, 80.0f, 50.0f);
-
-    //mSceneMgr->setSkyDome(true, "Examples/CloudySky", 5, 8);
 
     //Lights Section
 
@@ -70,7 +68,8 @@ void TutorialApplication::createScene(void)
     //Direction defined to adjust to the terrain.
     directionalLight->setDirection(lightdir);
 
-    //Spot Light
+
+    //Spot Light.
     Ogre::Light* spotLight = mSceneMgr->createLight("spotlLight");
     spotLight->setType(Ogre::Light::LT_DIRECTIONAL);
     spotLight->setDiffuseColour(0,0,1.0);
@@ -80,8 +79,22 @@ void TutorialApplication::createScene(void)
     //Defines the transversal section's form.
     spotLight->setSpotlightRange(Ogre::Degree(35), Ogre::Degree(50));
 
-    //mSceneMgr->setSkyDome(true,"Examples/CloudySky",5,8);
-    //mSceneMgr->setSkyBox(true,"Examples/SpaceSkyBox");
+
+    //Creating plane as explained in tutorial 2.
+//    Ogre::Plane plane(Ogre::Vector3::UNIT_Y, 0.0);
+//    Ogre::MeshManager::getSingleton().createPlane("ground", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+//        plane, 3000, 3000, 20, 20, true, 1, 5, 5, Ogre::Vector3::UNIT_Z);
+
+//    Ogre::String groundName = "Ground";
+//    Ogre::Entity* groundEntity = mSceneMgr->createEntity(groundName, "ground");
+//    groundEntity->setMaterialName("Examples/Rockwall");
+
+//    Ogre::SceneNode* groundNode = mSceneMgr->getRootSceneNode()->createChildSceneNode(groundName);
+//    groundNode->attachObject(groundEntity);
+
+
+//    mCamera->setPosition(Ogre::Vector3(1000.0, 1000.0, 0.0));
+//    mCamera->lookAt(sphereNode->getPosition());
 
     //Terrain camera modifications.
     //The attributes should be modified due to the size of the terrain.
@@ -123,40 +136,95 @@ void TutorialApplication::createScene(void)
         }
     }
 
-    headNode->translate(mTerrainGroup->getOrigin());
-    headNode->translate(.0,500.0,.0);
+    //headNode->translate(mTerrainGroup->getOrigin());
+    //headNode->translate(.0,500.0,.0);
     //headNode->scale(50.0,50.0,50.0);
 
     mTerrainGroup->freeTemporaryResources();
-}
 
-void TutorialApplication::destroyScene(){
-    OGRE_DELETE mTerrainGroup;
-    OGRE_DELETE mTerrainGlobals;
+
+    // physics
+//    btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0.0, 1.0, 0.0), 0.0);
+//    btScalar groundMass = 0.0; // non-movable
+//    btVector3 groundLocalInertia(0.0, 0.0, 0.0);
+//    groundShape->calculateLocalInertia(groundMass, groundLocalInertia);
+
+//    btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0.0, 0.0, 0.0, 1.0)));
+//    btRigidBody* groundBody = new btRigidBody(groundMass, groundMotionState, groundShape, groundLocalInertia);
+//    groundBody->setUserPointer(groundNode);
+//    physicsIntegration->getDynamicsWorld()->addRigidBody(groundBody);
+
+    //btCollisionShape* terrainShape = new btHeightFieldTerrainShape();
+
+
+    btCollisionShape* sphereShape = new btSphereShape(102);
+    btScalar sphereMass = 0.1;
+    btVector3 sphereLocalInertia(0.0, 0.0, 0.0);
+    sphereShape->calculateLocalInertia(sphereMass, sphereLocalInertia);
+
+    btTransform sphereStartTransform;
+    sphereStartTransform.setRotation(btQuaternion(1.0, 1.0, 1.0, 0.0));
+    sphereStartTransform.setOrigin(btVector3(0.0, 1000.0, 0.0));
+    btDefaultMotionState *sphereMotionState = new btDefaultMotionState(sphereStartTransform);
+
+    btRigidBody* sphereBody = new btRigidBody(sphereMass, sphereMotionState, sphereShape, sphereLocalInertia);
+    sphereBody->setRestitution(1.0);
+    sphereBody->setUserPointer(sphereNode);
+    physicsIntegration->getDynamicsWorld()->addRigidBody(sphereBody);
 }
 
 void TutorialApplication::createFrameListener(void){
     BaseApplication::createFrameListener();
-    mInfoLabel = mTrayMgr->createLabel(OgreBites::TL_TOP, "TInfo", "", 350);
+    mInfoLabel = mTrayMgr->createLabel(OgreBites::TL_TOP, "topLabel", "", 250.0);
+    mTrayMgr->moveWidgetToTray(mInfoLabel, OgreBites::TL_TOP, 0);
 }
 
 bool TutorialApplication::frameRenderingQueued(const Ogre::FrameEvent &evt){
-    bool ret = BaseApplication::frameRenderingQueued(evt);
+    if (physicsIntegration != NULL){
+        physicsIntegration->getDynamicsWorld()->stepSimulation(1.0f / 60.0f);
 
-    if (mTerrainGroup->isDerivedDataUpdateInProgress()) {
+        for (unsigned i = 0; i < physicsIntegration->getDynamicsWorld()->getCollisionObjectArray().size(); ++i) {
+            btCollisionObject* obj = physicsIntegration->getDynamicsWorld()->getCollisionObjectArray()[i];
+            btRigidBody* body = btRigidBody::upcast(obj);
+
+            if (body && body->getMotionState()){
+                btTransform trans;
+                body->getMotionState()->getWorldTransform(trans);
+
+                void *userPointer = body->getUserPointer();
+                if (userPointer) {
+                    btQuaternion orientation = trans.getRotation();
+                    Ogre::SceneNode *sceneNode = static_cast<Ogre::SceneNode*>(userPointer);
+                    sceneNode->setPosition(Ogre::Vector3(trans.getOrigin().getX(), trans.getOrigin().getY(), trans.getOrigin().getZ()));
+                    sceneNode->setOrientation(Ogre::Quaternion(orientation.getW(), orientation.getX(), orientation.getY(), orientation.getZ()));
+                }
+            }
+        }
+    }
+
+    mInfoLabel->show();
+    mInfoLabel->setCaption("Num objects: " + Ogre::StringConverter::toString(mWindow->getAverageFPS()));
+
+    bool ret = BaseApplication::frameRenderingQueued(evt);
+    if (mTerrainGroup->isDerivedDataUpdateInProgress())
+    {
         mTrayMgr->moveWidgetToTray(mInfoLabel, OgreBites::TL_TOP, 0);
         mInfoLabel->show();
-        if (mTerrainsImported) {
+        if (mTerrainsImported)
+        {
             mInfoLabel->setCaption("Building terrain, please wait...");
         }
-        else {
+        else
+        {
             mInfoLabel->setCaption("Updating textures, patience...");
         }
     }
-    else {
+    else
+    {
         mTrayMgr->removeWidgetFromTray(mInfoLabel);
         mInfoLabel->hide();
-        if (mTerrainsImported) {
+        if (mTerrainsImported)
+        {
             mTerrainGroup->saveAllTerrains(true);
             mTerrainsImported = false;
         }
@@ -165,33 +233,14 @@ bool TutorialApplication::frameRenderingQueued(const Ogre::FrameEvent &evt){
     return ret;
 }
 
-void TutorialApplication::createViewports(){
-    //Creating Viewport to mCamera.
-    Ogre::Viewport* viewport = mWindow->addViewport(mCamera);
-    viewport->setBackgroundColour(Ogre::ColourValue(0, 0, 0));
-    mCamera->setAspectRatio(Ogre::Real(viewport->getActualWidth())/Ogre::Real(viewport->getActualHeight()));
-
-}
-
-void TutorialApplication::createCamera(){
-    mCamera = mSceneMgr->createCamera("playercam");
-
-    //Setting camera atributes.
-    mCamera->setPosition(0.0,10.0,500.0);
-    mCamera->lookAt(0,0,0);
-    mCamera->setNearClipDistance(5);
-
-    //Creating playercam cameraman.
-    mCameraMan = new OgreBites::SdkCameraMan(mCamera);
-}
-
 void TutorialApplication::defineTerrain(long x, long y){
     Ogre::String filename = mTerrainGroup->generateFilename(x, y);
-
-    if (Ogre::ResourceGroupManager::getSingleton().resourceExists(mTerrainGroup->getResourceGroup(), filename)) {
+    if (Ogre::ResourceGroupManager::getSingleton().resourceExists(mTerrainGroup->getResourceGroup(), filename))
+    {
         mTerrainGroup->defineTerrain(x, y);
     }
-    else {
+    else
+    {
         Ogre::Image img;
         getTerrainImage(x % 2 != 0, y % 2 != 0, img);
         mTerrainGroup->defineTerrain(x, y, &img);
@@ -202,17 +251,16 @@ void TutorialApplication::defineTerrain(long x, long y){
 void TutorialApplication::initBlendMaps(Ogre::Terrain* terrain){
     Ogre::TerrainLayerBlendMap* blendMap0 = terrain->getLayerBlendMap(1);
     Ogre::TerrainLayerBlendMap* blendMap1 = terrain->getLayerBlendMap(2);
-
     Ogre::Real minHeight0 = 70;
     Ogre::Real fadeDist0 = 40;
     Ogre::Real minHeight1 = 70;
     Ogre::Real fadeDist1 = 15;
-
     float* pBlend0 = blendMap0->getBlendPointer();
     float* pBlend1 = blendMap1->getBlendPointer();
-
-    for (Ogre::uint16 y = 0; y < terrain->getLayerBlendMapSize(); ++y) {
-        for (Ogre::uint16 x = 0; x < terrain->getLayerBlendMapSize(); ++x) {
+    for (Ogre::uint16 y = 0; y < terrain->getLayerBlendMapSize(); ++y)
+    {
+        for (Ogre::uint16 x = 0; x < terrain->getLayerBlendMapSize(); ++x)
+        {
             Ogre::Real tx, ty;
 
             blendMap0->convertImageToTerrainSpace(x, y, &tx, &ty);
@@ -226,7 +274,6 @@ void TutorialApplication::initBlendMaps(Ogre::Terrain* terrain){
             *pBlend1++ = val;
         }
     }
-
     blendMap0->dirty();
     blendMap1->dirty();
     blendMap0->update();
@@ -251,7 +298,6 @@ void TutorialApplication::configureTerrainDefaults(Ogre::Light* light){
     defaultimp.inputScale = 600;
     defaultimp.minBatchSize = 33;
     defaultimp.maxBatchSize = 65;
-
     // textures
     defaultimp.layerList.resize(3);
     defaultimp.layerList[0].worldSize = 100;
@@ -267,19 +313,37 @@ void TutorialApplication::configureTerrainDefaults(Ogre::Light* light){
 
 void TutorialApplication::getTerrainImage(bool flipX, bool flipY, Ogre::Image &img){
     img.load("terrain.png",Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-
-    if(flipX)
-        img.flipAroundX();
-
-    if(flipY)
-        img.flipAroundY();
+    if(flipX) img.flipAroundX();
+    if(flipY) img.flipAroundY();
 }
+
+
+bool TutorialApplication::configure() {
+    if(mRoot->restoreConfig() || mRoot->showConfigDialog()) {
+        mWindow = mRoot->initialise(true, cWindowTitle);
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+//---------------------------------------------------------------------------
+
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+#define WIN32_LEAN_AND_MEAN
+#include "windows.h"
+#endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+    INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT)
+#else
     int main(int argc, char *argv[])
+#endif
     {
         // Create application object
         TutorialApplication app;
@@ -287,8 +351,12 @@ extern "C" {
         try {
             app.go();
         } catch(Ogre::Exception& e)  {
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+            MessageBox(NULL, e.getFullDescription().c_str(), "An exception has occurred!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
+#else
             std::cerr << "An exception has occurred: " <<
                 e.getFullDescription().c_str() << std::endl;
+#endif
         }
 
         return 0;
@@ -297,3 +365,5 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+//---------------------------------------------------------------------------
