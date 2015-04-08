@@ -13,7 +13,7 @@ if (BUILD_TESTS)
         )
 
     set_property(
-        TARGET ${PROJECT_NAME}
+        TARGET ${TEST_PROJECT_NAME}
         PROPERTY CXX_STANDARD_REQUIRED 11
         )
 
