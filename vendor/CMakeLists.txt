@@ -12,6 +12,11 @@ if (BUILD_TESTS)
         ${TEST_SRC_FILES}
         )
 
+    set_property(
+        TARGET ${PROJECT_NAME}
+        PROPERTY CXX_STANDARD_REQUIRED 11
+        )
+
     add_dependencies(
         ${TEST_PROJECT_NAME}
         googletest
@@ -26,7 +31,12 @@ if (BUILD_TESTS)
     add_custom_target(
         run_tests
         COMMAND "${TEST_PROJECT_NAME}"
-        WORKING_DIRECTORY "${DEST_DIR}/bin"
+        WORKING_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
+        )
+
+    add_dependencies(
+        run_tests
+        ${TEST_PROJECT_NAME}
         )
 endif()
 

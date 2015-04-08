@@ -4,7 +4,7 @@ set(OGRE_HOME "$ENV{HOME}/.lib" CACHE PATH "Ogre library installation directory.
 find_package(OGRE)
 
 if(NOT OGRE_FOUND)
-    project(ogre_builder_and_installer C CXX)
+    project(ogre_builder C CXX)
 
     include(ExternalProject)
     ExternalProject_Add(

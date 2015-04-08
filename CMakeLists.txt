@@ -99,6 +99,11 @@ if(DEPENDENCIES_READY)
         ${PROJECT_SOURCES}
         )
 
+    set_property(
+        TARGET ${PROJECT_NAME}
+        PROPERTY CXX_STANDARD_REQUIRED 11
+        )
+
     target_link_libraries(
         ${PROJECT_NAME}
         ${OGRE_LIBRARIES}
@@ -110,7 +115,7 @@ if(DEPENDENCIES_READY)
         run
         ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target install
         COMMAND "${PROJECT_NAME}"
-        WORKING_DIRECTORY "${DEST_DIR}/bin"
+        WORKING_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
         )
 
 
@@ -141,5 +146,5 @@ if(DEPENDENCIES_READY)
         EXCLUDE
         )
 else()
-    message(WARNING "DEPENDENCIES_READY is set to OFF; project won't build")
+    message(WARNING "DEPENDENCIES_READY variable is set to OFF; project won't build.")
 endif()

@@ -4,7 +4,7 @@ set(BULLET_ROOT "$ENV{HOME}/.lib" CACHE PATH "Bullet library installation direct
 find_package(Bullet)
 
 if(NOT BULLET_FOUND)
-    project(bullet_builder_and_installer C CXX)
+    project(bullet_builder C CXX)
 
     include(ExternalProject)
     ExternalProject_Add(
