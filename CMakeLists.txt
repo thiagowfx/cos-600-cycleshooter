@@ -55,15 +55,13 @@ if(DEPENDENCIES_READY)
     include_directories(${OIS_INCLUDE_DIRS})
 
 
+    # Components that need linking (NB does not include header-only components like bind)
+    set(OGRE_BOOST_COMPONENTS date_time thread)
+
     # Statically linking boost to a dynamic Ogre build doesn't work on Linux 64-bit
     set(Boost_USE_STATIC_LIBS ${OGRE_STATIC})
-
-    # Components that need linking (NB does not include header-only components like bind)
-    set(OGRE_BOOST_COMPONENTS thread date_time)
-
     find_package(Boost COMPONENTS ${OGRE_BOOST_COMPONENTS} QUIET)
     if (NOT Boost_FOUND)
-        # Try again with the other type of libs
         set(Boost_USE_STATIC_LIBS NOT ${Boost_USE_STATIC_LIBS})
         find_package(Boost COMPONENTS ${OGRE_BOOST_COMPONENTS} QUIET)
     endif()
@@ -72,7 +70,6 @@ if(DEPENDENCIES_READY)
     include_directories(${Boost_INCLUDE_DIR})
     add_definitions(-DBOOST_ALL_NO_LIB)
 
-    # Set up referencing of Boost
     set(
         OGRE_LIBRARIES
         ${OGRE_LIBRARIES}
@@ -83,18 +80,15 @@ if(DEPENDENCIES_READY)
 
 
     file(
-        GLOB_RECURSE
-        PROJECT_HEADERS
+        GLOB PROJECT_HEADERS
         "${SRC_DIR}/*.h"
         "${SRC_DIR}/*.hpp"
         )
 
     file(
-        GLOB_RECURSE
-        PROJECT_SOURCES
+        GLOB PROJECT_SOURCES
         "${SRC_DIR}/*.cpp"
         )
-
 
     add_executable(
         ${PROJECT_NAME}
@@ -102,29 +96,23 @@ if(DEPENDENCIES_READY)
         ${PROJECT_SOURCES}
         )
 
-    set_property(
-        TARGET ${PROJECT_NAME}
-        PROPERTY CXX_STANDARD_REQUIRED 11
-        )
-
     target_link_libraries(
         ${PROJECT_NAME}
+        ${BULLET_LIBRARIES}
         ${OGRE_LIBRARIES}
         ${OIS_LIBRARIES}
-        ${BULLET_LIBRARIES}
         )
 
     add_custom_target(
         run
         ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target install
-        COMMAND "${PROJECT_NAME}"
-        WORKING_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
+        COMMAND ${PROJECT_NAME}
+        WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
         )
 
 
     file(
-        GLOB_RECURSE
-        IN_FILES
+        GLOB_RECURSE IN_FILES
         "${ASSETS_DIR}/*.in"
         )
 
@@ -140,12 +128,9 @@ if(DEPENDENCIES_READY)
     endforeach()
 
     install(
-        DIRECTORY
-        "${ASSETS_DIR}/"
-        DESTINATION
-        "${DEST_DIR}"
-        PATTERN
-        "*.in"
+        DIRECTORY ${ASSETS_DIR}/
+        DESTINATION ${DEST_DIR}
+        PATTERN "*.in"
         EXCLUDE
         )
 else()
