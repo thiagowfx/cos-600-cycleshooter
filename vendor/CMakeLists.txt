@@ -4,6 +4,14 @@ if (BUILD_TESTS)
 
     set(TEST_PROJECT_NAME "${PROJECT_NAME}Test")
 
+
+    find_package(Threads REQUIRED)
+
+    if(NOT Threads_FOUND)
+        message(SEND_ERROR "Failed to find Threads.")
+    endif()
+
+
     file(
         GLOB_RECURSE TEST_SRC_FILES
         "${TESTS_DIR}/*.cpp"
@@ -28,7 +36,7 @@ if (BUILD_TESTS)
     target_link_libraries(
         ${TEST_PROJECT_NAME}
         ${GTEST_BOTH_LIBRARIES}
-        pthread
+        ${CMAKE_THREAD_LIBS_INIT}
 
         ${BULLET_LIBRARIES}
         ${OGRE_LIBRARIES}
