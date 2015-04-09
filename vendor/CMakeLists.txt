@@ -9,11 +9,15 @@ if (BUILD_TESTS)
         "${TESTS_DIR}/*.cpp"
         )
 
-    include_directories(${GTEST_INCLUDE_DIRS})
+    include_directories(
+        ${GTEST_INCLUDE_DIRS}
+        ${SRC_DIR}
+        )
 
     add_executable(
         ${TEST_PROJECT_NAME}
         ${TEST_SRC_FILES}
+        $<TARGET_OBJECTS:PROJECT_LIB>
         )
 
     add_dependencies(
@@ -25,6 +29,10 @@ if (BUILD_TESTS)
         ${TEST_PROJECT_NAME}
         ${GTEST_BOTH_LIBRARIES}
         pthread
+
+        ${BULLET_LIBRARIES}
+        ${OGRE_LIBRARIES}
+        ${OIS_LIBRARIES}
         )
 
     add_custom_target(

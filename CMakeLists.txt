@@ -80,6 +80,17 @@ if(DEPENDENCIES_READY)
 
 
     file(
+        GLOB PROJECT_LIB_SOURCES
+        "${SRC_DIR}/lib/*.cpp"
+        )
+
+    add_library(
+        PROJECT_LIB OBJECT
+        ${PROJECT_LIB_SOURCES}
+        )
+
+
+    file(
         GLOB PROJECT_HEADERS
         "${SRC_DIR}/*.h"
         "${SRC_DIR}/*.hpp"
@@ -94,6 +105,7 @@ if(DEPENDENCIES_READY)
         ${PROJECT_NAME}
         ${PROJECT_HEADERS}
         ${PROJECT_SOURCES}
+        $<TARGET_OBJECTS:PROJECT_LIB>
         )
 
     target_link_libraries(
