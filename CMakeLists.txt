@@ -16,6 +16,9 @@ option(DEPENDENCIES_READY "Are the dependencies ready?" OFF)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${DEST_DIR}/bin")
 
 
+add_definitions(-std=c++11)
+
+
 add_subdirectory(${VENDOR_DIR})
 
 
