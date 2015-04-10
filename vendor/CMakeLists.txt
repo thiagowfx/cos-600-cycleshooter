@@ -58,3 +58,4 @@ endif()
 
 add_subdirectory(bullet)
 add_subdirectory(ogre)
+add_subdirectory(sfml)
