@@ -8,6 +8,8 @@ set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
 set(TESTS_DIR "${PROJECT_SOURCE_DIR}/tests")
 set(VENDOR_DIR "${PROJECT_SOURCE_DIR}/vendor")
 
+set(LIBRARY_DIR "$ENV{HOME}/.lib")
+
 
 option(BUILD_TESTS "Build tests." ON)
 option(DEPENDENCIES_READY "Are the dependencies ready?" OFF)

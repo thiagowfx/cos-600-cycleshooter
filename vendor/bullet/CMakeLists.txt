@@ -1,6 +1,6 @@
 # Bullet C++ Physics library
 
-set(BULLET_ROOT "$ENV{HOME}/.lib" CACHE PATH "Bullet library installation directory.")
+set(BULLET_ROOT ${LIBRARY_DIR} CACHE PATH "Bullet library installation directory.")
 find_package(Bullet)
 
 if(NOT BULLET_FOUND)

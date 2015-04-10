@@ -1,6 +1,6 @@
 # Ogre C++ Graphics Library
 
-set(OGRE_HOME "$ENV{HOME}/.lib" CACHE PATH "Ogre library installation directory.")
+set(OGRE_HOME ${LIBRARY_DIR} CACHE PATH "Ogre library installation directory.")
 find_package(OGRE)
 
 if(NOT OGRE_FOUND)

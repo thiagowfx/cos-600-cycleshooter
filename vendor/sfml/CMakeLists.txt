@@ -1,6 +1,6 @@
 # SFML C++ Multimedia Library
 
-set(SFML_ROOT "$ENV{HOME}/.lib" CACHE PATH "SFML library installation directory.")
+set(SFML_ROOT ${LIBRARY_DIR} CACHE PATH "SFML library installation directory.")
 find_package(SFML COMPONENTS audio)
 
 if(NOT SFML_FOUND)
