@@ -32,6 +32,15 @@ if(DEPENDENCIES_READY)
     include_directories(${BULLET_INCLUDE_DIRS})
 
 
+    find_package(SFML REQUIRED EXACT 2.2 COMPONENTS audio)
+
+    if(NOT SFML_FOUND)
+        message(SEND_ERROR "Failed to find SFML.")
+    endif()
+
+    include_directories(${SFML_INCLUDE_DIR})
+
+
     find_package(OGRE REQUIRED EXACT 1.9)
 
     if(NOT OGRE_FOUND)
@@ -111,6 +120,7 @@ if(DEPENDENCIES_READY)
     target_link_libraries(
         ${PROJECT_NAME}
         ${BULLET_LIBRARIES}
+        ${SFML_LIBRARIES}
         ${OGRE_LIBRARIES}
         ${OIS_LIBRARIES}
         )

@@ -44,6 +44,7 @@ if (BUILD_TESTS)
             ${CMAKE_THREAD_LIBS_INIT}
 
             ${BULLET_LIBRARIES}
+            ${SFML_LIBRARIES}
             ${OGRE_LIBRARIES}
             ${OIS_LIBRARIES}
             )
