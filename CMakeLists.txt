@@ -3,7 +3,7 @@ project(OgreBulletApp C CXX)
 
 
 set(ASSETS_DIR "${PROJECT_SOURCE_DIR}/assets")
-set(DEST_DIR "${PROJECT_SOURCE_DIR}/dest")
+set(DEST_DIR "${PROJECT_BINARY_DIR}/dest")
 set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
 set(TESTS_DIR "${PROJECT_SOURCE_DIR}/tests")
 set(VENDOR_DIR "${PROJECT_SOURCE_DIR}/vendor")
