@@ -1,7 +1,7 @@
 # Ogre C++ Graphics Library
 
 set(OGRE_HOME ${LIBRARY_DIR} CACHE PATH "Ogre library installation directory.")
-find_package(OGRE)
+find_package(OGRE EXACT 1.9)
 
 if(NOT OGRE_FOUND)
     project(ogre_builder C CXX)

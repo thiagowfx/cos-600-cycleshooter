@@ -1,7 +1,7 @@
 # SFML C++ Multimedia Library
 
 set(SFML_ROOT ${LIBRARY_DIR} CACHE PATH "SFML library installation directory.")
-find_package(SFML COMPONENTS audio)
+find_package(SFML EXACT 2.2 COMPONENTS audio)
 
 if(NOT SFML_FOUND)
     project(sfml_builder C CXX)
