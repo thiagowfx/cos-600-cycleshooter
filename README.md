@@ -2,8 +2,9 @@ cg-games-2015-1
 ===============
 
 - Bullet
-- Ogre3d
 - Google Test
+- Ogre3d
+- SFML
 
 Tutorial
 ========
@@ -34,18 +35,18 @@ By default, this will place binaries under `<project_root>/dest/bin`.
 Additional custom targets:
 
 - `make run` - to run the main executable of the project
-- `make run_tests` - to run the unit tests
+- `make run_tests` - to run the unit tests (with google test)
 
 Dependencies
 ============
 
-If you want to build Ogre and/or Bullet, you must have the dependencies of those libraries already installed on your system.
+If you want to build Bullet, Ogre or SFML, you must have some dependencies already installed on your system:
 
 On Ubuntu:
-- `sudo apt-get build-dep libogre-1.9-dev libbullet-dev`
+- `sudo apt-get build-dep libbullet-dev libogre-1.9-dev libsfml-dev; sudo apt-get install libglew-dev libudev-dev`
 
 On Arch Linux:
-- `sudo pacman -S $(expac -S "%E" bullet ogre)`
+- `sudo pacman -S $(expac -S "%E" bullet ogre sfml)`
 
 How to use each library
 =======================
@@ -61,3 +62,7 @@ Use `find_package(Bullet REQUIRED)`.
 Ogre
 ----
 Use `find_package(OGRE REQUIRED)`.
+
+SFML
+----
+Use `find_package(SFML REQUIRED)`.
