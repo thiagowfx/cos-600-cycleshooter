@@ -1,9 +1,9 @@
 cg-games-2015-1
 ===============
 
-- Bullet
-- Google Test
-- Ogre3d
+- Bullet (for physics)
+- Google Test (for unit testing)
+- Ogre3d (for rendering)
 - SFML
 
 Tutorial
@@ -28,14 +28,14 @@ Now, set the `DEPENDENCIES_READY` variable to `TRUE`. There are at least three w
 
 Finally, just build your project:
 
-- `make install`
+- `make`
 
-By default, this will place binaries under `<project_root>/dest/bin`.
+By default, this will place binaries under `<project_build_root>/dest/bin` and update assets on `<project_build_root>/dest`.
 
 Additional custom targets:
 
 - `make run` - to run the main executable of the project
-- `make run_tests` - to run the unit tests (with google test)
+- `make run_tests` - to run the unit tests created with google test
 
 Dependencies
 ============

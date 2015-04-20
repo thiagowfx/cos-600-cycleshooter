@@ -49,6 +49,12 @@ if (BUILD_TESTS)
             ${OIS_LIBRARIES}
             )
 
+        add_custom_command(
+            TARGET ${TEST_PROJECT_NAME}
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target install
+            )
+
         add_custom_target(
             run_tests
             COMMAND ${TEST_PROJECT_NAME}
