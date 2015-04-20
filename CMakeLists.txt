@@ -146,7 +146,7 @@ if(DEPENDENCIES_READY)
         "${ASSETS_DIR}/*.in"
         )
 
-    # configure file.in -> file
+    # configure *.in -> *
     foreach(IN_FILE ${IN_FILES})
         string(REGEX REPLACE "\\.in$" "" OUT_FILE "${IN_FILE}")
         configure_file(
