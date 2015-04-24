@@ -1,6 +1,4 @@
-get_filename_component(MODULE_PATH . ABSOLUTE)
-set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${MODULE_PATH}")
-unset(MODULE_PATH)
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
 
 if (BUILD_TESTS)
     enable_testing()
