@@ -1,5 +1,5 @@
-cg-games-2015-1
-===============
+cycleshooter
+============
 
 - Bullet (for physics)
 - Google Test (for unit testing)
