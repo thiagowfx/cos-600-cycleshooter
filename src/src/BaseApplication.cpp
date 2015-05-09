@@ -4,6 +4,8 @@
 #include <macUtils.h>
 #endif
 
+namespace Cycleshooter {
+
 BaseApplication::BaseApplication()
     : mRoot(0),
     mCamera(0),
@@ -421,4 +423,6 @@ void BaseApplication::windowClosed(Ogre::RenderWindow* rw) {
             mInputManager = 0;
         }
     }
+}
+
 }

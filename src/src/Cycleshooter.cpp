@@ -15,7 +15,7 @@ extern "C" {
     int main(int argc, char *argv[]) {
 #endif
         // Create application object
-        BaseApplication app;
+        Cycleshooter::BaseApplication app;
 
         try {
             app.go();

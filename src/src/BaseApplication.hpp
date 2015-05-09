@@ -49,7 +49,7 @@
 #  include "OgreStaticPluginLoader.h"
 #endif
 
-//---------------------------------------------------------------------------
+namespace Cycleshooter {
 
 class BaseApplication : public Ogre::FrameListener, public Ogre::WindowEventListener, public OIS::KeyListener, public OIS::MouseListener, OgreBites::SdkTrayListener
 {
@@ -113,5 +113,7 @@ protected:
     Ogre::StaticPluginLoader m_StaticPluginLoader;
 #endif
 };
+
+}
 
 #endif
