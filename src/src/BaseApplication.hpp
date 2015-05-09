@@ -49,6 +49,8 @@
 #  include "OgreStaticPluginLoader.h"
 #endif
 
+#include "Constants.hpp"
+
 namespace Cycleshooter {
 
 class BaseApplication : public Ogre::FrameListener, public Ogre::WindowEventListener, public OIS::KeyListener, public OIS::MouseListener, OgreBites::SdkTrayListener
@@ -83,6 +85,9 @@ protected:
     virtual void windowResized(Ogre::RenderWindow* rw);
     // Unattach OIS before window shutdown (very important under Linux)
     virtual void windowClosed(Ogre::RenderWindow* rw);
+
+    void cyclePolygonRenderingModeAction();
+    void cyclePolygonRenderingLines();
 
     Ogre::Root*                 mRoot;
     Ogre::Camera*               mCamera;

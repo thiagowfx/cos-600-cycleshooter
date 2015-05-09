@@ -3,8 +3,8 @@
 
 namespace Cycleshooter {
 
-    const char *APPLICATION_NAME = "CYCLESHOOTER";
-    const char *RENDER_WINDOW_NAME = "CYCLESHOOTER Render Window";
+    const char* const APPLICATION_NAME = "CYCLESHOOTER";
+    const char* const RENDER_WINDOW_NAME = "CYCLESHOOTER Render Window";
 
 }
 
