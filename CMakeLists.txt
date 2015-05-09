@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.12)
-project(OgreBulletApp C CXX)
+project(Cycleshooter C CXX)
 
 
 set(ASSETS_DIR "${PROJECT_SOURCE_DIR}/assets")

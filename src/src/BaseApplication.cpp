@@ -131,6 +131,17 @@ void BaseApplication::createFrameListener() {
     mRoot->addFrameListener(this);
 }
 
+void BaseApplication::createScene() {
+    mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
+    Ogre::Entity* ogreEntity = mSceneMgr->createEntity("ogrehead.mesh");
+    Ogre::SceneNode* ogreNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+    ogreNode->attachObject(ogreEntity);
+    Ogre::Light* light = mSceneMgr->createLight("MainLight");
+    light->setPosition(20, 80, 50);
+}
+
+
+
 void BaseApplication::destroyScene() {
 }
 

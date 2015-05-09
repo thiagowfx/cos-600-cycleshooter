@@ -1,19 +1,4 @@
-#include "TutorialApplication.hpp"
-
-TutorialApplication::TutorialApplication() {
-}
-
-TutorialApplication::~TutorialApplication() {
-}
-
-void TutorialApplication::createScene() {
-    mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
-    Ogre::Entity* ogreEntity = mSceneMgr->createEntity("ogrehead.mesh");
-    Ogre::SceneNode* ogreNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
-    ogreNode->attachObject(ogreEntity);
-    Ogre::Light* light = mSceneMgr->createLight("MainLight");
-    light->setPosition(20, 80, 50);
-}
+#include "BaseApplication.hpp"
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 #define WIN32_LEAN_AND_MEAN
@@ -30,7 +15,7 @@ extern "C" {
     int main(int argc, char *argv[]) {
 #endif
         // Create application object
-        TutorialApplication app;
+        BaseApplication app;
 
         try {
             app.go();
