@@ -89,6 +89,11 @@ if(DEPENDENCIES_READY)
         ${OGRE_Overlay_LIBRARIES}
         )
 
+    file(
+        GLOB PROJECT_LIB_HEADERS
+        "${SRC_DIR}/lib/*.h"
+        "${SRC_DIR}/lib/*.hpp"
+        )
 
     file(
         GLOB PROJECT_LIB_SOURCES
@@ -97,19 +102,24 @@ if(DEPENDENCIES_READY)
 
     add_library(
         PROJECT_LIB OBJECT
+        ${PROJECT_LIB_HEADERS}
         ${PROJECT_LIB_SOURCES}
         )
 
 
     file(
         GLOB PROJECT_HEADERS
-        "${SRC_DIR}/*.h"
-        "${SRC_DIR}/*.hpp"
+        "${SRC_DIR}/include/*.h"
+        "${SRC_DIR}/include/*.hpp"
         )
 
     file(
         GLOB PROJECT_SOURCES
-        "${SRC_DIR}/*.cpp"
+        "${SRC_DIR}/src/*.cpp"
+        )
+        
+    include_directories(
+        "${SRC_DIR}/include"
         )
 
     add_executable(
