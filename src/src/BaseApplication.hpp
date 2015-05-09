@@ -62,8 +62,6 @@ public:
     virtual void go();
 
 protected:
-    virtual bool setup();
-    virtual bool configure();
     virtual void chooseSceneManager();
     virtual void createCamera();
     virtual void createFrameListener();
@@ -86,11 +84,11 @@ protected:
     // Unattach OIS before window shutdown (very important under Linux)
     virtual void windowClosed(Ogre::RenderWindow* rw);
 
-    void cyclePolygonRenderingModeAction();
-    void cyclePolygonRenderingLines();
+    void cyclePolygonFilteringModeAction();
+    void cyclePolygonRenderingMode();
 
     Ogre::Root*                 mRoot;
-    Ogre::Camera*               mCamera;
+    Ogre::Camera*               mPlayerCamera;
     Ogre::SceneManager*         mSceneMgr;
     Ogre::RenderWindow*         mWindow;
     Ogre::String                mResourcesCfg;

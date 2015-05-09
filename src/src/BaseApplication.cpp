@@ -8,7 +8,7 @@ namespace Cycleshooter {
 
 BaseApplication::BaseApplication()
     : mRoot(0),
-    mCamera(0),
+    mPlayerFrontCamera(0),
     mSceneMgr(0),
     mWindow(0),
     mResourcesCfg(Ogre::StringUtil::BLANK),
@@ -43,24 +43,6 @@ BaseApplication::~BaseApplication() {
     delete mRoot;
 }
 
-bool BaseApplication::configure() {
-    // Show the configuration dialog and initialise the system.
-    // You can skip this and use root.restoreConfig() to load configuration
-    // settings if you were sure there are valid ones saved in ogre.cfg.
-    if(mRoot->showConfigDialog())
-    {
-        // If returned true, user clicked OK so initialise.
-        // Here we choose to let the system create a default rendering window by passing 'true'.
-        mWindow = mRoot->initialise(true, Cycleshooter::RENDER_WINDOW_NAME);
-
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
 void BaseApplication::chooseSceneManager() {
     // Get the SceneManager, in this case a generic one
     mSceneMgr = mRoot->createSceneManager(Ogre::ST_GENERIC);
@@ -71,16 +53,18 @@ void BaseApplication::chooseSceneManager() {
 }
 
 void BaseApplication::createCamera() {
-    // Create the camera
-    mCamera = mSceneMgr->createCamera("PlayerCam");
+    mPlayerFrontCamera = mSceneMgr->createCamera("PlayerCamera");
 
-    // Position it at 500 in Z direction
-    mCamera->setPosition(Ogre::Vector3(0,0,80));
+    mPlayerFrontCamera->setPosition(Ogre::Vector3(0.0, 0.0, 100.0));
+
     // Look back along -Z
-    mCamera->lookAt(Ogre::Vector3(0,0,-300));
-    mCamera->setNearClipDistance(5);
+    mPlayerFrontCamera->lookAt(Ogre::Vector3(0.0, 0.0, -1.0));
 
-    mCameraMan = new OgreBites::SdkCameraMan(mCamera);   // Create a default camera controller
+    mPlayerFrontCamera->setNearClipDistance(5);
+    mPlayerFrontCamera->setFarClipDistance(1000);
+
+    // Create a default camera controller
+    mCameraMan = new OgreBites::SdkCameraMan(mPlayerFrontCamera);
 }
 
 void BaseApplication::createFrameListener() {
@@ -152,11 +136,11 @@ void BaseApplication::destroyScene() {
 
 void BaseApplication::createViewports() {
     // Create one viewport, entire window
-    Ogre::Viewport* vp = mWindow->addViewport(mCamera);
-    vp->setBackgroundColour(Ogre::ColourValue(0,0,0));
+    Ogre::Viewport* frontCameraViewport = mWindow->addViewport(mPlayerFrontCamera);
+    frontCameraViewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 0.0));
 
     // Alter the camera aspect ratio to match the viewport
-    mCamera->setAspectRatio(Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
+    mPlayerFrontCamera->setAspectRatio(Ogre::Real(frontCameraViewport->getActualWidth()) / Ogre::Real(frontCameraViewport->getActualHeight()));
 }
 
 void BaseApplication::setupResources() {
@@ -218,23 +202,23 @@ void BaseApplication::go() {
 #endif
 #endif
 
-    if (!setup())
-        return;
-
-    mRoot->startRendering();
-
-    // Clean up
-    destroyScene();
-}
-
-bool BaseApplication::setup() {
+    // plugins.cfg
     mRoot = new Ogre::Root(mPluginsCfg);
 
+    // resources.cfg
     setupResources();
 
-    bool carryOn = configure();
-    if (!carryOn)
-        return false;
+    // Show the configuration dialog and initialise the system.
+    // You can skip this and use root.restoreConfig() to load configuration
+    // settings if you were sure there are valid ones saved in ogre.cfg.
+    if(mRoot->showConfigDialog()) {
+        // If returned true, user clicked OK so initialise.
+        // Here we choose to let the system create a default rendering window by passing 'true'.
+        mWindow = mRoot->initialise(true, Cycleshooter::RENDER_WINDOW_NAME);
+    }
+    else {
+        return;
+    }
 
     chooseSceneManager();
     createCamera();
@@ -253,8 +237,11 @@ bool BaseApplication::setup() {
 
     createFrameListener();
 
-    return true;
-};
+    mRoot->startRendering();
+
+    // Clean up
+    destroyScene();
+}
 
 bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
     if(mWindow->isClosed())
@@ -273,13 +260,13 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
         mCameraMan->frameRenderingQueued(evt);   // If dialog isn't up, then update the camera
         if (mDetailsPanel->isVisible())          // If details panel is visible, then update its contents
         {
-            mDetailsPanel->setParamValue(0, Ogre::StringConverter::toString(mCamera->getDerivedPosition().x));
-            mDetailsPanel->setParamValue(1, Ogre::StringConverter::toString(mCamera->getDerivedPosition().y));
-            mDetailsPanel->setParamValue(2, Ogre::StringConverter::toString(mCamera->getDerivedPosition().z));
-            mDetailsPanel->setParamValue(4, Ogre::StringConverter::toString(mCamera->getDerivedOrientation().w));
-            mDetailsPanel->setParamValue(5, Ogre::StringConverter::toString(mCamera->getDerivedOrientation().x));
-            mDetailsPanel->setParamValue(6, Ogre::StringConverter::toString(mCamera->getDerivedOrientation().y));
-            mDetailsPanel->setParamValue(7, Ogre::StringConverter::toString(mCamera->getDerivedOrientation().z));
+            mDetailsPanel->setParamValue(0, Ogre::StringConverter::toString(mPlayerFrontCamera->getDerivedPosition().x));
+            mDetailsPanel->setParamValue(1, Ogre::StringConverter::toString(mPlayerFrontCamera->getDerivedPosition().y));
+            mDetailsPanel->setParamValue(2, Ogre::StringConverter::toString(mPlayerFrontCamera->getDerivedPosition().z));
+            mDetailsPanel->setParamValue(4, Ogre::StringConverter::toString(mPlayerFrontCamera->getDerivedOrientation().w));
+            mDetailsPanel->setParamValue(5, Ogre::StringConverter::toString(mPlayerFrontCamera->getDerivedOrientation().x));
+            mDetailsPanel->setParamValue(6, Ogre::StringConverter::toString(mPlayerFrontCamera->getDerivedOrientation().y));
+            mDetailsPanel->setParamValue(7, Ogre::StringConverter::toString(mPlayerFrontCamera->getDerivedOrientation().z));
         }
     }
 
@@ -306,10 +293,10 @@ bool BaseApplication::keyPressed( const OIS::KeyEvent &arg ) {
         }
     }
     else if (arg.key == OIS::KC_T) {
-        cyclePolygonRenderingModeAction();
+        cyclePolygonFilteringModeAction();
     }
     else if (arg.key == OIS::KC_R) {
-        cyclePolygonRenderingLines();
+        cyclePolygonRenderingMode();
     }
     // refresh all textures
     else if(arg.key == OIS::KC_F5) {
@@ -379,7 +366,7 @@ void BaseApplication::windowClosed(Ogre::RenderWindow* rw) {
     }
 }
 
-void BaseApplication::cyclePolygonRenderingModeAction() {
+void BaseApplication::cyclePolygonFilteringModeAction() {
     Ogre::String newVal;
     Ogre::TextureFilterOptions tfo;
     unsigned int aniso;
@@ -411,11 +398,11 @@ void BaseApplication::cyclePolygonRenderingModeAction() {
     mDetailsPanel->setParamValue(9, newVal);
 }
 
-void BaseApplication::cyclePolygonRenderingLines() {
+void BaseApplication::cyclePolygonRenderingMode() {
     Ogre::String newVal;
     Ogre::PolygonMode pm;
 
-    switch (mCamera->getPolygonMode()) {
+    switch (mPlayerFrontCamera->getPolygonMode()) {
     case Ogre::PM_SOLID:
         newVal = "Wireframe";
         pm = Ogre::PM_WIREFRAME;
@@ -429,7 +416,7 @@ void BaseApplication::cyclePolygonRenderingLines() {
         pm = Ogre::PM_SOLID;
     }
 
-    mCamera->setPolygonMode(pm);
+    mPlayerFrontCamera->setPolygonMode(pm);
     mDetailsPanel->setParamValue(10, newVal);
 }
 
