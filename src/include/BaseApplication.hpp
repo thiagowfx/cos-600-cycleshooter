@@ -80,8 +80,6 @@ protected:
     void cyclePolygonFilteringModeAction();
     void cyclePolygonRenderingModeAction();
 
-    void toggleMode();
-
     void gameMainLoop();
 
     Ogre::Root*                 mRoot;

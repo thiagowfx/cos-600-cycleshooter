@@ -233,10 +233,6 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
     return true;
 }
 
-void BaseApplication::toggleMode() {
-    mContextManager->toggleMode();
-}
-
 bool BaseApplication::keyPressed( const OIS::KeyEvent &arg ) {
     if (mHUD->getTrayManager()->isDialogVisible())
         return true;   // don't process any more keys if dialog is up
@@ -265,19 +261,23 @@ bool BaseApplication::keyPressed( const OIS::KeyEvent &arg ) {
         break;
 
     case OIS::KC_W:
+    case OIS::KC_LEFT:
         mContextManager->getCameraParentSceneNode()->translate(Ogre::Vector3(0.0, 0.0, -10.0), Ogre::SceneNode::TS_LOCAL);
         break;
     case OIS::KC_S:
+    case OIS::KC_RIGHT:
         mContextManager->getCameraParentSceneNode()->translate(Ogre::Vector3(0.0, 0.0, +10.0), Ogre::SceneNode::TS_LOCAL);
         break;
     case OIS::KC_A:
+    case OIS::KC_DOWN:
         mContextManager->getCameraParentSceneNode()->yaw(Ogre::Degree(10.0));
         break;
     case OIS::KC_D:
+    case OIS::KC_UP:
         mContextManager->getCameraParentSceneNode()->yaw(Ogre::Degree(-10.0));
         break;
     case OIS::KC_SPACE:
-        toggleMode();
+        mContextManager->toggleMode();
         break;
 
     }
