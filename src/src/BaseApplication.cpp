@@ -240,26 +240,32 @@ bool BaseApplication::keyPressed( const OIS::KeyEvent &arg ) {
     if (mHUD->getTrayManager()->isDialogVisible())
         return true;   // don't process any more keys if dialog is up
 
-    if (arg.key == OIS::KC_G) {
+    switch(arg.key) {
+    case OIS::KC_G:
         mHUD->toggleDebugPanel();
         mHUD->toggleFPSPanel();
-    }
-    else if (arg.key == OIS::KC_T) {
-        cyclePolygonFilteringModeAction();
-    }
-    else if (arg.key == OIS::KC_R) {
+        break;
+    case OIS::KC_R:
         cyclePolygonRenderingModeAction();
-    }
-    // refresh all textures
-    else if(arg.key == OIS::KC_F5) {
+        break;
+    case OIS::KC_T:
+        cyclePolygonFilteringModeAction();
+        break;
+    case OIS::KC_F5:
+        // refresh all textures
         Ogre::TextureManager::getSingleton().reloadAll();
-    }
-    // take a screenshot
-    else if (arg.key == OIS::KC_SYSRQ) {
+        break;
+    case OIS::KC_SYSRQ:
+        // take a screenshot
         mWindow->writeContentsToTimestampedFile("screenshot", ".jpg");
-    }
-    else if (arg.key == OIS::KC_ESCAPE) {
+        break;
+    case OIS::KC_ESCAPE:
         mShutDown = true;
+        break;
+
+    case OIS::KC_SPACE:
+        mFrontSceneNode->translate(0.0, 0.0, -10.0);
+        break;
     }
 
     mCameraMan->injectKeyDown(arg);
