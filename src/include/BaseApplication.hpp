@@ -50,6 +50,7 @@
 #endif
 
 #include "Constants.hpp"
+#include "HUD.hpp"
 
 namespace Cycleshooter {
 
@@ -86,7 +87,7 @@ protected:
     void cyclePolygonRenderingMode();
 
     Ogre::Root*                 mRoot;
-    Ogre::Camera*               mPlayerCamera;
+    Ogre::Camera*               mPlayerFrontCamera;
     Ogre::SceneManager*         mSceneMgr;
     Ogre::RenderWindow*         mWindow;
     Ogre::String                mResourcesCfg;
@@ -96,9 +97,8 @@ protected:
 
     // OgreBites
     OgreBites::InputContext     mInputContext;
-    OgreBites::SdkTrayManager*	mTrayMgr;
+    Cycleshooter::HUD*          mHUD;
     OgreBites::SdkCameraMan*    mCameraMan;     	// Basic camera controller
-    OgreBites::ParamsPanel*     mDetailsPanel;   	// Sample details panel
     bool                        mCursorWasVisible;	// Was cursor visible before dialog appeared?
     bool                        mShutDown;
 
