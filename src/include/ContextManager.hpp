@@ -44,13 +44,13 @@ private:
     const double MIRROR_PERCENTAGE_V = 0.10;
     const Ogre::ColourValue VIEWPORT_BACKGROUND_COLOR = Ogre::ColourValue(0.0, 0.0, 0.0);
 
+    void createCameras();
+
 public:
     ContextManager(Ogre::SceneManager* sceneManager, Ogre::RenderWindow* renderWindow);
     virtual ~ContextManager();
 
     void _test();
-
-    void createCameras();
 
     void setupRunnerMode();
     void setupShooterMode();
