@@ -8,7 +8,6 @@ namespace Cycleshooter {
 
 BaseApplication::BaseApplication()
     : mRoot(0),
-    mSceneMgr(0),
     mWindow(0),
     mContextManager(0),
     mResources(0),
@@ -18,8 +17,7 @@ BaseApplication::BaseApplication()
     mShutDown(false),
     mInputManager(0),
     mMouse(0),
-    mKeyboard(0),
-    mOverlaySystem(0) {
+    mKeyboard(0) {
 }
 
 BaseApplication::~BaseApplication() {
@@ -29,8 +27,6 @@ BaseApplication::~BaseApplication() {
 //        delete mCameraMan;
     if(mContextManager)
         delete mContextManager;
-    if (mOverlaySystem)
-        delete mOverlaySystem;
 
     // Remove ourself as a Window listener
     Ogre::WindowEventUtilities::removeWindowEventListener(mWindow, this);
@@ -38,15 +34,6 @@ BaseApplication::~BaseApplication() {
     if(mResources)
         delete mResources;
     delete mRoot;
-}
-
-void BaseApplication::chooseSceneManager() {
-    // Get the SceneManager, in this case a generic one
-    mSceneMgr = mRoot->createSceneManager(Ogre::ST_GENERIC);
-
-    // Initialize the OverlaySystem (changed for Ogre 1.9)
-    mOverlaySystem = new Ogre::OverlaySystem();
-    mSceneMgr->addRenderQueueListener(mOverlaySystem);
 }
 
 //void BaseApplication::createCamera() {
@@ -89,25 +76,20 @@ void BaseApplication::createFrameListener() {
 }
 
 void BaseApplication::createScene() {
-    mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
-    Ogre::Entity* ogreEntity = mSceneMgr->createEntity("ogrehead.mesh");
-    Ogre::Entity* ogreEntity2 = mSceneMgr->createEntity("ogrehead.mesh");
-    Ogre::Entity* ogreEntity3 = mSceneMgr->createEntity("ogrehead.mesh");
-    Ogre::SceneNode* ogreNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
-    Ogre::SceneNode* ogreNode2 = mSceneMgr->getRootSceneNode()->createChildSceneNode();
-    Ogre::SceneNode* ogreNode3 = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+    mContextManager->getSceneManager()->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
+    Ogre::Entity* ogreEntity = mContextManager->getSceneManager()->createEntity("ogrehead.mesh");
+    Ogre::Entity* ogreEntity2 = mContextManager->getSceneManager()->createEntity("ogrehead.mesh");
+    Ogre::Entity* ogreEntity3 = mContextManager->getSceneManager()->createEntity("ogrehead.mesh");
+    Ogre::SceneNode* ogreNode = mContextManager->getSceneManager()->getRootSceneNode()->createChildSceneNode();
+    Ogre::SceneNode* ogreNode2 = mContextManager->getSceneManager()->getRootSceneNode()->createChildSceneNode();
+    Ogre::SceneNode* ogreNode3 = mContextManager->getSceneManager()->getRootSceneNode()->createChildSceneNode();
     ogreNode2->translate(0.0, 0.0, 400.0);
     ogreNode3->translate(0.0, 0.0, -400.0);
     ogreNode->attachObject(ogreEntity);
     ogreNode2->attachObject(ogreEntity2);
     ogreNode3->attachObject(ogreEntity3);
-    Ogre::Light* light = mSceneMgr->createLight("MainLight");
+    Ogre::Light* light =  mContextManager->getSceneManager()->createLight("MainLight");
     light->setPosition(20.0, 80.0, 50.0);
-}
-
-
-
-void BaseApplication::destroyScene() {
 }
 
 void BaseApplication::go() {
@@ -127,9 +109,7 @@ void BaseApplication::go() {
     // Here we choose to let the system create a default rendering window by passing 'true'.
     mWindow = mRoot->initialise(true, Cycleshooter::RENDER_WINDOW_NAME);
 
-    chooseSceneManager();
-
-    mContextManager = new ContextManager(mSceneMgr, mWindow);
+    mContextManager = new ContextManager(mRoot, mWindow);
     mContextManager->setupRunnerMode();
 
     //mContextManager->getCameraParentSceneNode()->setPosition(0.0, 0.0, 200.0);
@@ -148,9 +128,6 @@ void BaseApplication::go() {
     // mRoot->startRendering();
     // Our own loop
     gameMainLoop();
-
-    // Clean up
-    destroyScene();
 }
 
 bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {

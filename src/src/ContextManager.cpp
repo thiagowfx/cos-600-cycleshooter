@@ -2,7 +2,7 @@
 
 namespace Cycleshooter {
 
-ContextManager::ContextManager(Ogre::SceneManager* sceneManager, Ogre::RenderWindow* renderWindow) :
+ContextManager::ContextManager(Ogre::Root* root, Ogre::RenderWindow* renderWindow) :
     viewportPrimary(0),
     viewportSecundary(0),
     parentSceneNode(0),
@@ -10,10 +10,14 @@ ContextManager::ContextManager(Ogre::SceneManager* sceneManager, Ogre::RenderWin
     rearPlayerSceneNode(0),
     frontCamera(0),
     rearCamera(0),
-    sceneManager(sceneManager),
+    sceneManager(0),
+    overlaySystem(0),
+    root(root),
     renderWindow(renderWindow)
 {
+    createSceneManagers();
     createCameras();
+    createSceneNodes();
 }
 
 ContextManager::~ContextManager() {
@@ -37,24 +41,20 @@ ContextManager::~ContextManager() {
 
     if(rearCamera)
         delete rearCamera;
+
+    if(sceneManager)
+        delete sceneManager;
+
+    if(overlaySystem)
+        delete overlaySystem;
 }
 
-void ContextManager::_test() {
-    setupRunnerMode();
-    assert(contextMode == CONTEXT_RUNNER);
-    assert(getMainCamera() == frontCamera);
+void ContextManager::createSceneManagers() {
+    sceneManager = root->createSceneManager(Ogre::ST_GENERIC);
+    sceneManager->setDisplaySceneNodes(true);
 
-    setupShooterMode();
-    assert(contextMode == CONTEXT_SHOOTER);
-    assert(getMainCamera() == rearCamera);
-
-    toggleMode();
-    assert(contextMode == CONTEXT_RUNNER);
-    assert(getMainCamera() == frontCamera);
-
-    toggleMode();
-    assert(contextMode == CONTEXT_SHOOTER);
-    assert(getMainCamera() == rearCamera);
+    overlaySystem = new Ogre::OverlaySystem();
+    sceneManager->addRenderQueueListener(overlaySystem);
 }
 
 void ContextManager::createCameras() {
@@ -67,7 +67,9 @@ void ContextManager::createCameras() {
     frontCamera->setFarClipDistance(CAMERA_FAR_CLIP_DISTANCE);
     rearCamera->setNearClipDistance(CAMERA_NEAR_CLIP_DISTANCE);
     frontCamera->setFarClipDistance(CAMERA_FAR_CLIP_DISTANCE);
+}
 
+void ContextManager::createSceneNodes() {
     // create scene nodes
     parentSceneNode = sceneManager->getRootSceneNode()->createChildSceneNode("ParentSceneNode");
     frontPlayerSceneNode = parentSceneNode->createChildSceneNode("FrontSceneNode");
@@ -167,6 +169,10 @@ Ogre::SceneNode *ContextManager::getFrontSceneNode() const {
 
 Ogre::SceneNode *ContextManager::getRearSceneNode() const {
     return rearPlayerSceneNode;
+}
+
+Ogre::SceneManager *ContextManager::getSceneManager() const {
+    return sceneManager;
 }
 
 }
