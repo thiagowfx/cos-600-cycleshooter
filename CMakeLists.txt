@@ -5,17 +5,12 @@ project(Cycleshooter C CXX)
 set(ASSETS_DIR "${PROJECT_SOURCE_DIR}/assets")
 set(DEST_DIR "${PROJECT_BINARY_DIR}/dest")
 set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
-set(TESTS_DIR "${PROJECT_SOURCE_DIR}/tests")
 set(VENDOR_DIR "${PROJECT_SOURCE_DIR}/vendor")
-
 set(LIBRARY_DIR "$ENV{HOME}/.lib")
-
-
-option(BUILD_TESTS "Build tests." ON)
-option(DEPENDENCIES_READY "Are the dependencies ready?" OFF)
-
-
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${DEST_DIR}/bin")
+
+
+option(DEPENDENCIES_READY "Are the dependencies ready?" OFF)
 
 
 add_definitions(-std=c++11)
@@ -90,24 +85,6 @@ if(DEPENDENCIES_READY)
         )
 
     file(
-        GLOB PROJECT_LIB_HEADERS
-        "${SRC_DIR}/lib/*.h"
-        "${SRC_DIR}/lib/*.hpp"
-        )
-
-    file(
-        GLOB PROJECT_LIB_SOURCES
-        "${SRC_DIR}/lib/*.cpp"
-        )
-
-    add_library(
-        PROJECT_LIB OBJECT
-        ${PROJECT_LIB_HEADERS}
-        ${PROJECT_LIB_SOURCES}
-        )
-
-
-    file(
         GLOB PROJECT_HEADERS
         "${SRC_DIR}/include/*.h"
         "${SRC_DIR}/include/*.hpp"
@@ -126,7 +103,6 @@ if(DEPENDENCIES_READY)
         ${PROJECT_NAME}
         ${PROJECT_HEADERS}
         ${PROJECT_SOURCES}
-        $<TARGET_OBJECTS:PROJECT_LIB>
         )
 
     target_link_libraries(
@@ -174,5 +150,5 @@ if(DEPENDENCIES_READY)
         EXCLUDE
         )
 else()
-    message(WARNING "DEPENDENCIES_READY variable is set to OFF; project won't build.")
+    message(WARNING "***DEPENDENCIES_READY variable is set to OFF, project won't build***")
 endif()

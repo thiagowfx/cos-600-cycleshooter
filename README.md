@@ -2,9 +2,8 @@ cycleshooter
 ============
 
 - Bullet (for physics)
-- Google Test (for unit testing)
 - Ogre3d (for rendering)
-- SFML
+- SFML (misc)
 
 Tutorial
 ========
@@ -35,7 +34,6 @@ By default, this will place binaries under `<project_build_root>/dest/bin` and u
 Additional custom targets:
 
 - `make run` - to run the main executable of the project
-- `make run_tests` - to run the unit tests created with google test
 
 Dependencies
 ============
@@ -50,10 +48,6 @@ On Arch Linux:
 
 How to use each library
 =======================
-
-Google Test
------------
-Set the `BUILD_TESTS` cmake variable to `TRUE`.
 
 Bullet
 ------
