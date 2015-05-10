@@ -262,19 +262,19 @@ bool BaseApplication::keyPressed( const OIS::KeyEvent &arg ) {
 
     case OIS::KC_W:
     case OIS::KC_LEFT:
-        mContextManager->getCameraParentSceneNode()->translate(Ogre::Vector3(0.0, 0.0, -10.0), Ogre::SceneNode::TS_LOCAL);
+        mContextManager->getParentSceneNode()->translate(Ogre::Vector3(0.0, 0.0, -10.0), Ogre::SceneNode::TS_LOCAL);
         break;
     case OIS::KC_S:
     case OIS::KC_RIGHT:
-        mContextManager->getCameraParentSceneNode()->translate(Ogre::Vector3(0.0, 0.0, +10.0), Ogre::SceneNode::TS_LOCAL);
+        mContextManager->getParentSceneNode()->translate(Ogre::Vector3(0.0, 0.0, +10.0), Ogre::SceneNode::TS_LOCAL);
         break;
     case OIS::KC_A:
     case OIS::KC_DOWN:
-        mContextManager->getCameraParentSceneNode()->yaw(Ogre::Degree(10.0));
+        mContextManager->getParentSceneNode()->yaw(Ogre::Degree(10.0));
         break;
     case OIS::KC_D:
     case OIS::KC_UP:
-        mContextManager->getCameraParentSceneNode()->yaw(Ogre::Degree(-10.0));
+        mContextManager->getParentSceneNode()->yaw(Ogre::Degree(-10.0));
         break;
     case OIS::KC_SPACE:
         mContextManager->toggleMode();

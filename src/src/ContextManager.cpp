@@ -5,13 +5,14 @@ namespace Cycleshooter {
 ContextManager::ContextManager(Ogre::SceneManager* sceneManager, Ogre::RenderWindow* renderWindow) :
     viewportPrimary(0),
     viewportSecundary(0),
-    cameraParentSceneNode(0),
-    cameraFrontSceneNode(0),
-    cameraRearSceneNode(0),
-    cameraFront(0),
-    cameraRear(0),
+    parentSceneNode(0),
+    frontPlayerSceneNode(0),
+    rearPlayerSceneNode(0),
+    frontCamera(0),
+    rearCamera(0),
     sceneManager(sceneManager),
-    renderWindow(renderWindow) {
+    renderWindow(renderWindow)
+{
     createCameras();
 }
 
@@ -22,85 +23,103 @@ ContextManager::~ContextManager() {
     if(viewportSecundary)
         delete viewportSecundary;
 
-    if(cameraParentSceneNode)
-        delete cameraParentSceneNode;
+    if(parentSceneNode)
+        delete parentSceneNode;
 
-    if(cameraFrontSceneNode)
-        delete cameraFrontSceneNode;
+    if(frontPlayerSceneNode)
+        delete frontPlayerSceneNode;
 
-    if(cameraRearSceneNode)
-        delete cameraRearSceneNode;
+    if(rearPlayerSceneNode)
+        delete rearPlayerSceneNode;
 
-    if(cameraFront)
-        delete cameraFront;
+    if(frontCamera)
+        delete frontCamera;
 
-    if(cameraRear)
-        delete cameraRear;
+    if(rearCamera)
+        delete rearCamera;
+}
+
+void ContextManager::_test() {
+    setupRunnerMode();
+    assert(contextMode == CONTEXT_RUNNER);
+    assert(getMainCamera() == frontCamera);
+
+    setupShooterMode();
+    assert(contextMode == CONTEXT_SHOOTER);
+    assert(getMainCamera() == rearCamera);
+
+    toggleMode();
+    assert(contextMode == CONTEXT_RUNNER);
+    assert(getMainCamera() == frontCamera);
+
+    toggleMode();
+    assert(contextMode == CONTEXT_SHOOTER);
+    assert(getMainCamera() == rearCamera);
 }
 
 void ContextManager::createCameras() {
     // create cameras
-    cameraFront = sceneManager->createCamera("FrontCamera");
-    cameraRear = sceneManager->createCamera("RearCamera");
+    frontCamera = sceneManager->createCamera("FrontCamera");
+    rearCamera = sceneManager->createCamera("RearCamera");
 
     // adjust clip distances in cameras
-    cameraFront->setNearClipDistance(5.0);
-    cameraFront->setFarClipDistance(1000.0);
-    cameraRear->setNearClipDistance(5.0);
-    cameraFront->setFarClipDistance(1000.0);
+    frontCamera->setNearClipDistance(CAMERA_NEAR_CLIP_DISTANCE);
+    frontCamera->setFarClipDistance(CAMERA_FAR_CLIP_DISTANCE);
+    rearCamera->setNearClipDistance(CAMERA_NEAR_CLIP_DISTANCE);
+    frontCamera->setFarClipDistance(CAMERA_FAR_CLIP_DISTANCE);
 
     // create scene nodes
-    cameraParentSceneNode = sceneManager->getRootSceneNode()->createChildSceneNode("ParentSceneNode");
-    cameraFrontSceneNode = cameraParentSceneNode->createChildSceneNode("FrontCameraSceneNode");
-    cameraRearSceneNode = cameraParentSceneNode->createChildSceneNode("RearCameraSceneNode");
-    cameraRearSceneNode->yaw(Ogre::Radian(Ogre::Degree(180.0)));
+    parentSceneNode = sceneManager->getRootSceneNode()->createChildSceneNode("ParentSceneNode");
+    frontPlayerSceneNode = parentSceneNode->createChildSceneNode("FrontSceneNode");
+    rearPlayerSceneNode = parentSceneNode->createChildSceneNode("RearSceneNode");
+    rearPlayerSceneNode->yaw(Ogre::Radian(Ogre::Degree(180.0)));
 
     // attach scene nodes
-    cameraFrontSceneNode->attachObject(cameraFront);
-    cameraRearSceneNode->attachObject(cameraRear);
+    frontPlayerSceneNode->attachObject(frontCamera);
+    rearPlayerSceneNode->attachObject(rearCamera);
 }
 
 void ContextManager::setupRunnerMode() {
     // clean
     renderWindow->removeAllViewports();
-    context = CONTEXT_RUNNER;
+    contextMode = CONTEXT_RUNNER;
 
     // primary viewport
-    viewportPrimary = renderWindow->addViewport(cameraFront, 0);
+    viewportPrimary = renderWindow->addViewport(frontCamera, 0);
     viewportPrimary->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 0.0));
 
     // secondary viewport
-    viewportSecundary = renderWindow->addViewport(cameraRear, 1, 0.125, 0.0, 0.750, 0.10);
-    viewportSecundary->setBackgroundColour(Ogre::ColourValue(0.5, 0.5, 0.5, 0.5));
+    viewportSecundary = renderWindow->addViewport(rearCamera, 1, (1.0 - MIRROR_PERCENTAGE_H)/2.0, 0.0, MIRROR_PERCENTAGE_H, MIRROR_PERCENTAGE_V);
+    viewportSecundary->setBackgroundColour(VIEWPORT_BACKGROUND_COLOR);
     viewportSecundary->setOverlaysEnabled(false);
-    viewportSecundary->setClearEveryFrame(true, Ogre::FBT_DEPTH);  // alternatively, (false);
+    viewportSecundary->setClearEveryFrame(true, Ogre::FBT_DEPTH);  // alternatively, setClearEveryFrame(false);
 
     // adjust aspect ratios
-    cameraFront->setAspectRatio(Ogre::Real(viewportPrimary->getActualWidth()) / Ogre::Real(viewportPrimary->getActualHeight()));
-    cameraRear->setAspectRatio(Ogre::Real(viewportSecundary->getActualWidth()) / Ogre::Real(viewportSecundary->getActualHeight()));
+    frontCamera->setAspectRatio(Ogre::Real(viewportPrimary->getActualWidth()) / Ogre::Real(viewportPrimary->getActualHeight()));
+    rearCamera->setAspectRatio(Ogre::Real(viewportSecundary->getActualWidth()) / Ogre::Real(viewportSecundary->getActualHeight()));
 }
 
 void ContextManager::setupShooterMode() {
     // clean
     renderWindow->removeAllViewports();
-    context = CONTEXT_SHOOTER;
+    contextMode = CONTEXT_SHOOTER;
 
     // primary viewport
-    viewportPrimary = renderWindow->addViewport(cameraRear, 0);
-    viewportPrimary->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 0.0));
+    viewportPrimary = renderWindow->addViewport(rearCamera, 0);
+    viewportPrimary->setBackgroundColour(VIEWPORT_BACKGROUND_COLOR);
 
     // adjust aspect ratio
-    cameraRear->setAspectRatio(Ogre::Real(viewportPrimary->getActualWidth()) / Ogre::Real(viewportPrimary->getActualHeight()));
+    rearCamera->setAspectRatio(Ogre::Real(viewportPrimary->getActualWidth()) / Ogre::Real(viewportPrimary->getActualHeight()));
 }
 
 void ContextManager::setupNoneMode() {
     // clean
     renderWindow->removeAllViewports();
-    context = CONTEXT_NONE;
+    contextMode = CONTEXT_NONE;
 }
 
 void ContextManager::toggleMode() {
-    switch(context) {
+    switch(contextMode) {
     case CONTEXT_RUNNER:
         setupShooterMode();
         break;
@@ -113,41 +132,41 @@ void ContextManager::toggleMode() {
 }
 
 void ContextManager::toggleMode(const ContextManager::ContextMode& newContext) {
-    if (newContext == CONTEXT_NONE && context != CONTEXT_NONE)
+    if (newContext == CONTEXT_NONE && contextMode != CONTEXT_NONE)
         setupNoneMode();
-    else if (newContext == CONTEXT_RUNNER && context != CONTEXT_RUNNER)
+    else if (newContext == CONTEXT_RUNNER && contextMode != CONTEXT_RUNNER)
         setupRunnerMode();
-    else if (newContext == CONTEXT_SHOOTER && context != CONTEXT_SHOOTER)
+    else if (newContext == CONTEXT_SHOOTER && contextMode != CONTEXT_SHOOTER)
         setupShooterMode();
 }
 
 Ogre::Camera *ContextManager::getFrontCamera() const {
-    return cameraFront;
+    return frontCamera;
 }
 
 Ogre::Camera *ContextManager::getRearCamera() const {
-    return cameraRear;
+    return rearCamera;
 }
 
 Ogre::Camera *ContextManager::getMainCamera() const {
-    if(context == CONTEXT_RUNNER)
-        return cameraFront;
-    else if (context == CONTEXT_SHOOTER)
-        return cameraRear;
+    if(contextMode == CONTEXT_RUNNER)
+        return frontCamera;
+    else if (contextMode == CONTEXT_SHOOTER)
+        return rearCamera;
     else
-        throw std::exception();
+        throw std::logic_error("getMainCamera() called in CONTEXT_NONE");
 }
 
-Ogre::SceneNode *ContextManager::getCameraParentSceneNode() const {
-    return cameraParentSceneNode;
+Ogre::SceneNode *ContextManager::getParentSceneNode() const {
+    return parentSceneNode;
 }
 
-Ogre::SceneNode *ContextManager::getCameraFrontSceneNode() const {
-    return cameraFrontSceneNode;
+Ogre::SceneNode *ContextManager::getFrontSceneNode() const {
+    return frontPlayerSceneNode;
 }
 
-Ogre::SceneNode *ContextManager::getCameraRearSceneNode() const {
-    return cameraRearSceneNode;
+Ogre::SceneNode *ContextManager::getRearSceneNode() const {
+    return rearPlayerSceneNode;
 }
 
 }

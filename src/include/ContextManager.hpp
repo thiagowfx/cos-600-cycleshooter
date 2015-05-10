@@ -1,6 +1,7 @@
 #ifndef _CONTEXTMANAGER_CPP_
 #define _CONTEXTMANAGER_CPP_
 
+#include <stdexcept>
 #include <SFML/System.hpp>
 
 #include "OgreCamera.h"
@@ -20,27 +21,37 @@ public:
     };
 
 private:
-    ContextMode context;
+    ContextMode contextMode;
 
     Ogre::Viewport *viewportPrimary;
     Ogre::Viewport *viewportSecundary;
 
-    Ogre::SceneNode* cameraParentSceneNode;
-    Ogre::SceneNode* cameraFrontSceneNode;
-    Ogre::SceneNode* cameraRearSceneNode;
+    Ogre::SceneNode* parentSceneNode;
+    Ogre::SceneNode* frontPlayerSceneNode;
+    Ogre::SceneNode* rearPlayerSceneNode;
 
-    Ogre::Camera *cameraFront;
-    Ogre::Camera *cameraRear;
+    Ogre::Camera *frontCamera;
+    Ogre::Camera *rearCamera;
 
     // third-party members
     Ogre::SceneManager* sceneManager;
     Ogre::RenderWindow* renderWindow;
 
+    // customizable settings
+    const double CAMERA_NEAR_CLIP_DISTANCE = 5.0;
+    const double CAMERA_FAR_CLIP_DISTANCE = 1000.0;
+    const double MIRROR_PERCENTAGE_H = 0.75;
+    const double MIRROR_PERCENTAGE_V = 0.10;
+    const Ogre::ColourValue VIEWPORT_BACKGROUND_COLOR = Ogre::ColourValue(0.0, 0.0, 0.0);
+
 public:
     ContextManager(Ogre::SceneManager* sceneManager, Ogre::RenderWindow* renderWindow);
     virtual ~ContextManager();
 
+    void _test();
+
     void createCameras();
+
     void setupRunnerMode();
     void setupShooterMode();
     void setupNoneMode();
@@ -50,9 +61,9 @@ public:
     Ogre::Camera* getFrontCamera() const;
     Ogre::Camera* getRearCamera() const;
     Ogre::Camera* getMainCamera() const;
-    Ogre::SceneNode* getCameraParentSceneNode() const;
-    Ogre::SceneNode* getCameraFrontSceneNode() const;
-    Ogre::SceneNode* getCameraRearSceneNode() const;
+    Ogre::SceneNode* getParentSceneNode() const;
+    Ogre::SceneNode* getFrontSceneNode() const;
+    Ogre::SceneNode* getRearSceneNode() const;
 };
 }
 
