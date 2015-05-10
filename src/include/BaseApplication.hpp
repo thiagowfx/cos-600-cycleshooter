@@ -1,11 +1,9 @@
 #ifndef _BASEAPPLICATION_HPP_
 #define _BASEAPPLICATION_HPP_
 
-#include <OgreCamera.h>
 #include <OgreEntity.h>
 #include <OgreLogManager.h>
 #include <OgreRoot.h>
-#include <OgreViewport.h>
 #include <OgreSceneManager.h>
 #include <OgreRenderWindow.h>
 #include <OgreConfigFile.h>
@@ -17,7 +15,7 @@
 #  include <OIS/OISMouse.h>
 
 #  include <OGRE/SdkTrays.h>
-#  include <OGRE/SdkCameraMan.h>
+// #  include <OGRE/SdkCameraMan.h>
 #else
 #  include <OISEvents.h>
 #  include <OISInputManager.h>
@@ -25,7 +23,7 @@
 #  include <OISMouse.h>
 
 #  include <SdkTrays.h>
-#  include <SdkCameraMan.h>
+// #  include <SdkCameraMan.h>
 #endif
 
 #ifdef OGRE_STATIC_LIB
@@ -49,6 +47,7 @@
 #  include "OgreStaticPluginLoader.h"
 #endif
 
+#include "ContextManager.hpp"
 #include "Constants.hpp"
 #include "HUD.hpp"
 
@@ -64,11 +63,9 @@ public:
 
 protected:
     virtual void chooseSceneManager();
-    virtual void createCamera();
     virtual void createFrameListener();
     virtual void createScene();
     virtual void destroyScene();
-    virtual void createViewports();
     virtual void setupResources();
 
     virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
@@ -88,12 +85,7 @@ protected:
     void gameMainLoop();
 
     Ogre::Root*                 mRoot;
-    Ogre::Camera*               mFrontCamera;
-    Ogre::Camera*               mRearCamera;
-    Ogre::Viewport*             mFrontViewport;
-    Ogre::Viewport*             mRearViewport;
-    Ogre::SceneNode*            mFrontSceneNode;
-    Ogre::SceneNode*            mRearSceneNode;
+    Cycleshooter::ContextManager* mContextManager;
     Ogre::SceneManager*         mSceneMgr;
     Ogre::RenderWindow*         mWindow;
     Ogre::String                mResourcesCfg;
@@ -104,7 +96,7 @@ protected:
     // OgreBites
     OgreBites::InputContext     mInputContext;
     Cycleshooter::HUD*          mHUD;
-    OgreBites::SdkCameraMan*    mCameraMan;     	// Basic camera controller
+    // OgreBites::SdkCameraMan*    mCameraMan;     	// Basic camera controller
     bool                        mCursorWasVisible;	// Was cursor visible before dialog appeared?
     bool                        mShutDown;
 

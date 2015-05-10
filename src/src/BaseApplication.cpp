@@ -8,13 +8,13 @@ namespace Cycleshooter {
 
 BaseApplication::BaseApplication()
     : mRoot(0),
-    mFrontCamera(0),
     mSceneMgr(0),
     mWindow(0),
+    mContextManager(0),
+ // mCameraMan(0),
     mResourcesCfg(Ogre::StringUtil::BLANK),
     mPluginsCfg(Ogre::StringUtil::BLANK),
     mHUD(0),
-    mCameraMan(0),
     mCursorWasVisible(false),
     mShutDown(false),
     mInputManager(0),
@@ -31,8 +31,10 @@ BaseApplication::BaseApplication()
 BaseApplication::~BaseApplication() {
     if (mHUD)
         delete mHUD;
-    if (mCameraMan)
-        delete mCameraMan;
+//    if (mCameraMan)
+//        delete mCameraMan;
+    if(mContextManager)
+        delete mContextManager;
     if (mOverlaySystem)
         delete mOverlaySystem;
 
@@ -51,31 +53,13 @@ void BaseApplication::chooseSceneManager() {
     mSceneMgr->addRenderQueueListener(mOverlaySystem);
 }
 
-void BaseApplication::createCamera() {
-    mFrontCamera = mSceneMgr->createCamera("PlayerFrontCamera");
-    mRearCamera = mSceneMgr->createCamera("PlayerRearCamera");
+//void BaseApplication::createCamera() {
+//    mFrontSceneNode->setPosition(0.0, 0.0, 100.0);
+//    mFrontCamera->lookAt(Ogre::Vector3(0.0, 0.0, -1.0));
 
-    mFrontSceneNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("FrontSceneNode");
-    mRearSceneNode = mFrontSceneNode->createChildSceneNode("RearSceneNode");
-    mRearSceneNode->yaw(Ogre::Radian(Ogre::Degree(180.0)));
-
-    mFrontSceneNode->attachObject(mFrontCamera);
-    mFrontSceneNode->setPosition(0.0, 0.0, 100.0);
-
-    mRearSceneNode->attachObject(mRearCamera);
-
-    // Look back along -Z
-    mFrontCamera->lookAt(Ogre::Vector3(0.0, 0.0, -1.0));
-
-    mFrontCamera->setNearClipDistance(5);
-    mFrontCamera->setFarClipDistance(1000);
-
-    mRearCamera->setNearClipDistance(5);
-    mRearCamera->setFarClipDistance(1000);
-
-    // Create a default camera controller
-    mCameraMan = new OgreBites::SdkCameraMan(mFrontCamera);
-}
+//    // Create a default camera controller
+//    // mCameraMan = new OgreBites::SdkCameraMan(mFrontCamera);
+//}
 
 void BaseApplication::createFrameListener() {
     Ogre::LogManager::getSingletonPtr()->logMessage("*** Initializing OIS ***");
@@ -112,36 +96,22 @@ void BaseApplication::createScene() {
     mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
     Ogre::Entity* ogreEntity = mSceneMgr->createEntity("ogrehead.mesh");
     Ogre::Entity* ogreEntity2 = mSceneMgr->createEntity("ogrehead.mesh");
+    Ogre::Entity* ogreEntity3 = mSceneMgr->createEntity("ogrehead.mesh");
     Ogre::SceneNode* ogreNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
     Ogre::SceneNode* ogreNode2 = mSceneMgr->getRootSceneNode()->createChildSceneNode();
-    ogreNode2->translate(0.0, 0.0, 300.0);
+    Ogre::SceneNode* ogreNode3 = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+    ogreNode2->translate(0.0, 0.0, 400.0);
+    ogreNode3->translate(0.0, 0.0, -400.0);
     ogreNode->attachObject(ogreEntity);
     ogreNode2->attachObject(ogreEntity2);
+    ogreNode3->attachObject(ogreEntity3);
     Ogre::Light* light = mSceneMgr->createLight("MainLight");
-    light->setPosition(20, 80, 50);
+    light->setPosition(20.0, 80.0, 50.0);
 }
 
 
 
 void BaseApplication::destroyScene() {
-}
-
-void BaseApplication::createViewports() {
-    // Create one viewport, entire window
-    mFrontViewport = mWindow->addViewport(mFrontCamera, 0);
-    mFrontViewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 0.0, 0.5));
-
-    mRearViewport = mWindow->addViewport(mRearCamera, 1, 0.125, 0.0, 0.750, 0.10);
-    mRearViewport->setBackgroundColour(Ogre::ColourValue(128/255.0, 128/255.0, 128/255.0, 128/255.0));
-    mRearViewport->setOverlaysEnabled(false);
-
-    mRearViewport->setClearEveryFrame(true, Ogre::FBT_DEPTH);
-    // Alternatively, we could have used:
-    // mRearViewport->setClearEveryFrame(false);
-
-    // Alter the camera aspect ratio to match the viewport
-    mFrontCamera->setAspectRatio(Ogre::Real(mFrontViewport->getActualWidth()) / Ogre::Real(mFrontViewport->getActualHeight()));
-    mRearCamera->setAspectRatio(Ogre::Real(mRearViewport->getActualWidth()) / Ogre::Real(mRearViewport->getActualHeight()));
 }
 
 void BaseApplication::setupResources() {
@@ -214,8 +184,12 @@ void BaseApplication::go() {
     mWindow = mRoot->initialise(true, Cycleshooter::RENDER_WINDOW_NAME);
 
     chooseSceneManager();
-    createCamera();
-    createViewports();
+
+    mContextManager = new ContextManager(mSceneMgr, mWindow);
+    mContextManager->setupRunnerMode();
+
+    //mContextManager->getCameraParentSceneNode()->setPosition(0.0, 0.0, 200.0);
+    //mContextManager->getMainCamera()->lookAt(0.0, 0.0, -1.0);
 
     // Set default mipmap level (NB some APIs ignore this)
     Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
@@ -228,7 +202,6 @@ void BaseApplication::go() {
 
     // OGRE's own loop
     // mRoot->startRendering();
-
     // Our own loop
     gameMainLoop();
 
@@ -251,9 +224,9 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
 
     if (!mHUD->getTrayManager()->isDialogVisible()) {
         // If dialog isn't up, then update the camera
-        mCameraMan->frameRenderingQueued(evt);
+        // mCameraMan->frameRenderingQueued(evt);
         if (mHUD->isDebugPanelVisible()) {
-            mHUD->updateDebugPanel_CameraElements(mFrontCamera);
+            mHUD->updateDebugPanel_CameraElements(mContextManager->getMainCamera());
         }
     }
 
@@ -261,9 +234,7 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
 }
 
 void BaseApplication::toggleMode() {
-    mFrontViewport->setCamera(mRearCamera);
-    mRearCamera->setAspectRatio(Ogre::Real(mFrontViewport->getActualWidth()) / Ogre::Real(mFrontViewport->getActualHeight()));
-    mWindow->removeViewport(1);
+    mContextManager->toggleMode();
 }
 
 bool BaseApplication::keyPressed( const OIS::KeyEvent &arg ) {
@@ -293,41 +264,51 @@ bool BaseApplication::keyPressed( const OIS::KeyEvent &arg ) {
         mShutDown = true;
         break;
 
-    case OIS::KC_SPACE:
-        mFrontSceneNode->translate(0.0, 0.0, -10.0);
+    case OIS::KC_W:
+        mContextManager->getCameraParentSceneNode()->translate(Ogre::Vector3(0.0, 0.0, -10.0), Ogre::SceneNode::TS_LOCAL);
         break;
-    case OIS::KC_M:
+    case OIS::KC_S:
+        mContextManager->getCameraParentSceneNode()->translate(Ogre::Vector3(0.0, 0.0, +10.0), Ogre::SceneNode::TS_LOCAL);
+        break;
+    case OIS::KC_A:
+        mContextManager->getCameraParentSceneNode()->yaw(Ogre::Degree(10.0));
+        break;
+    case OIS::KC_D:
+        mContextManager->getCameraParentSceneNode()->yaw(Ogre::Degree(-10.0));
+        break;
+    case OIS::KC_SPACE:
         toggleMode();
         break;
+
     }
 
-    mCameraMan->injectKeyDown(arg);
+    // mCameraMan->injectKeyDown(arg);
     return true;
 }
 
 bool BaseApplication::keyReleased(const OIS::KeyEvent &arg) {
-    mCameraMan->injectKeyUp(arg);
+    // mCameraMan->injectKeyUp(arg);
     return true;
 }
 
 bool BaseApplication::mouseMoved(const OIS::MouseEvent &arg) {
     if (mHUD->getTrayManager()->injectMouseMove(arg))
         return true;
-    mCameraMan->injectMouseMove(arg);
+    // mCameraMan->injectMouseMove(arg);
     return true;
 }
 
 bool BaseApplication::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id) {
     if (mHUD->getTrayManager()->injectMouseDown(arg, id))
         return true;
-    mCameraMan->injectMouseDown(arg, id);
+    // mCameraMan->injectMouseDown(arg, id);
     return true;
 }
 
 bool BaseApplication::mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id) {
     if (mHUD->getTrayManager()->injectMouseUp(arg, id))
         return true;
-    mCameraMan->injectMouseUp(arg, id);
+    // mCameraMan->injectMouseUp(arg, id);
     return true;
 }
 
@@ -393,7 +374,7 @@ void BaseApplication::cyclePolygonRenderingModeAction() {
     Ogre::String newVal;
     Ogre::PolygonMode pm;
 
-    switch (mFrontCamera->getPolygonMode()) {
+    switch (mContextManager->getMainCamera()->getPolygonMode()) {
     case Ogre::PM_SOLID:
         newVal = "Wireframe";
         pm = Ogre::PM_WIREFRAME;
@@ -407,7 +388,7 @@ void BaseApplication::cyclePolygonRenderingModeAction() {
         pm = Ogre::PM_SOLID;
     }
 
-    mFrontCamera->setPolygonMode(pm);
+    mContextManager->getMainCamera()->setPolygonMode(pm);
     mHUD->setDebugPanel_PolygonRenderingElement(newVal);
 }
 

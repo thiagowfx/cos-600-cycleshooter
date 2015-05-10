@@ -1,7 +1,7 @@
 #ifndef _HUD_HPP_
 #define _HUD_HPP_
 
-#include <SFML/System/NonCopyable.hpp>
+#include <SFML/System.hpp>
 
 #include "InputContext.h"
 #include "OgreCamera.h"
