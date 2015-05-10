@@ -17,18 +17,16 @@ HUD::HUD(const Ogre::String &name, Ogre::RenderWindow *window, OgreBites::InputC
     items.push_back("cam.pX");
     items.push_back("cam.pY");
     items.push_back("cam.pZ");
-    items.push_back("");
     items.push_back("cam.oW");
     items.push_back("cam.oX");
     items.push_back("cam.oY");
     items.push_back("cam.oZ");
-    items.push_back("");
     items.push_back("Filtering");
     items.push_back("Poly Mode");
 
-    mDebugPanel = mTrayManager->createParamsPanel(OgreBites::TL_BOTTOMRIGHT, "DetailsPanel", 200, items);
-    mDebugPanel->setParamValue(9, "Bilinear");
-    mDebugPanel->setParamValue(10, "Solid");
+    mDebugPanel = mTrayManager->createParamsPanel(OgreBites::TL_BOTTOMRIGHT, "DebugPanel", 200, items);
+    mDebugPanel->setParamValue(7, "Bilinear");
+    mDebugPanel->setParamValue(8, "Solid");
 }
 
 HUD::~HUD() {
@@ -61,10 +59,10 @@ void HUD::updateDebugPanel_CameraElements(Ogre::Camera* camera) {
     mDebugPanel->setParamValue(0, Ogre::StringConverter::toString(camera->getDerivedPosition().x));
     mDebugPanel->setParamValue(1, Ogre::StringConverter::toString(camera->getDerivedPosition().y));
     mDebugPanel->setParamValue(2, Ogre::StringConverter::toString(camera->getDerivedPosition().z));
-    mDebugPanel->setParamValue(4, Ogre::StringConverter::toString(camera->getDerivedOrientation().w));
-    mDebugPanel->setParamValue(5, Ogre::StringConverter::toString(camera->getDerivedOrientation().x));
-    mDebugPanel->setParamValue(6, Ogre::StringConverter::toString(camera->getDerivedOrientation().y));
-    mDebugPanel->setParamValue(7, Ogre::StringConverter::toString(camera->getDerivedOrientation().z));
+    mDebugPanel->setParamValue(3, Ogre::StringConverter::toString(camera->getDerivedOrientation().w));
+    mDebugPanel->setParamValue(4, Ogre::StringConverter::toString(camera->getDerivedOrientation().x));
+    mDebugPanel->setParamValue(5, Ogre::StringConverter::toString(camera->getDerivedOrientation().y));
+    mDebugPanel->setParamValue(6, Ogre::StringConverter::toString(camera->getDerivedOrientation().z));
 }
 
 bool HUD::isDebugPanelVisible() const {
@@ -72,19 +70,19 @@ bool HUD::isDebugPanelVisible() const {
 }
 
 std::string HUD::getDebugPanel_PolygonFilteringElement() const {
-    mDebugPanel->getParamValue(9).asUTF8();
+    mDebugPanel->getParamValue(7).asUTF8();
 }
 
 void HUD::setDebugPanel_PolygonFilteringElement(const std::string& newVal) {
-    mDebugPanel->setParamValue(9, newVal);
+    mDebugPanel->setParamValue(7, newVal);
 }
 
 std::string HUD::getDebugPanel_PolygonRenderingElement() const {
-    mDebugPanel->getParamValue(10).asUTF8();
+    mDebugPanel->getParamValue(8).asUTF8();
 }
 
 void HUD::setDebugPanel_PolygonRenderingElement(const std::string& newVal) {
-    mDebugPanel->setParamValue(10, newVal);
+    mDebugPanel->setParamValue(8, newVal);
 }
 
 OgreBites::SdkTrayManager* HUD::getTrayManager() const {
