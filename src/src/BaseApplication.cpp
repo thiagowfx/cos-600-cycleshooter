@@ -8,7 +8,7 @@ namespace Cycleshooter {
 
 BaseApplication::BaseApplication()
     : mRoot(0),
-    mPlayerFrontCamera(0),
+    mFrontCamera(0),
     mSceneMgr(0),
     mWindow(0),
     mResourcesCfg(Ogre::StringUtil::BLANK),
@@ -52,18 +52,29 @@ void BaseApplication::chooseSceneManager() {
 }
 
 void BaseApplication::createCamera() {
-    mPlayerFrontCamera = mSceneMgr->createCamera("PlayerCamera");
+    mFrontCamera = mSceneMgr->createCamera("PlayerFrontCamera");
+    mRearCamera = mSceneMgr->createCamera("PlayerRearCamera");
 
-    mPlayerFrontCamera->setPosition(Ogre::Vector3(0.0, 0.0, 100.0));
+    mFrontSceneNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("FrontSceneNode");
+    mRearSceneNode = mFrontSceneNode->createChildSceneNode("RearSceneNode");
+    mRearSceneNode->yaw(Ogre::Radian(Ogre::Degree(180.0)));
+
+    mFrontSceneNode->attachObject(mFrontCamera);
+    mFrontSceneNode->setPosition(0.0, 0.0, 100.0);
+
+    mRearSceneNode->attachObject(mRearCamera);
 
     // Look back along -Z
-    mPlayerFrontCamera->lookAt(Ogre::Vector3(0.0, 0.0, -1.0));
+    mFrontCamera->lookAt(Ogre::Vector3(0.0, 0.0, -1.0));
 
-    mPlayerFrontCamera->setNearClipDistance(5);
-    mPlayerFrontCamera->setFarClipDistance(1000);
+    mFrontCamera->setNearClipDistance(5);
+    mFrontCamera->setFarClipDistance(1000);
+
+    mRearCamera->setNearClipDistance(5);
+    mRearCamera->setFarClipDistance(1000);
 
     // Create a default camera controller
-    mCameraMan = new OgreBites::SdkCameraMan(mPlayerFrontCamera);
+    mCameraMan = new OgreBites::SdkCameraMan(mFrontCamera);
 }
 
 void BaseApplication::createFrameListener() {
@@ -100,8 +111,12 @@ void BaseApplication::createFrameListener() {
 void BaseApplication::createScene() {
     mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
     Ogre::Entity* ogreEntity = mSceneMgr->createEntity("ogrehead.mesh");
+    Ogre::Entity* ogreEntity2 = mSceneMgr->createEntity("ogrehead.mesh");
     Ogre::SceneNode* ogreNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+    Ogre::SceneNode* ogreNode2 = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+    ogreNode2->translate(0.0, 0.0, 300.0);
     ogreNode->attachObject(ogreEntity);
+    ogreNode2->attachObject(ogreEntity2);
     Ogre::Light* light = mSceneMgr->createLight("MainLight");
     light->setPosition(20, 80, 50);
 }
@@ -113,11 +128,20 @@ void BaseApplication::destroyScene() {
 
 void BaseApplication::createViewports() {
     // Create one viewport, entire window
-    Ogre::Viewport* frontCameraViewport = mWindow->addViewport(mPlayerFrontCamera);
-    frontCameraViewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 0.0));
+    mFrontViewport = mWindow->addViewport(mFrontCamera, 0);
+    mFrontViewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 0.0, 0.5));
+
+    mRearViewport = mWindow->addViewport(mRearCamera, 1, 0.125, 0.0, 0.750, 0.10);
+    mRearViewport->setBackgroundColour(Ogre::ColourValue(128/255.0, 128/255.0, 128/255.0, 128/255.0));
+    mRearViewport->setOverlaysEnabled(false);
+
+    mRearViewport->setClearEveryFrame(true, Ogre::FBT_DEPTH);
+    // Alternatively, we could have used:
+    // mRearViewport->setClearEveryFrame(false);
 
     // Alter the camera aspect ratio to match the viewport
-    mPlayerFrontCamera->setAspectRatio(Ogre::Real(frontCameraViewport->getActualWidth()) / Ogre::Real(frontCameraViewport->getActualHeight()));
+    mFrontCamera->setAspectRatio(Ogre::Real(mFrontViewport->getActualWidth()) / Ogre::Real(mFrontViewport->getActualHeight()));
+    mRearCamera->setAspectRatio(Ogre::Real(mRearViewport->getActualWidth()) / Ogre::Real(mRearViewport->getActualHeight()));
 }
 
 void BaseApplication::setupResources() {
@@ -229,11 +253,17 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
         // If dialog isn't up, then update the camera
         mCameraMan->frameRenderingQueued(evt);
         if (mHUD->isDebugPanelVisible()) {
-            mHUD->updateDebugPanel_CameraElements(mPlayerFrontCamera);
+            mHUD->updateDebugPanel_CameraElements(mFrontCamera);
         }
     }
 
     return true;
+}
+
+void BaseApplication::toggleMode() {
+    mFrontViewport->setCamera(mRearCamera);
+    mRearCamera->setAspectRatio(Ogre::Real(mFrontViewport->getActualWidth()) / Ogre::Real(mFrontViewport->getActualHeight()));
+    mWindow->removeViewport(1);
 }
 
 bool BaseApplication::keyPressed( const OIS::KeyEvent &arg ) {
@@ -265,6 +295,9 @@ bool BaseApplication::keyPressed( const OIS::KeyEvent &arg ) {
 
     case OIS::KC_SPACE:
         mFrontSceneNode->translate(0.0, 0.0, -10.0);
+        break;
+    case OIS::KC_M:
+        toggleMode();
         break;
     }
 
@@ -360,7 +393,7 @@ void BaseApplication::cyclePolygonRenderingModeAction() {
     Ogre::String newVal;
     Ogre::PolygonMode pm;
 
-    switch (mPlayerFrontCamera->getPolygonMode()) {
+    switch (mFrontCamera->getPolygonMode()) {
     case Ogre::PM_SOLID:
         newVal = "Wireframe";
         pm = Ogre::PM_WIREFRAME;
@@ -374,7 +407,7 @@ void BaseApplication::cyclePolygonRenderingModeAction() {
         pm = Ogre::PM_SOLID;
     }
 
-    mPlayerFrontCamera->setPolygonMode(pm);
+    mFrontCamera->setPolygonMode(pm);
     mHUD->setDebugPanel_PolygonRenderingElement(newVal);
 }
 

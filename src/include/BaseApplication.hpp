@@ -70,26 +70,30 @@ protected:
     virtual void destroyScene();
     virtual void createViewports();
     virtual void setupResources();
-    virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
 
+    virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
     virtual bool keyPressed(const OIS::KeyEvent &arg);
     virtual bool keyReleased(const OIS::KeyEvent &arg);
     virtual bool mouseMoved(const OIS::MouseEvent &arg);
     virtual bool mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
     virtual bool mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
-
-    // Adjust mouse clipping area
     virtual void windowResized(Ogre::RenderWindow* rw);
-    // Unattach OIS before window shutdown (very important under Linux)
     virtual void windowClosed(Ogre::RenderWindow* rw);
 
     void cyclePolygonFilteringModeAction();
     void cyclePolygonRenderingModeAction();
 
+    void toggleMode();
+
     void gameMainLoop();
 
     Ogre::Root*                 mRoot;
-    Ogre::Camera*               mPlayerFrontCamera;
+    Ogre::Camera*               mFrontCamera;
+    Ogre::Camera*               mRearCamera;
+    Ogre::Viewport*             mFrontViewport;
+    Ogre::Viewport*             mRearViewport;
+    Ogre::SceneNode*            mFrontSceneNode;
+    Ogre::SceneNode*            mRearSceneNode;
     Ogre::SceneManager*         mSceneMgr;
     Ogre::RenderWindow*         mWindow;
     Ogre::String                mResourcesCfg;
