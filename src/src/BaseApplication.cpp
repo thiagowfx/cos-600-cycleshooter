@@ -11,9 +11,8 @@ BaseApplication::BaseApplication()
     mSceneMgr(0),
     mWindow(0),
     mContextManager(0),
+    mResources(0),
  // mCameraMan(0),
-    mResourcesCfg(Ogre::StringUtil::BLANK),
-    mPluginsCfg(Ogre::StringUtil::BLANK),
     mHUD(0),
     mCursorWasVisible(false),
     mShutDown(false),
@@ -21,11 +20,6 @@ BaseApplication::BaseApplication()
     mMouse(0),
     mKeyboard(0),
     mOverlaySystem(0) {
-#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-    m_ResourcePath = Ogre::macBundlePath() + "/Contents/Resources/";
-#else
-    m_ResourcePath = "";
-#endif
 }
 
 BaseApplication::~BaseApplication() {
@@ -41,6 +35,8 @@ BaseApplication::~BaseApplication() {
     // Remove ourself as a Window listener
     Ogre::WindowEventUtilities::removeWindowEventListener(mWindow, this);
     windowClosed(mWindow);
+    if(mResources)
+        delete mResources;
     delete mRoot;
 }
 
@@ -114,63 +110,11 @@ void BaseApplication::createScene() {
 void BaseApplication::destroyScene() {
 }
 
-void BaseApplication::setupResources() {
-    // Load resource paths from config file
-    Ogre::ConfigFile cf;
-    cf.load(mResourcesCfg);
-
-    // Go through all sections & settings in the file
-    Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
-
-    Ogre::String secName, typeName, archName;
-    while (seci.hasMoreElements())
-    {
-        secName = seci.peekNextKey();
-        Ogre::ConfigFile::SettingsMultiMap *settings = seci.getNext();
-        Ogre::ConfigFile::SettingsMultiMap::iterator i;
-        for (i = settings->begin(); i != settings->end(); ++i)
-        {
-            typeName = i->first;
-            archName = i->second;
-
-#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-            // OS X does not set the working directory relative to the app.
-            // In order to make things portable on OS X we need to provide
-            // the loading with it's own bundle path location.
-            if (!Ogre::StringUtil::startsWith(archName, "/", false)) // only adjust relative directories
-                archName = Ogre::String(Ogre::macBundlePath() + "/" + archName);
-#endif
-
-            Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
-                archName, typeName, secName);
-        }
-    }
-}
-
 void BaseApplication::go() {
-#ifdef _DEBUG
-#ifndef OGRE_STATIC_LIB
-    mResourcesCfg = m_ResourcePath + "resources_d.cfg";
-    mPluginsCfg = m_ResourcePath + "plugins_d.cfg";
-#else
-    mResourcesCfg = "resources_d.cfg";
-    mPluginsCfg = "plugins_d.cfg";
-#endif
-#else
-#ifndef OGRE_STATIC_LIB
-    mResourcesCfg = m_ResourcePath + "resources.cfg";
-    mPluginsCfg = m_ResourcePath + "plugins.cfg";
-#else
-    mResourcesCfg = "resources.cfg";
-    mPluginsCfg = "plugins.cfg";
-#endif
-#endif
 
-    // plugins.cfg
-    mRoot = new Ogre::Root(mPluginsCfg);
-
-    // resources.cfg
-    setupResources();
+    mResources = new Cycleshooter::Resources("plugins.cfg", "resources.cfg");
+    mRoot = new Ogre::Root(mResources->getPluginConfig());
+    mResources->setupResources();
 
     // Show the configuration dialog and initialise the system.
     // You can skip this and use root.restoreConfig() to load configuration

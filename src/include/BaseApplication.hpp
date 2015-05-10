@@ -50,6 +50,7 @@
 #include "ContextManager.hpp"
 #include "Constants.hpp"
 #include "HUD.hpp"
+#include "Resources.hpp"
 
 namespace Cycleshooter {
 
@@ -66,7 +67,6 @@ protected:
     virtual void createFrameListener();
     virtual void createScene();
     virtual void destroyScene();
-    virtual void setupResources();
 
     virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
     virtual bool keyPressed(const OIS::KeyEvent &arg);
@@ -84,10 +84,9 @@ protected:
 
     Ogre::Root*                 mRoot;
     Cycleshooter::ContextManager* mContextManager;
+    Cycleshooter::Resources* mResources;
     Ogre::SceneManager*         mSceneMgr;
     Ogre::RenderWindow*         mWindow;
-    Ogre::String                mResourcesCfg;
-    Ogre::String                mPluginsCfg;
 
     Ogre::OverlaySystem*        mOverlaySystem;
 
@@ -102,9 +101,6 @@ protected:
     OIS::InputManager*          mInputManager;
     OIS::Mouse*                 mMouse;
     OIS::Keyboard*              mKeyboard;
-
-    // Added for Mac compatibility
-    Ogre::String                 m_ResourcePath;
 
 #ifdef OGRE_STATIC_LIB
     Ogre::StaticPluginLoader m_StaticPluginLoader;
