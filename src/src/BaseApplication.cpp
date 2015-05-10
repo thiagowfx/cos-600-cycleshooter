@@ -202,7 +202,11 @@ void BaseApplication::go() {
 
     createFrameListener();
 
-    mRoot->startRendering();
+    // OGRE's own loop
+    // mRoot->startRendering();
+
+    // Our own loop
+    gameMainLoop();
 
     // Clean up
     destroyScene();
@@ -366,6 +370,12 @@ void BaseApplication::cyclePolygonRenderingMode() {
 
     mPlayerFrontCamera->setPolygonMode(pm);
     mHUD->setDebugPanel_PolygonRenderingElement(newVal);
+}
+
+void BaseApplication::gameMainLoop() {
+    while(!mShutDown) {
+        mRoot->renderOneFrame();
+    }
 }
 
 }

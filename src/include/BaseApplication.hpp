@@ -86,6 +86,8 @@ protected:
     void cyclePolygonFilteringModeAction();
     void cyclePolygonRenderingMode();
 
+    void gameMainLoop();
+
     Ogre::Root*                 mRoot;
     Ogre::Camera*               mPlayerFrontCamera;
     Ogre::SceneManager*         mSceneMgr;
