@@ -248,7 +248,7 @@ bool BaseApplication::keyPressed( const OIS::KeyEvent &arg ) {
         cyclePolygonFilteringModeAction();
     }
     else if (arg.key == OIS::KC_R) {
-        cyclePolygonRenderingMode();
+        cyclePolygonRenderingModeAction();
     }
     // refresh all textures
     else if(arg.key == OIS::KC_F5) {
@@ -350,7 +350,7 @@ void BaseApplication::cyclePolygonFilteringModeAction() {
     mHUD->setDebugPanel_PolygonFilteringElement(newVal);
 }
 
-void BaseApplication::cyclePolygonRenderingMode() {
+void BaseApplication::cyclePolygonRenderingModeAction() {
     Ogre::String newVal;
     Ogre::PolygonMode pm;
 

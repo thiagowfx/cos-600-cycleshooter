@@ -84,7 +84,7 @@ protected:
     virtual void windowClosed(Ogre::RenderWindow* rw);
 
     void cyclePolygonFilteringModeAction();
-    void cyclePolygonRenderingMode();
+    void cyclePolygonRenderingModeAction();
 
     void gameMainLoop();
 
