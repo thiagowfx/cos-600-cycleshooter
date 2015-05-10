@@ -176,13 +176,6 @@ void BaseApplication::setupResources() {
     }
 }
 
-void BaseApplication::createResourceListener() {
-}
-
-void BaseApplication::loadResources() {
-    Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-}
-
 void BaseApplication::go() {
 #ifdef _DEBUG
 #ifndef OGRE_STATIC_LIB
@@ -211,14 +204,13 @@ void BaseApplication::go() {
     // Show the configuration dialog and initialise the system.
     // You can skip this and use root.restoreConfig() to load configuration
     // settings if you were sure there are valid ones saved in ogre.cfg.
-    if(mRoot->showConfigDialog()) {
-        // If returned true, user clicked OK so initialise.
-        // Here we choose to let the system create a default rendering window by passing 'true'.
-        mWindow = mRoot->initialise(true, Cycleshooter::RENDER_WINDOW_NAME);
-    }
-    else {
+    if(!mRoot->showConfigDialog()) {
         return;
     }
+
+    // If returned true, user clicked OK so initialise.
+    // Here we choose to let the system create a default rendering window by passing 'true'.
+    mWindow = mRoot->initialise(true, Cycleshooter::RENDER_WINDOW_NAME);
 
     chooseSceneManager();
     createCamera();
@@ -227,12 +219,8 @@ void BaseApplication::go() {
     // Set default mipmap level (NB some APIs ignore this)
     Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
 
-    // Create any resource listeners (for loading screens)
-    createResourceListener();
-    // Load resources
-    loadResources();
+    Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
-    // Create the scene
     createScene();
 
     createFrameListener();

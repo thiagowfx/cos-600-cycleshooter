@@ -69,8 +69,6 @@ protected:
     virtual void destroyScene();
     virtual void createViewports();
     virtual void setupResources();
-    virtual void createResourceListener();
-    virtual void loadResources();
     virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
 
     virtual bool keyPressed(const OIS::KeyEvent &arg);
