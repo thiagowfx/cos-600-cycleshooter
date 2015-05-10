@@ -49,6 +49,10 @@ void HUD::toggleDebugPanel() {
     }
 }
 
+void HUD::toggleFPSPanel() {
+    mTrayManager->toggleAdvancedFrameStats();
+}
+
 void HUD::update(const Ogre::FrameEvent& evt) {
     mTrayManager->frameRenderingQueued(evt);
 }

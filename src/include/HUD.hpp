@@ -22,6 +22,7 @@ public:
     virtual ~HUD();
 
     void toggleDebugPanel();
+    void toggleFPSPanel();
     void update(const Ogre::FrameEvent& evt);
     void updateDebugPanel_CameraElements(Ogre::Camera* camera);
 

@@ -238,6 +238,7 @@ bool BaseApplication::keyPressed( const OIS::KeyEvent &arg ) {
 
     if (arg.key == OIS::KC_G) {
         mHUD->toggleDebugPanel();
+        mHUD->toggleFPSPanel();
     }
     else if (arg.key == OIS::KC_T) {
         cyclePolygonFilteringModeAction();
