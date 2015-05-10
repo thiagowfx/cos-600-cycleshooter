@@ -19,8 +19,8 @@ namespace Cycleshooter {
 class $1 {
 
 public:
-  $1();
-  virtual ~$1();
+    $1();
+    virtual ~$1();
 };
 
 }
@@ -36,7 +36,7 @@ namespace Cycleshooter {
 $1::$1() {
 }
 
-virtual $1::~$1() {
+$1::~$1() {
 }
 
 }
