@@ -10,7 +10,7 @@ Tutorial
 
 To use this repo, do these steps:
 
-- `git clone https://github.com/thiagowfx/cg-games-2015-1`
+- `git clone https://github.com/thiagowfx/cycleshooter`
 - `cd ogre-bullet`
 - `mkdir build; cd build`
 - `cmake ..`
