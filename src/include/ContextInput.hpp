@@ -1,6 +1,8 @@
 #ifndef _CONTEXTINPUT_HPP_
 #define _CONTEXTINPUT_HPP_
 
+#include "SpeedController.hpp"
+
 namespace Cycleshooter {
 class ContextInput{
 	public:
@@ -12,7 +14,9 @@ class ContextInput{
 
 	private:
 		InputMode inputMode;
-		
+		KeyboardController *keyboardController;
+		BicycleController  *bicycleController;
+
 	public:
 		ContextInput();
 		virtual ~ContextInput();
