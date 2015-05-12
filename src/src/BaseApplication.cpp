@@ -8,24 +8,16 @@ namespace Cycleshooter {
 
 BaseApplication::BaseApplication()
     : mRoot(0),
-    mSceneMgr(0),
     mWindow(0),
     mContextManager(0),
+    mResources(0),
  // mCameraMan(0),
-    mResourcesCfg(Ogre::StringUtil::BLANK),
-    mPluginsCfg(Ogre::StringUtil::BLANK),
     mHUD(0),
     mCursorWasVisible(false),
     mShutDown(false),
     mInputManager(0),
     mMouse(0),
-    mKeyboard(0),
-    mOverlaySystem(0) {
-#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-    m_ResourcePath = Ogre::macBundlePath() + "/Contents/Resources/";
-#else
-    m_ResourcePath = "";
-#endif
+    mKeyboard(0) {
 }
 
 BaseApplication::~BaseApplication() {
@@ -35,22 +27,13 @@ BaseApplication::~BaseApplication() {
 //        delete mCameraMan;
     if(mContextManager)
         delete mContextManager;
-    if (mOverlaySystem)
-        delete mOverlaySystem;
 
     // Remove ourself as a Window listener
     Ogre::WindowEventUtilities::removeWindowEventListener(mWindow, this);
     windowClosed(mWindow);
+    if(mResources)
+        delete mResources;
     delete mRoot;
-}
-
-void BaseApplication::chooseSceneManager() {
-    // Get the SceneManager, in this case a generic one
-    mSceneMgr = mRoot->createSceneManager(Ogre::ST_GENERIC);
-
-    // Initialize the OverlaySystem (changed for Ogre 1.9)
-    mOverlaySystem = new Ogre::OverlaySystem();
-    mSceneMgr->addRenderQueueListener(mOverlaySystem);
 }
 
 //void BaseApplication::createCamera() {
@@ -93,84 +76,27 @@ void BaseApplication::createFrameListener() {
 }
 
 void BaseApplication::createScene() {
-    mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
-    Ogre::Entity* ogreEntity = mSceneMgr->createEntity("ogrehead.mesh");
-    Ogre::Entity* ogreEntity2 = mSceneMgr->createEntity("ogrehead.mesh");
-    Ogre::Entity* ogreEntity3 = mSceneMgr->createEntity("ogrehead.mesh");
-    Ogre::SceneNode* ogreNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
-    Ogre::SceneNode* ogreNode2 = mSceneMgr->getRootSceneNode()->createChildSceneNode();
-    Ogre::SceneNode* ogreNode3 = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+    mContextManager->getSceneManager()->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
+    Ogre::Entity* ogreEntity = mContextManager->getSceneManager()->createEntity("ogrehead.mesh");
+    Ogre::Entity* ogreEntity2 = mContextManager->getSceneManager()->createEntity("ogrehead.mesh");
+    Ogre::Entity* ogreEntity3 = mContextManager->getSceneManager()->createEntity("ogrehead.mesh");
+    Ogre::SceneNode* ogreNode = mContextManager->getSceneManager()->getRootSceneNode()->createChildSceneNode();
+    Ogre::SceneNode* ogreNode2 = mContextManager->getSceneManager()->getRootSceneNode()->createChildSceneNode();
+    Ogre::SceneNode* ogreNode3 = mContextManager->getSceneManager()->getRootSceneNode()->createChildSceneNode();
     ogreNode2->translate(0.0, 0.0, 400.0);
     ogreNode3->translate(0.0, 0.0, -400.0);
     ogreNode->attachObject(ogreEntity);
     ogreNode2->attachObject(ogreEntity2);
     ogreNode3->attachObject(ogreEntity3);
-    Ogre::Light* light = mSceneMgr->createLight("MainLight");
+    Ogre::Light* light =  mContextManager->getSceneManager()->createLight("MainLight");
     light->setPosition(20.0, 80.0, 50.0);
 }
 
-
-
-void BaseApplication::destroyScene() {
-}
-
-void BaseApplication::setupResources() {
-    // Load resource paths from config file
-    Ogre::ConfigFile cf;
-    cf.load(mResourcesCfg);
-
-    // Go through all sections & settings in the file
-    Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
-
-    Ogre::String secName, typeName, archName;
-    while (seci.hasMoreElements())
-    {
-        secName = seci.peekNextKey();
-        Ogre::ConfigFile::SettingsMultiMap *settings = seci.getNext();
-        Ogre::ConfigFile::SettingsMultiMap::iterator i;
-        for (i = settings->begin(); i != settings->end(); ++i)
-        {
-            typeName = i->first;
-            archName = i->second;
-
-#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-            // OS X does not set the working directory relative to the app.
-            // In order to make things portable on OS X we need to provide
-            // the loading with it's own bundle path location.
-            if (!Ogre::StringUtil::startsWith(archName, "/", false)) // only adjust relative directories
-                archName = Ogre::String(Ogre::macBundlePath() + "/" + archName);
-#endif
-
-            Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
-                archName, typeName, secName);
-        }
-    }
-}
-
 void BaseApplication::go() {
-#ifdef _DEBUG
-#ifndef OGRE_STATIC_LIB
-    mResourcesCfg = m_ResourcePath + "resources_d.cfg";
-    mPluginsCfg = m_ResourcePath + "plugins_d.cfg";
-#else
-    mResourcesCfg = "resources_d.cfg";
-    mPluginsCfg = "plugins_d.cfg";
-#endif
-#else
-#ifndef OGRE_STATIC_LIB
-    mResourcesCfg = m_ResourcePath + "resources.cfg";
-    mPluginsCfg = m_ResourcePath + "plugins.cfg";
-#else
-    mResourcesCfg = "resources.cfg";
-    mPluginsCfg = "plugins.cfg";
-#endif
-#endif
 
-    // plugins.cfg
-    mRoot = new Ogre::Root(mPluginsCfg);
-
-    // resources.cfg
-    setupResources();
+    mResources = new Cycleshooter::Resources("plugins.cfg", "resources.cfg");
+    mRoot = new Ogre::Root(mResources->getPluginConfig());
+    mResources->setupResources();
 
     // Show the configuration dialog and initialise the system.
     // You can skip this and use root.restoreConfig() to load configuration
@@ -183,9 +109,7 @@ void BaseApplication::go() {
     // Here we choose to let the system create a default rendering window by passing 'true'.
     mWindow = mRoot->initialise(true, Cycleshooter::RENDER_WINDOW_NAME);
 
-    chooseSceneManager();
-
-    mContextManager = new ContextManager(mSceneMgr, mWindow);
+    mContextManager = new ContextManager(mRoot, mWindow);
     mContextManager->setupRunnerMode();
 
     //mContextManager->getCameraParentSceneNode()->setPosition(0.0, 0.0, 200.0);
@@ -204,9 +128,6 @@ void BaseApplication::go() {
     // mRoot->startRendering();
     // Our own loop
     gameMainLoop();
-
-    // Clean up
-    destroyScene();
 }
 
 bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
@@ -262,19 +183,19 @@ bool BaseApplication::keyPressed( const OIS::KeyEvent &arg ) {
 
     case OIS::KC_W:
     case OIS::KC_LEFT:
-        mContextManager->getCameraParentSceneNode()->translate(Ogre::Vector3(0.0, 0.0, -10.0), Ogre::SceneNode::TS_LOCAL);
+        mContextManager->getParentSceneNode()->translate(Ogre::Vector3(0.0, 0.0, -10.0), Ogre::SceneNode::TS_LOCAL);
         break;
     case OIS::KC_S:
     case OIS::KC_RIGHT:
-        mContextManager->getCameraParentSceneNode()->translate(Ogre::Vector3(0.0, 0.0, +10.0), Ogre::SceneNode::TS_LOCAL);
+        mContextManager->getParentSceneNode()->translate(Ogre::Vector3(0.0, 0.0, +10.0), Ogre::SceneNode::TS_LOCAL);
         break;
     case OIS::KC_A:
     case OIS::KC_DOWN:
-        mContextManager->getCameraParentSceneNode()->yaw(Ogre::Degree(10.0));
+        mContextManager->getParentSceneNode()->yaw(Ogre::Degree(10.0));
         break;
     case OIS::KC_D:
     case OIS::KC_UP:
-        mContextManager->getCameraParentSceneNode()->yaw(Ogre::Degree(-10.0));
+        mContextManager->getParentSceneNode()->yaw(Ogre::Degree(-10.0));
         break;
     case OIS::KC_SPACE:
         mContextManager->toggleMode();
