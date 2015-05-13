@@ -89,7 +89,6 @@ void BaseApplication::createScene() {
 }
 
 void BaseApplication::go() {
-
     mResources = new Cycleshooter::Resources();
     mRoot = new Ogre::Root(mResources->getPluginConfig());
     mResources->setupResources();

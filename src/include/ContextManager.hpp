@@ -40,7 +40,6 @@ private:
 
     // third-party members
     Ogre::Root* root;
-    Ogre::RenderWindow* renderWindow;
 
     // customizable settings
     const double CAMERA_NEAR_CLIP_DISTANCE = 5.0;

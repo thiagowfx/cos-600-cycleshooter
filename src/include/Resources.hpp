@@ -6,8 +6,8 @@
 
 namespace Cycleshooter {
 class Resources {
-    Ogre::String resourcesConfig;
     Ogre::String pluginsConfig;
+    Ogre::String resourcesConfig;
 
 public:
     Resources(Ogre::String pluginsConfig = "plugins.cfg", Ogre::String resourcesConfig = "resources.cfg");
@@ -16,7 +16,6 @@ public:
     Ogre::String getPluginConfig() const;
     Ogre::String getResourcesConfig() const;
 };
-
 }
 
 #endif

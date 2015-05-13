@@ -8,7 +8,6 @@ Resources::Resources(Ogre::String pluginsConfig, Ogre::String resourcesConfig) :
 {}
 
 void Resources::setupResources() {
-
     // load resource paths from config file
     Ogre::ConfigFile cf;
     cf.load(resourcesConfig);

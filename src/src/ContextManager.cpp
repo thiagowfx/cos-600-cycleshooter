@@ -12,8 +12,7 @@ ContextManager::ContextManager(Ogre::Root* root) :
     rearCamera(0),
     sceneManager(0),
     overlaySystem(0),
-    root(root),
-    renderWindow(root->getAutoCreatedWindow())
+    root(root)
 {
     createSceneManagers();
     createCameras();
@@ -83,15 +82,15 @@ void ContextManager::createSceneNodes() {
 
 void ContextManager::setupRunnerMode() {
     // clean
-    renderWindow->removeAllViewports();
+    root->getAutoCreatedWindow()->removeAllViewports();
     contextMode = CONTEXT_RUNNER;
 
     // primary viewport
-    viewportPrimary = renderWindow->addViewport(frontCamera, 0);
+    viewportPrimary = root->getAutoCreatedWindow()->addViewport(frontCamera, 0);
     viewportPrimary->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 0.0));
 
     // secondary viewport
-    viewportSecundary = renderWindow->addViewport(rearCamera, 1, (1.0 - MIRROR_PERCENTAGE_H)/2.0, 0.0, MIRROR_PERCENTAGE_H, MIRROR_PERCENTAGE_V);
+    viewportSecundary = root->getAutoCreatedWindow()->addViewport(rearCamera, 1, (1.0 - MIRROR_PERCENTAGE_H)/2.0, 0.0, MIRROR_PERCENTAGE_H, MIRROR_PERCENTAGE_V);
     viewportSecundary->setBackgroundColour(VIEWPORT_BACKGROUND_COLOR);
     viewportSecundary->setOverlaysEnabled(false);
     viewportSecundary->setClearEveryFrame(true, Ogre::FBT_DEPTH);  // alternatively, setClearEveryFrame(false);
@@ -103,11 +102,11 @@ void ContextManager::setupRunnerMode() {
 
 void ContextManager::setupShooterMode() {
     // clean
-    renderWindow->removeAllViewports();
+    root->getAutoCreatedWindow()->removeAllViewports();
     contextMode = CONTEXT_SHOOTER;
 
     // primary viewport
-    viewportPrimary = renderWindow->addViewport(rearCamera, 0);
+    viewportPrimary = root->getAutoCreatedWindow()->addViewport(rearCamera, 0);
     viewportPrimary->setBackgroundColour(VIEWPORT_BACKGROUND_COLOR);
 
     // adjust aspect ratio
@@ -116,7 +115,7 @@ void ContextManager::setupShooterMode() {
 
 void ContextManager::setupNoneMode() {
     // clean
-    renderWindow->removeAllViewports();
+    root->getAutoCreatedWindow()->removeAllViewports();
     contextMode = CONTEXT_NONE;
 }
 
