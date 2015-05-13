@@ -4,18 +4,8 @@ namespace Cycleshooter {
 
 Resources::Resources(Ogre::String pluginsConfig, Ogre::String resourcesConfig) :
     pluginsConfig(pluginsConfig),
-    resourcesConfig(resourcesConfig),
-    resourcesPath(Ogre::StringUtil::BLANK)
-{
-#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-    resourcesPath = Ogre::macBundlePath() + "/Contents/Resources/";
-#endif
-
-#ifndef OGRE_STATIC_LIB
-    resourcesConfig = resourcesPath + resourcesConfig;
-    pluginsConfig = resourcesPath + pluginsConfig;
-#endif
-}
+    resourcesConfig(resourcesConfig)
+{}
 
 void Resources::setupResources() {
 
@@ -36,13 +26,6 @@ void Resources::setupResources() {
         for (i = settings->begin(); i != settings->end(); ++i) {
             typeName = i->first;
             archName = i->second;
-
-#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-            // adjust working directory
-            if (!Ogre::StringUtil::startsWith(archName, "/", false))
-                archName = Ogre::String(Ogre::macBundlePath() + "/" + archName);
-#endif
-
             Ogre::ResourceGroupManager::getSingleton().addResourceLocation(archName, typeName, secName);
         }
     }

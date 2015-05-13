@@ -1,9 +1,5 @@
 #include "BaseApplication.hpp"
 
-#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-#include <macUtils.h>
-#endif
-
 namespace Cycleshooter {
 
 BaseApplication::BaseApplication()

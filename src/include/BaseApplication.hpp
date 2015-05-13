@@ -1,29 +1,18 @@
 #ifndef _BASEAPPLICATION_HPP_
 #define _BASEAPPLICATION_HPP_
 
+#include <OgreConfigFile.h>
 #include <OgreEntity.h>
 #include <OgreLogManager.h>
 #include <OgreRoot.h>
 #include <OgreRenderWindow.h>
-#include <OgreConfigFile.h>
 
-#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-#  include <OIS/OISEvents.h>
-#  include <OIS/OISInputManager.h>
-#  include <OIS/OISKeyboard.h>
-#  include <OIS/OISMouse.h>
-
-#  include <OGRE/SdkTrays.h>
-// #  include <OGRE/SdkCameraMan.h>
-#else
-#  include <OISEvents.h>
-#  include <OISInputManager.h>
-#  include <OISKeyboard.h>
-#  include <OISMouse.h>
-
-#  include <SdkTrays.h>
-// #  include <SdkCameraMan.h>
-#endif
+#include <OISEvents.h>
+#include <OISInputManager.h>
+#include <OISKeyboard.h>
+#include <OISMouse.h>
+#include <SdkTrays.h>
+// #include <SdkCameraMan.h>
 
 #include "ContextManager.hpp"
 #include "Constants.hpp"
@@ -74,10 +63,6 @@ protected:
     OIS::InputManager*          mInputManager;
     OIS::Mouse*                 mMouse;
     OIS::Keyboard*              mKeyboard;
-
-#ifdef OGRE_STATIC_LIB
-    Ogre::StaticPluginLoader m_StaticPluginLoader;
-#endif
 };
 
 }

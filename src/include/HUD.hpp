@@ -1,16 +1,11 @@
 #ifndef _HUD_HPP_
 #define _HUD_HPP_
 
+#include <SdkTrays.h>
 #include <SFML/System.hpp>
 
 #include "InputContext.h"
 #include "OgreCamera.h"
-
-#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-#  include <OGRE/SdkTrays.h>
-#else
-#  include <SdkTrays.h>
-#endif
 
 namespace Cycleshooter {
 class HUD : sf::NonCopyable {
