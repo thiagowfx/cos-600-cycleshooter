@@ -75,7 +75,7 @@ private:
     void createSceneNodes();
 
 public:
-    ContextManager(Ogre::Root* root, Ogre::RenderWindow* renderWindow);
+    ContextManager(Ogre::Root* root);
     virtual ~ContextManager();
 
     void setupRunnerMode();

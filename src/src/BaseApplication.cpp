@@ -109,7 +109,7 @@ void BaseApplication::go() {
     // Here we choose to let the system create a default rendering window by passing 'true'.
     mWindow = mRoot->initialise(true, Cycleshooter::RENDER_WINDOW_NAME);
 
-    mContextManager = new ContextManager(mRoot, mWindow);
+    mContextManager = new ContextManager(mRoot);
     mContextManager->setupRunnerMode();
 
     //mContextManager->getCameraParentSceneNode()->setPosition(0.0, 0.0, 200.0);

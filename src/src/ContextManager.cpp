@@ -2,7 +2,7 @@
 
 namespace Cycleshooter {
 
-ContextManager::ContextManager(Ogre::Root* root, Ogre::RenderWindow* renderWindow) :
+ContextManager::ContextManager(Ogre::Root* root) :
     viewportPrimary(0),
     viewportSecundary(0),
     parentSceneNode(0),
@@ -13,7 +13,7 @@ ContextManager::ContextManager(Ogre::Root* root, Ogre::RenderWindow* renderWindo
     sceneManager(0),
     overlaySystem(0),
     root(root),
-    renderWindow(renderWindow)
+    renderWindow(root->getAutoCreatedWindow())
 {
     createSceneManagers();
     createCameras();
