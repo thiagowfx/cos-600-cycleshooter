@@ -11,7 +11,7 @@ class Resources {
     Ogre::String resourcesPath; // For OS X compatibility
 
 public:
-    Resources(Ogre::String pluginsConfig, Ogre::String resourcesConfig);
+    Resources(Ogre::String pluginsConfig = "plugins.cfg", Ogre::String resourcesConfig = "resources.cfg");
 
     void setupResources();
     Ogre::String getPluginConfig() const;
