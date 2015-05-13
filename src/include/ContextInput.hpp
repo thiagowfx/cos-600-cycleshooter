@@ -1,8 +1,6 @@
 #ifndef _CONTEXTINPUT_HPP_
 #define _CONTEXTINPUT_HPP_
 
-#include "SpeedController.hpp"
-
 namespace Cycleshooter {
 class ContextInput{
 	public:
