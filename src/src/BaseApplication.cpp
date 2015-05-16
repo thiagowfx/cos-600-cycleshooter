@@ -119,6 +119,8 @@ void BaseApplication::go() {
 
     createFrameListener();
 
+    setupKeyboardRunnerMapping();
+
     // OGRE's own loop
     // mRoot->startRendering();
     // Our own loop
@@ -149,54 +151,11 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
     return true;
 }
 
-bool BaseApplication::keyPressed( const OIS::KeyEvent &arg ) {
+bool BaseApplication::keyPressed( const OIS::KeyEvent &arg) {
     if (mHUD->getTrayManager()->isDialogVisible())
         return true;   // don't process any more keys if dialog is up
 
-    switch(arg.key) {
-    case OIS::KC_G:
-        mHUD->toggleDebugPanel();
-        mHUD->toggleFPSPanel();
-        break;
-    case OIS::KC_R:
-        cyclePolygonRenderingModeAction();
-        break;
-    case OIS::KC_T:
-        cyclePolygonFilteringModeAction();
-        break;
-    case OIS::KC_F5:
-        // refresh all textures
-        Ogre::TextureManager::getSingleton().reloadAll();
-        break;
-    case OIS::KC_SYSRQ:
-        // take a screenshot
-        mWindow->writeContentsToTimestampedFile("screenshot", ".jpg");
-        break;
-    case OIS::KC_ESCAPE:
-        mShutDown = true;
-        break;
-
-    case OIS::KC_W:
-    case OIS::KC_LEFT:
-        mContextManager->getParentSceneNode()->translate(Ogre::Vector3(0.0, 0.0, -10.0), Ogre::SceneNode::TS_LOCAL);
-        break;
-    case OIS::KC_S:
-    case OIS::KC_RIGHT:
-        mContextManager->getParentSceneNode()->translate(Ogre::Vector3(0.0, 0.0, +10.0), Ogre::SceneNode::TS_LOCAL);
-        break;
-    case OIS::KC_A:
-    case OIS::KC_DOWN:
-        mContextManager->getParentSceneNode()->yaw(Ogre::Degree(10.0));
-        break;
-    case OIS::KC_D:
-    case OIS::KC_UP:
-        mContextManager->getParentSceneNode()->yaw(Ogre::Degree(-10.0));
-        break;
-    case OIS::KC_SPACE:
-        mContextManager->toggleMode();
-        break;
-
-    }
+    inputManager.executeAction(arg.key);
 
     // mCameraMan->injectKeyDown(arg);
     return true;
@@ -306,6 +265,61 @@ void BaseApplication::cyclePolygonRenderingModeAction() {
 
     mContextManager->getMainCamera()->setPolygonMode(pm);
     mHUD->setDebugPanel_PolygonRenderingElement(newVal);
+}
+
+void BaseApplication::setupKeyboardRunnerMapping() {
+    inputManager.addOrUpdateBinding(OIS::KC_G,
+                                    [&]() {
+        mHUD->toggleDebugPanel();
+        mHUD->toggleFPSPanel();
+    });
+
+    inputManager.addOrUpdateBinding(OIS::KC_R, [&]{
+        cyclePolygonRenderingModeAction();
+    });
+
+    inputManager.addOrUpdateBinding(OIS::KC_T, [&]{
+        cyclePolygonFilteringModeAction();
+    });
+
+    // reload all textures
+    inputManager.addOrUpdateBinding(OIS::KC_F5, [&]{
+        Ogre::TextureManager::getSingleton().reloadAll();
+    });
+
+    // take a screenshot
+    inputManager.addOrUpdateBinding(OIS::KC_SYSRQ, [&]{
+        mWindow->writeContentsToTimestampedFile("screenshot", ".jpg");
+    });
+
+    // quit from the application
+    inputManager.addOrUpdateBinding(OIS::KC_ESCAPE, [&]{
+        mShutDown = true;
+    });
+
+    inputManager.addOrUpdateBinding({OIS::KC_W,
+                                     OIS::KC_UP}, [&]{
+        mContextManager->getParentSceneNode()->translate(Ogre::Vector3(0.0, 0.0, -10.0), Ogre::SceneNode::TS_LOCAL);
+    });
+
+    inputManager.addOrUpdateBinding({OIS::KC_S,
+                                     OIS::KC_DOWN}, [&]{
+        mContextManager->getParentSceneNode()->translate(Ogre::Vector3(0.0, 0.0, +10.0), Ogre::SceneNode::TS_LOCAL);
+    });
+
+    inputManager.addOrUpdateBinding({OIS::KC_A,
+                                     OIS::KC_LEFT}, [&]{
+        mContextManager->getParentSceneNode()->yaw(Ogre::Degree(+10.0));
+    });
+
+    inputManager.addOrUpdateBinding({OIS::KC_D,
+                                     OIS::KC_RIGHT}, [&]{
+        mContextManager->getParentSceneNode()->yaw(Ogre::Degree(-10.0));
+    });
+
+    inputManager.addOrUpdateBinding(OIS::KC_SPACE, [&]{
+        mContextManager->toggleMode();
+    });
 }
 
 void BaseApplication::gameMainLoop() {

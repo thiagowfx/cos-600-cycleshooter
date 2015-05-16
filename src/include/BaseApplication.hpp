@@ -17,6 +17,7 @@
 #include "ContextManager.hpp"
 #include "Constants.hpp"
 #include "HUD.hpp"
+#include "InputManager.hpp"
 #include "Resources.hpp"
 
 namespace Cycleshooter {
@@ -45,11 +46,14 @@ protected:
     void cyclePolygonFilteringModeAction();
     void cyclePolygonRenderingModeAction();
 
+    virtual void setupKeyboardRunnerMapping();
+
     void gameMainLoop();
 
     Ogre::Root*                 mRoot;
     Cycleshooter::ContextManager* mContextManager;
     Cycleshooter::Resources* mResources;
+    Cycleshooter::InputManager inputManager;
     Ogre::RenderWindow*         mWindow;
 
     // OgreBites
