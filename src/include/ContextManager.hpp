@@ -66,8 +66,8 @@ private:
     // customizable settings
     const double CAMERA_NEAR_CLIP_DISTANCE = 5.0;
     const double CAMERA_FAR_CLIP_DISTANCE = 1000.0;
-    const double MIRROR_PERCENTAGE_H = 0.75;
-    const double MIRROR_PERCENTAGE_V = 0.10;
+    const double MIRROR_PERCENTAGE_H = 0.60;
+    const double MIRROR_PERCENTAGE_V = 0.15;
     const Ogre::ColourValue VIEWPORT_BACKGROUND_COLOR = Ogre::ColourValue(0.0, 0.0, 0.0);
 
     void createSceneManagers();

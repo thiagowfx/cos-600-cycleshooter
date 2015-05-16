@@ -1740,9 +1740,45 @@ material Examples/Rockwall
 	{
 		pass
 		{
+			ambient 0.32 0.02 0.53
 			texture_unit
 			{
-				texture rockwall.tga
+				//texture rockwall.tga
+				texture terrain.png
+			}
+		}
+	}
+}
+
+material Examples/Fundao
+{
+	technique
+	{
+		ambient 0.12 0.42 0.53
+		pass
+		{
+			ambient 0.32 0.02 0.53
+			texture_unit
+			{
+				//texture rockwall.tga
+				texture racecircuit.jpg
+			}
+		}
+	}
+}
+
+material Examples/Ground
+{
+	technique
+	{
+		ambient 0.12 0.42 0.53
+		pass
+		{
+			ambient 0.32 0.02 0.53
+			texture_unit
+			{
+				//texture rockwall.tga
+				texture racecircuit.png
 			}
 		}
 	}

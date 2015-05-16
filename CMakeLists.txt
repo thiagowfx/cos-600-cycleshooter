@@ -11,7 +11,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${DEST_DIR}/bin")
 
 
 option(DEPENDENCIES_READY "Are the dependencies ready?" OFF)
-
+set(DEPENDENCIES_READY TRUE)
 
 add_definitions(-std=c++11)
 

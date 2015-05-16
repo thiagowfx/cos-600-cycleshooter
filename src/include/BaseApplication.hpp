@@ -29,6 +29,7 @@
 #include "Constants.hpp"
 #include "HUD.hpp"
 #include "Resources.hpp"
+#include "TerrainManager.hpp"
 
 namespace Cycleshooter {
 
@@ -62,6 +63,7 @@ protected:
     Cycleshooter::ContextManager* mContextManager;
     Cycleshooter::Resources* mResources;
     Ogre::RenderWindow*         mWindow;
+    Cycleshooter::TerrainManager* mTerrainManager;
 
     // OgreBites
     OgreBites::InputContext     mInputContext;

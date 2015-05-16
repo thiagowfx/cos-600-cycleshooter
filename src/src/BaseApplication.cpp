@@ -17,7 +17,8 @@ BaseApplication::BaseApplication()
     mShutDown(false),
     mInputManager(0),
     mMouse(0),
-    mKeyboard(0) {
+    mKeyboard(0),
+    mTerrainManager(0){
 }
 
 BaseApplication::~BaseApplication() {
@@ -25,6 +26,8 @@ BaseApplication::~BaseApplication() {
         delete mHUD;
 //    if (mCameraMan)
 //        delete mCameraMan;
+    if(mTerrainManager)
+        delete mTerrainManager;
     if(mContextManager)
         delete mContextManager;
 
@@ -120,6 +123,9 @@ void BaseApplication::go() {
 
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
+    //To use a material, the resource group must be initizalized.
+    mTerrainManager = new TerrainManager(mContextManager->getSceneManager());
+    mTerrainManager->createTerrain();
     createScene();
 
     createFrameListener();
