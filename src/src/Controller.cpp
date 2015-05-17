@@ -34,14 +34,6 @@ void Controller::setSceneManager(Ogre::SceneManager *value) {
     oSceneManager = value;
 }
 
-Cycleshooter::Resources *Controller::getResources() const {
-    return oResources;
-}
-
-void Controller::setResources(Cycleshooter::Resources *value) {
-    oResources = value;
-}
-
 Ogre::OverlaySystem *Controller::getOverlaySystem() const {
     return oOverlaySystem;
 }
@@ -55,9 +47,6 @@ Controller::Controller() {
 }
 
 Controller::~Controller() {
-    if(oResources)
-        delete oResources;
-
     if(nodeManager)
         delete nodeManager;
 
@@ -66,9 +55,7 @@ Controller::~Controller() {
 }
 
 void Controller::go() {
-    oResources = new Cycleshooter::Resources();
-    oRoot = new Ogre::Root(oResources->getPluginConfig());
-    oResources->setupResources();
+    oRoot = new Ogre::Root();
 
     // alternatively, use ->restoreConfig() to load saved settings
     if(!oRoot->showConfigDialog()) {
@@ -80,12 +67,35 @@ void Controller::go() {
 
     createSceneManager();
     createOverlaySystem();
+    setupResources();
 
     Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
-    Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
     nodeManager = new NodeManager(this);
     nodeManager->setupRunnerMode();
+}
+
+void Controller::setupResources() {
+    Ogre::ConfigFile cf;
+    cf.load(RESOURCES_CONFIG);
+
+    Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
+    Ogre::String secName, typeName, archName;
+
+    while (seci.hasMoreElements()) {
+        secName = seci.peekNextKey();
+
+        Ogre::ConfigFile::SettingsMultiMap *settings = seci.getNext();
+        Ogre::ConfigFile::SettingsMultiMap::iterator i;
+
+        for (i = settings->begin(); i != settings->end(); ++i) {
+            typeName = i->first;
+            archName = i->second;
+            Ogre::ResourceGroupManager::getSingleton().addResourceLocation(archName, typeName, secName);
+        }
+    }
+
+    Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 }
 
 void Controller::createSceneManager() {

@@ -6,7 +6,6 @@
 #include <OgreOverlaySystem.h>
 
 #include "Constants.hpp"
-#include "Resources.hpp"
 #include "NodeManager.hpp"
 
 namespace Cycleshooter {
@@ -26,13 +25,15 @@ class Controller : sf::NonCopyable {
     Ogre::Root *oRoot = NULL;
     Ogre::SceneManager *oSceneManager = NULL;
     Ogre::OverlaySystem *oOverlaySystem = NULL;
-    Cycleshooter::Resources *oResources = NULL;
+
+    const Ogre::String RESOURCES_CONFIG = "resources.cfg";
 
 public:
     Controller();
     virtual ~Controller();
 
     void go();
+    void setupResources();
     void createSceneManager();
     void createOverlaySystem();
 
@@ -51,8 +52,6 @@ public:
     void setRoot(Ogre::Root *value);
     Ogre::SceneManager *getSceneManager() const;
     void setSceneManager(Ogre::SceneManager *value);
-    Cycleshooter::Resources *getResources() const;
-    void setResources(Cycleshooter::Resources *value);
     Ogre::OverlaySystem *getOverlaySystem() const;
     void setOverlaySystem(Ogre::OverlaySystem *value);
 };
