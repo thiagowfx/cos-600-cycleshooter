@@ -7,6 +7,7 @@
 
 #include "Constants.hpp"
 #include "Resources.hpp"
+#include "NodeManager.hpp"
 
 namespace Cycleshooter {
 class NodeManager;

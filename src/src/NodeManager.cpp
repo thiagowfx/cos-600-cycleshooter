@@ -164,7 +164,7 @@ void NodeManager::setupShooterMode() {
     rearCamera->setAspectRatio(Ogre::Real(viewportPrimary->getActualWidth()) / Ogre::Real(viewportPrimary->getActualHeight()));
 }
 
-void NodeManager::setupNodeMode() {
+void NodeManager::setupNoneMode() {
     // clean
     controller->getRoot()->getAutoCreatedWindow()->removeAllViewports();
 }

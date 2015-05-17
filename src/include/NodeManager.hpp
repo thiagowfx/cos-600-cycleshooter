@@ -39,7 +39,7 @@ public:
 
     void setupRunnerMode();
     void setupShooterMode();
-    void setupNodeMode();
+    void setupNoneMode();
 
     // getters and setters
     Controller *getController() const;

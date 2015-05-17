@@ -1,24 +1,13 @@
 #ifndef _BASEAPPLICATION_HPP_
 #define _BASEAPPLICATION_HPP_
 
-#include <OgreConfigFile.h>
-#include <OgreEntity.h>
-#include <OgreLogManager.h>
-#include <OgreRoot.h>
-#include <OgreRenderWindow.h>
-
-#include <OISEvents.h>
-#include <OISInputManager.h>
-#include <OISKeyboard.h>
-#include <OISMouse.h>
+#include <Ogre.h>
+#include <OIS.h>
 #include <SdkTrays.h>
-// #include <SdkCameraMan.h>
 
-#include "ContextManager.hpp"
-#include "Constants.hpp"
+#include "Controller.hpp"
 #include "HUD.hpp"
 #include "InputManager.hpp"
-#include "Resources.hpp"
 
 namespace Cycleshooter {
 
@@ -28,45 +17,39 @@ public:
     BaseApplication();
     virtual ~BaseApplication();
 
-    virtual void go();
+    void go();
 
 protected:
-    virtual void createFrameListener();
-    virtual void createScene();
+    void createFrameListener();
+    void createScene();
 
-    virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
-    virtual bool keyPressed(const OIS::KeyEvent &arg);
-    virtual bool keyReleased(const OIS::KeyEvent &arg);
-    virtual bool mouseMoved(const OIS::MouseEvent &arg);
-    virtual bool mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
-    virtual bool mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
-    virtual void windowResized(Ogre::RenderWindow* rw);
-    virtual void windowClosed(Ogre::RenderWindow* rw);
+    bool frameRenderingQueued(const Ogre::FrameEvent& evt);
+    bool keyPressed(const OIS::KeyEvent &arg);
+    bool keyReleased(const OIS::KeyEvent &arg);
+    bool mouseMoved(const OIS::MouseEvent &arg);
+    bool mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
+    bool mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
+    void windowResized(Ogre::RenderWindow* rw);
+    void windowClosed(Ogre::RenderWindow* rw);
 
     void cyclePolygonFilteringModeAction();
     void cyclePolygonRenderingModeAction();
 
-    virtual void setupKeyboardRunnerMapping();
+    void setupKeyboardRunnerMapping();
 
     void gameMainLoop();
 
-    Ogre::Root*                 mRoot;
-    Cycleshooter::ContextManager* mContextManager;
-    Cycleshooter::Resources* mResources;
+    Cycleshooter::Controller* mController = NULL;
+    Cycleshooter::HUD* mHUD = NULL;
     Cycleshooter::InputManager inputManager;
-    Ogre::RenderWindow*         mWindow;
 
-    // OgreBites
-    OgreBites::InputContext     mInputContext;
-    Cycleshooter::HUD*          mHUD;
-    // OgreBites::SdkCameraMan*    mCameraMan;     	// Basic camera controller
-    bool                        mCursorWasVisible;	// Was cursor visible before dialog appeared?
-    bool                        mShutDown;
+    bool mCursorWasVisible = false;
+    bool mShutDown = false;
 
-    //OIS Input devices
-    OIS::InputManager*          mInputManager;
-    OIS::Mouse*                 mMouse;
-    OIS::Keyboard*              mKeyboard;
+    OgreBites::InputContext mInputContext;
+    OIS::InputManager* mInputManager = NULL;
+    OIS::Mouse* mMouse = NULL;
+    OIS::Keyboard* mKeyboard = NULL;
 };
 
 }
