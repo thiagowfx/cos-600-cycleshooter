@@ -10,7 +10,7 @@ namespace Cycleshooter {
 class Controller;
 
 class NodeManager {
-    Controller* controller;
+    Controller* controller = NULL;
 
     Ogre::Viewport *viewportPrimary = NULL;
     Ogre::Viewport *viewportSecundary = NULL;
@@ -22,6 +22,10 @@ class NodeManager {
     Ogre::Camera *frontCamera = NULL;
     Ogre::Camera *rearCamera = NULL;
 
+    void go();
+    void createCameras();
+    void createSceneNodes();
+
     // customizable settings
     const double CAMERA_NEAR_CLIP_DISTANCE = 5.0;
     const double CAMERA_FAR_CLIP_DISTANCE = 1500.0;
@@ -32,10 +36,6 @@ class NodeManager {
 public:
     NodeManager(Controller* controller);
     virtual ~NodeManager();
-
-    void go();
-    void createCameras();
-    void createSceneNodes();
 
     void setupRunnerMode();
     void setupShooterMode();
