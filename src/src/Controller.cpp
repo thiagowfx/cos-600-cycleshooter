@@ -51,6 +51,7 @@ void Controller::setOverlaySystem(Ogre::OverlaySystem *value) {
 }
 
 Controller::Controller() {
+    go();
 }
 
 Controller::~Controller() {

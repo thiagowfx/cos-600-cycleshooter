@@ -67,7 +67,6 @@ void BaseApplication::createScene() {
 
 void BaseApplication::go() {
     mController = new Controller();
-    mController->go();
 
     createScene();
 
