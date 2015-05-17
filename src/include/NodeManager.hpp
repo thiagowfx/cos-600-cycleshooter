@@ -33,6 +33,7 @@ public:
     NodeManager(Controller* controller);
     virtual ~NodeManager();
 
+    void go();
     void createCameras();
     void createSceneNodes();
 

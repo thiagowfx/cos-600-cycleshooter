@@ -67,9 +67,9 @@ void NodeManager::setRearCamera(Ogre::Camera *value) {
 }
 
 Ogre::Camera *NodeManager::getMainCamera() const {
-    if(controller->getContext() == Controller::CONTEXT_RUNNER)
+    if(controller->getContext() == CONTEXT_RUNNER)
         return frontCamera;
-    else if (controller->getContext() == Controller::CONTEXT_SHOOTER)
+    else if (controller->getContext() == CONTEXT_SHOOTER)
         return rearCamera;
     else
         throw std::invalid_argument("getMainCamera() called in CONTEXT_NONE");
@@ -78,8 +78,7 @@ Ogre::Camera *NodeManager::getMainCamera() const {
 NodeManager::NodeManager(Controller *controller) :
     controller(controller)
 {
-    createCameras();
-    createSceneNodes();
+    go();
 }
 
 NodeManager::~NodeManager() {
@@ -103,6 +102,11 @@ NodeManager::~NodeManager() {
 
     if(rearCamera)
         delete rearCamera;
+}
+
+void NodeManager::go() {
+    createCameras();
+    createSceneNodes();
 }
 
 void NodeManager::createCameras() {
