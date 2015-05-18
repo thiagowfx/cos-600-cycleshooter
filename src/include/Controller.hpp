@@ -7,11 +7,15 @@
 
 #include "NodeManager.hpp"
 #include "HUD.hpp"
+#include "TerrainManager.hpp"
+#include "CollisionHandler.hpp"
 
 namespace Cycleshooter {
 
 class NodeManager;
 class HUD;
+class TerrainManager;
+class CollisionHandler;
 
 enum Context {
     CONTEXT_RUNNER,
@@ -30,14 +34,19 @@ class Controller : sf::NonCopyable {
 
     NodeManager* nodeManager = NULL;
     HUD* hud = NULL;
+    TerrainManager* terrainManager = NULL;
+    CollisionHandler* collisionHandler = NULL;
 
     Ogre::Root *oRoot = NULL;
     Ogre::SceneManager *oSceneManager = NULL;
     Ogre::OverlaySystem *oOverlaySystem = NULL;
 
+    // customizable settings
     const Ogre::String RENDER_WINDOW_NAME = "CYCLESHOOTER Render Window";
     const Ogre::String RESOURCES_CONFIG = "resources.cfg";
+    const Ogre::String MAIN_TEXTURE = "racecircuit.png";
 
+    // go
     void go();
     void setupResources();
     void createRoot();
