@@ -6,8 +6,8 @@ class AbstractPolar {
 public:
     AbstractPolar();
     virtual ~AbstractPolar();
-    virtual unsigned short readInstantaneousHeartRate() = 0;
-    virtual unsigned short readMeanHeartRate() = 0;
+    virtual short readInstantaneousHeartRate() = 0;
+    virtual short readMeanHeartRate() = 0;
 };
 }
 

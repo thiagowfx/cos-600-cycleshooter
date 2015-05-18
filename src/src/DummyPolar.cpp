@@ -8,11 +8,11 @@ DummyPolar::DummyPolar() {
 DummyPolar::~DummyPolar() {
 }
 
-unsigned short DummyPolar::readInstantaneousHeartRate(){
+short DummyPolar::readInstantaneousHeartRate(){
 
 }
 
-unsigned short DummyPolar::readMeanHeartRate(){
+short DummyPolar::readMeanHeartRate(){
 
 }
 

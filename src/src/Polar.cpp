@@ -35,7 +35,7 @@ int Polar::openSerialPort(const char *deviceFilePath){
 
     // Get the serial port current options and save them to restore on exit
     if (tcgetattr(fd, &gOriginalTTYAttrs) == -1) {
-        std::cout << "Error getting tty attributes" << deviceFilePath << " - " <<
+        std::cout << "Error getting tty attributes " << deviceFilePath << " - " <<
                 strerror(errno) << "(" << errno << ")" << std::endl;
         return ERROR_CODE;
     }
@@ -65,13 +65,13 @@ void Polar::closeSerialPort(int fd){
     
     // Block until all written output has been sent from the device
     if (tcdrain(fd) == -1) {
-        std::cout << "Error waiting for drain - " << strerror(errno) << "(" <<
+        std::cout << "Error waiting for drain - "<< strerror(errno) << "(" <<
          errno <<")" << std::endl;
     }
 
     // Reset the serial port back to the state in which we found it
     if (tcsetattr(fd, TCSANOW, &gOriginalTTYAttrs) == -1) {
-        std::cout << "Error restoring tty attributes - " << strerror(errno) << "(" <<
+        std::cout << "Error restoring tty attributes - "<< strerror(errno) << "(" <<
          errno <<")" << std::endl;
     }
 
@@ -79,25 +79,25 @@ void Polar::closeSerialPort(int fd){
     close(fd);
 }
 
-int Polar::sendGetHeartRate(int fd, int NumEntries){
-    char SendCommand[8];      // Array sized to hold the largest command string
-    int  CmdLength;           // Number of characters in the command string
+int Polar::sendGetHeartRate(int fd, int numEntries){
+    char sendCommand[8];      // Array sized to hold the largest command string
+    int  cmdLength;           // Number of characters in the command string
 
     // Validate NumEntries
-    if (NumEntries < 0)
-        NumEntries = 0;
-    else if (NumEntries > 32)
-        NumEntries = 32;
+    if (numEntries < 0)
+        numEntries = 0;
+    else if (numEntries > 32)
+        numEntries = 32;
 
     // Build the command string
     //   Note: "\015" is the carriage return character
-    CmdLength = sprintf(SendCommand, "G%0d\015", NumEntries);
+    cmdLength = sprintf(sendCommand, "G%0d\015", numEntries);
 
     // Send the command string
-    return(write(fd, SendCommand, CmdLength) == CmdLength);
+    return(write(fd, sendCommand, cmdLength) == cmdLength);
 }
 
-int Polar::getResponseString(int fd, char* ResponseString){
+int Polar::getResponseString(int fd, char* responseString){
     char b[2];
     int i = 0;
 
@@ -110,20 +110,20 @@ int Polar::getResponseString(int fd, char* ResponseString){
             continue;
         }
 
-        ResponseString[i] = b[0];   // store the character
+        responseString[i] = b[0];   // store the character
         i++;
 
     // repeat until we see the <CR> character or exceed the buffer
     } while ((b[0] != 0x0D) && (i < MAX_STRING_RESPONSE));
 
     // null terminate the string (replace the <CR>)
-    ResponseString[i-1] = 0;
+    responseString[i-1] = 0;
     return(0);
 }
 
 short Polar::readInstantaneousHeartRate(){
     
-    char *RspBytes = new char[MAX_STRING_RESPONSE]; // Response string
+    char *rspBytes = new char[MAX_STRING_RESPONSE]; // Response string
     short heartRate;
     int numEntries = 1;
 
@@ -138,15 +138,15 @@ short Polar::readInstantaneousHeartRate(){
         return ERROR_CODE;
     }
 
-    if (getResponseString(serialDescriptor, RspBytes) == -1) {
+    if (getResponseString(serialDescriptor, rspBytes) == -1) {
         std::cout << "Error: GetResponseString failed!" << std::endl;
         return ERROR_CODE;
     } else {
-        std::cout << "Request => " << RspBytes << std::endl;
+        std::cout << "Request => " << rspBytes << std::endl;
     }
 
     closeSerialPort(serialDescriptor);
-    heartRate = atoi(RspBytes);
+    heartRate = atoi(rspBytes);
     return heartRate;
 }
 
