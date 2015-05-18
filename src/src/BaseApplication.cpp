@@ -3,7 +3,9 @@
 namespace Cycleshooter {
 
 BaseApplication::BaseApplication()
-{}
+{
+    go();
+}
 
 BaseApplication::~BaseApplication() {
     Ogre::WindowEventUtilities::removeWindowEventListener(mController->getWindow(), this);

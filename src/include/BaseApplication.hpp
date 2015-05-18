@@ -16,9 +16,8 @@ public:
     BaseApplication();
     virtual ~BaseApplication();
 
-    void go();
-
 private:
+    void go();
     void createFrameListener();
     void createScene();
 
