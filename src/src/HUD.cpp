@@ -58,6 +58,10 @@ void HUD::setupShooterMode() {
 }
 
 void HUD::setupDebugOn() {
+    debugOnOffCheckBox = trayManager->createCheckBox(OgreBites::TL_NONE, "debugOnOffWidget", "Debug", 100);
+    debugOnOffCheckBox->setChecked(true);
+    trayManager->moveWidgetToTray(debugOnOffCheckBox, OgreBites::TL_TOPRIGHT, trayManager->locateWidgetInTray(contextWidget) + 1);
+
     // OGRE Logo
     trayManager->showLogo(OgreBites::TL_TOPLEFT);
 
@@ -66,6 +70,8 @@ void HUD::setupDebugOn() {
 }
 
 void HUD::setupDebugOff() {
+    trayManager->destroyWidget(debugOnOffCheckBox);
+
     trayManager->hideLogo();
     trayManager->hideFrameStats();
 }

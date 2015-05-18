@@ -14,7 +14,9 @@ class HUD {
     OgreBites::InputContext* const inputContext = NULL;
 
     OgreBites::SdkTrayManager* trayManager = NULL;
+
     OgreBites::Widget* contextWidget = NULL;
+    OgreBites::CheckBox* debugOnOffCheckBox = NULL;
 
     // go
     void go();
