@@ -30,6 +30,7 @@
 #include "HUD.hpp"
 #include "Resources.hpp"
 #include "TerrainManager.hpp"
+#include "CollisionHandler.hpp"
 
 namespace Cycleshooter {
 
@@ -64,6 +65,7 @@ protected:
     Cycleshooter::Resources* mResources;
     Ogre::RenderWindow*         mWindow;
     Cycleshooter::TerrainManager* mTerrainManager;
+    Cycleshooter::CollisionHandler* mCollisionHandler;
 
     // OgreBites
     OgreBites::InputContext     mInputContext;

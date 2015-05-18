@@ -1,5 +1,5 @@
-#ifndef _TerrainManager_HPP_
-#define _TerrainManager_HPP_
+#ifndef _TERRAINMANAGER_HPP_
+#define _TERRAINMANAGER_HPP_
 
 #include<OgreSceneManager.h>
 #include<OgreEntity.h>

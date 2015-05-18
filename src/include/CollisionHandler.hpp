@@ -1,13 +1,15 @@
-#ifndef _CollisionHandler_HPP_
-#define _CollisionHandler_HPP_
+#ifndef _COLLISIONHANDLER_HPP_
+#define _COLLISIONHANDLER_HPP_
 
 //Class to deal with collisions and image loading.
 #include <OgreImage.h>
+#include <OgreColourValue.h>
 #include <OgreString.h>
 #include <OgreResourceGroupManager.h>
 #include <OgreTextureManager.h>
 #include <OgreDataStream.h>
 #include <fstream>
+#include <iostream>
 
 namespace Cycleshooter {
 class CollisionHandler {
@@ -29,6 +31,7 @@ public:
     virtual ~CollisionHandler();
     //Load images from files.
     void loadImages();
+    void loadTensor();
 
 };
 

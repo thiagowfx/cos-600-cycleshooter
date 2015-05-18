@@ -18,7 +18,8 @@ BaseApplication::BaseApplication()
     mInputManager(0),
     mMouse(0),
     mKeyboard(0),
-    mTerrainManager(0){
+    mTerrainManager(0),
+    mCollisionHandler(0){
 }
 
 BaseApplication::~BaseApplication() {
@@ -26,6 +27,8 @@ BaseApplication::~BaseApplication() {
         delete mHUD;
 //    if (mCameraMan)
 //        delete mCameraMan;
+    if(mCollisionHandler)
+        delete mCollisionHandler;
     if(mTerrainManager)
         delete mTerrainManager;
     if(mContextManager)
@@ -126,6 +129,10 @@ void BaseApplication::go() {
     //To use a material, the resource group must be initizalized.
     mTerrainManager = new TerrainManager(mContextManager->getSceneManager());
     mTerrainManager->createTerrain();
+
+    //Starting Collision Handler after Terrain initiation.
+    mCollisionHandler = new CollisionHandler("racecircuit.png","racecircuit.png");
+    mCollisionHandler->loadImages();
     createScene();
 
     createFrameListener();
