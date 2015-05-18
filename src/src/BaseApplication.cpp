@@ -280,6 +280,18 @@ void BaseApplication::setupKeyboardRunnerMapping() {
     inputManager.addOrUpdateBinding(OIS::KC_SPACE, [&]{
         mController->toggleMode();
     });
+
+    inputManager.addOrUpdateBinding(OIS::KC_1, [&]{
+        mController->setupRunnerMode();
+    });
+
+    inputManager.addOrUpdateBinding(OIS::KC_2, [&]{
+        mController->setupShooterMode();
+    });
+
+    inputManager.addOrUpdateBinding(OIS::KC_3, [&]{
+        mController->setupNoneMode();
+    });
 }
 
 void BaseApplication::gameMainLoop() {
