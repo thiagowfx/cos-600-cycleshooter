@@ -230,12 +230,6 @@ void BaseApplication::cyclePolygonRenderingModeAction() {
 }
 
 void BaseApplication::setupKeyboardRunnerMapping() {
-    inputManager.addOrUpdateBinding(OIS::KC_G,
-                                    [&]() {
-        // mHUD->toggleDebugPanel();
-        // mHUD->toggleFPSPanel();
-    });
-
     inputManager.addOrUpdateBinding(OIS::KC_R, [&]{
         cyclePolygonRenderingModeAction();
     });
