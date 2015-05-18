@@ -14,9 +14,6 @@ BaseApplication::~BaseApplication() {
     if(mHud)
         delete mHud;
 
-    if(cameraMan)
-        delete cameraMan;
-
     if(mController)
         delete mController;
 }
@@ -75,8 +72,6 @@ void BaseApplication::createScene() {
 void BaseApplication::go() {
     mController = new Controller();
 
-    cameraMan = new OgreBites::SdkCameraMan(mController->getNodeManager()->getFrontCamera());
-
     // WindowListener
     Ogre::WindowEventUtilities::addWindowEventListener(mController->getWindow(), this);
 
@@ -106,51 +101,50 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
 
     mHud->update(evt);
 
-    if (!mHud->getTrayManager()->isDialogVisible()) {
-        // if dialog isn't up, then update the camera
-        cameraMan->frameRenderingQueued(evt);
+    // if (!mHUD->getTrayManager()->isDialogVisible()) {
+        // If dialog isn't up, then update the camera
+        // mCameraMan->frameRenderingQueued(evt);
         // if (mHUD->isDebugPanelVisible()) {
         //     mHUD->updateDebugPanel_CameraElements(mController->getNodeManager()->getMainCamera());
         // }
-    }
+    // }
 
     return true;
 }
 
 bool BaseApplication::keyPressed( const OIS::KeyEvent &arg) {
     if(mController->getHud()->getTrayManager()->isDialogVisible())
-        return true;
+        return true;   // don't process any more keys if dialog is up
 
     inputManager.executeAction(arg.key);
 
-    cameraMan->injectKeyDown(arg);
-
+    // mCameraMan->injectKeyDown(arg);
     return true;
 }
 
 bool BaseApplication::keyReleased(const OIS::KeyEvent &arg) {
-    cameraMan->injectKeyUp(arg);
+    // mCameraMan->injectKeyUp(arg);
     return true;
 }
 
 bool BaseApplication::mouseMoved(const OIS::MouseEvent &arg) {
     if(mController->getHud()->getTrayManager()->injectMouseMove(arg))
         return true;
-    cameraMan->injectMouseMove(arg);
+    // mCameraMan->injectMouseMove(arg);
     return true;
 }
 
 bool BaseApplication::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id) {
     if(mController->getHud()->getTrayManager()->injectMouseDown(arg, id))
         return true;
-    cameraMan->injectMouseDown(arg, id);
+    // mCameraMan->injectMouseDown(arg, id);
     return true;
 }
 
 bool BaseApplication::mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id) {
     if (mController->getHud()->getTrayManager()->injectMouseUp(arg, id))
         return true;
-    cameraMan->injectMouseUp(arg, id);
+    // mCameraMan->injectMouseUp(arg, id);
     return true;
 }
 
@@ -259,19 +253,23 @@ void BaseApplication::setupKeyboardRunnerMapping() {
         mShutDown = true;
     });
 
-    inputManager.addOrUpdateBinding(OIS::KC_UP, [&]{
+    inputManager.addOrUpdateBinding({OIS::KC_W,
+                                     OIS::KC_UP}, [&]{
         mController->getNodeManager()->getParentPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, -10.0), Ogre::SceneNode::TS_LOCAL);
     });
 
-    inputManager.addOrUpdateBinding(OIS::KC_DOWN, [&]{
+    inputManager.addOrUpdateBinding({OIS::KC_S,
+                                     OIS::KC_DOWN}, [&]{
         mController->getNodeManager()->getParentPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, +10.0), Ogre::SceneNode::TS_LOCAL);
     });
 
-    inputManager.addOrUpdateBinding(OIS::KC_LEFT, [&]{
+    inputManager.addOrUpdateBinding({OIS::KC_A,
+                                     OIS::KC_LEFT}, [&]{
         mController->getNodeManager()->getParentPlayerSceneNode()->yaw(Ogre::Degree(+10.0));
     });
 
-    inputManager.addOrUpdateBinding(OIS::KC_RIGHT, [&]{
+    inputManager.addOrUpdateBinding({OIS::KC_D,
+                                     OIS::KC_RIGHT}, [&]{
         mController->getNodeManager()->getParentPlayerSceneNode()->yaw(Ogre::Degree(-10.0));
     });
 
