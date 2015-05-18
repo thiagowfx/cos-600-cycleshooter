@@ -3,8 +3,7 @@
 namespace Cycleshooter {
 
 TerrainManager::TerrainManager(Ogre::SceneManager* sceneManager):
-    sceneManager(sceneManager),
-    terrainType("Plane")
+    sceneManager(sceneManager)
 {
 }
 
@@ -22,11 +21,14 @@ void TerrainManager::createTerrain(){
       true,
       1, 1,1,
       Ogre::Vector3::UNIT_Z);
+
     //Transforming planar mesh to treatable entity.
     Ogre::Entity* groundEntity = sceneManager->createEntity("groundTerrain");
+
     //Adding entity to the scene.
     sceneManager->getRootSceneNode()->createChildSceneNode()->attachObject(groundEntity);
     groundEntity->setCastShadows(false);
+
     //Defines which texture will be used. 
     groundEntity->setMaterialName("Examples/Ground");
 }
