@@ -97,7 +97,7 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
     // capture/update each device
     mInputContext.capture();
 
-    // mHUD->update(evt);
+    mHud->update(evt);
 
     // if (!mHUD->getTrayManager()->isDialogVisible()) {
         // If dialog isn't up, then update the camera

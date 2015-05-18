@@ -26,7 +26,11 @@ void HUD::createTrayManager() {
 void HUD::createTrayWidgets() {
     Ogre::LogManager::getSingleton().logMessage("--> Creating Tray Widgets <--");
 
+    // OGRE Logo
     trayManager->showLogo(OgreBites::TL_TOPLEFT);
+
+    // FPS
+    trayManager->showFrameStats(OgreBites::TL_BOTTOMLEFT);
 }
 
 HUD::HUD(Controller *controller, OgreBites::InputContext *inputContext) :
@@ -39,6 +43,10 @@ HUD::HUD(Controller *controller, OgreBites::InputContext *inputContext) :
 HUD::~HUD() {
     if(trayManager)
         delete trayManager;
+}
+
+void HUD::update(const Ogre::FrameEvent& evt) {
+    trayManager->frameRenderingQueued(evt);
 }
 
 void HUD::setupRunnerMode() {
@@ -58,6 +66,7 @@ void HUD::setupNoneMode() {
         trayManager->destroyWidget(contextWidget);
 
     trayManager->hideLogo();
+    trayManager->hideFrameStats();
 }
 
 }

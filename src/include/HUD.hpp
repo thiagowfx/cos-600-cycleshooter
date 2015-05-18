@@ -25,6 +25,8 @@ public:
     HUD(Controller* controller, OgreBites::InputContext* inputContext);
     virtual ~HUD();
 
+    void update(const Ogre::FrameEvent& evt);
+
     // setups
     void setupRunnerMode();
     void setupShooterMode();
