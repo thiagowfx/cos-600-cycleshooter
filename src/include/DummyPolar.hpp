@@ -9,8 +9,8 @@ class DummyPolar : public AbstractPolar {
 public:
     DummyPolar();
     virtual ~DummyPolar();
-    unsigned short readInstantaneousHeartRate();
-    unsigned short readMeanHeartRate();
+    short readInstantaneousHeartRate();
+    short readMeanHeartRate();
 };
 
 }
