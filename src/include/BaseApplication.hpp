@@ -7,6 +7,7 @@
 #include "Controller.hpp"
 #include "InputManager.hpp"
 #include "HUD.hpp"
+#include "SdkCameraMan.h"
 
 namespace Cycleshooter {
 class Controller;
@@ -43,6 +44,7 @@ private:
 
     bool mShutDown = false;
 
+    OgreBites::SdkCameraMan* cameraMan = NULL;
     OgreBites::InputContext mInputContext;
     OIS::InputManager* mInputManager = NULL;
 };
