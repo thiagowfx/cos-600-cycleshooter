@@ -6,45 +6,46 @@ BaseApplication::BaseApplication()
 {}
 
 BaseApplication::~BaseApplication() {
-    Ogre::WindowEventUtilities::removeWindowEventListener(mController->getRoot()->getAutoCreatedWindow(), this);
-    windowClosed(mController->getRoot()->getAutoCreatedWindow());
+    Ogre::WindowEventUtilities::removeWindowEventListener(mController->getWindow(), this);
+    windowClosed(mController->getWindow());
 
     if(mController)
         delete mController;
 }
 
 void BaseApplication::createFrameListener() {
-    Ogre::LogManager::getSingletonPtr()->logMessage("*** Initializing OIS ***");
+    Ogre::LogManager::getSingletonPtr()->logMessage("--> Initializing OIS <--");
+
     OIS::ParamList pl;
     size_t windowHnd = 0;
     std::ostringstream windowHndStr;
 
-    mController->getRoot()->getAutoCreatedWindow()->getCustomAttribute("WINDOW", &windowHnd);
+    mController->getWindow()->getCustomAttribute("WINDOW", &windowHnd);
     windowHndStr << windowHnd;
     pl.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
 
     mInputManager = OIS::InputManager::createInputSystem(pl);
 
-    mKeyboard = static_cast<OIS::Keyboard*>(mInputManager->createInputObject(OIS::OISKeyboard, true));
-    mMouse = static_cast<OIS::Mouse*>(mInputManager->createInputObject(OIS::OISMouse, true));
+    // KeyboardListener
+    mInputContext.mKeyboard = static_cast<OIS::Keyboard*>(mInputManager->createInputObject(OIS::OISKeyboard, true));
+    mInputContext.mKeyboard->setEventCallback(this);
 
-    mMouse->setEventCallback(this);
-    mKeyboard->setEventCallback(this);
+    // MouseListener
+    mInputContext.mMouse = static_cast<OIS::Mouse*>(mInputManager->createInputObject(OIS::OISMouse, true));
+    mInputContext.mMouse->setEventCallback(this);
 
     // Set initial mouse clipping size
-    windowResized(mController->getRoot()->getAutoCreatedWindow());
+    windowResized(mController->getWindow());
 
+    // FrameListener
     mController->getRoot()->addFrameListener(this);
 
-    // Register as a Window listener
-    Ogre::WindowEventUtilities::addWindowEventListener(mController->getRoot()->getAutoCreatedWindow(), this);
-
-    mInputContext.mKeyboard = mKeyboard;
-    mInputContext.mMouse = mMouse;
-    // mHUD = new HUD("InterfaceName", mController->getRoot()->getAutoCreatedWindow(), mInputContext, this);
+    // mHUD = new HUD("InterfaceName", mController->getWindow(), mInputContext, this);
 }
 
 void BaseApplication::createScene() {
+    Ogre::LogManager::getSingleton().logMessage("--> Creating Scene <--");
+
     mController->getSceneManager()->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
     Ogre::Entity* ogreEntity = mController->getSceneManager()->createEntity("ogrehead.mesh");
     Ogre::Entity* ogreEntity2 = mController->getSceneManager()->createEntity("ogrehead.mesh");
@@ -62,7 +63,12 @@ void BaseApplication::createScene() {
 }
 
 void BaseApplication::go() {
+    Ogre::LogManager::getSingleton().logMessage("--> BaseApplication: go <--");
+
     mController = new Controller();
+
+    // WindowListener
+    Ogre::WindowEventUtilities::addWindowEventListener(mController->getWindow(), this);
 
     createFrameListener();
 
@@ -77,15 +83,14 @@ void BaseApplication::go() {
 }
 
 bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
-    if(mController->getRoot()->getAutoCreatedWindow()->isClosed())
+    if(mController->getWindow()->isClosed())
         return false;
 
     if(mShutDown)
         return false;
 
-    // Need to capture/update each device
-    mKeyboard->capture();
-    mMouse->capture();
+    // capture/update each device
+    mInputContext.capture();
 
     // mHUD->update(evt);
 
@@ -137,25 +142,28 @@ bool BaseApplication::mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButton
 }
 
 void BaseApplication::windowResized(Ogre::RenderWindow* rw) {
+    Ogre::LogManager::getSingleton().logMessage("--> Window Resized <--");
+
     unsigned int width, height, depth;
     int left, top;
     rw->getMetrics(width, height, depth, left, top);
 
-    const OIS::MouseState &ms = mMouse->getMouseState();
+    const OIS::MouseState &ms = mInputContext.mMouse->getMouseState();
     ms.width = width;
     ms.height = height;
 }
 
 // Unattach OIS before window shutdown (very important under Linux)
 void BaseApplication::windowClosed(Ogre::RenderWindow* rw) {
-    // Only close for window that created OIS (the main window in these demos)
-    if(rw == mController->getRoot()->getAutoCreatedWindow()) {
-        if(mInputManager) {
-            mInputManager->destroyInputObject(mMouse);
-            mInputManager->destroyInputObject(mKeyboard);
+    Ogre::LogManager::getSingleton().logMessage("--> Window Closed <--");
 
+    // Only close for window that created OIS (the main window in these demos)
+    if(rw == mController->getWindow()) {
+        if(mInputManager) {
+            mInputManager->destroyInputObject(mInputContext.mMouse);
+            mInputManager->destroyInputObject(mInputContext.mKeyboard);
             OIS::InputManager::destroyInputSystem(mInputManager);
-            mInputManager = 0;
+            mInputManager = NULL;
         }
     }
 }
@@ -236,7 +244,7 @@ void BaseApplication::setupKeyboardRunnerMapping() {
 
     // take a screenshot
     inputManager.addOrUpdateBinding(OIS::KC_SYSRQ, [&]{
-        mController->getRoot()->getAutoCreatedWindow()->writeContentsToTimestampedFile("screenshot", ".jpg");
+        mController->getWindow()->writeContentsToTimestampedFile("screenshot", ".jpg");
     });
 
     // quit from the application
@@ -270,6 +278,8 @@ void BaseApplication::setupKeyboardRunnerMapping() {
 }
 
 void BaseApplication::gameMainLoop() {
+    Ogre::LogManager::getSingleton().logMessage("--> Game Main Loop <--");
+
     while(!mShutDown) {
         mController->getRoot()->renderOneFrame();
     }

@@ -15,6 +15,7 @@ class HUD {
     OgreBites::SdkTrayManager* trayManager = NULL;
 
     void go();
+    void createTrayManager();
 
 public:
     HUD(Controller* controller);

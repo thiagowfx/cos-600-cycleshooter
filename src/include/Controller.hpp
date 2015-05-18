@@ -5,8 +5,6 @@
 #include <Ogre.h>
 #include <OgreOverlaySystem.h>
 
-#include "Constants.hpp"
-
 #include "NodeManager.hpp"
 #include "HUD.hpp"
 
@@ -23,6 +21,7 @@ enum Context {
 class Controller : sf::NonCopyable {
 
     Context context;
+
     NodeManager* nodeManager = NULL;
     HUD* hud = NULL;
 
@@ -30,16 +29,18 @@ class Controller : sf::NonCopyable {
     Ogre::SceneManager *oSceneManager = NULL;
     Ogre::OverlaySystem *oOverlaySystem = NULL;
 
+    const Ogre::String RENDER_WINDOW_NAME = "CYCLESHOOTER Render Window";
     const Ogre::String RESOURCES_CONFIG = "resources.cfg";
+
+    void go();
+    void setupResources();
+    void createRoot();
+    void createSceneManager();
+    void createOverlaySystem();
 
 public:
     Controller();
     virtual ~Controller();
-
-    void go();
-    void setupResources();
-    void createSceneManager();
-    void createOverlaySystem();
 
     void setupRunnerMode();
     void setupShooterMode();
@@ -49,17 +50,12 @@ public:
 
     // getters and setters
     Context getContext() const;
-    void setContext(const Context &value);
     NodeManager *getNodeManager() const;
-    void setNodeManager(NodeManager *value);
     HUD *getHud() const;
-    void setHud(HUD *value);
     Ogre::Root *getRoot() const;
-    void setRoot(Ogre::Root *value);
+    Ogre::RenderWindow *getWindow() const;
     Ogre::SceneManager *getSceneManager() const;
-    void setSceneManager(Ogre::SceneManager *value);
     Ogre::OverlaySystem *getOverlaySystem() const;
-    void setOverlaySystem(Ogre::OverlaySystem *value);
 };
 }
 

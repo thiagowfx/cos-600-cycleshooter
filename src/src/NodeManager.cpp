@@ -6,64 +6,32 @@ Controller *NodeManager::getController() const {
     return controller;
 }
 
-void NodeManager::setController(Controller *value) {
-    controller = value;
-}
-
 Ogre::Viewport *NodeManager::getViewportPrimary() const {
     return viewportPrimary;
-}
-
-void NodeManager::setViewportPrimary(Ogre::Viewport *value) {
-    viewportPrimary = value;
 }
 
 Ogre::Viewport *NodeManager::getViewportSecundary() const {
     return viewportSecundary;
 }
 
-void NodeManager::setViewportSecundary(Ogre::Viewport *value) {
-    viewportSecundary = value;
-}
-
 Ogre::SceneNode *NodeManager::getParentPlayerSceneNode() const {
     return parentPlayerSceneNode;
-}
-
-void NodeManager::setParentPlayerSceneNode(Ogre::SceneNode *value) {
-    parentPlayerSceneNode = value;
 }
 
 Ogre::SceneNode *NodeManager::getFrontPlayerSceneNode() const {
     return frontPlayerSceneNode;
 }
 
-void NodeManager::setFrontPlayerSceneNode(Ogre::SceneNode *value) {
-    frontPlayerSceneNode = value;
-}
-
 Ogre::SceneNode *NodeManager::getRearPlayerSceneNode() const {
     return rearPlayerSceneNode;
-}
-
-void NodeManager::setRearPlayerSceneNode(Ogre::SceneNode *value) {
-    rearPlayerSceneNode = value;
 }
 
 Ogre::Camera *NodeManager::getFrontCamera() const {
     return frontCamera;
 }
 
-void NodeManager::setFrontCamera(Ogre::Camera *value) {
-    frontCamera = value;
-}
-
 Ogre::Camera *NodeManager::getRearCamera() const {
     return rearCamera;
-}
-
-void NodeManager::setRearCamera(Ogre::Camera *value) {
-    rearCamera = value;
 }
 
 Ogre::Camera *NodeManager::getMainCamera() const {
@@ -105,11 +73,15 @@ NodeManager::~NodeManager() {
 }
 
 void NodeManager::go() {
+    Ogre::LogManager::getSingleton().logMessage("--> NodeManager: go <--");
+
     createCameras();
     createSceneNodes();
 }
 
 void NodeManager::createCameras() {
+    Ogre::LogManager::getSingleton().logMessage("--> Creating Cameras <--");
+
     // create cameras
     frontCamera = controller->getSceneManager()->createCamera("FrontCamera");
     rearCamera = controller->getSceneManager()->createCamera("RearCamera");
@@ -122,6 +94,8 @@ void NodeManager::createCameras() {
 }
 
 void NodeManager::createSceneNodes() {
+    Ogre::LogManager::getSingleton().logMessage("--> Creating Scene Nodes <--");
+
     // create scene nodes
     parentPlayerSceneNode = controller->getSceneManager()->getRootSceneNode()->createChildSceneNode("ParentPlayerSceneNode");
     frontPlayerSceneNode = parentPlayerSceneNode->createChildSceneNode("FrontPlayerSceneNode");
@@ -135,14 +109,14 @@ void NodeManager::createSceneNodes() {
 
 void NodeManager::setupRunnerMode() {
     // clean
-    controller->getRoot()->getAutoCreatedWindow()->removeAllViewports();
+    controller->getWindow()->removeAllViewports();
 
     // primary viewport
-    viewportPrimary = controller->getRoot()->getAutoCreatedWindow()->addViewport(frontCamera, 0);
+    viewportPrimary = controller->getWindow()->addViewport(frontCamera, 0);
     viewportPrimary->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 0.0));
 
     // secondary viewport
-    viewportSecundary = controller->getRoot()->getAutoCreatedWindow()->addViewport(rearCamera, 1, (1.0 - MIRROR_PERCENTAGE_H)/2.0, 0.0, MIRROR_PERCENTAGE_H, MIRROR_PERCENTAGE_V);
+    viewportSecundary = controller->getWindow()->addViewport(rearCamera, 1, (1.0 - MIRROR_PERCENTAGE_H)/2.0, 0.0, MIRROR_PERCENTAGE_H, MIRROR_PERCENTAGE_V);
     viewportSecundary->setBackgroundColour(VIEWPORT_BACKGROUND_COLOR);
     viewportSecundary->setOverlaysEnabled(false);
     viewportSecundary->setClearEveryFrame(true, Ogre::FBT_DEPTH);  // alternatively, use setClearEveryFrame(false);
@@ -154,10 +128,10 @@ void NodeManager::setupRunnerMode() {
 
 void NodeManager::setupShooterMode() {
     // clean
-    controller->getRoot()->getAutoCreatedWindow()->removeAllViewports();
+    controller->getWindow()->removeAllViewports();
 
     // primary viewport
-    viewportPrimary = controller->getRoot()->getAutoCreatedWindow()->addViewport(rearCamera, 0);
+    viewportPrimary = controller->getWindow()->addViewport(rearCamera, 0);
     viewportPrimary->setBackgroundColour(VIEWPORT_BACKGROUND_COLOR);
 
     // adjust aspect ratio
@@ -166,7 +140,7 @@ void NodeManager::setupShooterMode() {
 
 void NodeManager::setupNoneMode() {
     // clean
-    controller->getRoot()->getAutoCreatedWindow()->removeAllViewports();
+    controller->getWindow()->removeAllViewports();
 }
 
 }

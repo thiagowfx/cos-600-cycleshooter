@@ -6,48 +6,28 @@ Context Controller::getContext() const {
     return context;
 }
 
-void Controller::setContext(const Context &value) {
-    context = value;
-}
-
 NodeManager *Controller::getNodeManager() const {
     return nodeManager;
-}
-
-void Controller::setNodeManager(NodeManager *value) {
-    nodeManager = value;
 }
 
 Ogre::Root *Controller::getRoot() const {
     return oRoot;
 }
 
-void Controller::setRoot(Ogre::Root *value) {
-    oRoot = value;
+Ogre::RenderWindow *Controller::getWindow() const {
+    return oRoot->getAutoCreatedWindow();
 }
 
 Ogre::SceneManager *Controller::getSceneManager() const {
     return oSceneManager;
 }
 
-void Controller::setSceneManager(Ogre::SceneManager *value) {
-    oSceneManager = value;
-}
-
 Ogre::OverlaySystem *Controller::getOverlaySystem() const {
     return oOverlaySystem;
 }
 
-void Controller::setOverlaySystem(Ogre::OverlaySystem *value) {
-    oOverlaySystem = value;
-}
-
 HUD *Controller::getHud() const {
     return hud;
-}
-
-void Controller::setHud(HUD *value) {
-    hud = value;
 }
 
 Controller::Controller() {
@@ -60,22 +40,12 @@ Controller::~Controller() {
 
     if(hud)
         delete hud;
-
-    if(oRoot)
-        delete oRoot;
 }
 
 void Controller::go() {
-    oRoot = new Ogre::Root();
+    Ogre::LogManager::getSingleton().logMessage("--> Controller: go <--");
 
-    // alternatively, use ->restoreConfig() to load saved settings
-    if(!oRoot->showConfigDialog()) {
-        return;
-    }
-
-    // automatically create a window
-    oRoot->initialise(true, Cycleshooter::RENDER_WINDOW_NAME);
-
+    createRoot();
     createSceneManager();
     createOverlaySystem();
     setupResources();
@@ -87,11 +57,11 @@ void Controller::go() {
 
     hud = new HUD(this);
     hud->setupRunnerMode();
-
-    // setupRunnerMode();
 }
 
 void Controller::setupResources() {
+    Ogre::LogManager::getSingleton().logMessage("--> Setting up Resources <--");
+
     Ogre::ConfigFile cf;
     cf.load(RESOURCES_CONFIG);
 
@@ -114,29 +84,47 @@ void Controller::setupResources() {
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 }
 
+void Controller::createRoot() {
+    Ogre::LogManager::getSingleton().logMessage("--> Creating Root <--");
+
+    oRoot = new Ogre::Root();
+
+    // alternatively, use ->restoreConfig() to load saved settings
+    if(!oRoot->showConfigDialog()) {
+        return;
+    }
+
+    // automatically create a window
+    oRoot->initialise(true, RENDER_WINDOW_NAME);
+}
+
 void Controller::createSceneManager() {
+    Ogre::LogManager::getSingleton().logMessage("--> Creating Scene Manager <--");
     oSceneManager = oRoot->createSceneManager(Ogre::ST_GENERIC);
-    oSceneManager->setDisplaySceneNodes(true);
 }
 
 void Controller::createOverlaySystem() {
+    Ogre::LogManager::getSingleton().logMessage("--> Creating Overlay System <--");
     oOverlaySystem = new Ogre::OverlaySystem();
     oSceneManager->addRenderQueueListener(oOverlaySystem);
 }
 
 void Controller::setupRunnerMode() {
+    Ogre::LogManager::getSingleton().logMessage("--> Setting up Runner Mode <--");
     context = CONTEXT_RUNNER;
     nodeManager->setupRunnerMode();
     hud->setupRunnerMode();
 }
 
 void Controller::setupShooterMode() {
+    Ogre::LogManager::getSingleton().logMessage("--> Setting up Shooter Mode <--");
     context = CONTEXT_SHOOTER;
     nodeManager->setupShooterMode();
     hud->setupShooterMode();
 }
 
 void Controller::setupNoneMode() {
+    Ogre::LogManager::getSingleton().logMessage("--> Setting up None Mode <--");
     context = CONTEXT_NONE;
     nodeManager->setupNoneMode();
     hud->setupNoneMode();

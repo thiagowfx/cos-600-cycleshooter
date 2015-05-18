@@ -5,11 +5,8 @@ namespace Cycleshooter {
 InputManager::InputManager() {
 }
 
-InputManager::~InputManager() {
-}
-
 void InputManager::addOrUpdateBinding(const OIS::KeyCode &key, const std::function<void(void)> &action) {
-    keyMappings[key] = action;
+    keyBindings[key] = action;
 }
 
 void InputManager::addOrUpdateBinding(const std::vector<OIS::KeyCode> &keys, const std::function<void ()> &action) {
@@ -19,23 +16,23 @@ void InputManager::addOrUpdateBinding(const std::vector<OIS::KeyCode> &keys, con
 }
 
 void InputManager::removeBinding(const OIS::KeyCode &key) {
-    if(isBounded(key)) {
-        keyMappings.erase(key);
+    if(hasBinding(key)) {
+        keyBindings.erase(key);
     }
 }
 
-bool InputManager::isBounded(const OIS::KeyCode &key) const {
-    return keyMappings.find(key) != keyMappings.end();
+bool InputManager::hasBinding(const OIS::KeyCode &key) const {
+    return keyBindings.find(key) != keyBindings.end();
 }
 
 void InputManager::executeAction(const OIS::KeyCode &key) {
-    if(isBounded(key)) {
-        keyMappings[key]();
+    if(hasBinding(key)) {
+        keyBindings[key]();
     }
 }
 
-void InputManager::clearKeys() {
-    keyMappings.clear();
+void InputManager::clearBindings() {
+    keyBindings.clear();
 }
 
 }
