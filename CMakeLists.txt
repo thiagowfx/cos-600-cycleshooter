@@ -20,15 +20,6 @@ add_subdirectory(${VENDOR_DIR})
 
 
 if(DEPENDENCIES_READY)
-    find_package(Bullet REQUIRED)
-
-    if(NOT BULLET_FOUND)
-        message(SEND_ERROR "Failed to find Bullet.")
-    endif()
-
-    include_directories(${BULLET_INCLUDE_DIRS})
-
-
     find_package(SFML REQUIRED EXACT 2.2 COMPONENTS audio)
 
     if(NOT SFML_FOUND)
@@ -107,7 +98,6 @@ if(DEPENDENCIES_READY)
 
     target_link_libraries(
         ${PROJECT_NAME}
-        ${BULLET_LIBRARIES}
         ${SFML_LIBRARIES}
         ${OGRE_LIBRARIES}
         ${OIS_LIBRARIES}
