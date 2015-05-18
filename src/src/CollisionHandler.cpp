@@ -41,7 +41,7 @@ void CollisionHandler::loadTensor(){
     for (int i = 0; i < collisionWidth; i++) {
         std::vector<Textures> row;
         for (int j = 0; j < collisionHeight; j++) {
-            row.push_bac(TEX_NONE);
+            row.push_back(TEX_NONE);
         }
         terrainMatrix.push_back(row);
     }
@@ -52,7 +52,7 @@ void CollisionHandler::loadTensor(){
     for(int w = 0; w < collisionHeight; w++){
         for(int h = 0; h < collisionWidth; h++){
             collisionPixel = collisionTexture->getColourAt(w,h,0);    //receives collor from image
-            Textures textureType;
+            Textures textureType = TEX_NONE;
             //const Ogre::ColourValue color = static_cast<const Ogre::ColourValue>(collisionPixel);
             if (collisionPixel == COL_WATER)
                 textureType = TEX_WATER;
@@ -63,6 +63,7 @@ void CollisionHandler::loadTensor(){
             else if(collisionPixel == COL_BULLET)
                 textureType = TEX_BULLET;
             else if(collisionPixel == COL_GUAGMIRE)
+                textureType = TEX_GUAGMIRE;
             terrainMatrix[w][h] = textureType;
             std::cout << terrainMatrix[w][h] << " ";
             }
