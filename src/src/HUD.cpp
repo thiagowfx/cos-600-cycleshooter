@@ -6,33 +6,26 @@ Controller *HUD::getController() const {
     return controller;
 }
 
-void HUD::setController(Controller *value) {
-    controller = value;
-}
-
 OgreBites::SdkTrayManager *HUD::getTrayManager() const {
     return trayManager;
 }
 
-void HUD::setTrayManager(OgreBites::SdkTrayManager *value) {
-    trayManager = value;
-}
-
 void HUD::go() {
     Ogre::LogManager::getSingleton().logMessage("--> HUD: go <--");
-
     createTrayManager();
 }
 
 void HUD::createTrayManager() {
-     Ogre::LogManager::getSingleton().logMessage("--> Creating Tray Manager <--");
+    Ogre::LogManager::getSingleton().logMessage("--> Creating Tray Manager <--");
 
-    trayManager = new OgreBites::SdkTrayManager("TrayManager", controller->getWindow(), controller->getInputContext(), controller->getBaseListener());
+    trayManager = new OgreBites::SdkTrayManager("TrayManager", controller->getWindow(), *inputContext, baseApplication);
     trayManager->hideCursor();
 }
 
-HUD::HUD(Controller *controller) :
-    controller(controller)
+HUD::HUD(Controller *controller, OgreBites::InputContext *inputContext, BaseApplication *baseApplication) :
+    controller(controller),
+    inputContext(inputContext),
+    baseApplication(baseApplication)
 {
     go();
 }

@@ -30,6 +30,10 @@ HUD *Controller::getHud() const {
     return hud;
 }
 
+void Controller::setHud(HUD *value) {
+    hud = value;
+}
+
 Controller::Controller() {
     go();
 }
@@ -37,14 +41,9 @@ Controller::Controller() {
 Controller::~Controller() {
     if(nodeManager)
         delete nodeManager;
-
-    if(hud)
-        delete hud;
 }
 
 void Controller::go() {
-    Ogre::LogManager::getSingleton().logMessage("--> Controller: go <--");
-
     createRoot();
     createSceneManager();
     createOverlaySystem();
@@ -52,11 +51,10 @@ void Controller::go() {
 
     Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
 
+    context = CONTEXT_RUNNER;
+
     nodeManager = new NodeManager(this);
     nodeManager->setupRunnerMode();
-
-    hud = new HUD(this);
-    hud->setupRunnerMode();
 }
 
 void Controller::setupResources() {
@@ -85,8 +83,6 @@ void Controller::setupResources() {
 }
 
 void Controller::createRoot() {
-    Ogre::LogManager::getSingleton().logMessage("--> Creating Root <--");
-
     oRoot = new Ogre::Root();
 
     // alternatively, use ->restoreConfig() to load saved settings

@@ -7,8 +7,11 @@
 
 #include "Controller.hpp"
 #include "InputManager.hpp"
+#include "HUD.hpp"
 
 namespace Cycleshooter {
+class Controller;
+class HUD;
 
 class BaseApplication : public Ogre::FrameListener, public Ogre::WindowEventListener, public OIS::KeyListener, public OIS::MouseListener, public OgreBites::SdkTrayListener
 {
@@ -39,6 +42,7 @@ protected:
     void gameMainLoop();
 
     Cycleshooter::Controller* mController = NULL;
+    Cycleshooter::HUD* mHud = NULL;
     Cycleshooter::InputManager inputManager;
 
     bool mShutDown = false;

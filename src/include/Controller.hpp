@@ -20,7 +20,7 @@ enum Context {
 
 class Controller : sf::NonCopyable {
 
-    Context context;
+    Context context = CONTEXT_NONE;
 
     NodeManager* nodeManager = NULL;
     HUD* hud = NULL;
@@ -52,6 +52,7 @@ public:
     Context getContext() const;
     NodeManager *getNodeManager() const;
     HUD *getHud() const;
+    void setHud(HUD *value);
     Ogre::Root *getRoot() const;
     Ogre::RenderWindow *getWindow() const;
     Ogre::SceneManager *getSceneManager() const;

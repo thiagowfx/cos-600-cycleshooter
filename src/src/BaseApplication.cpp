@@ -9,6 +9,9 @@ BaseApplication::~BaseApplication() {
     Ogre::WindowEventUtilities::removeWindowEventListener(mController->getWindow(), this);
     windowClosed(mController->getWindow());
 
+    if(mHud)
+        delete mHud;
+
     if(mController)
         delete mController;
 }
@@ -40,7 +43,9 @@ void BaseApplication::createFrameListener() {
     // FrameListener
     mController->getRoot()->addFrameListener(this);
 
-    // mHUD = new HUD("InterfaceName", mController->getWindow(), mInputContext, this);
+    mHud = new HUD(mController, &mInputContext, this);
+    mHud->setupRunnerMode();
+    mController->setHud(mHud);
 }
 
 void BaseApplication::createScene() {
@@ -63,8 +68,6 @@ void BaseApplication::createScene() {
 }
 
 void BaseApplication::go() {
-    Ogre::LogManager::getSingleton().logMessage("--> BaseApplication: go <--");
-
     mController = new Controller();
 
     // WindowListener

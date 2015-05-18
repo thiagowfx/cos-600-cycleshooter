@@ -10,7 +10,7 @@ namespace Cycleshooter {
 class Controller;
 
 class NodeManager {
-    Controller* controller = NULL;
+    Controller* const controller = NULL;
 
     Ogre::Viewport *viewportPrimary = NULL;
     Ogre::Viewport *viewportSecundary = NULL;
