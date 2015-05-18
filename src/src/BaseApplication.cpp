@@ -1,48 +1,21 @@
 #include "BaseApplication.hpp"
 
-#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-#include <macUtils.h>
-#endif
-
 namespace Cycleshooter {
 
 BaseApplication::BaseApplication()
-    : mRoot(0),
-    mWindow(0),
-    mContextManager(0),
-    mResources(0),
- // mCameraMan(0),
-    mHUD(0),
-    mCursorWasVisible(false),
-    mShutDown(false),
-    mInputManager(0),
-    mMouse(0),
-    mKeyboard(0) {
-}
+{}
 
 BaseApplication::~BaseApplication() {
+    // Remove ourself as a Window listener
+    Ogre::WindowEventUtilities::removeWindowEventListener(mController->getRoot()->getAutoCreatedWindow(), this);
+    windowClosed(mController->getRoot()->getAutoCreatedWindow());
+
     if (mHUD)
         delete mHUD;
-//    if (mCameraMan)
-//        delete mCameraMan;
-    if(mContextManager)
-        delete mContextManager;
 
-    // Remove ourself as a Window listener
-    Ogre::WindowEventUtilities::removeWindowEventListener(mWindow, this);
-    windowClosed(mWindow);
-    if(mResources)
-        delete mResources;
-    delete mRoot;
+    if(mController)
+        delete mController;
 }
-
-//void BaseApplication::createCamera() {
-//    mFrontSceneNode->setPosition(0.0, 0.0, 100.0);
-//    mFrontCamera->lookAt(Ogre::Vector3(0.0, 0.0, -1.0));
-
-//    // Create a default camera controller
-//    // mCameraMan = new OgreBites::SdkCameraMan(mFrontCamera);
-//}
 
 void BaseApplication::createFrameListener() {
     Ogre::LogManager::getSingletonPtr()->logMessage("*** Initializing OIS ***");
@@ -50,7 +23,7 @@ void BaseApplication::createFrameListener() {
     size_t windowHnd = 0;
     std::ostringstream windowHndStr;
 
-    mWindow->getCustomAttribute("WINDOW", &windowHnd);
+    mController->getRoot()->getAutoCreatedWindow()->getCustomAttribute("WINDOW", &windowHnd);
     windowHndStr << windowHnd;
     pl.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
 
@@ -63,66 +36,43 @@ void BaseApplication::createFrameListener() {
     mKeyboard->setEventCallback(this);
 
     // Set initial mouse clipping size
-    windowResized(mWindow);
+    windowResized(mController->getRoot()->getAutoCreatedWindow());
 
     // Register as a Window listener
-    Ogre::WindowEventUtilities::addWindowEventListener(mWindow, this);
+    Ogre::WindowEventUtilities::addWindowEventListener(mController->getRoot()->getAutoCreatedWindow(), this);
 
     mInputContext.mKeyboard = mKeyboard;
     mInputContext.mMouse = mMouse;
-    mHUD = new HUD("InterfaceName", mWindow, mInputContext, this);
+    mHUD = new HUD("InterfaceName", mController->getRoot()->getAutoCreatedWindow(), mInputContext, this);
 
-    mRoot->addFrameListener(this);
+    mController->getRoot()->addFrameListener(this);
 }
 
 void BaseApplication::createScene() {
-    mContextManager->getSceneManager()->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
-    Ogre::Entity* ogreEntity = mContextManager->getSceneManager()->createEntity("ogrehead.mesh");
-    Ogre::Entity* ogreEntity2 = mContextManager->getSceneManager()->createEntity("ogrehead.mesh");
-    Ogre::Entity* ogreEntity3 = mContextManager->getSceneManager()->createEntity("ogrehead.mesh");
-    Ogre::SceneNode* ogreNode = mContextManager->getSceneManager()->getRootSceneNode()->createChildSceneNode();
-    Ogre::SceneNode* ogreNode2 = mContextManager->getSceneManager()->getRootSceneNode()->createChildSceneNode();
-    Ogre::SceneNode* ogreNode3 = mContextManager->getSceneManager()->getRootSceneNode()->createChildSceneNode();
+    mController->getSceneManager()->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
+    Ogre::Entity* ogreEntity = mController->getSceneManager()->createEntity("ogrehead.mesh");
+    Ogre::Entity* ogreEntity2 = mController->getSceneManager()->createEntity("ogrehead.mesh");
+    Ogre::Entity* ogreEntity3 = mController->getSceneManager()->createEntity("ogrehead.mesh");
+    Ogre::SceneNode* ogreNode = mController->getSceneManager()->getRootSceneNode()->createChildSceneNode();
+    Ogre::SceneNode* ogreNode2 = mController->getSceneManager()->getRootSceneNode()->createChildSceneNode();
+    Ogre::SceneNode* ogreNode3 = mController->getSceneManager()->getRootSceneNode()->createChildSceneNode();
     ogreNode2->translate(0.0, 0.0, 400.0);
     ogreNode3->translate(0.0, 0.0, -400.0);
     ogreNode->attachObject(ogreEntity);
     ogreNode2->attachObject(ogreEntity2);
     ogreNode3->attachObject(ogreEntity3);
-    Ogre::Light* light =  mContextManager->getSceneManager()->createLight("MainLight");
+    Ogre::Light* light =  mController->getSceneManager()->createLight("MainLight");
     light->setPosition(20.0, 80.0, 50.0);
 }
 
 void BaseApplication::go() {
-
-    mResources = new Cycleshooter::Resources("plugins.cfg", "resources.cfg");
-    mRoot = new Ogre::Root(mResources->getPluginConfig());
-    mResources->setupResources();
-
-    // Show the configuration dialog and initialise the system.
-    // You can skip this and use root.restoreConfig() to load configuration
-    // settings if you were sure there are valid ones saved in ogre.cfg.
-    if(!mRoot->showConfigDialog()) {
-        return;
-    }
-
-    // If returned true, user clicked OK so initialise.
-    // Here we choose to let the system create a default rendering window by passing 'true'.
-    mWindow = mRoot->initialise(true, Cycleshooter::RENDER_WINDOW_NAME);
-
-    mContextManager = new ContextManager(mRoot, mWindow);
-    mContextManager->setupRunnerMode();
-
-    //mContextManager->getCameraParentSceneNode()->setPosition(0.0, 0.0, 200.0);
-    //mContextManager->getMainCamera()->lookAt(0.0, 0.0, -1.0);
-
-    // Set default mipmap level (NB some APIs ignore this)
-    Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
-
-    Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+    mController = new Controller();
 
     createScene();
 
     createFrameListener();
+
+    setupKeyboardRunnerMapping();
 
     // OGRE's own loop
     // mRoot->startRendering();
@@ -131,7 +81,7 @@ void BaseApplication::go() {
 }
 
 bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
-    if(mWindow->isClosed())
+    if(mController->getRoot()->getAutoCreatedWindow()->isClosed())
         return false;
 
     if(mShutDown)
@@ -147,61 +97,18 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
         // If dialog isn't up, then update the camera
         // mCameraMan->frameRenderingQueued(evt);
         if (mHUD->isDebugPanelVisible()) {
-            mHUD->updateDebugPanel_CameraElements(mContextManager->getMainCamera());
+            mHUD->updateDebugPanel_CameraElements(mController->getNodeManager()->getMainCamera());
         }
     }
 
     return true;
 }
 
-bool BaseApplication::keyPressed( const OIS::KeyEvent &arg ) {
+bool BaseApplication::keyPressed( const OIS::KeyEvent &arg) {
     if (mHUD->getTrayManager()->isDialogVisible())
         return true;   // don't process any more keys if dialog is up
 
-    switch(arg.key) {
-    case OIS::KC_G:
-        mHUD->toggleDebugPanel();
-        mHUD->toggleFPSPanel();
-        break;
-    case OIS::KC_R:
-        cyclePolygonRenderingModeAction();
-        break;
-    case OIS::KC_T:
-        cyclePolygonFilteringModeAction();
-        break;
-    case OIS::KC_F5:
-        // refresh all textures
-        Ogre::TextureManager::getSingleton().reloadAll();
-        break;
-    case OIS::KC_SYSRQ:
-        // take a screenshot
-        mWindow->writeContentsToTimestampedFile("screenshot", ".jpg");
-        break;
-    case OIS::KC_ESCAPE:
-        mShutDown = true;
-        break;
-
-    case OIS::KC_W:
-    case OIS::KC_LEFT:
-        mContextManager->getParentSceneNode()->translate(Ogre::Vector3(0.0, 0.0, -10.0), Ogre::SceneNode::TS_LOCAL);
-        break;
-    case OIS::KC_S:
-    case OIS::KC_RIGHT:
-        mContextManager->getParentSceneNode()->translate(Ogre::Vector3(0.0, 0.0, +10.0), Ogre::SceneNode::TS_LOCAL);
-        break;
-    case OIS::KC_A:
-    case OIS::KC_DOWN:
-        mContextManager->getParentSceneNode()->yaw(Ogre::Degree(10.0));
-        break;
-    case OIS::KC_D:
-    case OIS::KC_UP:
-        mContextManager->getParentSceneNode()->yaw(Ogre::Degree(-10.0));
-        break;
-    case OIS::KC_SPACE:
-        mContextManager->toggleMode();
-        break;
-
-    }
+    inputManager.executeAction(arg.key);
 
     // mCameraMan->injectKeyDown(arg);
     return true;
@@ -246,7 +153,7 @@ void BaseApplication::windowResized(Ogre::RenderWindow* rw) {
 // Unattach OIS before window shutdown (very important under Linux)
 void BaseApplication::windowClosed(Ogre::RenderWindow* rw) {
     // Only close for window that created OIS (the main window in these demos)
-    if(rw == mWindow)
+    if(rw == mController->getRoot()->getAutoCreatedWindow())
     {
         if(mInputManager)
         {
@@ -295,7 +202,7 @@ void BaseApplication::cyclePolygonRenderingModeAction() {
     Ogre::String newVal;
     Ogre::PolygonMode pm;
 
-    switch (mContextManager->getMainCamera()->getPolygonMode()) {
+    switch (mController->getNodeManager()->getMainCamera()->getPolygonMode()) {
     case Ogre::PM_SOLID:
         newVal = "Wireframe";
         pm = Ogre::PM_WIREFRAME;
@@ -309,13 +216,68 @@ void BaseApplication::cyclePolygonRenderingModeAction() {
         pm = Ogre::PM_SOLID;
     }
 
-    mContextManager->getMainCamera()->setPolygonMode(pm);
+    mController->getNodeManager()->getMainCamera()->setPolygonMode(pm);
     mHUD->setDebugPanel_PolygonRenderingElement(newVal);
+}
+
+void BaseApplication::setupKeyboardRunnerMapping() {
+    inputManager.addOrUpdateBinding(OIS::KC_G,
+                                    [&]() {
+        mHUD->toggleDebugPanel();
+        mHUD->toggleFPSPanel();
+    });
+
+    inputManager.addOrUpdateBinding(OIS::KC_R, [&]{
+        cyclePolygonRenderingModeAction();
+    });
+
+    inputManager.addOrUpdateBinding(OIS::KC_T, [&]{
+        cyclePolygonFilteringModeAction();
+    });
+
+    // reload all textures
+    inputManager.addOrUpdateBinding(OIS::KC_F5, [&]{
+        Ogre::TextureManager::getSingleton().reloadAll();
+    });
+
+    // take a screenshot
+    inputManager.addOrUpdateBinding(OIS::KC_SYSRQ, [&]{
+        mController->getRoot()->getAutoCreatedWindow()->writeContentsToTimestampedFile("screenshot", ".jpg");
+    });
+
+    // quit from the application
+    inputManager.addOrUpdateBinding(OIS::KC_ESCAPE, [&]{
+        mShutDown = true;
+    });
+
+    inputManager.addOrUpdateBinding({OIS::KC_W,
+                                     OIS::KC_UP}, [&]{
+        mController->getNodeManager()->getParentPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, -10.0), Ogre::SceneNode::TS_LOCAL);
+    });
+
+    inputManager.addOrUpdateBinding({OIS::KC_S,
+                                     OIS::KC_DOWN}, [&]{
+        mController->getNodeManager()->getParentPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, +10.0), Ogre::SceneNode::TS_LOCAL);
+    });
+
+    inputManager.addOrUpdateBinding({OIS::KC_A,
+                                     OIS::KC_LEFT}, [&]{
+        mController->getNodeManager()->getParentPlayerSceneNode()->yaw(Ogre::Degree(+10.0));
+    });
+
+    inputManager.addOrUpdateBinding({OIS::KC_D,
+                                     OIS::KC_RIGHT}, [&]{
+        mController->getNodeManager()->getParentPlayerSceneNode()->yaw(Ogre::Degree(-10.0));
+    });
+
+    inputManager.addOrUpdateBinding(OIS::KC_SPACE, [&]{
+        mController->toggleMode();
+    });
 }
 
 void BaseApplication::gameMainLoop() {
     while(!mShutDown) {
-        mRoot->renderOneFrame();
+        mController->getRoot()->renderOneFrame();
     }
 }
 

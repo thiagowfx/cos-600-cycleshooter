@@ -22,7 +22,6 @@ public:
     $1();
     virtual ~$1();
 };
-
 }
 
 #endif
