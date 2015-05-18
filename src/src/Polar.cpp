@@ -66,7 +66,23 @@ int Polar::openSerialPort(const char *deviceFilePath){
 }
 
 void Polar::closeSerialPort(){
+    
+    int fd = serialDescriptor;
+    
+    // Block until all written output has been sent from the device
+    if (tcdrain(fd) == -1) {
+        std::cout << "Error waiting for drain - " << strerror(errno) << "(" <<
+         errno <<")" << std::endl;
+    }
 
+    // Reset the serial port back to the state in which we found it
+    if (tcsetattr(fd, TCSANOW, &gOriginalTTYAttrs) == -1) {
+        std::cout << "Error restoring tty attributes - " << strerror(errno) << "(" <<
+         errno <<")" << std::endl;
+    }
+
+    // Close the port
+    close(fd);
 }
 
 bool Polar::SendGetHeartRate(int fd, int NumEntries){
