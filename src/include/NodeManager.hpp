@@ -22,6 +22,7 @@ class NodeManager {
     Ogre::Camera *frontCamera = NULL;
     Ogre::Camera *rearCamera = NULL;
 
+    // go
     void go();
     void createCameras();
     void createSceneNodes();
@@ -37,6 +38,9 @@ public:
     NodeManager(Controller* controller);
     virtual ~NodeManager();
 
+    void clear();
+
+    // setups
     void setupRunnerMode();
     void setupShooterMode();
     void setupNoneMode();

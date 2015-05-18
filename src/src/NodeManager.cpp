@@ -72,6 +72,16 @@ NodeManager::~NodeManager() {
         delete rearCamera;
 }
 
+void NodeManager::clear() {
+    if(viewportPrimary)
+        viewportPrimary->clear();
+
+    if(viewportSecundary)
+        viewportSecundary->clear();
+
+    controller->getWindow()->removeAllViewports();
+}
+
 void NodeManager::go() {
     Ogre::LogManager::getSingleton().logMessage("--> NodeManager: go <--");
 
@@ -108,8 +118,7 @@ void NodeManager::createSceneNodes() {
 }
 
 void NodeManager::setupRunnerMode() {
-    // clean
-    controller->getWindow()->removeAllViewports();
+    clear();
 
     // primary viewport
     viewportPrimary = controller->getWindow()->addViewport(frontCamera, 0);
@@ -127,8 +136,7 @@ void NodeManager::setupRunnerMode() {
 }
 
 void NodeManager::setupShooterMode() {
-    // clean
-    controller->getWindow()->removeAllViewports();
+    clear();
 
     // primary viewport
     viewportPrimary = controller->getWindow()->addViewport(rearCamera, 0);
@@ -139,8 +147,7 @@ void NodeManager::setupShooterMode() {
 }
 
 void NodeManager::setupNoneMode() {
-    // clean
-    controller->getWindow()->removeAllViewports();
+    clear();
 }
 
 }
