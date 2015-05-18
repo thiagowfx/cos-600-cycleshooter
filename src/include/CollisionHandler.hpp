@@ -14,24 +14,21 @@
 namespace Cycleshooter {
 class CollisionHandler {
 
-private:
+    const Ogre::ColourValue WATER = Ogre::ColourValue (0.0f,0.0f,1.0f,1.0f);
+    const Ogre::ColourValue GROUND_TYPE1 = Ogre::ColourValue(0.5f,0.5f,0.5f); //Road
+    const Ogre::ColourValue GROUND_TYPE2 = Ogre::ColourValue(1.0f,1.0f,0.0f); //Rock
+    const Ogre::ColourValue GROUND_TYPE3 = Ogre::ColourValue(1.0f,0.0f,1.0f); //Guagmire
+    const Ogre::ColourValue BULLET_OBJECT = Ogre::ColourValue(0.0f,1.0f,1.0f);
 
-    //Texture to specify terrain type.
-    Ogre::Image* circuitTexture;
-    //Texture to allocate bullets.
-    Ogre::Image* bulletsTexture;
-    //Path to circuit image.
-    Ogre::String circuitTexturePath;
-    //Path to bullets image.
-    Ogre::String bulletsTexturePath;
+    Ogre::Image* collisionTexture; //Texture to specify terrain type.
+    Ogre::String collisionTexturePath; //Path to circuit image.
 
 public:
 
-    CollisionHandler(Ogre::String circuitTexturePath, Ogre::String bulletsTexturePath);
+    CollisionHandler(Ogre::String collisionTexturePath);
     virtual ~CollisionHandler();
-    //Load images from files.
-    void loadImages();
-    void loadTensor();
+    void loadImages(); //Load images from files.
+    void loadTensor(); //Function to load the data structure from images.
 
 };
 

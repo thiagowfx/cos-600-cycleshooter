@@ -131,8 +131,9 @@ void BaseApplication::go() {
     mTerrainManager->createTerrain();
 
     //Starting Collision Handler after Terrain initiation.
-    mCollisionHandler = new CollisionHandler("racecircuit.png","racecircuit.png");
+    mCollisionHandler = new CollisionHandler("racecircuit.png");
     mCollisionHandler->loadImages();
+    mCollisionHandler->loadTensor();
     createScene();
 
     createFrameListener();
