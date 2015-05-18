@@ -14,14 +14,18 @@ class HUD {
     OgreBites::InputContext* const inputContext = NULL;
 
     OgreBites::SdkTrayManager* trayManager = NULL;
+    OgreBites::Widget* contextWidget = NULL;
 
+    // go
     void go();
     void createTrayManager();
+    void createTrayWidgets();
 
 public:
     HUD(Controller* controller, OgreBites::InputContext* inputContext);
     virtual ~HUD();
 
+    // setups
     void setupRunnerMode();
     void setupShooterMode();
     void setupNoneMode();

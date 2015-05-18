@@ -13,6 +13,7 @@ OgreBites::SdkTrayManager *HUD::getTrayManager() const {
 void HUD::go() {
     Ogre::LogManager::getSingleton().logMessage("--> HUD: go <--");
     createTrayManager();
+    createTrayWidgets();
 }
 
 void HUD::createTrayManager() {
@@ -20,6 +21,12 @@ void HUD::createTrayManager() {
 
     trayManager = new OgreBites::SdkTrayManager("TrayManager", controller->getWindow(), *inputContext);
     trayManager->hideCursor();
+}
+
+void HUD::createTrayWidgets() {
+    Ogre::LogManager::getSingleton().logMessage("--> Creating Tray Widgets <--");
+
+    trayManager->showLogo(OgreBites::TL_TOPLEFT);
 }
 
 HUD::HUD(Controller *controller, OgreBites::InputContext *inputContext) :
@@ -35,14 +42,21 @@ HUD::~HUD() {
 }
 
 void HUD::setupRunnerMode() {
-    trayManager->showLogo(OgreBites::TL_TOPLEFT);
+    if(contextWidget)
+        trayManager->destroyWidget(contextWidget);
+    contextWidget = trayManager->createLabel(OgreBites::TL_TOPRIGHT, "contextWidget", "Runner Mode", 170);
 }
 
 void HUD::setupShooterMode() {
-    trayManager->showLogo(OgreBites::TL_TOPRIGHT);
+    if(contextWidget)
+        trayManager->destroyWidget(contextWidget);
+    contextWidget = trayManager->createLabel(OgreBites::TL_TOPRIGHT, "contextWidget", "Shooter Mode", 170);
 }
 
 void HUD::setupNoneMode() {
+    if(contextWidget)
+        trayManager->destroyWidget(contextWidget);
+
     trayManager->hideLogo();
 }
 

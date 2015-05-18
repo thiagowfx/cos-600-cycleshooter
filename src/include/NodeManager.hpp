@@ -2,7 +2,6 @@
 #define _NODEMANAGER_HPP_
 
 #include <Ogre.h>
-#include <stdexcept>
 
 #include "Controller.hpp"
 

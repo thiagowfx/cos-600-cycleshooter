@@ -35,12 +35,15 @@ Ogre::Camera *NodeManager::getRearCamera() const {
 }
 
 Ogre::Camera *NodeManager::getMainCamera() const {
-    if(controller->getContext() == CONTEXT_RUNNER)
+    if(controller->getContext() == CONTEXT_RUNNER) {
         return frontCamera;
-    else if (controller->getContext() == CONTEXT_SHOOTER)
+    }
+    else if (controller->getContext() == CONTEXT_SHOOTER) {
         return rearCamera;
-    else
-        throw std::invalid_argument("getMainCamera() called in CONTEXT_NONE");
+    }
+    else {
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "getMainCamera() called in CONTEXT_NONE", "getMainCamera()")
+    }
 }
 
 NodeManager::NodeManager(Controller *controller) :
