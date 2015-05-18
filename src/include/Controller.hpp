@@ -9,18 +9,24 @@
 #include "HUD.hpp"
 
 namespace Cycleshooter {
+
 class NodeManager;
 class HUD;
 
 enum Context {
     CONTEXT_RUNNER,
     CONTEXT_SHOOTER,
-    CONTEXT_NONE
+};
+
+enum Debug {
+    DEBUG_ON,
+    DEBUG_OFF,
 };
 
 class Controller : sf::NonCopyable {
 
-    Context context = CONTEXT_NONE;
+    Context context;
+    Debug debug = DEBUG_OFF;
 
     NodeManager* nodeManager = NULL;
     HUD* hud = NULL;
@@ -42,11 +48,17 @@ public:
     Controller();
     virtual ~Controller();
 
+    // setups
     void setupRunnerMode();
     void setupShooterMode();
-    void setupNoneMode();
     void toggleMode();
     void toggleMode(const Context& newContext);
+
+    // debug
+    void setupDebugOn();
+    void setupDebugOff();
+    void toggleDebug();
+    void toggleDebug(const Debug& newDebug);
 
     // getters and setters
     Context getContext() const;
@@ -57,7 +69,9 @@ public:
     Ogre::RenderWindow *getWindow() const;
     Ogre::SceneManager *getSceneManager() const;
     Ogre::OverlaySystem *getOverlaySystem() const;
+    Debug getDebug() const;
 };
+
 }
 
 #endif

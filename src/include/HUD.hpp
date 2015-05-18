@@ -30,7 +30,10 @@ public:
     // setups
     void setupRunnerMode();
     void setupShooterMode();
-    void setupNoneMode();
+
+    // debug
+    void setupDebugOn();
+    void setupDebugOff();
 
     // getters and setters
     Controller *getController() const;

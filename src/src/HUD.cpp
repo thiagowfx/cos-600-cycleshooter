@@ -26,11 +26,7 @@ void HUD::createTrayManager() {
 void HUD::createTrayWidgets() {
     Ogre::LogManager::getSingleton().logMessage("--> Creating Tray Widgets <--");
 
-    // OGRE Logo
-    trayManager->showLogo(OgreBites::TL_TOPLEFT);
-
-    // FPS
-    trayManager->showFrameStats(OgreBites::TL_BOTTOMLEFT);
+    // create polar, ammunition...
 }
 
 HUD::HUD(Controller *controller, OgreBites::InputContext *inputContext) :
@@ -61,10 +57,15 @@ void HUD::setupShooterMode() {
     contextWidget = trayManager->createLabel(OgreBites::TL_TOPRIGHT, "contextWidget", "Shooter Mode", 170);
 }
 
-void HUD::setupNoneMode() {
-    if(contextWidget)
-        trayManager->destroyWidget(contextWidget);
+void HUD::setupDebugOn() {
+    // OGRE Logo
+    trayManager->showLogo(OgreBites::TL_TOPLEFT);
 
+    // FPS
+    trayManager->showFrameStats(OgreBites::TL_BOTTOMLEFT);
+}
+
+void HUD::setupDebugOff() {
     trayManager->hideLogo();
     trayManager->hideFrameStats();
 }

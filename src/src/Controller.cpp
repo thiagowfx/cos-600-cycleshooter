@@ -43,6 +43,10 @@ Controller::~Controller() {
         delete nodeManager;
 }
 
+Debug Controller::getDebug() const {
+    return debug;
+}
+
 void Controller::go() {
     createRoot();
     createSceneManager();
@@ -119,13 +123,6 @@ void Controller::setupShooterMode() {
     hud->setupShooterMode();
 }
 
-void Controller::setupNoneMode() {
-    Ogre::LogManager::getSingleton().logMessage("--> Setting up None Mode <--");
-    context = CONTEXT_NONE;
-    nodeManager->setupNoneMode();
-    hud->setupNoneMode();
-}
-
 void Controller::toggleMode() {
     switch(context) {
     case CONTEXT_RUNNER:
@@ -134,18 +131,46 @@ void Controller::toggleMode() {
     case CONTEXT_SHOOTER:
         setupRunnerMode();
         break;
-    default:
-        setupNoneMode();
     }
 }
 
 void Controller::toggleMode(const Context &newContext) {
-    if (newContext == CONTEXT_NONE && context != CONTEXT_NONE)
-        setupNoneMode();
-    else if (newContext == CONTEXT_RUNNER && context != CONTEXT_RUNNER)
+    if (newContext == CONTEXT_RUNNER && context != CONTEXT_RUNNER)
         setupRunnerMode();
     else if (newContext == CONTEXT_SHOOTER && context != CONTEXT_SHOOTER)
         setupShooterMode();
+}
+
+void Controller::setupDebugOn() {
+    Ogre::LogManager::getSingleton().logMessage("--> Turning Debug On <--");
+    debug = DEBUG_ON;
+    nodeManager->setDebugOn();
+    hud->setupDebugOn();
+}
+
+void Controller::setupDebugOff() {
+    Ogre::LogManager::getSingleton().logMessage("--> Turning Debug Off <--");
+    debug = DEBUG_OFF;
+    nodeManager->setDebugOff();
+    hud->setupDebugOff();
+}
+
+void Controller::toggleDebug() {
+    switch(debug) {
+    case DEBUG_ON:
+        setupDebugOff();
+        break;
+    case DEBUG_OFF:
+        setupDebugOn();
+        break;
+    }
+}
+
+void Controller::toggleDebug(const Debug &newDebug) {
+    if(newDebug == DEBUG_ON && debug != DEBUG_ON)
+        setupDebugOn();
+    else if (newDebug == DEBUG_OFF && debug != DEBUG_OFF)
+        setupDebugOff();
 }
 
 }

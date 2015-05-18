@@ -149,8 +149,14 @@ void NodeManager::setupShooterMode() {
     rearCamera->setAspectRatio(Ogre::Real(viewportPrimary->getActualWidth()) / Ogre::Real(viewportPrimary->getActualHeight()));
 }
 
-void NodeManager::setupNoneMode() {
-    clear();
+void NodeManager::setDebugOn() {
+    controller->getSceneManager()->setDisplaySceneNodes(true);
+    controller->getSceneManager()->showBoundingBoxes(true);
+}
+
+void NodeManager::setDebugOff() {
+    controller->getSceneManager()->setDisplaySceneNodes(false);
+    controller->getSceneManager()->showBoundingBoxes(false);
 }
 
 }
