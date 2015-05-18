@@ -20,9 +20,13 @@
 #include <sys/select.h>
 
 #define MAX_STRING_RESPONSE 140
+#define ERROR_CODE -1
 
 namespace Cycleshooter {
 class Polar : public AbstractPolar {
+
+public:
+    int itrMean = 20;
 
 private:
     const char *serialPort;
@@ -32,8 +36,11 @@ private:
 public:
     Polar();
     virtual ~Polar();
-    unsigned short readInstantaneousHeartRate();
-    unsigned short readMeanHeartRate();
+    // Get the instantaneous value from the HRMI
+    short readInstantaneousHeartRate();
+    // Get the mean of "itrMean" values. 
+    //Useful to get the base Heart Rate in the beginning of the game
+    short readMeanHeartRate();
 
     void setupSerialPort(const char *deviceFilePath);
 
@@ -44,10 +51,10 @@ private:
 
     // Function to send a command to get the number of heart rate
     // values specified in NumEntries
-    int SendGetHeartRate(int fd, int NumEntries);
+    int sendGetHeartRate(int fd, int NumEntries);
 
     // Function to read a response string back from the HRMI
-    int GetResponseString(int fd, char* ResponseString);
+    int getResponseString(int fd, char* ResponseString);
 };
 
 }

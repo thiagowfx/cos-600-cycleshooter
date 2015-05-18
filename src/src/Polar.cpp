@@ -23,38 +23,38 @@ int Polar::openSerialPort(const char *deviceFilePath){
     if ((fd = open(deviceFilePath, O_RDWR | O_NOCTTY )) == -1) {
         std::cout << "Error opening serial port " << deviceFilePath << " - " <<
                 strerror(errno) << "(" << errno << ")" << std::endl;
-        return(-1);
+        return ERROR_CODE;
     }
 
     // Prevent other processes from opening the serial port
     if (ioctl(fd, TIOCEXCL) == -1) {
         std::cout << "Error setting TIOCEXCL on " << deviceFilePath << " - " <<
                 strerror(errno) << "(" << errno << ")" << std::endl;
-        return(-1);
+        return ERROR_CODE;
     }
 
     // Get the serial port current options and save them to restore on exit
     if (tcgetattr(fd, &gOriginalTTYAttrs) == -1) {
         std::cout << "Error getting tty attributes" << deviceFilePath << " - " <<
                 strerror(errno) << "(" << errno << ")" << std::endl;
-        return(-1);
+        return ERROR_CODE;
     }
 
     // Configure the serial port
     options = gOriginalTTYAttrs;
-    //   Set raw input (non-canonical) mode, with reads blocking until either a
-    //   single character has been received or a one second timeout expires
+    // Set raw input (non-canonical) mode, with reads blocking until either a
+    // single character has been received or a one second timeout expires
     cfmakeraw(&options);
     options.c_cc[VMIN] = 1;
     options.c_cc[VTIME] = 10;
-    //    Set the baud rate and word length
+    // Set the baud rate and word length
     cfsetspeed(&options, B9600);
     options.c_cflag |= (CS8);
 
-    //    Cause the new options to take effect immediately
+    // Cause the new options to take effect immediately
     if (tcsetattr(fd, TCSANOW, &options) == -1) {
         std::cout << "Error setting tty attributes!" << std::endl;
-        return(-1);
+        return ERROR_CODE;
     }
     // Saving the state of the file descriptor (To close the serial in the future)
     serialDescriptor = fd;
@@ -79,7 +79,7 @@ void Polar::closeSerialPort(int fd){
     close(fd);
 }
 
-int Polar::SendGetHeartRate(int fd, int NumEntries){
+int Polar::sendGetHeartRate(int fd, int NumEntries){
     char SendCommand[8];      // Array sized to hold the largest command string
     int  CmdLength;           // Number of characters in the command string
 
@@ -97,14 +97,14 @@ int Polar::SendGetHeartRate(int fd, int NumEntries){
     return(write(fd, SendCommand, CmdLength) == CmdLength);
 }
 
-int Polar::GetResponseString(int fd, char* ResponseString){
+int Polar::getResponseString(int fd, char* ResponseString){
     char b[2];
     int i = 0;
 
     do {
         int n = read(fd, b, 1);     // read a char at a time
         if (n == -1)
-            return(-1);             // read failed
+            return ERROR_CODE;      // read failed
         if (n == 0) {
             usleep(10 * 1000);      // wait 10 msec before trying again
             continue;
@@ -121,15 +121,43 @@ int Polar::GetResponseString(int fd, char* ResponseString){
     return(0);
 }
 
-unsigned short Polar::readInstantaneousHeartRate(){
+short Polar::readInstantaneousHeartRate(){
+    
+    char *RspBytes = new char[MAX_STRING_RESPONSE]; // Response string
+    short heartRate;
+    int numEntries = 1;
 
+    // Open the serial port device associated with the HRMI
+    if (openSerialPort(serialPort) == -1) {
+        return ERROR_CODE;
+    }
+
+    // Send a Get Heart Rate command requesting history buffer entries
+    if (sendGetHeartRate(serialDescriptor, numEntries) == 0) {
+        std::cout << "Error: SendGetHeartRate failed!" << std::endl;
+        return ERROR_CODE;
+    }
+
+    if (getResponseString(serialDescriptor, RspBytes) == -1) {
+        std::cout << "Error: GetResponseString failed!" << std::endl;
+        return ERROR_CODE;
+    } else {
+        std::cout << "Request => " << RspBytes << std::endl;
+    }
+
+    closeSerialPort(serialDescriptor);
+    heartRate = atoi(RspBytes);
+    return heartRate;
 }
 
-unsigned short Polar::readMeanHeartRate(){
+short Polar::readMeanHeartRate(){
+    int sum = 0;
+    for (int i = 0; i < itrMean; ++i){
+        sum += readInstantaneousHeartRate();
+        usleep(10 * 1000);
+    }
 
+    return (sum/itrMean);
 }
 
 }
-
-
-
