@@ -6,12 +6,8 @@ BaseApplication::BaseApplication()
 {}
 
 BaseApplication::~BaseApplication() {
-    // Remove ourself as a Window listener
     Ogre::WindowEventUtilities::removeWindowEventListener(mController->getRoot()->getAutoCreatedWindow(), this);
     windowClosed(mController->getRoot()->getAutoCreatedWindow());
-
-    if (mHUD)
-        delete mHUD;
 
     if(mController)
         delete mController;
@@ -38,14 +34,14 @@ void BaseApplication::createFrameListener() {
     // Set initial mouse clipping size
     windowResized(mController->getRoot()->getAutoCreatedWindow());
 
+    mController->getRoot()->addFrameListener(this);
+
     // Register as a Window listener
     Ogre::WindowEventUtilities::addWindowEventListener(mController->getRoot()->getAutoCreatedWindow(), this);
 
     mInputContext.mKeyboard = mKeyboard;
     mInputContext.mMouse = mMouse;
-    mHUD = new HUD("InterfaceName", mController->getRoot()->getAutoCreatedWindow(), mInputContext, this);
-
-    mController->getRoot()->addFrameListener(this);
+    // mHUD = new HUD("InterfaceName", mController->getRoot()->getAutoCreatedWindow(), mInputContext, this);
 }
 
 void BaseApplication::createScene() {
@@ -68,9 +64,9 @@ void BaseApplication::createScene() {
 void BaseApplication::go() {
     mController = new Controller();
 
-    createScene();
-
     createFrameListener();
+
+    createScene();
 
     setupKeyboardRunnerMapping();
 
@@ -91,21 +87,21 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
     mKeyboard->capture();
     mMouse->capture();
 
-    mHUD->update(evt);
+    // mHUD->update(evt);
 
-    if (!mHUD->getTrayManager()->isDialogVisible()) {
+    // if (!mHUD->getTrayManager()->isDialogVisible()) {
         // If dialog isn't up, then update the camera
         // mCameraMan->frameRenderingQueued(evt);
-        if (mHUD->isDebugPanelVisible()) {
-            mHUD->updateDebugPanel_CameraElements(mController->getNodeManager()->getMainCamera());
-        }
-    }
+        // if (mHUD->isDebugPanelVisible()) {
+        //     mHUD->updateDebugPanel_CameraElements(mController->getNodeManager()->getMainCamera());
+        // }
+    // }
 
     return true;
 }
 
 bool BaseApplication::keyPressed( const OIS::KeyEvent &arg) {
-    if (mHUD->getTrayManager()->isDialogVisible())
+    if(mController->getHud()->getTrayManager()->isDialogVisible())
         return true;   // don't process any more keys if dialog is up
 
     inputManager.executeAction(arg.key);
@@ -120,21 +116,21 @@ bool BaseApplication::keyReleased(const OIS::KeyEvent &arg) {
 }
 
 bool BaseApplication::mouseMoved(const OIS::MouseEvent &arg) {
-    if (mHUD->getTrayManager()->injectMouseMove(arg))
+    if(mController->getHud()->getTrayManager()->injectMouseMove(arg))
         return true;
     // mCameraMan->injectMouseMove(arg);
     return true;
 }
 
 bool BaseApplication::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id) {
-    if (mHUD->getTrayManager()->injectMouseDown(arg, id))
+    if(mController->getHud()->getTrayManager()->injectMouseDown(arg, id))
         return true;
     // mCameraMan->injectMouseDown(arg, id);
     return true;
 }
 
 bool BaseApplication::mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id) {
-    if (mHUD->getTrayManager()->injectMouseUp(arg, id))
+    if (mController->getHud()->getTrayManager()->injectMouseUp(arg, id))
         return true;
     // mCameraMan->injectMouseUp(arg, id);
     return true;
@@ -153,10 +149,8 @@ void BaseApplication::windowResized(Ogre::RenderWindow* rw) {
 // Unattach OIS before window shutdown (very important under Linux)
 void BaseApplication::windowClosed(Ogre::RenderWindow* rw) {
     // Only close for window that created OIS (the main window in these demos)
-    if(rw == mController->getRoot()->getAutoCreatedWindow())
-    {
-        if(mInputManager)
-        {
+    if(rw == mController->getRoot()->getAutoCreatedWindow()) {
+        if(mInputManager) {
             mInputManager->destroyInputObject(mMouse);
             mInputManager->destroyInputObject(mKeyboard);
 
@@ -167,35 +161,35 @@ void BaseApplication::windowClosed(Ogre::RenderWindow* rw) {
 }
 
 void BaseApplication::cyclePolygonFilteringModeAction() {
-    Ogre::String newVal;
-    Ogre::TextureFilterOptions tfo;
-    unsigned int aniso;
-    const std::string filter = mHUD->getDebugPanel_PolygonFilteringElement();
+//    Ogre::String newVal;
+//    Ogre::TextureFilterOptions tfo;
+//    unsigned int aniso;
+    // const std::string filter = mHUD->getDebugPanel_PolygonFilteringElement();
 
-    if(filter == "Bilinear") {
-        newVal = "Trilinear";
-        tfo = Ogre::TFO_TRILINEAR;
-        aniso = 1;
-    }
-    else if (filter == "Trilinear") {
-        newVal = "Anisotropic";
-        tfo = Ogre::TFO_ANISOTROPIC;
-        aniso = 8;
-    }
-    else if (filter == "Anisotropic") {
-        newVal = "None";
-        tfo = Ogre::TFO_NONE;
-        aniso = 1;
-    }
-    else {
-        newVal = "Bilinear";
-        tfo = Ogre::TFO_BILINEAR;
-        aniso = 1;
-    }
+//    if(filter == "Bilinear") {
+//        newVal = "Trilinear";
+//        tfo = Ogre::TFO_TRILINEAR;
+//        aniso = 1;
+//    }
+//    else if (filter == "Trilinear") {
+//        newVal = "Anisotropic";
+//        tfo = Ogre::TFO_ANISOTROPIC;
+//        aniso = 8;
+//    }
+//    else if (filter == "Anisotropic") {
+//        newVal = "None";
+//        tfo = Ogre::TFO_NONE;
+//        aniso = 1;
+//    }
+//    else {
+//        newVal = "Bilinear";
+//        tfo = Ogre::TFO_BILINEAR;
+//        aniso = 1;
+//    }
 
-    Ogre::MaterialManager::getSingleton().setDefaultTextureFiltering(tfo);
-    Ogre::MaterialManager::getSingleton().setDefaultAnisotropy(aniso);
-    mHUD->setDebugPanel_PolygonFilteringElement(newVal);
+//    Ogre::MaterialManager::getSingleton().setDefaultTextureFiltering(tfo);
+//    Ogre::MaterialManager::getSingleton().setDefaultAnisotropy(aniso);
+    // mHUD->setDebugPanel_PolygonFilteringElement(newVal);
 }
 
 void BaseApplication::cyclePolygonRenderingModeAction() {
@@ -217,14 +211,14 @@ void BaseApplication::cyclePolygonRenderingModeAction() {
     }
 
     mController->getNodeManager()->getMainCamera()->setPolygonMode(pm);
-    mHUD->setDebugPanel_PolygonRenderingElement(newVal);
+    // mHUD->setDebugPanel_PolygonRenderingElement(newVal);
 }
 
 void BaseApplication::setupKeyboardRunnerMapping() {
     inputManager.addOrUpdateBinding(OIS::KC_G,
                                     [&]() {
-        mHUD->toggleDebugPanel();
-        mHUD->toggleFPSPanel();
+        // mHUD->toggleDebugPanel();
+        // mHUD->toggleFPSPanel();
     });
 
     inputManager.addOrUpdateBinding(OIS::KC_R, [&]{

@@ -6,10 +6,13 @@
 #include <OgreOverlaySystem.h>
 
 #include "Constants.hpp"
+
 #include "NodeManager.hpp"
+#include "HUD.hpp"
 
 namespace Cycleshooter {
 class NodeManager;
+class HUD;
 
 enum Context {
     CONTEXT_RUNNER,
@@ -21,6 +24,7 @@ class Controller : sf::NonCopyable {
 
     Context context;
     NodeManager* nodeManager = NULL;
+    HUD* hud = NULL;
 
     Ogre::Root *oRoot = NULL;
     Ogre::SceneManager *oSceneManager = NULL;
@@ -48,6 +52,8 @@ public:
     void setContext(const Context &value);
     NodeManager *getNodeManager() const;
     void setNodeManager(NodeManager *value);
+    HUD *getHud() const;
+    void setHud(HUD *value);
     Ogre::Root *getRoot() const;
     void setRoot(Ogre::Root *value);
     Ogre::SceneManager *getSceneManager() const;

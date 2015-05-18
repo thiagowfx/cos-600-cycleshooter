@@ -6,7 +6,6 @@
 #include <SdkTrays.h>
 
 #include "Controller.hpp"
-#include "HUD.hpp"
 #include "InputManager.hpp"
 
 namespace Cycleshooter {
@@ -40,7 +39,6 @@ protected:
     void gameMainLoop();
 
     Cycleshooter::Controller* mController = NULL;
-    Cycleshooter::HUD* mHUD = NULL;
     Cycleshooter::InputManager inputManager;
 
     bool mCursorWasVisible = false;

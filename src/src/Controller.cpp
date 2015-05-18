@@ -42,6 +42,14 @@ void Controller::setOverlaySystem(Ogre::OverlaySystem *value) {
     oOverlaySystem = value;
 }
 
+HUD *Controller::getHud() const {
+    return hud;
+}
+
+void Controller::setHud(HUD *value) {
+    hud = value;
+}
+
 Controller::Controller() {
     go();
 }
@@ -49,6 +57,9 @@ Controller::Controller() {
 Controller::~Controller() {
     if(nodeManager)
         delete nodeManager;
+
+    if(hud)
+        delete hud;
 
     if(oRoot)
         delete oRoot;
@@ -73,6 +84,11 @@ void Controller::go() {
 
     nodeManager = new NodeManager(this);
     nodeManager->setupRunnerMode();
+
+    hud = new HUD(this);
+    hud->setupRunnerMode();
+
+    // setupRunnerMode();
 }
 
 void Controller::setupResources() {
@@ -111,16 +127,19 @@ void Controller::createOverlaySystem() {
 void Controller::setupRunnerMode() {
     context = CONTEXT_RUNNER;
     nodeManager->setupRunnerMode();
+    hud->setupRunnerMode();
 }
 
 void Controller::setupShooterMode() {
     context = CONTEXT_SHOOTER;
     nodeManager->setupShooterMode();
+    hud->setupShooterMode();
 }
 
 void Controller::setupNoneMode() {
     context = CONTEXT_NONE;
     nodeManager->setupNoneMode();
+    hud->setupNoneMode();
 }
 
 void Controller::toggleMode() {

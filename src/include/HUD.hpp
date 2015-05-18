@@ -1,34 +1,35 @@
 #ifndef _HUD_HPP_
 #define _HUD_HPP_
 
+#include <Ogre.h>
 #include <SdkTrays.h>
-#include <SFML/System.hpp>
 
-#include "InputContext.h"
-#include "OgreCamera.h"
+#include "Controller.hpp"
 
 namespace Cycleshooter {
-class HUD : sf::NonCopyable {
-    OgreBites::SdkTrayManager* mTrayManager;
-    OgreBites::ParamsPanel* mDebugPanel;
+class Controller;
+
+class HUD {
+    Controller* controller = NULL;
+
+    OgreBites::SdkTrayManager* trayManager = NULL;
+
+    void go();
 
 public:
-    HUD(const Ogre::String& name, Ogre::RenderWindow* window, OgreBites::InputContext inputContext, OgreBites::SdkTrayListener* listener = 0);
+    HUD(Controller* controller);
     virtual ~HUD();
 
-    void toggleDebugPanel();
-    void toggleFPSPanel();
-    void update(const Ogre::FrameEvent& evt);
-    void updateDebugPanel_CameraElements(Ogre::Camera* camera);
+    void setupRunnerMode();
+    void setupShooterMode();
+    void setupNoneMode();
 
-    bool isDebugPanelVisible() const;
-    std::string getDebugPanel_PolygonFilteringElement() const;
-    void setDebugPanel_PolygonFilteringElement(const std::string& newVal);
-    std::string getDebugPanel_PolygonRenderingElement() const;
-    void setDebugPanel_PolygonRenderingElement(const std::string& newVal);
+    // getters and setters
+    Controller *getController() const;
+    void setController(Controller *value);
     OgreBites::SdkTrayManager *getTrayManager() const;
+    void setTrayManager(OgreBites::SdkTrayManager *value);
 };
-
 }
 
 #endif
