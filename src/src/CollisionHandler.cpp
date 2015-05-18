@@ -32,23 +32,25 @@ void CollisionHandler::loadImages(){
 }
 
 void CollisionHandler::loadTensor(){
+    //Grabing images informations.
+    int collisionWidth, collisionHeight;
+    collisionWidth = static_cast<Ogre::uint32> (collisionTexture->getWidth());
+    collisionHeight = static_cast<Ogre::uint32> (collisionTexture->getHeight());
+
     //Allocating terrainMatrix
-    for (int i = 0; i < TERRAIN_SIZE; i++) {
-        std::vector<int> row;
-        for (int j = 0; j < TERRAIN_SIZE; j++) {
-            row.push_back(i * j);
+    for (int i = 0; i < collisionWidth; i++) {
+        std::vector<Textures> row;
+        for (int j = 0; j < collisionHeight; j++) {
+            row.push_bac(TEX_NONE);
         }
         terrainMatrix.push_back(row);
     }
-    //Grabing images informations.
-    int collisionWidth, circuitHeight;
-    collisionWidth = static_cast<Ogre::uint32> (collisionTexture->getWidth());
-    circuitHeight = static_cast<Ogre::uint32> (collisionTexture->getHeight());
+
     //Pixel color to both images.
     Ogre::ColourValue collisionPixel;
     //Reading (per rows) images for data.
-    for(int w = 0; w <= circuitHeight; w++){
-        for(int h = 0; h <= collisionWidth; h++){
+    for(int w = 0; w < collisionHeight; w++){
+        for(int h = 0; h < collisionWidth; h++){
             collisionPixel = collisionTexture->getColourAt(w,h,0);    //receives collor from image
             Textures textureType;
             //const Ogre::ColourValue color = static_cast<const Ogre::ColourValue>(collisionPixel);
@@ -57,9 +59,10 @@ void CollisionHandler::loadTensor(){
             else if(collisionPixel == COL_ROAD)
                 textureType = TEX_ROAD;
             else if(collisionPixel == COL_ROCK)
-                textureType = TEX_GUAGMIRE;
+                textureType = TEX_ROCK;
             else if(collisionPixel == COL_BULLET)
                 textureType = TEX_BULLET;
+            else if(collisionPixel == COL_GUAGMIRE)
             terrainMatrix[w][h] = textureType;
             std::cout << terrainMatrix[w][h] << " ";
             }

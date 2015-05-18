@@ -13,7 +13,6 @@
 
 namespace Cycleshooter {
 class CollisionHandler {
-    const int TERRAIN_SIZE = 512;
     const Ogre::ColourValue COL_WATER = Ogre::ColourValue (0.0f,0.0f,1.0f,1.0f);
     const Ogre::ColourValue COL_ROAD = Ogre::ColourValue(0.5f,0.5f,0.5f); //Road
     const Ogre::ColourValue COL_ROCK = Ogre::ColourValue(1.0f,1.0f,0.0f); //Rock
@@ -29,9 +28,10 @@ class CollisionHandler {
         TEX_ROAD,
         TEX_ROCK,
         TEX_GUAGMIRE,
+        TEX_NONE
     };
 
-    std::vector<std::vector<int> > terrainMatrix;
+    std::vector<std::vector<Textures> > terrainMatrix;
 
 
 public:
