@@ -18,14 +18,13 @@ void HUD::go() {
 void HUD::createTrayManager() {
     Ogre::LogManager::getSingleton().logMessage("--> Creating Tray Manager <--");
 
-    trayManager = new OgreBites::SdkTrayManager("TrayManager", controller->getWindow(), *inputContext, baseApplication);
+    trayManager = new OgreBites::SdkTrayManager("TrayManager", controller->getWindow(), *inputContext);
     trayManager->hideCursor();
 }
 
-HUD::HUD(Controller *controller, OgreBites::InputContext *inputContext, BaseApplication *baseApplication) :
+HUD::HUD(Controller *controller, OgreBites::InputContext *inputContext) :
     controller(controller),
-    inputContext(inputContext),
-    baseApplication(baseApplication)
+    inputContext(inputContext)
 {
     go();
 }

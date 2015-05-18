@@ -43,7 +43,7 @@ void BaseApplication::createFrameListener() {
     // FrameListener
     mController->getRoot()->addFrameListener(this);
 
-    mHud = new HUD(mController, &mInputContext, this);
+    mHud = new HUD(mController, &mInputContext);
     mHud->setupRunnerMode();
     mController->setHud(mHud);
 }

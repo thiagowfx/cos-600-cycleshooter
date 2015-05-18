@@ -4,17 +4,14 @@
 #include <Ogre.h>
 #include <SdkTrays.h>
 
-#include "BaseApplication.hpp"
 #include "Controller.hpp"
 
 namespace Cycleshooter {
-class BaseApplication;
 class Controller;
 
 class HUD {
     Controller* const controller = NULL;
     OgreBites::InputContext* const inputContext = NULL;
-    Cycleshooter::BaseApplication* const baseApplication = NULL;
 
     OgreBites::SdkTrayManager* trayManager = NULL;
 
@@ -22,7 +19,7 @@ class HUD {
     void createTrayManager();
 
 public:
-    HUD(Controller* controller, OgreBites::InputContext* inputContext, Cycleshooter::BaseApplication* baseApplication);
+    HUD(Controller* controller, OgreBites::InputContext* inputContext);
     virtual ~HUD();
 
     void setupRunnerMode();

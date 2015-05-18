@@ -3,7 +3,6 @@
 
 #include <Ogre.h>
 #include <OIS.h>
-#include <SdkTrays.h>
 
 #include "Controller.hpp"
 #include "InputManager.hpp"
@@ -11,17 +10,15 @@
 
 namespace Cycleshooter {
 class Controller;
-class HUD;
 
-class BaseApplication : public Ogre::FrameListener, public Ogre::WindowEventListener, public OIS::KeyListener, public OIS::MouseListener, public OgreBites::SdkTrayListener
-{
+class BaseApplication : public Ogre::FrameListener, public Ogre::WindowEventListener, public OIS::KeyListener, public OIS::MouseListener {
 public:
     BaseApplication();
     virtual ~BaseApplication();
 
     void go();
 
-protected:
+private:
     void createFrameListener();
     void createScene();
 
