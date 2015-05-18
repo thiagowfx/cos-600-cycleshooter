@@ -10,12 +10,8 @@ Polar::~Polar() {
 
 }
 
-unsigned short Polar::readInstantaneousHeartRate(){
-
-}
-
-unsigned short Polar::readMeanHeartRate(){
-
+void Polar::setupSerialPort(const char *deviceFilePath){
+    serialPort = deviceFilePath;
 }
 
 int Polar::openSerialPort(const char *deviceFilePath){
@@ -65,9 +61,7 @@ int Polar::openSerialPort(const char *deviceFilePath){
     return(fd);
 }
 
-void Polar::closeSerialPort(){
-    
-    int fd = serialDescriptor;
+void Polar::closeSerialPort(int fd){
     
     // Block until all written output has been sent from the device
     if (tcdrain(fd) == -1) {
@@ -85,16 +79,54 @@ void Polar::closeSerialPort(){
     close(fd);
 }
 
-bool Polar::SendGetHeartRate(int fd, int NumEntries){
+int Polar::SendGetHeartRate(int fd, int NumEntries){
+    char SendCommand[8];      // Array sized to hold the largest command string
+    int  CmdLength;           // Number of characters in the command string
 
+    // Validate NumEntries
+    if (NumEntries < 0)
+        NumEntries = 0;
+    else if (NumEntries > 32)
+        NumEntries = 32;
+
+    // Build the command string
+    //   Note: "\015" is the carriage return character
+    CmdLength = sprintf(SendCommand, "G%0d\015", NumEntries);
+
+    // Send the command string
+    return(write(fd, SendCommand, CmdLength) == CmdLength);
 }
 
 int Polar::GetResponseString(int fd, char* ResponseString){
+    char b[2];
+    int i = 0;
+
+    do {
+        int n = read(fd, b, 1);     // read a char at a time
+        if (n == -1)
+            return(-1);             // read failed
+        if (n == 0) {
+            usleep(10 * 1000);      // wait 10 msec before trying again
+            continue;
+        }
+
+        ResponseString[i] = b[0];   // store the character
+        i++;
+
+    // repeat until we see the <CR> character or exceed the buffer
+    } while ((b[0] != 0x0D) && (i < MAX_STRING_RESPONSE));
+
+    // null terminate the string (replace the <CR>)
+    ResponseString[i-1] = 0;
+    return(0);
+}
+
+unsigned short Polar::readInstantaneousHeartRate(){
 
 }
 
-void Polar::setupSerialPort(const char *deviceFilePath){
-    serialPort = deviceFilePath;
+unsigned short Polar::readMeanHeartRate(){
+
 }
 
 }

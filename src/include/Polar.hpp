@@ -6,6 +6,7 @@
 // C++ headers
 #include <iostream>
 #include <cstring>
+#include <cstdio>
 
 // C headers to handle with system and serial Ports
 #include <unistd.h>
@@ -39,11 +40,11 @@ public:
 private:
     // Functions to deal with the serial Port in an Unix env.
     int openSerialPort(const char *deviceFilePath);
-    void closeSerialPort();
+    void closeSerialPort(int fd);
 
     // Function to send a command to get the number of heart rate
     // values specified in NumEntries
-    bool SendGetHeartRate(int fd, int NumEntries);
+    int SendGetHeartRate(int fd, int NumEntries);
 
     // Function to read a response string back from the HRMI
     int GetResponseString(int fd, char* ResponseString);
