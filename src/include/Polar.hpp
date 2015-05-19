@@ -7,6 +7,7 @@
 #include <iostream>
 #include <cstring>
 #include <cstdio>
+#include <vector>
 
 // C headers to handle with system and serial Ports
 #include <unistd.h>
@@ -26,22 +27,26 @@ namespace Cycleshooter {
 class Polar : public AbstractPolar {
 
 public:
-    int itrMean = 20;
+    int itrMeanHeartRate;
 
 private:
     const char *serialPort;
     int serialDescriptor;
     struct termios gOriginalTTYAttrs;
+    std::vector<int> recordHeartRate;
 
 public:
     Polar();
     virtual ~Polar();
+
     // Get the instantaneous value from the HRMI
     short readInstantaneousHeartRate();
-    // Get the mean of "itrMean" values. 
+
+    // Get the mean of "itrMeanHeartRate" values.
     //Useful to get the base Heart Rate in the beginning of the game
     short readMeanHeartRate();
 
+    // Setup the path to the serial Port in a Unix env.
     void setupSerialPort(const char *deviceFilePath);
 
 private:

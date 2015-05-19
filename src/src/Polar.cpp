@@ -3,11 +3,16 @@
 namespace Cycleshooter {
 
 Polar::Polar() {
-
+    // Initialize the size of the vector to get the mean value
+    itrMeanHeartRate = 20;
+    // Clear the vector (Guarantee the vector initialize empty)
+    recordHeartRate.clear();
 }
 
 Polar::~Polar() {
-
+   // Clear the vector and de-alloc the pointer
+    recordHeartRate.clear();
+    delete serialPort;
 }
 
 void Polar::setupSerialPort(const char *deviceFilePath){
@@ -147,17 +152,33 @@ short Polar::readInstantaneousHeartRate(){
 
     closeSerialPort(serialDescriptor);
     heartRate = atoi(rspBytes);
+
+    if(recordHeartRate.size() < itrMeanHeartRate){
+        recordHeartRate.push_back(heartRate);
+    } else {
+        recordHeartRate.erase(recordHeartRate.begin() + 1);
+        recordHeartRate.push_back(heartRate);
+    }
+
     return heartRate;
 }
 
 short Polar::readMeanHeartRate(){
     int sum = 0;
-    for (int i = 0; i < itrMean; ++i){
-        sum += readInstantaneousHeartRate();
-        usleep(10 * 1000);
+
+    if (recordHeartRate.empty()){
+        // If the vector is empty, return the instantaneous value
+        return readInstantaneousHeartRate();
+
+    } else {
+        // Calculate the sum of all elements in the vector
+        for(std::vector<int>::iterator it=recordHeartRate.begin();
+            it!=recordHeartRate.end();++it)
+            sum += *it;
+
+        // return the mean of the vector
+        return (sum/recordHeartRate.size());
+
     }
-
-    return (sum/itrMean);
 }
-
 }
