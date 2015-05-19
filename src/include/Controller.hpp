@@ -5,6 +5,7 @@
 #include <Ogre.h>
 #include <OgreOverlaySystem.h>
 
+#include "DummyConstantPolar.hpp"
 #include "NodeManager.hpp"
 #include "HUD.hpp"
 #include "TerrainManager.hpp"
@@ -36,6 +37,7 @@ class Controller : sf::NonCopyable {
     HUD* hud = NULL;
     TerrainManager* terrainManager = NULL;
     CollisionHandler* collisionHandler = NULL;
+    AbstractPolar* polar = NULL;
 
     Ogre::Root *oRoot = NULL;
     Ogre::SceneManager *oSceneManager = NULL;
@@ -79,6 +81,7 @@ public:
     Ogre::SceneManager *getSceneManager() const;
     Ogre::OverlaySystem *getOverlaySystem() const;
     Debug getDebug() const;
+    AbstractPolar *getPolar() const;
 };
 
 }

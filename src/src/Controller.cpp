@@ -41,10 +41,17 @@ Controller::Controller() {
 Controller::~Controller() {
     if(nodeManager)
         delete nodeManager;
+
+    if(polar)
+        delete polar;
 }
 
 Debug Controller::getDebug() const {
     return debug;
+}
+
+AbstractPolar *Controller::getPolar() const {
+    return polar;
 }
 
 void Controller::go() {
@@ -56,6 +63,8 @@ void Controller::go() {
     Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
 
     context = CONTEXT_RUNNER;
+
+    polar = new DummyConstantPolar();
 
     nodeManager = new NodeManager(this);
     nodeManager->setupRunnerMode();

@@ -16,6 +16,7 @@ class HUD {
     OgreBites::SdkTrayManager* trayManager = NULL;
 
     OgreBites::Widget* contextWidget = NULL;
+    OgreBites::Label* polarLabel = NULL;
 
     // go
     void go();

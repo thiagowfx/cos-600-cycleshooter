@@ -19,14 +19,14 @@ void HUD::go() {
 void HUD::createTrayManager() {
     Ogre::LogManager::getSingleton().logMessage("--> Creating Tray Manager <--");
 
-    trayManager = new OgreBites::SdkTrayManager("TrayManager", controller->getWindow(), *inputContext);
+    trayManager = new OgreBites::SdkTrayManager("trayManager", controller->getWindow(), *inputContext);
     trayManager->hideCursor();
 }
 
 void HUD::createTrayWidgets() {
     Ogre::LogManager::getSingleton().logMessage("--> Creating Tray Widgets <--");
 
-    // create polar, ammunition...
+    polarLabel = trayManager->createLabel(OgreBites::TL_LEFT, "polarLabel", "HR: ", 140);
 }
 
 HUD::HUD(Controller *controller, OgreBites::InputContext *inputContext) :
@@ -43,6 +43,7 @@ HUD::~HUD() {
 
 void HUD::update(const Ogre::FrameEvent& evt) {
     trayManager->frameRenderingQueued(evt);
+    polarLabel->setCaption("HR : " + Ogre::StringConverter::toString(controller->getPolar()->getInstantaneousHeartRate()));
 }
 
 void HUD::setupRunnerMode() {
