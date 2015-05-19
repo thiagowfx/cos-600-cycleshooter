@@ -5,12 +5,24 @@
 
 namespace Cycleshooter {
 class DummyPolar : public AbstractPolar {
+public:
+    int itrMeanHeartRate;
+
+private:
+    short minHeartPeak;
+    short maxHeartPeak;
 
 public:
     DummyPolar();
     virtual ~DummyPolar();
+
+    void setupHeartPeaks(short min, short max);
+
     short readInstantaneousHeartRate();
     short readMeanHeartRate();
+
+private:
+
 };
 
 }
