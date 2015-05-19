@@ -40,11 +40,11 @@ public:
     virtual ~Polar();
 
     // Get the instantaneous value from the HRMI
-    short readInstantaneousHeartRate();
+    virtual int getInstantaneousHeartRate();
 
     // Get the mean of "itrMeanHeartRate" values.
     //Useful to get the base Heart Rate in the beginning of the game
-    short readMeanHeartRate();
+    virtual int getMeanHeartRate();
 
     // Setup the path to the serial Port in a Unix env.
     void setupSerialPort(const char *deviceFilePath);

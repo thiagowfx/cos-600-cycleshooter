@@ -19,7 +19,7 @@ void DummyPolar::setupHeartPeaks(short min, short max){
     maxHeartPeak = max;
 }
 
-short DummyPolar::readInstantaneousHeartRate(){
+int DummyPolar::getInstantaneousHeartRate(){
 
     short heartRate;
 
@@ -40,12 +40,12 @@ short DummyPolar::readInstantaneousHeartRate(){
     return heartRate;
 }
 
-short DummyPolar::readMeanHeartRate(){
+int DummyPolar::getMeanHeartRate(){
     int sum = 0;
 
     if (recordHeartRate.empty()){
         // If the vector is empty, return the instantaneous value
-        return readInstantaneousHeartRate();
+        return getInstantaneousHeartRate();
 
     } else {
         // Calculate the sum of all elements in the vector

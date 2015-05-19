@@ -76,19 +76,24 @@ if(DEPENDENCIES_READY)
         )
 
     file(
-        GLOB PROJECT_HEADERS
+        GLOB_RECURSE PROJECT_HEADERS
         "${SRC_DIR}/include/*.h"
         "${SRC_DIR}/include/*.hpp"
         )
 
     file(
-        GLOB PROJECT_SOURCES
+        GLOB_RECURSE PROJECT_SOURCES
         "${SRC_DIR}/src/*.cpp"
         )
-        
-    include_directories(
-        "${SRC_DIR}/include"
-        )
+    
+    set(PROJECT_INCLUDE_DIRS "")
+    foreach(_HEADERFILE ${PROJECT_HEADERS})
+        get_filename_component(_DIR ${_HEADERFILE} DIRECTORY)
+        list(APPEND PROJECT_INCLUDE_DIRS ${_DIR})
+    endforeach()
+    list(REMOVE_DUPLICATES PROJECT_INCLUDE_DIRS)
+    
+    include_directories(${PROJECT_INCLUDE_DIRS})
 
     add_executable(
         ${PROJECT_NAME}

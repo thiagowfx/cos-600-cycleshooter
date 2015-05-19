@@ -126,7 +126,7 @@ int Polar::getResponseString(int fd, char* responseString){
     return(0);
 }
 
-short Polar::readInstantaneousHeartRate(){
+int Polar::getInstantaneousHeartRate(){
     
     char *rspBytes = new char[MAX_STRING_RESPONSE]; // Response string
     short heartRate;
@@ -163,12 +163,12 @@ short Polar::readInstantaneousHeartRate(){
     return heartRate;
 }
 
-short Polar::readMeanHeartRate(){
+int Polar::getMeanHeartRate(){
     int sum = 0;
 
     if (recordHeartRate.empty()){
         // If the vector is empty, return the instantaneous value
-        return readInstantaneousHeartRate();
+        return getInstantaneousHeartRate();
 
     } else {
         // Calculate the sum of all elements in the vector
