@@ -5,7 +5,9 @@
 #include <Ogre.h>
 #include <OgreOverlaySystem.h>
 
-#include "DummyConstantPolar.hpp"
+#include "ConstantPolar.hpp"
+#include "RandomPolar.hpp"
+
 #include "NodeManager.hpp"
 #include "HUD.hpp"
 #include "TerrainManager.hpp"

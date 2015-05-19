@@ -64,7 +64,7 @@ void Controller::go() {
 
     context = CONTEXT_RUNNER;
 
-    polar = new DummyConstantPolar();
+    polar = new RandomPolar();
 
     nodeManager = new NodeManager(this);
     nodeManager->setupRunnerMode();

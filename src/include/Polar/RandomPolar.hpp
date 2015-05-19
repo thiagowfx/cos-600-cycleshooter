@@ -4,26 +4,20 @@
 #include "AbstractPolar.hpp"
 
 #include <cstdlib>
+#include <deque>
 #include <iostream>
-#include <vector>
 
 namespace Cycleshooter {
-class DummyPolar : public AbstractPolar {
+class RandomPolar : public AbstractPolar {
+    unsigned minPeak, maxPeak;
+    const unsigned historyLimit;
+    std::deque<unsigned> heartRateHistory;
+
+    // TODO: move this to abstract class
+    void addRecord(const unsigned& record);
+
 public:
-    int itrMeanHeartRate;
-
-private:
-    short minHeartPeak;
-    short maxHeartPeak;
-    std::vector<int> recordHeartRate;
-
-public:
-    DummyPolar();
-    virtual ~DummyPolar();
-
-    // Setup the min and max values to rand.
-    // Tip : Use short intervals (e.g, 80 - 90)
-    void setupHeartPeaks(short min, short max);
+    RandomPolar(unsigned minPeak = 85, unsigned maxPeak = 95, unsigned historyLimit = 200);
 
     /**
       * Get a single value to represent the Heart Rate and save it
@@ -35,6 +29,8 @@ public:
       */
     virtual int getMeanHeartRate();
 
+    void setMinHeartPeak(const unsigned &value);
+    void setMaxHeartPeak(const unsigned &value);
 };
 
 }

@@ -4,11 +4,11 @@
 #include "AbstractPolar.hpp"
 
 namespace Cycleshooter {
-class DummyConstantPolar : public AbstractPolar {
+class ConstantPolar : public AbstractPolar {
     unsigned constantHeartRate;
 
 public:
-    DummyConstantPolar(unsigned constantHeartRate = 90);
+    ConstantPolar(unsigned constantHeartRate = 90);
 
     virtual int getInstantaneousHeartRate();
     virtual int getMeanHeartRate();
