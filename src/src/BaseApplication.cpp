@@ -90,10 +90,7 @@ void BaseApplication::go() {
 }
 
 bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
-    if(mController->getWindow()->isClosed())
-        return false;
-
-    if(mShutDown)
+    if(mController->getWindow()->isClosed() || mShutDown)
         return false;
 
     // capture/update each device

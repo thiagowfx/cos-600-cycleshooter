@@ -3,9 +3,9 @@
 
 #include "AbstractPolar.hpp"
 
+#include <algorithm>
 #include <cstdlib>
 #include <deque>
-#include <iostream>
 
 namespace Cycleshooter {
 class RandomPolar : public AbstractPolar {

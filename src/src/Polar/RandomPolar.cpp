@@ -38,13 +38,7 @@ int RandomPolar::getMeanHeartRate(){
     if(heartRateHistory.empty())
         return getInstantaneousHeartRate();
 
-    unsigned sum = 0;
-
-    for(auto& el : heartRateHistory) {
-        sum += el;
-    }
-
-    return sum / heartRateHistory.size();
+    return std::accumulate(heartRateHistory.begin(), heartRateHistory.end(), 0) / heartRateHistory.size();
 }
 
 }
