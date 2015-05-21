@@ -18,11 +18,9 @@ void RandomPolar::setMaxPeak(const unsigned &value) {
 }
 
 unsigned RandomPolar::getInstantaneousHeartRate() {
-    unsigned instantaneousHR = minPeak + (rand() % (maxPeak - minPeak + 1));
-
-    addRecord(instantaneousHR);
-
-    return instantaneousHR;
+    unsigned heartRate = minPeak + (rand() % (maxPeak - minPeak + 1));
+    addRecord(heartRate);
+    return heartRate;
 }
 
 }
