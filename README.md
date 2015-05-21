@@ -1,7 +1,6 @@
 cycleshooter
 ============
 
-- Bullet (for physics)
 - Ogre3d (for rendering)
 - SFML (misc)
 
@@ -38,20 +37,16 @@ Additional custom targets:
 Dependencies
 ============
 
-If you want to build Bullet, Ogre or SFML, you must have some dependencies already installed on your system:
+If you want to build Ogre or SFML, you must have some dependencies already installed on your system:
 
 On Ubuntu:
-- `sudo apt-get build-dep libbullet-dev libogre-1.9-dev libsfml-dev; sudo apt-get install libglew-dev libudev-dev`
+- `sudo apt-get build-dep libogre-1.9-dev libsfml-dev; sudo apt-get install cmake libglew-dev libudev-dev`
 
 On Arch Linux:
-- `sudo pacman -S $(expac -S "%E" bullet ogre sfml)`
+- `sudo pacman -S $(expac -S "%E" ogre sfml)`
 
 How to use each library
 =======================
-
-Bullet
-------
-Use `find_package(Bullet REQUIRED)`.
 
 Ogre
 ----
