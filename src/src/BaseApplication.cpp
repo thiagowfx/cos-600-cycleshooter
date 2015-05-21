@@ -70,6 +70,8 @@ void BaseApplication::createScene() {
 }
 
 void BaseApplication::go() {
+    srand(time(NULL));
+
     mController = new Controller();
 
     // WindowListener

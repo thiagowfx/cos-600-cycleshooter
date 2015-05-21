@@ -2,43 +2,27 @@
 
 namespace Cycleshooter {
 
-RandomPolar::RandomPolar(unsigned minPeak, unsigned maxPeak, unsigned historyLimit) :
+RandomPolar::RandomPolar(unsigned minPeak, unsigned maxPeak, unsigned HRHistoryLimit) :
+    AbstractPolar(HRHistoryLimit),
     minPeak(minPeak),
-    maxPeak(maxPeak),
-    historyLimit(historyLimit)
+    maxPeak(maxPeak)
 {
-    // TODO: move this upstream (and remove includes from the hpp)
-    srand(time(NULL));
 }
 
-void RandomPolar::setMinHeartPeak(const unsigned &value) {
+void RandomPolar::setMinPeak(const unsigned &value) {
     minPeak = value;
 }
 
-void RandomPolar::setMaxHeartPeak(const unsigned &value) {
+void RandomPolar::setMaxPeak(const unsigned &value) {
     maxPeak = value;
 }
 
-void RandomPolar::addRecord(const unsigned &record) {
-    if(heartRateHistory.size() == historyLimit)
-        heartRateHistory.pop_front();
-    heartRateHistory.push_back(record);
-}
+unsigned RandomPolar::getInstantaneousHeartRate() {
+    unsigned instantaneousHR = minPeak + (rand() % (maxPeak - minPeak + 1));
 
-int RandomPolar::getInstantaneousHeartRate(){
-    // generate a random number
-    unsigned instantaneousHeartRate = minPeak + (rand() % (maxPeak - minPeak));
+    addRecord(instantaneousHR);
 
-    addRecord(instantaneousHeartRate);
-
-    return instantaneousHeartRate;
-}
-
-int RandomPolar::getMeanHeartRate(){
-    if(heartRateHistory.empty())
-        return getInstantaneousHeartRate();
-
-    return std::accumulate(heartRateHistory.begin(), heartRateHistory.end(), 0) / heartRateHistory.size();
+    return instantaneousHR;
 }
 
 }

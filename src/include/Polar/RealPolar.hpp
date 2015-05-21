@@ -1,5 +1,5 @@
-#ifndef _Polar_HPP_
-#define _Polar_HPP_
+#ifndef _POLAR_HPP_
+#define _POLAR_HPP_
 
 #include "AbstractPolar.hpp"
 
@@ -24,7 +24,7 @@
 #define ERROR_CODE -1
 
 namespace Cycleshooter {
-class Polar : public AbstractPolar {
+class RealPolar : public AbstractPolar {
 
 public:
     int itrMeanHeartRate;
@@ -36,15 +36,11 @@ private:
     std::vector<int> recordHeartRate;
 
 public:
-    Polar();
-    virtual ~Polar();
+    RealPolar();
+    virtual ~RealPolar();
 
     // Get the instantaneous value from the HRMI
-    virtual int getInstantaneousHeartRate();
-
-    // Get the mean of "itrMeanHeartRate" values.
-    //Useful to get the base Heart Rate in the beginning of the game
-    virtual int getMeanHeartRate();
+    virtual unsigned getInstantaneousHeartRate();
 
     // Setup the path to the serial Port in a Unix env.
     void setupSerialPort(const char *deviceFilePath);

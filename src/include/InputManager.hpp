@@ -15,10 +15,10 @@ public:
 
     void addOrUpdateBinding(const OIS::KeyCode& key, const std::function<void(void)>& action);
     void addOrUpdateBinding(const std::vector<OIS::KeyCode>& keys, const std::function<void(void)>& action);
-    void clearBindings();
     void executeAction(const OIS::KeyCode& key);
     bool hasBinding(const OIS::KeyCode& key) const;
     void removeBinding(const OIS::KeyCode& key);
+    void removeBindings();
 };
 }
 

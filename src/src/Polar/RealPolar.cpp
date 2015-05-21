@@ -1,25 +1,25 @@
-#include "Polar.hpp"
+#include "RealPolar.hpp"
 
 namespace Cycleshooter {
 
-Polar::Polar() {
+RealPolar::RealPolar() {
     // Initialize the size of the vector to get the mean value
     itrMeanHeartRate = 20;
     // Clear the vector (Guarantee the vector initialize empty)
     recordHeartRate.clear();
 }
 
-Polar::~Polar() {
+RealPolar::~RealPolar() {
    // Clear the vector and de-alloc the pointer
     recordHeartRate.clear();
     delete serialPort;
 }
 
-void Polar::setupSerialPort(const char *deviceFilePath){
+void RealPolar::setupSerialPort(const char *deviceFilePath){
     serialPort = deviceFilePath;
 }
 
-int Polar::openSerialPort(const char *deviceFilePath){
+int RealPolar::openSerialPort(const char *deviceFilePath){
     // variables
     int fd = -1;              // file descriptor for serial port
     struct termios options;   // serial port configuration options
@@ -66,7 +66,7 @@ int Polar::openSerialPort(const char *deviceFilePath){
     return(fd);
 }
 
-void Polar::closeSerialPort(int fd){
+void RealPolar::closeSerialPort(int fd){
     
     // Block until all written output has been sent from the device
     if (tcdrain(fd) == -1) {
@@ -84,7 +84,7 @@ void Polar::closeSerialPort(int fd){
     close(fd);
 }
 
-int Polar::sendGetHeartRate(int fd, int numEntries){
+int RealPolar::sendGetHeartRate(int fd, int numEntries){
     char sendCommand[8];      // Array sized to hold the largest command string
     int  cmdLength;           // Number of characters in the command string
 
@@ -102,7 +102,7 @@ int Polar::sendGetHeartRate(int fd, int numEntries){
     return(write(fd, sendCommand, cmdLength) == cmdLength);
 }
 
-int Polar::getResponseString(int fd, char* responseString){
+int RealPolar::getResponseString(int fd, char* responseString){
     char b[2];
     int i = 0;
 
@@ -126,7 +126,7 @@ int Polar::getResponseString(int fd, char* responseString){
     return(0);
 }
 
-int Polar::getInstantaneousHeartRate(){
+unsigned RealPolar::getInstantaneousHeartRate(){
     
     char *rspBytes = new char[MAX_STRING_RESPONSE]; // Response string
     short heartRate;
@@ -163,22 +163,4 @@ int Polar::getInstantaneousHeartRate(){
     return heartRate;
 }
 
-int Polar::getMeanHeartRate(){
-    int sum = 0;
-
-    if (recordHeartRate.empty()){
-        // If the vector is empty, return the instantaneous value
-        return getInstantaneousHeartRate();
-
-    } else {
-        // Calculate the sum of all elements in the vector
-        for(std::vector<int>::iterator it=recordHeartRate.begin();
-            it!=recordHeartRate.end();++it)
-            sum += *it;
-
-        // return the mean of the vector
-        return (sum/recordHeartRate.size());
-
-    }
-}
 }

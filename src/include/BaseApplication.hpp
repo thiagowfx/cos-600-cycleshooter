@@ -3,6 +3,7 @@
 
 #include <Ogre.h>
 #include <OIS.h>
+#include <cstdlib>
 
 #include "Controller.hpp"
 #include "InputManager.hpp"

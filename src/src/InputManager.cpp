@@ -31,7 +31,7 @@ void InputManager::executeAction(const OIS::KeyCode &key) {
     }
 }
 
-void InputManager::clearBindings() {
+void InputManager::removeBindings() {
     keyBindings.clear();
 }
 
