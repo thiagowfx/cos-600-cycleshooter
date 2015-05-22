@@ -13,9 +13,12 @@ RealPolar::~RealPolar() {
 }
 
 void RealPolar::openSerialPort(const char* deviceFilePath) {
+    std::cout << "--> Polar: opening serial port <--" << std::endl;
+
     // file descriptor for serial port
     serialDescriptor = -1;
     
+    // TODO: make messages from the exceptions more readable and remove couts
     // open the serial port
     if ((serialDescriptor = open(deviceFilePath, O_RDWR | O_NOCTTY )) == -1) {
         std::cout << "Error opening serial port " << deviceFilePath << " - " << strerror(errno) << "(" << errno << ")" << std::endl;
@@ -55,6 +58,8 @@ void RealPolar::openSerialPort(const char* deviceFilePath) {
 }
 
 void RealPolar::closeSerialPort() {
+    std::cout << "--> Polar: closing serial port <--" << std::endl;
+
     // block until all written output has been sent from the device
     if (tcdrain(serialDescriptor) == -1) {
         std::cout << "Error waiting for drain - "<< strerror(errno) << "(" << errno <<")" << std::endl;
@@ -69,7 +74,7 @@ void RealPolar::closeSerialPort() {
     close(serialDescriptor);
 }
 
-int RealPolar::sendGetHeartRate(int numEntries) {
+void RealPolar::sendGetHeartRate(int numEntries) {
     // array sized to hold the largest command string
     char sendCommand[8];
 
@@ -87,10 +92,12 @@ int RealPolar::sendGetHeartRate(int numEntries) {
     cmdLength = sprintf(sendCommand, "G%0d\015", numEntries);
     
     // send the command string
-    return write(serialDescriptor, sendCommand, cmdLength) == cmdLength;
+    if (write(serialDescriptor, sendCommand, cmdLength) != cmdLength) {
+        throw std::runtime_error("Error sending the command string -- number of bytes written were different");
+    }
 }
 
-int RealPolar::getResponseString(char* responseString){
+void RealPolar::getResponseString(char* responseString){
     char b[2];
     int i = 0;
     
@@ -99,8 +106,7 @@ int RealPolar::getResponseString(char* responseString){
         int n = read(serialDescriptor, b, 1);
 
         if (n == -1) {
-            // read failed
-            return ERROR_CODE;
+            throw std::runtime_error("Error getting the response string -- read failed");
         }
 
         if (n == 0) {
@@ -110,6 +116,7 @@ int RealPolar::getResponseString(char* responseString){
         }
         
         // store the character
+        // TODO i++
         responseString[i] = b[0];
         ++i;
         
@@ -118,28 +125,23 @@ int RealPolar::getResponseString(char* responseString){
     
     // null terminate the string (replace the <CR>)
     responseString[i-1] = 0;
-
-    return 0;
 }
 
 unsigned RealPolar::getInstantaneousHeartRate() {
     // response string
     char *rspBytes = new char[MAX_STRING_RESPONSE];
+    // TODO: move this (numEntries) upstream
     int numEntries = 1;
     
-    // send a Get Heart Rate command requesting history buffer entries
-    if (sendGetHeartRate(numEntries) == 0) {
-        std::cout << "Error: SendGetHeartRate failed!" << std::endl;
-        return ERROR_CODE;
-    }
-    
-    if (getResponseString(rspBytes) == -1) {
-        std::cout << "Error: GetResponseString failed!" << std::endl;
-        return ERROR_CODE;
-    }
-    else {
-        std::cout << "Request => " << rspBytes << std::endl;
-    }
+    // send a get heart Rate command requesting history buffer entries
+    sendGetHeartRate(numEntries);
+
+    // TODO: sleep for a while??
+
+    // TODO: use std::string instead of passing a char* around (c-style)
+    getResponseString(rspBytes);
+
+    std::cout << "Request => " << rspBytes << std::endl;
 
     unsigned heartRate = atoi(rspBytes);
     addRecord(heartRate);

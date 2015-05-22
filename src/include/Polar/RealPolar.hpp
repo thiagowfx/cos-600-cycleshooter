@@ -21,8 +21,6 @@
 #include <sys/param.h>
 #include <sys/select.h>
 
-#define MAX_STRING_RESPONSE 140
-
 namespace Cycleshooter {
 class RealPolar : public AbstractPolar {
     /**
@@ -49,12 +47,14 @@ class RealPolar : public AbstractPolar {
     /**
      * Send a command to get the specified number of heart rate values.
      */
-    int sendGetHeartRate(int NumEntries);
+    void sendGetHeartRate(int NumEntries);
 
     /**
      * Read a response string back from the HRMI.
      */
-    int getResponseString(char* ResponseString);
+    void getResponseString(char* responseString);
+
+    const unsigned MAX_STRING_RESPONSE = 140;
 
 public:
     RealPolar(const std::string& deviceFilePath, unsigned HRHistoryLimit = 120);
