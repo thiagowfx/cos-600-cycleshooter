@@ -3,22 +3,17 @@
 
 #include "AbstractPolar.hpp"
 
-// TODO: clean up those headers
-
 // C++ headers
 #include <iostream>
 #include <cstring>
-#include <cstdio>
 #include <stdexcept>
 
-// C headers to handle with system and serial Ports
-#include <unistd.h>
+// C headers to handle the system and its serial ports
+#include <errno.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
-#include <errno.h>
 #include <termios.h>
-#include <sys/param.h>
-#include <sys/select.h>
+#include <unistd.h>
 
 namespace Cycleshooter {
 /**
