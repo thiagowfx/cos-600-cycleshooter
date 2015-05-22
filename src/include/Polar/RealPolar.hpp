@@ -3,25 +3,27 @@
 
 #include "AbstractPolar.hpp"
 
+// TODO: clean up those headers
+
 // C++ headers
 #include <iostream>
 #include <cstring>
 #include <cstdio>
 #include <stdexcept>
-#include <vector>
 
 // C headers to handle with system and serial Ports
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <errno.h>
-#include <paths.h>
 #include <termios.h>
-#include <sysexits.h>
 #include <sys/param.h>
 #include <sys/select.h>
 
 namespace Cycleshooter {
+/**
+ * @brief The RealPolar class reads a heart rate value from a device connected to the specified serial port.
+ */
 class RealPolar : public AbstractPolar {
     /**
      * Serial port file descriptor.
@@ -47,21 +49,28 @@ class RealPolar : public AbstractPolar {
     /**
      * Send a command to get the specified number of heart rate values.
      */
-    void sendGetHeartRate(int NumEntries);
+    void sendGetHeartRate(int numEntries = 1);
 
     /**
      * Read a response string back from the HRMI.
      */
     void getResponseString(char* responseString);
 
-    const unsigned MAX_STRING_RESPONSE = 140;
+    /**
+     * Maximum number of characters that will be read until a '\r' is found.
+     */
+    static const unsigned MAX_STRING_RESPONSE = 140;
 
 public:
+    /**
+     * @brief RealPolar Construct a new RealPolar object.
+     * @param deviceFilePath Path to the serial port (e.g. "/dev/ttyUSB0")
+     */
     RealPolar(const std::string& deviceFilePath, unsigned HRHistoryLimit = 120);
     virtual ~RealPolar();
 
     /**
-     * Get the instantaneous value from the HRMI.
+     * Get the instantaneous heart rate value from the HRMI.
      */
     virtual unsigned getInstantaneousHeartRate();
 };

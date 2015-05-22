@@ -4,6 +4,9 @@
 #include "AbstractPolar.hpp"
 
 namespace Cycleshooter {
+/**
+ * @brief The RandomPolar class generates a random heart rate value in [minPeak, maxPeak] range.
+ */
 class RandomPolar : public AbstractPolar {
     unsigned minPeak, maxPeak;
 

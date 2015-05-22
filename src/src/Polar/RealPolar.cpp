@@ -13,28 +13,24 @@ RealPolar::~RealPolar() {
 }
 
 void RealPolar::openSerialPort(const char* deviceFilePath) {
-    std::cout << "--> Polar: opening serial port <--" << std::endl;
+    std::cout << "--> RealPolar: opening serial port <--" << std::endl;
 
     // file descriptor for serial port
     serialDescriptor = -1;
     
-    // TODO: make messages from the exceptions more readable and remove couts
     // open the serial port
     if ((serialDescriptor = open(deviceFilePath, O_RDWR | O_NOCTTY )) == -1) {
-        std::cout << "Error opening serial port " << deviceFilePath << " - " << strerror(errno) << "(" << errno << ")" << std::endl;
-        throw std::runtime_error("Error opening serial port");
+        throw std::runtime_error("Error opening serial port " + std::string(deviceFilePath) + " -- " + std::string(strerror(errno)) + "(" + std::to_string(errno) + ")");
     }
     
     // prevent other processes from opening the serial port
     if (ioctl(serialDescriptor, TIOCEXCL) == -1) {
-        std::cout << "Error setting TIOCEXCL on " << deviceFilePath << " - " << strerror(errno) << "(" << errno << ")" << std::endl;
-        throw std::runtime_error("Error opening serial port");
+        throw std::runtime_error("Error setting TIOCEXCL on " + std::string(deviceFilePath) + " -- " + std::string(strerror(errno)) + "(" + std::to_string(errno) + ")");
     }
     
     // get the current serial port options and save them to restore on exit
     if (tcgetattr(serialDescriptor, &originalTTYAttributes) == -1) {
-        std::cout << "Error getting tty attributes " << deviceFilePath << " - " << strerror(errno) << "(" << errno << ")" << std::endl;
-        throw std::runtime_error("Error opening serial port");
+        throw std::runtime_error("Error getting tty attributes on " + std::string(deviceFilePath) + " -- " + std::string(strerror(errno)) + "(" + std::to_string(errno) + ")");
     }
 
     // serial port configuration options
@@ -52,13 +48,12 @@ void RealPolar::openSerialPort(const char* deviceFilePath) {
     
     // cause new options to take effect immediately
     if (tcsetattr(serialDescriptor, TCSANOW, &options) == -1) {
-        std::cout << "Error setting tty attributes!" << std::endl;
-        throw std::runtime_error("Error opening serial port");
+        throw std::runtime_error("Error setting tty attributes on " + std::string(deviceFilePath) + " -- " + std::string(strerror(errno)) + "(" + std::to_string(errno) + ")");
     }
 }
 
 void RealPolar::closeSerialPort() {
-    std::cout << "--> Polar: closing serial port <--" << std::endl;
+    std::cout << "--> RealPolar: closing serial port <--" << std::endl;
 
     // block until all written output has been sent from the device
     if (tcdrain(serialDescriptor) == -1) {
@@ -102,23 +97,21 @@ void RealPolar::getResponseString(char* responseString){
     int i = 0;
     
     do {
-        // read a char at a time
+        // read one char at a time
         int n = read(serialDescriptor, b, 1);
 
         if (n == -1) {
-            throw std::runtime_error("Error getting the response string -- read failed");
+            throw std::runtime_error("Error getting the response string  -- " + std::string(strerror(errno)) + "(" + std::to_string(errno) + ")");
         }
 
         if (n == 0) {
-            // wait 10 msec before trying again
-            usleep(10 * 1000);
+            // wait 10ms before trying again
+            usleep(10 * 1e3);
             continue;
         }
         
         // store the character
-        // TODO i++
-        responseString[i] = b[0];
-        ++i;
+        responseString[i++] = b[0];
         
         // repeat until we see the <CR> character or exceed the buffer
     } while ((b[0] != 0x0D) && (i < MAX_STRING_RESPONSE));
@@ -128,22 +121,20 @@ void RealPolar::getResponseString(char* responseString){
 }
 
 unsigned RealPolar::getInstantaneousHeartRate() {
+    // send a get heart Rate command requesting history buffer entries
+    sendGetHeartRate();
+
     // response string
     char *rspBytes = new char[MAX_STRING_RESPONSE];
-    // TODO: move this (numEntries) upstream
-    int numEntries = 1;
-    
-    // send a get heart Rate command requesting history buffer entries
-    sendGetHeartRate(numEntries);
-
-    // TODO: sleep for a while??
-
-    // TODO: use std::string instead of passing a char* around (c-style)
     getResponseString(rspBytes);
 
-    std::cout << "Request => " << rspBytes << std::endl;
+    unsigned heartRate;
 
-    unsigned heartRate = atoi(rspBytes);
+    // discard the two first values (the heart rate is the third one)
+    sscanf(rspBytes, "%*u %*u %u", &heartRate);
+
+    delete rspBytes;
+
     addRecord(heartRate);
     return heartRate;
 }
