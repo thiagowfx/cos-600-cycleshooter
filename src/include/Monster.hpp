@@ -1,5 +1,5 @@
-#ifndef _Monster_HPP_
-#define _Monster_HPP_
+#ifndef _MONSTER_HPP_
+#define _MONSTER_HPP_
 
 namespace Cycleshooter {
 class Monster {
