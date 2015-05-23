@@ -1,30 +1,25 @@
 #ifndef _PLAYER_HPP_
 #define _PLAYER_HPP_
 
+#include <vector>
+
 namespace Cycleshooter {
 class GameLogic;
 
 class Player {
-    double cycleVelocityX;    //gets from ergometric bicycle * sin(angle between previous lookAt and actual lookAt)
-    double cycleVelocityZ;    //gets from ergometric bicycle * cos(angle between previous lookAt and actual lookAt)
-    double cycleVelocityY;    //probably always = 0
-    double worldPositionX;    //position coordinates in the Ogre world
-    double worldPositionY;
-    double worldPositionZ;
+    unsigned heartRate;
+    std::vector<double> bicycleVelocity;
+    std::vector<int> playerPosition;
     int possessedBullets;
-    double crossPositionX;
-    double crossPositionY;
+    double sensibility;
+    std::pair<double, double> crossPosition;
 
 public:
     Player();
     virtual ~Player();
 
-    void turnRightCycleMode();
-    void turnLeftCycleMode();
-    void pressRightShooterMode();
-    void pressLeftShooterMode();
-    void pressUpShooterMode();
-    void pressDownShooterMode();
+    void setSensibility(double value);
+    unsigned getHeartRate() const;
 };
 }
 
