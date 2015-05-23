@@ -92,7 +92,7 @@ void BaseApplication::go() {
 }
 
 bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
-    if(mController->getWindow()->isClosed() || mShutDown) {
+    if(mController->getWindow()->isClosed() || mController->getShutdown()) {
         // TODO: add getController()->getThreadUpdater->wait(); (bicycle)
         // TODO: add getController()->getThreadUpdater->wait(); (polar)
         return false;
@@ -252,7 +252,7 @@ void BaseApplication::setupKeyboardRunnerMapping() {
 
     // quit from the application
     inputManager.addOrUpdateBinding(OIS::KC_ESCAPE, [&]{
-        mShutDown = true;
+        mController->shutdownNow();
     });
 
     inputManager.addOrUpdateBinding({OIS::KC_W,
@@ -295,7 +295,7 @@ void BaseApplication::setupKeyboardRunnerMapping() {
 void BaseApplication::gameMainLoop() {
     Ogre::LogManager::getSingleton().logMessage("--> Game Main Loop <--");
 
-    while(!mShutDown) {
+    while(!mController->getShutdown()) {
         mController->getRoot()->renderOneFrame();
     }
 }

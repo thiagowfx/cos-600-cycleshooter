@@ -42,8 +42,6 @@ private:
     Cycleshooter::HUD* mHud = NULL;
     Cycleshooter::InputManager inputManager;
 
-    bool mShutDown = false;
-
     OgreBites::InputContext mInputContext;
     OIS::InputManager* mInputManager = NULL;
 };

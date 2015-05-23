@@ -43,7 +43,7 @@ HUD::~HUD() {
 
 void HUD::update(const Ogre::FrameEvent& evt) {
     trayManager->frameRenderingQueued(evt);
-    polarLabel->setCaption("HR: " + Ogre::StringConverter::toString(controller->getHeartRate()));
+    polarLabel->setCaption("HR: " + Ogre::StringConverter::toString(controller->getLogicManager()->getHeartRate()));
 }
 
 void HUD::setupRunnerMode() {

@@ -25,7 +25,6 @@ enum Context {
 };
 
 class Controller : sf::NonCopyable {
-
     /**
      * The polar device, from here we will get the heart rates.
      */
@@ -44,6 +43,7 @@ class Controller : sf::NonCopyable {
 
     Context context = CONTEXT_RUNNER;
     bool debug = false;
+    bool shutdown = false;
 
     NodeManager* nodeManager = NULL;
     HUD* hud = NULL;
@@ -106,6 +106,8 @@ public:
     Ogre::RenderWindow *getWindow() const;
     Ogre::SceneManager *getSceneManager() const;
     Ogre::OverlaySystem *getOverlaySystem() const;
+    bool getShutdown() const;
+    void shutdownNow();
 };
 
 }

@@ -68,6 +68,14 @@ void Controller::polarUpdaterFunction() {
     }
 }
 
+bool Controller::getShutdown() const {
+    return shutdown;
+}
+
+void Controller::shutdownNow() {
+    shutdown = true;
+}
+
 void Controller::go() {
     createRoot();
 
