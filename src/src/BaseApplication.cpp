@@ -92,8 +92,11 @@ void BaseApplication::go() {
 }
 
 bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
-    if(mController->getWindow()->isClosed() || mShutDown)
+    if(mController->getWindow()->isClosed() || mShutDown) {
+        // TODO: add getController()->getThreadUpdater->wait(); (bicycle)
+        // TODO: add getController()->getThreadUpdater->wait(); (polar)
         return false;
+    }
 
     // capture/update each device
     mInputContext.capture();

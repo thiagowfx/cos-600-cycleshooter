@@ -49,20 +49,23 @@ Controller::~Controller() {
         delete polar;
 }
 
-AbstractPolar *Controller::getPolar() const {
-    return polar;
-}
+void Controller::polarUpdaterFunction() {
+    while(!shutdown) {
+        sf::sleep(POLAR_SLEEP_TIME);
 
-unsigned Controller::getHeartRate() const {
-    return heartRate;
-}
-
-void kk() {
-	while(true) {
-		sf::sleep(sf::seconds(1));
-		std::cout << "mythread" << std::endl;
-	}
-
+        try {
+            unsigned heartRate = polar->getInstantaneousHeartRate();
+            if(heartRate) {
+                logicManager->setHeartRate(heartRate);
+            }
+            else {
+                Ogre::LogManager::getSingleton().logMessage("polarUpdaterFunction: heartRate is zero!! You're either dead or far from the control board", Ogre::LML_CRITICAL);
+            }
+        }
+        catch (...) {
+            Ogre::LogManager::getSingleton().logMessage("polarUpdaterFunction: caught exception", Ogre::LML_CRITICAL);
+        }
+    }
 }
 
 void Controller::go() {
@@ -76,8 +79,10 @@ void Controller::go() {
 
     Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
 
+    // logicmanager
+
     polar = new RandomPolar();
-    polarUpdater = new sf::Thread(&kk);
+    polarUpdater = new sf::Thread(&Controller::polarUpdaterFunction, this);
     polarUpdater->launch();
 
     nodeManager = new NodeManager(this);

@@ -26,9 +26,21 @@ enum Context {
 
 class Controller : sf::NonCopyable {
 
-    unsigned heartRate;
+    /**
+     * The polar device, from here we will get the heart rates.
+     */
     AbstractPolar* polar = NULL;
+
+    /**
+     * The thread responsible for updating the heart rate.
+     */
     sf::Thread* polarUpdater = NULL;
+
+    /**
+     * Continuously updates the heart rate in our model/logic.
+     * It gets the value from the polar device.
+     */
+    void polarUpdaterFunction(); // TODO: add parameter (how many seconds will we sleep?)
 
     Context context = CONTEXT_RUNNER;
     bool debug = false;
@@ -46,6 +58,7 @@ class Controller : sf::NonCopyable {
     const Ogre::String RENDER_WINDOW_NAME = "CYCLESHOOTER Render Window";
     const Ogre::String RESOURCES_CONFIG = "resources.cfg";
     const Ogre::String MAIN_TEXTURE = "racecircuit.png";
+    const sf::Time POLAR_SLEEP_TIME = sf::milliseconds(500);
 
     // go
     void go();
@@ -93,8 +106,6 @@ public:
     Ogre::RenderWindow *getWindow() const;
     Ogre::SceneManager *getSceneManager() const;
     Ogre::OverlaySystem *getOverlaySystem() const;
-    AbstractPolar *getPolar() const;
-    unsigned getHeartRate() const;
 };
 
 }
