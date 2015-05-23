@@ -24,15 +24,10 @@ enum Context {
     CONTEXT_SHOOTER,
 };
 
-enum Debug {
-    DEBUG_ON,
-    DEBUG_OFF,
-};
-
 class Controller : sf::NonCopyable {
 
     Context context;
-    Debug debug = DEBUG_OFF;
+    bool debug = false;
 
     NodeManager* nodeManager = NULL;
     HUD* hud = NULL;
@@ -66,11 +61,25 @@ public:
     void toggleMode();
     void toggleMode(const Context& newContext);
 
-    // debug
-    void setupDebugOn();
-    void setupDebugOff();
-    void toggleDebug();
-    void toggleDebug(const Debug& newDebug);
+    /**
+     * Enable the debug mode.
+     */
+    void setupDebugModeOn();
+
+    /**
+     * Disable the debug mode.
+     */
+    void setupDebugModeOff();
+
+    /**
+     * Toggle debug mode ON/OFF.
+     */
+    void toggleDebugMode();
+
+    /**
+     * Return true if debug is activated.
+     */
+    bool isDebugModeOn() const;
 
     // getters and setters
     Context getContext() const;
@@ -81,7 +90,6 @@ public:
     Ogre::RenderWindow *getWindow() const;
     Ogre::SceneManager *getSceneManager() const;
     Ogre::OverlaySystem *getOverlaySystem() const;
-    Debug getDebug() const;
     AbstractPolar *getPolar() const;
 };
 

@@ -46,10 +46,6 @@ Controller::~Controller() {
         delete polar;
 }
 
-Debug Controller::getDebug() const {
-    return debug;
-}
-
 AbstractPolar *Controller::getPolar() const {
     return polar;
 }
@@ -159,36 +155,33 @@ void Controller::toggleMode(const Context &newContext) {
         setupShooterMode();
 }
 
-void Controller::setupDebugOn() {
-    Ogre::LogManager::getSingleton().logMessage("--> Turning Debug On <--");
-    debug = DEBUG_ON;
+void Controller::setupDebugModeOn() {
+    Ogre::LogManager::getSingleton().logMessage("--> Turning Debug Mode On <--");
+    debug = true;
     nodeManager->setDebugOn();
     hud->setupDebugOn();
 }
 
-void Controller::setupDebugOff() {
-    Ogre::LogManager::getSingleton().logMessage("--> Turning Debug Off <--");
-    debug = DEBUG_OFF;
+void Controller::setupDebugModeOff() {
+    Ogre::LogManager::getSingleton().logMessage("--> Turning Debug Mode Off <--");
+    debug = false;
     nodeManager->setDebugOff();
     hud->setupDebugOff();
 }
 
-void Controller::toggleDebug() {
-    switch(debug) {
-    case DEBUG_ON:
-        setupDebugOff();
-        break;
-    case DEBUG_OFF:
-        setupDebugOn();
-        break;
+void Controller::toggleDebugMode() {
+    Ogre::LogManager::getSingleton().logMessage("--> Toggling Debug Mode <--");
+
+    if(debug) {
+        setupDebugModeOff();
+    }
+    else {
+        setupDebugModeOn();
     }
 }
 
-void Controller::toggleDebug(const Debug &newDebug) {
-    if(newDebug == DEBUG_ON && debug != DEBUG_ON)
-        setupDebugOn();
-    else if (newDebug == DEBUG_OFF && debug != DEBUG_OFF)
-        setupDebugOff();
+bool Controller::isDebugModeOn() const {
+    return debug;
 }
 
 }

@@ -83,7 +83,7 @@ void BaseApplication::go() {
 
     setupKeyboardRunnerMapping();
 
-    mController->setupDebugOn();
+    mController->setupDebugModeOn();
 
     // OGRE's own loop
     // mRoot->startRendering();
@@ -285,7 +285,7 @@ void BaseApplication::setupKeyboardRunnerMapping() {
     });
 
     inputManager.addOrUpdateBinding(OIS::KC_3, [&]{
-        mController->toggleDebug();
+        mController->toggleDebugMode();
     });
 }
 
