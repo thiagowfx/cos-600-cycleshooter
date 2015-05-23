@@ -2,10 +2,10 @@
 
 namespace Cycleshooter {
 
-RealPolar::RealPolar(const std::string &deviceFilePath, unsigned HRHistoryLimit) :
+RealPolar::RealPolar(const char* deviceFilePath, unsigned HRHistoryLimit) :
     AbstractPolar(HRHistoryLimit)
 {
-    openSerialPort(deviceFilePath.c_str());
+    openSerialPort(deviceFilePath);
 }
 
 RealPolar::~RealPolar() {
@@ -70,25 +70,25 @@ void RealPolar::closeSerialPort() {
 }
 
 void RealPolar::sendGetHeartRate(int numEntries) {
+    // validate numEntries
+    if (numEntries < 0)
+        numEntries = 0;
+    else if (numEntries > 32)
+        numEntries = 32;
+
     // array sized to hold the largest command string
     char sendCommand[8];
 
     // number of characters in the command string
     int cmdLength;
     
-    // validate numEntries
-    if (numEntries < 0)
-        numEntries = 0;
-    else if (numEntries > 32)
-        numEntries = 32;
-    
     // build the command string
-    // note: "\015" is the carriage return character
+    // note: "\015" is the carriage return character ('\r')
     cmdLength = sprintf(sendCommand, "G%0d\015", numEntries);
     
     // send the command string
     if (write(serialDescriptor, sendCommand, cmdLength) != cmdLength) {
-        throw std::runtime_error("Error sending the command string -- number of bytes written were different");
+        throw std::runtime_error("Error sending the command string -- " + std::string(strerror(errno)) + "(" + std::to_string(errno) + ")");
     }
 }
 
@@ -104,16 +104,17 @@ void RealPolar::getResponseString(char* responseString){
             throw std::runtime_error("Error getting the response string  -- " + std::string(strerror(errno)) + "(" + std::to_string(errno) + ")");
         }
 
+        // no chars available for reading right now
         if (n == 0) {
-            // wait 10ms before trying again
-            usleep(10 * 1e3);
+            // wait a little bit before trying again
+            usleep(READING_RETRY_TIME * 1e3);
             continue;
         }
         
         // store the character
         responseString[i++] = b[0];
         
-        // repeat until we see the <CR> character or exceed the buffer
+        // repeat until we see the <CR> ('\r') character or exceed the buffer
     } while ((b[0] != 0x0D) && (i < MAX_STRING_RESPONSE));
     
     // null terminate the string (replace the <CR>)

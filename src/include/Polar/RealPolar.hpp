@@ -3,17 +3,17 @@
 
 #include "AbstractPolar.hpp"
 
-// C++ headers
-#include <iostream>
-#include <cstring>
-#include <stdexcept>
-
 // C headers to handle the system and its serial ports
-#include <errno.h>
+#include <cerrno>
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <termios.h>
 #include <unistd.h>
+
+// C++ headers
+#include <cstring>
+#include <iostream>
+#include <stdexcept>
 
 namespace Cycleshooter {
 /**
@@ -56,12 +56,19 @@ class RealPolar : public AbstractPolar {
      */
     static const unsigned MAX_STRING_RESPONSE = 140;
 
+    /**
+     * Time to wait before trying to read from the serial port again if no chars available.
+     * Measured in ms.
+     */
+    static const unsigned READING_RETRY_TIME = 10;
+
 public:
     /**
      * @brief RealPolar Construct a new RealPolar object.
      * @param deviceFilePath Path to the serial port (e.g. "/dev/ttyUSB0")
      */
-    RealPolar(const std::string& deviceFilePath, unsigned HRHistoryLimit = 120);
+    RealPolar(const char* deviceFilePath, unsigned HRHistoryLimit = 120);
+
     virtual ~RealPolar();
 
     /**
