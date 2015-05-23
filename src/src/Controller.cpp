@@ -47,6 +47,13 @@ Controller::~Controller() {
 
     if(polar)
         delete polar;
+
+    if(logicManager)
+        delete logicManager;
+}
+
+sf::Thread *Controller::getPolarUpdater() const {
+    return polarUpdater;
 }
 
 void Controller::polarUpdaterFunction() {
@@ -68,6 +75,10 @@ void Controller::polarUpdaterFunction() {
     }
 }
 
+LogicManager *Controller::getLogicManager() const {
+    return logicManager;
+}
+
 bool Controller::getShutdown() const {
     return shutdown;
 }
@@ -79,6 +90,7 @@ void Controller::shutdownNow() {
 void Controller::go() {
     createRoot();
 
+    // logMessage should be called only after Ogre::Root is created/initialized
     Ogre::LogManager::getSingleton().logMessage("--> Controller: go <--");
 
     createSceneManager();
@@ -87,7 +99,8 @@ void Controller::go() {
 
     Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
 
-    // logicmanager
+    // logic manager should be created before any threads that update it
+    logicManager = new LogicManager();
 
     polar = new RandomPolar();
     polarUpdater = new sf::Thread(&Controller::polarUpdaterFunction, this);

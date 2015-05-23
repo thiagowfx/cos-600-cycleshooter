@@ -7,6 +7,7 @@
 
 #include "RandomPolar.hpp"
 
+#include "LogicManager.hpp"
 #include "NodeManager.hpp"
 #include "HUD.hpp"
 #include "TerrainManager.hpp"
@@ -45,6 +46,7 @@ class Controller : sf::NonCopyable {
     bool debug = false;
     bool shutdown = false;
 
+    LogicManager* logicManager = NULL;
     NodeManager* nodeManager = NULL;
     HUD* hud = NULL;
     TerrainManager* terrainManager = NULL;
@@ -108,6 +110,8 @@ public:
     Ogre::OverlaySystem *getOverlaySystem() const;
     bool getShutdown() const;
     void shutdownNow();
+    sf::Thread *getPolarUpdater() const;
+    LogicManager *getLogicManager() const;
 };
 
 }

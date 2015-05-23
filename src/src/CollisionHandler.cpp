@@ -53,7 +53,7 @@ void CollisionHandler::loadTensor(){
             terrainMatrix[row][col] = textureType;
             // std::cout << terrainMatrix[row][col] << " ";
             }
-            std::cout << std::endl;
+            // std::cout << std::endl;
         }
     }
 }

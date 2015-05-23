@@ -1,25 +1,26 @@
 #ifndef _PLAYER_HPP_
 #define _PLAYER_HPP_
 
-#include <vector>
+#include <SFML/System/Vector2.hpp>
+#include <SFML/System/Vector3.hpp>
 
 namespace Cycleshooter {
-class GameLogic;
 
 class Player {
     unsigned heartRate;
-    std::vector<double> bicycleVelocity;
-    std::vector<int> playerPosition;
-    int possessedBullets;
+
+    sf::Vector3<double> bicycleSpeed;
+    sf::Vector3<double> playerPosition;
+    unsigned ammo;
     double sensibility;
-    std::pair<double, double> crossPosition;
+    sf::Vector2<double> crosshairPosition;
 
 public:
     Player();
-    virtual ~Player();
 
-    void setSensibility(double value);
+    // getters and setters
     unsigned getHeartRate() const;
+    void setHeartRate(const unsigned &value);
 };
 }
 

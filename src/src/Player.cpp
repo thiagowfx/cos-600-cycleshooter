@@ -2,20 +2,15 @@
 
 namespace Cycleshooter {
 
-
-void Player::setSensibility(double value)
-{
-    sensibility = value;
-}
-
-unsigned Player::getHeartRate() const
-{
+unsigned Player::getHeartRate() const {
     return heartRate;
 }
-Player::Player() {
+
+void Player::setHeartRate(const unsigned &value) {
+    heartRate = value;
 }
 
-Player::~Player() {
+Player::Player() {
 }
 
 }

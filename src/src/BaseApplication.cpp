@@ -93,8 +93,7 @@ void BaseApplication::go() {
 
 bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
     if(mController->getWindow()->isClosed() || mController->getShutdown()) {
-        // TODO: add getController()->getThreadUpdater->wait(); (bicycle)
-        // TODO: add getController()->getThreadUpdater->wait(); (polar)
+        mController->getPolarUpdater()->wait();
         return false;
     }
 
