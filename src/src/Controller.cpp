@@ -42,6 +42,9 @@ Controller::~Controller() {
     if(nodeManager)
         delete nodeManager;
 
+    if(polarUpdater)
+        delete polarUpdater;
+
     if(polar)
         delete polar;
 }
@@ -50,17 +53,32 @@ AbstractPolar *Controller::getPolar() const {
     return polar;
 }
 
+unsigned Controller::getHeartRate() const {
+    return heartRate;
+}
+
+void kk() {
+	while(true) {
+		sf::sleep(sf::seconds(1));
+		std::cout << "mythread" << std::endl;
+	}
+
+}
+
 void Controller::go() {
     createRoot();
+
+    Ogre::LogManager::getSingleton().logMessage("--> Controller: go <--");
+
     createSceneManager();
     createOverlaySystem();
     setupResources();
 
     Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
 
-    context = CONTEXT_RUNNER;
-
     polar = new RandomPolar();
+    polarUpdater = new sf::Thread(&kk);
+    polarUpdater->launch();
 
     nodeManager = new NodeManager(this);
     nodeManager->setupRunnerMode();
@@ -76,7 +94,7 @@ void Controller::go() {
 }
 
 void Controller::setupResources() {
-    Ogre::LogManager::getSingleton().logMessage("--> Setting up Resources <--");
+    Ogre::LogManager::getSingleton().logMessage("--> Controller: Setting up Resources <--");
 
     Ogre::ConfigFile cf;
     cf.load(RESOURCES_CONFIG);
@@ -101,6 +119,8 @@ void Controller::setupResources() {
 }
 
 void Controller::createRoot() {
+    std::cout << "--> Controller: creating Root <--" << std::endl;
+
     oRoot = new Ogre::Root();
 
     // alternatively, use ->restoreConfig() to load saved settings
@@ -113,25 +133,29 @@ void Controller::createRoot() {
 }
 
 void Controller::createSceneManager() {
-    Ogre::LogManager::getSingleton().logMessage("--> Creating Scene Manager <--");
+    Ogre::LogManager::getSingleton().logMessage("--> Controller: Creating Scene Manager <--");
+
     oSceneManager = oRoot->createSceneManager(Ogre::ST_GENERIC);
 }
 
 void Controller::createOverlaySystem() {
-    Ogre::LogManager::getSingleton().logMessage("--> Creating Overlay System <--");
+    Ogre::LogManager::getSingleton().logMessage("--> Controller: Creating Overlay System <--");
+
     oOverlaySystem = new Ogre::OverlaySystem();
     oSceneManager->addRenderQueueListener(oOverlaySystem);
 }
 
 void Controller::setupRunnerMode() {
-    Ogre::LogManager::getSingleton().logMessage("--> Setting up Runner Mode <--");
+    Ogre::LogManager::getSingleton().logMessage("--> Controller: Setting up Runner Mode <--");
+
     context = CONTEXT_RUNNER;
     nodeManager->setupRunnerMode();
     hud->setupRunnerMode();
 }
 
 void Controller::setupShooterMode() {
-    Ogre::LogManager::getSingleton().logMessage("--> Setting up Shooter Mode <--");
+    Ogre::LogManager::getSingleton().logMessage("--> Controller: Setting up Shooter Mode <--");
+
     context = CONTEXT_SHOOTER;
     nodeManager->setupShooterMode();
     hud->setupShooterMode();
@@ -156,21 +180,23 @@ void Controller::toggleMode(const Context &newContext) {
 }
 
 void Controller::setupDebugModeOn() {
-    Ogre::LogManager::getSingleton().logMessage("--> Turning Debug Mode On <--");
+    Ogre::LogManager::getSingleton().logMessage("--> Controller: Turning Debug Mode On <--");
+
     debug = true;
     nodeManager->setDebugOn();
     hud->setupDebugOn();
 }
 
 void Controller::setupDebugModeOff() {
-    Ogre::LogManager::getSingleton().logMessage("--> Turning Debug Mode Off <--");
+    Ogre::LogManager::getSingleton().logMessage("--> Controller: Turning Debug Mode Off <--");
+
     debug = false;
     nodeManager->setDebugOff();
     hud->setupDebugOff();
 }
 
 void Controller::toggleDebugMode() {
-    Ogre::LogManager::getSingleton().logMessage("--> Toggling Debug Mode <--");
+    Ogre::LogManager::getSingleton().logMessage("--> Controller: Toggling Debug Mode <--");
 
     if(debug) {
         setupDebugModeOff();

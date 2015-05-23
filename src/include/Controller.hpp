@@ -26,14 +26,17 @@ enum Context {
 
 class Controller : sf::NonCopyable {
 
-    Context context;
+    unsigned heartRate;
+    AbstractPolar* polar = NULL;
+    sf::Thread* polarUpdater = NULL;
+
+    Context context = CONTEXT_RUNNER;
     bool debug = false;
 
     NodeManager* nodeManager = NULL;
     HUD* hud = NULL;
     TerrainManager* terrainManager = NULL;
     CollisionHandler* collisionHandler = NULL;
-    AbstractPolar* polar = NULL;
 
     Ogre::Root *oRoot = NULL;
     Ogre::SceneManager *oSceneManager = NULL;
@@ -91,6 +94,7 @@ public:
     Ogre::SceneManager *getSceneManager() const;
     Ogre::OverlaySystem *getOverlaySystem() const;
     AbstractPolar *getPolar() const;
+    unsigned getHeartRate() const;
 };
 
 }

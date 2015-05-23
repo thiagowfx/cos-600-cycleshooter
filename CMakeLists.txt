@@ -20,7 +20,7 @@ add_subdirectory(${VENDOR_DIR})
 
 
 if(DEPENDENCIES_READY)
-    find_package(SFML REQUIRED EXACT 2.2 COMPONENTS audio)
+    find_package(SFML REQUIRED EXACT 2.2 COMPONENTS audio system)
 
     if(NOT SFML_FOUND)
         message(SEND_ERROR "Failed to find SFML.")
@@ -85,7 +85,7 @@ if(DEPENDENCIES_READY)
         GLOB_RECURSE PROJECT_SOURCES
         "${SRC_DIR}/src/*.cpp"
         )
-    
+
     set(PROJECT_INCLUDE_DIRS "")
     foreach(_HEADERFILE ${PROJECT_HEADERS})
         get_filename_component(_DIR ${_HEADERFILE} DIRECTORY)
