@@ -1,6 +1,7 @@
 build/
 dest/
 CMakeLists.txt.user
+*.autosave
 
 # *.in files
 assets/bin/plugins.cfg
