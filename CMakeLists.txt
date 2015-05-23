@@ -13,7 +13,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${DEST_DIR}/bin")
 option(DEPENDENCIES_READY "Are the dependencies ready?" OFF)
 
 
-add_definitions("-std=c++11 -g")
+add_definitions("-std=c++11 -g -Wno-deprecated-declarations")
 
 
 add_subdirectory(${VENDOR_DIR})
