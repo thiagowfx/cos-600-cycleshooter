@@ -35,8 +35,8 @@ void HUD::createTrayWidgets() {
     // create any shooter-only widgets here
 
     // help panel
-    Ogre::StringVector helpPanelItems = {"1", "2", "3"};
-    Ogre::StringVector helpPanelValues = {"RunnerMode", "ShooterMode", "ToggleDebug"};
+    Ogre::StringVector helpPanelItems = {"1", "2"};
+    Ogre::StringVector helpPanelValues = {"ToggleMode", "ToggleDebug"};
     trayManager->createParamsPanel(OgreBites::TL_NONE, "helpPanel", 160, helpPanelItems)->setAllParamValues(helpPanelValues);
 }
 

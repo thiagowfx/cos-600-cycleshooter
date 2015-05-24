@@ -241,19 +241,11 @@ void BaseApplication::setupKeyboardRunnerMapping() {
         mController->getNodeManager()->getParentPlayerSceneNode()->yaw(Ogre::Degree(-10.0));
     });
 
-    inputManager.addOrUpdateBinding(OIS::KC_SPACE, [&]{
+    inputManager.addOrUpdateBinding(OIS::KC_1, [&]{
         mController->toggleMode();
     });
 
-    inputManager.addOrUpdateBinding(OIS::KC_1, [&]{
-        mController->setupRunnerMode();
-    });
-
     inputManager.addOrUpdateBinding(OIS::KC_2, [&]{
-        mController->setupShooterMode();
-    });
-
-    inputManager.addOrUpdateBinding(OIS::KC_3, [&]{
         mController->toggleDebug();
     });
 }
