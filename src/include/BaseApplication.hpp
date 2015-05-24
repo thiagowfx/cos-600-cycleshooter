@@ -19,7 +19,9 @@ public:
 
 private:
     void go();
-    void createFrameListener();
+    void initializeOIS();
+    void setupFrameAndWindowListeners();
+    void setupHUD();
     void createScene();
 
     virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
@@ -31,12 +33,9 @@ private:
     virtual void windowResized(Ogre::RenderWindow* rw);
     virtual void windowClosed(Ogre::RenderWindow* rw);
 
-    void cyclePolygonFilteringModeAction();
-    void cyclePolygonRenderingModeAction();
+    void cyclePolygonRenderingMode();
 
     void setupKeyboardRunnerMapping();
-
-    void gameMainLoop();
 
     Cycleshooter::Controller* mController = NULL;
     Cycleshooter::HUD* mHud = NULL;

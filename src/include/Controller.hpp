@@ -94,6 +94,11 @@ public:
     virtual ~Controller();
 
     /**
+     * The game main loop. Updates logic and rendering.
+     */
+    void gameMainLoop();
+
+    /**
      * Setup the context mode to the runner mode.
      */
     void setupRunnerMode();
@@ -116,22 +121,22 @@ public:
     /**
      * Enable the debug mode.
      */
-    void setupDebugModeOn();
+    void setupDebugOn();
 
     /**
      * Disable the debug mode.
      */
-    void setupDebugModeOff();
+    void setupDebugOff();
 
     /**
      * Toggle the debug mode ON/OFF.
      */
-    void toggleDebugMode();
+    void toggleDebug();
 
     /**
      * Return true if debug is activated.
      */
-    bool isDebugModeOn() const;
+    bool isDebugOn() const;
 
     /**
      * Finish/shutdown the game cleanly.

@@ -144,6 +144,18 @@ void Controller::setupResources() {
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 }
 
+void Controller::gameMainLoop() {
+    Ogre::LogManager::getSingleton().logMessage("--> Controller: Game Main Loop <--");
+
+    while(!shutdown) {
+
+        // TODO: update logic manager.
+
+        // update rendering
+        oRoot->renderOneFrame();
+    }
+}
+
 void Controller::createRoot() {
     std::cout << "--> Controller: creating Root <--" << std::endl;
 
@@ -205,7 +217,7 @@ void Controller::toggleMode(const Context &newContext) {
         setupShooterMode();
 }
 
-void Controller::setupDebugModeOn() {
+void Controller::setupDebugOn() {
     Ogre::LogManager::getSingleton().logMessage("--> Controller: Turning Debug Mode On <--");
 
     debug = true;
@@ -213,7 +225,7 @@ void Controller::setupDebugModeOn() {
     hud->setupDebugOn();
 }
 
-void Controller::setupDebugModeOff() {
+void Controller::setupDebugOff() {
     Ogre::LogManager::getSingleton().logMessage("--> Controller: Turning Debug Mode Off <--");
 
     debug = false;
@@ -221,18 +233,18 @@ void Controller::setupDebugModeOff() {
     hud->setupDebugOff();
 }
 
-void Controller::toggleDebugMode() {
+void Controller::toggleDebug() {
     Ogre::LogManager::getSingleton().logMessage("--> Controller: Toggling Debug Mode <--");
 
     if(debug) {
-        setupDebugModeOff();
+        setupDebugOff();
     }
     else {
-        setupDebugModeOn();
+        setupDebugOn();
     }
 }
 
-bool Controller::isDebugModeOn() const {
+bool Controller::isDebugOn() const {
     return debug;
 }
 
