@@ -6,16 +6,8 @@ Player *LogicManager::getPlayer() const {
     return player;
 }
 
-void LogicManager::setPlayer(Player *value) {
-    player = value;
-}
-
 Monster *LogicManager::getMonster() const {
     return monster;
-}
-
-void LogicManager::setMonster(Monster *value) {
-    monster = value;
 }
 
 unsigned LogicManager::getHeartRate() const {

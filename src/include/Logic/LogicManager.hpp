@@ -17,11 +17,9 @@ public:
 
     // getters and setters
     Player *getPlayer() const;
-    void setPlayer(Player *value);
     Monster *getMonster() const;
-    void setMonster(Monster *value);
 
-    // methods for decoupling threads updaters and HUD
+    // methods for decoupling purposes
     unsigned getHeartRate() const;
     void setHeartRate(const unsigned& value);
     unsigned getAmmo() const;

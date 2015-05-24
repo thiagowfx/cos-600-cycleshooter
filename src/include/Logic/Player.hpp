@@ -8,6 +8,10 @@ namespace Cycleshooter {
 
 class Player {
     unsigned heartRate;
+
+    /**
+     * Number of bullets available for the player.
+     */
     unsigned ammo = 0;
 
     sf::Vector3<double> bicycleSpeed;
@@ -23,6 +27,16 @@ public:
     void setHeartRate(const unsigned &value);
     unsigned getAmmo() const;
     void setAmmo(const unsigned &value);
+
+    /**
+     * Fires a shot.
+     */
+    void shoot();
+
+    /**
+     * Add a bullet to the total ammo of the player.
+     */
+    void incrementAmmo();
 };
 }
 
