@@ -58,8 +58,6 @@ sf::Thread *Controller::getPolarUpdater() const {
 
 void Controller::polarUpdaterFunction() {
     while(!shutdown) {
-        sf::sleep(POLAR_SLEEP_TIME);
-
         try {
             unsigned heartRate = polar->getInstantaneousHeartRate();
             if(heartRate) {
@@ -72,6 +70,8 @@ void Controller::polarUpdaterFunction() {
         catch (...) {
             Ogre::LogManager::getSingleton().logMessage("polarUpdaterFunction: caught exception", Ogre::LML_CRITICAL);
         }
+
+        sf::sleep(POLAR_SLEEP_TIME);
     }
 }
 
