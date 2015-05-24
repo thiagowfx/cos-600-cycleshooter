@@ -2,31 +2,25 @@
 
 namespace Cycleshooter {
 
-Controller *HUD::getController() const {
-    return controller;
-}
-
-OgreBites::SdkTrayManager *HUD::getTrayManager() const {
-    return trayManager;
-}
-
 void HUD::go() {
     Ogre::LogManager::getSingleton().logMessage("--> HUD: go <--");
+
     createTrayManager();
     createTrayWidgets();
 }
 
 void HUD::createTrayManager() {
-    Ogre::LogManager::getSingleton().logMessage("--> Creating Tray Manager <--");
+    Ogre::LogManager::getSingleton().logMessage("--> HUD: Creating Tray Manager <--");
 
     trayManager = new OgreBites::SdkTrayManager("trayManager", controller->getWindow(), *inputContext);
     trayManager->hideCursor();
 }
 
 void HUD::createTrayWidgets() {
-    Ogre::LogManager::getSingleton().logMessage("--> Creating Tray Widgets <--");
+    Ogre::LogManager::getSingleton().logMessage("--> HUD: Creating Tray Widgets <--");
 
-    polarLabel = trayManager->createLabel(OgreBites::TL_LEFT, "polarLabel", "HR: ", 125);
+    trayManager->createLabel(OgreBites::TL_TOPRIGHT, "contextLabel", "", 170);
+    trayManager->createLabel(OgreBites::TL_LEFT, "polarLabel", "HR: ", 125);
 }
 
 HUD::HUD(Controller *controller, OgreBites::InputContext *inputContext) :
@@ -43,19 +37,15 @@ HUD::~HUD() {
 
 void HUD::update(const Ogre::FrameEvent& evt) {
     trayManager->frameRenderingQueued(evt);
-    polarLabel->setCaption("HR: " + Ogre::StringConverter::toString(controller->getLogicManager()->getHeartRate()));
+    dynamic_cast<OgreBites::Label*>(trayManager->getWidget("polarLabel"))->setCaption("HR: " + Ogre::StringConverter::toString(controller->getLogicManager()->getHeartRate()));
 }
 
 void HUD::setupRunnerMode() {
-    if(contextWidget)
-        trayManager->destroyWidget(contextWidget);
-    contextWidget = trayManager->createLabel(OgreBites::TL_TOPRIGHT, "contextWidget", "Runner Mode", 170);
+    dynamic_cast<OgreBites::Label*>(trayManager->getWidget("contextLabel"))->setCaption("Runner Mode");
 }
 
 void HUD::setupShooterMode() {
-    if(contextWidget)
-        trayManager->destroyWidget(contextWidget);
-    contextWidget = trayManager->createLabel(OgreBites::TL_TOPRIGHT, "contextWidget", "Shooter Mode", 170);
+    dynamic_cast<OgreBites::Label*>(trayManager->getWidget("contextLabel"))->setCaption("Shooter Mode");
 }
 
 void HUD::setupDebugOn() {

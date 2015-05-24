@@ -9,14 +9,18 @@
 namespace Cycleshooter {
 class Controller;
 
+/**
+ * @brief The HUD class
+ * Companion Documentation: http://www.ogre3d.org/tikiwiki/SdkTrays
+ */
 class HUD {
     Controller* const controller = NULL;
     OgreBites::InputContext* const inputContext = NULL;
 
+    /**
+     * The tray manager. Used to create, update and delete widgets.
+     */
     OgreBites::SdkTrayManager* trayManager = NULL;
-
-    OgreBites::Widget* contextWidget = NULL;
-    OgreBites::Label* polarLabel = NULL;
 
     // go
     void go();
@@ -36,10 +40,6 @@ public:
     // debug
     void setupDebugOn();
     void setupDebugOff();
-
-    // getters and setters
-    Controller *getController() const;
-    OgreBites::SdkTrayManager *getTrayManager() const;
 };
 }
 

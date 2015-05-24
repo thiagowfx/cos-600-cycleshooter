@@ -114,9 +114,6 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
 }
 
 bool BaseApplication::keyPressed( const OIS::KeyEvent &arg) {
-    if(mController->getHud()->getTrayManager()->isDialogVisible())
-        return true;   // don't process any more keys if dialog is up
-
     inputManager.executeAction(arg.key);
 
     // mCameraMan->injectKeyDown(arg);
@@ -129,22 +126,16 @@ bool BaseApplication::keyReleased(const OIS::KeyEvent &arg) {
 }
 
 bool BaseApplication::mouseMoved(const OIS::MouseEvent &arg) {
-    if(mController->getHud()->getTrayManager()->injectMouseMove(arg))
-        return true;
     // mCameraMan->injectMouseMove(arg);
     return true;
 }
 
 bool BaseApplication::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id) {
-    if(mController->getHud()->getTrayManager()->injectMouseDown(arg, id))
-        return true;
     // mCameraMan->injectMouseDown(arg, id);
     return true;
 }
 
 bool BaseApplication::mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id) {
-    if (mController->getHud()->getTrayManager()->injectMouseUp(arg, id))
-        return true;
     // mCameraMan->injectMouseUp(arg, id);
     return true;
 }
