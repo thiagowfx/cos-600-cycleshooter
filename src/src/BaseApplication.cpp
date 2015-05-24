@@ -87,13 +87,13 @@ void BaseApplication::go() {
     mController = new Controller();
 
     initializeOIS();
-    setupFrameAndWindowListeners();
     setupHUD();
     createScene();
 
-    setupKeyboardRunnerMapping();
-
     mController->setupDebugOn();
+
+    setupKeyboardRunnerMapping();
+    setupFrameAndWindowListeners();
 
     // alternatively, Ogre's own loop: Ogre::Root::startRendering() + listeners
     mController->gameMainLoop();
