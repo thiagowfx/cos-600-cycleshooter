@@ -56,7 +56,8 @@ void BaseApplication::setupFrameAndWindowListeners() {
 void BaseApplication::setupHUD() {
     Ogre::LogManager::getSingletonPtr()->logMessage("--> BaseApplication: Setting up HUD <--");
 
-    mHud = new HUD(mController, &mInputContext);
+    mHud = new HUD(mController);
+    mHud->setHelpPanel({"1","2"},{"ToggleMode","ToggleDebug"});
     mHud->setupRunnerMode();
     mController->setHud(mHud);
 }
