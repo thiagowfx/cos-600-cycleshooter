@@ -1,0 +1,17 @@
+template container Panel(Cycleshooter/Running_man)
+{
+	metrics_mode pixels
+	material Cycleshooter/Running_man
+	horz_align center
+	width 64
+	height 64
+}
+
+template container Panel(Cycleshooter/Gun)
+{
+	metrics_mode pixels
+	material Cycleshooter/Gun
+	horz_align center
+	width 64
+	height 64
+}

@@ -26,6 +26,10 @@ void LogicManager::setHeartRate(const unsigned &value) {
     player->setHeartRate(value);
 }
 
+unsigned LogicManager::getAmmo() const {
+    return player->getAmmo();
+}
+
 LogicManager::LogicManager() {
     player = new Player();
     monster = new Monster();

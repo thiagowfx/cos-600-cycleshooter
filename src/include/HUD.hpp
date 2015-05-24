@@ -19,6 +19,7 @@ class HUD {
 
     /**
      * The tray manager. Used to create, update and delete widgets.
+     * We should not create our widgets directly!
      */
     OgreBites::SdkTrayManager* trayManager = NULL;
 
@@ -31,6 +32,9 @@ public:
     HUD(Controller* controller, OgreBites::InputContext* inputContext);
     virtual ~HUD();
 
+    /**
+     * Update the HUD elements.
+     */
     void update(const Ogre::FrameEvent& evt);
 
     // setups

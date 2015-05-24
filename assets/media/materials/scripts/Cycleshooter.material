@@ -1,0 +1,46 @@
+material Cycleshooter/Base
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            scene_blend alpha_blend
+            depth_check off
+            
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering linear linear none
+            }
+        }
+    }
+}
+
+material Cycleshooter/Running_man : Cycleshooter/Base
+{
+    technique
+    {
+        pass
+        {
+            texture_unit
+            {
+                texture running_man.png
+            }
+        }
+    }
+}
+
+material Cycleshooter/Gun : Cycleshooter/Base
+{
+    technique
+    {
+        pass
+        {
+            texture_unit
+            {
+                texture gun.png
+            }
+        }
+    }
+}

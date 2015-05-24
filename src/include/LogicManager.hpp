@@ -24,6 +24,7 @@ public:
     // methods for decoupling threads updaters and HUD
     unsigned getHeartRate() const;
     void setHeartRate(const unsigned& value);
+    unsigned getAmmo() const;
 };
 }
 

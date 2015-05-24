@@ -8,10 +8,10 @@ namespace Cycleshooter {
 
 class Player {
     unsigned heartRate;
+    unsigned ammo = 0;
 
     sf::Vector3<double> bicycleSpeed;
     sf::Vector3<double> playerPosition;
-    unsigned ammo;
     double sensibility;
     sf::Vector2<double> crosshairPosition;
 
@@ -21,6 +21,8 @@ public:
     // getters and setters
     unsigned getHeartRate() const;
     void setHeartRate(const unsigned &value);
+    unsigned getAmmo() const;
+    void setAmmo(const unsigned &value);
 };
 }
 
