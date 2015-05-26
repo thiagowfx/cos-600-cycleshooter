@@ -166,9 +166,9 @@ void BaseApplication::setupMappings() {
 //        mController->getNodeManager()->getParentPlayerSceneNode()->yaw(Ogre::Degree(-10.0));
 //    });
 
-//    inputManager.addOrUpdateBinding(OIS::KC_1, [&]{
-//        mController->toggleMode();
-//    });
+    InputManager::instance().addKey(sf::Keyboard::Num1, [&]{
+        mController->toggleMode();
+    });
 
 //    inputManager.addOrUpdateBinding(OIS::KC_2, [&]{
 //        mController->toggleDebug();
