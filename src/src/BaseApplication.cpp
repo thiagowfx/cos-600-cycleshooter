@@ -91,6 +91,9 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
     }
 
     // TODO: update logic[manager] here somewhere
+    // TODO: add/use clock for unbuf
+    // TODO key->mapping massive rename
+    // TODO: merge with Podolan's branch
 
     mHud->update(evt);
 
