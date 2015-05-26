@@ -110,13 +110,8 @@ void Controller::go() {
     nodeManager->setupRunnerMode();
 
     // to use a material, the resource group must be initialized
-    terrainManager = new TerrainManager(oSceneManager);
-    terrainManager->createTerrain();
-
-    // starting collision handler after terrain initialization
-    collisionHandler = new CollisionHandler(MAIN_TEXTURE);
-    collisionHandler->loadImages();
-    collisionHandler->loadTensor();
+    terrainManager = new TerrainManager(oSceneManager,MAIN_TEXTURE);
+    terrainManager->configureTerrain();
 }
 
 void Controller::setupResources() {

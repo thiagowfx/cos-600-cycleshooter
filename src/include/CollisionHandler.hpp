@@ -45,6 +45,7 @@ public:
     Ogre::ColourValue getPixelColour(int pixelWidth, int pixelHeight);
     //Function to find the race starting point in the texture.
     std::pair<int,int> getStartPixel();
+    std::vector<std::vector<Colors> > getCollisionMatrix();
 
 };
 

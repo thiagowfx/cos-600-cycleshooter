@@ -4,7 +4,8 @@ namespace Cycleshooter {
 
 CollisionHandler::CollisionHandler(Ogre::String collisionTexturePath):
     collisionTexture(0),
-    collisionTexturePath(collisionTexturePath)
+    collisionTexturePath(collisionTexturePath),
+    sharedMatrix(0)
 {
 //    collisionMap = {{WATER_COLOR,WATER_PIXEL},{BULLET_COLOR,BULLET_PIXEL},
 //                    {ROCK_COLOR,ROCK_PIXEL},{GUAGMIRE_COLOR,GUAGMIRE_PIXEL},
@@ -58,7 +59,6 @@ void CollisionHandler::loadTensor(){
             collisionMatrix[row][col] = textureType;
             }
     }
-    printMatrix();
 }
 
 void CollisionHandler::printMatrix()
@@ -101,6 +101,11 @@ std::pair<int,int> CollisionHandler::getStartPixel(){
     //Error return state.
     pixelLocation = std::make_pair (-1,-1);
     return pixelLocation;
+}
+
+std::vector<std::vector<CollisionHandler::Colors> > CollisionHandler::getCollisionMatrix()
+{
+    return collisionMatrix;
 }
 
 }
