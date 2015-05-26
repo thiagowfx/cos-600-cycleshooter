@@ -75,6 +75,8 @@ void BaseApplication::go() {
 }
 
 bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
+    Ogre::WindowEventUtilities::messagePump();
+
     if(mController->getWindow()->isClosed())
         mController->shutdownNow();
 

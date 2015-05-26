@@ -2,6 +2,7 @@
 #define _BASEAPPLICATION_HPP_
 
 #include <Ogre.h>
+#include <SFML/Window.hpp>
 #include <cstdlib>
 
 #include "Controller.hpp"
