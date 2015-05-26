@@ -39,6 +39,12 @@ Controller::Controller() {
 }
 
 Controller::~Controller() {
+    if(collisionHandler)
+        delete collisionHandler;
+
+    if(terrainManager)
+        delete terrainManager;
+
     if(nodeManager)
         delete nodeManager;
 
@@ -50,8 +56,6 @@ Controller::~Controller() {
 
     if(logicManager)
         delete logicManager;
-
-    oRoot->destroyRenderTarget(oWindow);
 }
 
 sf::Thread *Controller::getPolarUpdater() const {
@@ -90,45 +94,26 @@ void Controller::shutdownNow() {
 }
 
 void Controller::go() {
+    // we can't use Ogre::LogManager before creating the Ogre::Root object
+    std::cout << "--> Controller: go <--" << std::endl;
+
+    // initialize OGRE core elements
     createRoot();
-
-    // LogManager::getSingleton() should be called only after Ogre::Root is created/initialized
-    Ogre::LogManager::getSingleton().logMessage("--> Controller: go <--");
-
     createSceneManager();
     createOverlaySystem();
     setupResources();
+    setupTextures();
 
-    Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
-
-    // logic manager should be created before any threads that update it
-    logicManager = new LogicManager();
-
-    polar = new RandomPolar();
-    polarUpdater = new sf::Thread(&Controller::polarUpdaterFunction, this);
-    polarUpdater->launch();
-
-    nodeManager = new NodeManager(this);
-    nodeManager->setupRunnerMode();
-
-    // to use a material, the resource group must be initialized
-    terrainManager = new TerrainManager(oSceneManager);
-    terrainManager->createTerrain();
-
-    // starting collision handler after terrain initialization
-    collisionHandler = new CollisionHandler(MAIN_TEXTURE);
-    collisionHandler->loadImages();
-    collisionHandler->loadTensor();
-
-    // setup shortcuts/mappings
+    // initialize our objects and our game overall
+    createGameElements();
     setupMappings();
 }
 
-void Controller::setupResources() {
+void Controller::setupResources(const Ogre::String& config) {
     Ogre::LogManager::getSingleton().logMessage("--> Controller: Setting up Resources <--");
 
     Ogre::ConfigFile cf;
-    cf.load(RESOURCES_CONFIG);
+    cf.load(config);
 
     Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
     Ogre::String secName, typeName, archName;
@@ -147,6 +132,35 @@ void Controller::setupResources() {
     }
 
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+}
+
+void Controller::setupTextures() {
+    Ogre::LogManager::getSingleton().logMessage("--> Controller: Setting up Textures <--");
+
+    Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
+}
+
+void Controller::createGameElements() {
+    Ogre::LogManager::getSingleton().logMessage("--> Controller: Create Game Elements <--");
+
+    // attention: logic manager should be created before any threads that will update it
+    logicManager = new LogicManager();
+
+    polar = new RandomPolar();
+    polarUpdater = new sf::Thread(&Controller::polarUpdaterFunction, this);
+    polarUpdater->launch();
+
+    nodeManager = new NodeManager(this);
+    nodeManager->setupRunnerMode();
+
+    // to use a material, the resource group must be initialized
+    terrainManager = new TerrainManager(oSceneManager);
+    terrainManager->createTerrain();
+
+    // starting collision handler after terrain initialization
+    collisionHandler = new CollisionHandler("racecircuit.png");
+    collisionHandler->loadImages();
+    collisionHandler->loadTensor();
 }
 
 void Controller::setupMappings() {
@@ -213,6 +227,7 @@ void Controller::gameMainLoop() {
 }
 
 void Controller::createRoot() {
+    // we can't use Ogre::LogManager before creating the Ogre::Root object
     std::cout << "--> Controller: creating Root <--" << std::endl;
 
     oRoot = new Ogre::Root();
@@ -221,12 +236,16 @@ void Controller::createRoot() {
     oRoot->setRenderSystem(oRoot->getAvailableRenderers().at(0));
     oRoot->initialise(false);
 
+    Ogre::LogManager::getSingleton().logMessage("--> Controller: Ogre::Root object has been created and initialized with the default Render System (" + oRoot->getAvailableRenderers().at(0)->getName() + ")");
+
     Ogre::NameValuePairList misc = {{"currentGLContext", "true"}};
 
     // create a render window
     // note: window title and size are not important here, so we use blank values for them
     oWindow = oRoot->createRenderWindow("", 0, 0, false, &misc);
     oWindow->setVisible(true);
+
+    Ogre::LogManager::getSingleton().logMessage("--> Controller: Render Window has been (manually) created <--");
 }
 
 void Controller::createSceneManager() {
