@@ -229,6 +229,10 @@ void BaseApplication::setupKeyboardRunnerMapping() {
         mController->getNodeManager()->getParentPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, -10.0), Ogre::SceneNode::TS_LOCAL);
     });
 
+    InputManager::instance().addAxisUnbuf(sf::Joystick::Y, CONTEXT_RUNNER, [&](float f){
+        mController->getNodeManager()->getParentPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, 10.0 * f / 100.0), Ogre::SceneNode::TS_LOCAL);
+    });
+
 //    inputManager.addOrUpdateBinding({OIS::KC_S,
 //                                     OIS::KC_DOWN}, [&]{
 //        mController->getNodeManager()->getParentPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, +10.0), Ogre::SceneNode::TS_LOCAL);
