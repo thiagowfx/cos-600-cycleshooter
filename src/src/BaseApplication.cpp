@@ -34,25 +34,6 @@ void BaseApplication::setupHUD() {
     mController->setHud(mHud);
 }
 
-void BaseApplication::createScene() {
-    Ogre::LogManager::getSingleton().logMessage("--> BaseApplication: Creating Scene <--");
-
-    mController->getSceneManager()->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
-    Ogre::Entity* ogreEntity = mController->getSceneManager()->createEntity("ogrehead.mesh");
-    Ogre::Entity* ogreEntity2 = mController->getSceneManager()->createEntity("ogrehead.mesh");
-    Ogre::Entity* ogreEntity3 = mController->getSceneManager()->createEntity("ogrehead.mesh");
-    Ogre::SceneNode* ogreNode = mController->getSceneManager()->getRootSceneNode()->createChildSceneNode();
-    Ogre::SceneNode* ogreNode2 = mController->getSceneManager()->getRootSceneNode()->createChildSceneNode();
-    Ogre::SceneNode* ogreNode3 = mController->getSceneManager()->getRootSceneNode()->createChildSceneNode();
-    ogreNode2->translate(0.0, 0.0, 400.0);
-    ogreNode3->translate(0.0, 0.0, -400.0);
-    ogreNode->attachObject(ogreEntity);
-    ogreNode2->attachObject(ogreEntity2);
-    ogreNode3->attachObject(ogreEntity3);
-    Ogre::Light* light =  mController->getSceneManager()->createLight("MainLight");
-    light->setPosition(20.0, 80.0, 50.0);
-}
-
 void BaseApplication::go() {
     // randomness
     srand(time(NULL));
@@ -64,8 +45,8 @@ void BaseApplication::go() {
 
     mController = new Controller();
 
+    // hud before the scene...[?]
     setupHUD();
-    createScene();
 
     mController->setupDebugOn();
 

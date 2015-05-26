@@ -111,6 +111,11 @@ class Controller : sf::NonCopyable {
     void setupMappings();
 
     /**
+     * Create the initial scene.
+     */
+    void createScene();
+
+    /**
      * @brief logicManager Manages the logic of the game.
      */
     LogicManager* logicManager = NULL;

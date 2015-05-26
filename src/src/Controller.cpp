@@ -107,6 +107,7 @@ void Controller::go() {
     // initialize our objects and our game overall
     createGameElements();
     setupMappings();
+    createScene();
 }
 
 void Controller::setupResources(const Ogre::String& config) {
@@ -215,6 +216,25 @@ void Controller::setupMappings() {
     InputManager::instance().addKey(sf::Keyboard::Num2, [&]{
         toggleDebug();
     });
+}
+
+void Controller::createScene() {
+    Ogre::LogManager::getSingleton().logMessage("--> Controller: Creating Scene <--");
+
+    getSceneManager()->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
+    Ogre::Entity* ogreEntity = getSceneManager()->createEntity("ogrehead.mesh");
+    Ogre::Entity* ogreEntity2 = getSceneManager()->createEntity("ogrehead.mesh");
+    Ogre::Entity* ogreEntity3 = getSceneManager()->createEntity("ogrehead.mesh");
+    Ogre::SceneNode* ogreNode = getSceneManager()->getRootSceneNode()->createChildSceneNode();
+    Ogre::SceneNode* ogreNode2 = getSceneManager()->getRootSceneNode()->createChildSceneNode();
+    Ogre::SceneNode* ogreNode3 = getSceneManager()->getRootSceneNode()->createChildSceneNode();
+    ogreNode2->translate(0.0, 0.0, 400.0);
+    ogreNode3->translate(0.0, 0.0, -400.0);
+    ogreNode->attachObject(ogreEntity);
+    ogreNode2->attachObject(ogreEntity2);
+    ogreNode3->attachObject(ogreEntity3);
+    Ogre::Light* light =  getSceneManager()->createLight("MainLight");
+    light->setPosition(20.0, 80.0, 50.0);
 }
 
 void Controller::gameMainLoop() {
