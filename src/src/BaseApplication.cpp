@@ -8,9 +8,6 @@ BaseApplication::BaseApplication()
 }
 
 BaseApplication::~BaseApplication() {
-    Ogre::WindowEventUtilities::removeWindowEventListener(mController->getWindow(), this);
-    windowClosed(mController->getWindow());
-
     if(window)
         delete window;
 
@@ -23,9 +20,6 @@ BaseApplication::~BaseApplication() {
 
 void BaseApplication::setupFrameAndWindowListeners() {
     Ogre::LogManager::getSingletonPtr()->logMessage("--> BaseApplication: Setting up Frame Listener <--");
-
-    // WindowListener
-    Ogre::WindowEventUtilities::addWindowEventListener(mController->getWindow(), this);
 
     // FrameListener
     mController->getRoot()->addFrameListener(this);
@@ -65,6 +59,7 @@ void BaseApplication::go() {
 
     // TODO: refine those peculiarities
     // TODO: change "cycleshooter" for the appropriate constant
+    // TODO: set window icon
     window = new sf::Window(sf::VideoMode::getFullscreenModes()[0], "Cycleshooter", sf::Style::Fullscreen, sf::ContextSettings(32));
 
     mController = new Controller();
@@ -95,6 +90,8 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
         return false;
     }
 
+    // TODO: update logic[manager] here somewhere
+
     mHud->update(evt);
 
     // process unbuffered keys
@@ -106,13 +103,13 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
     // TODO: check if there is the possibility of an infinite event loop
     // while there are pending events...
     while (window->pollEvent(event)) {
+
         // check the type of the event...
-        switch (event.type)
-        {
-            // TODO: should this really exist??
+        switch (event.type) {
+
             // window closed
             case sf::Event::Closed:
-                // window->close();
+                window->close();
                 mController->shutdownNow();
                 break;
 
@@ -126,7 +123,7 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
             // TODO: add joystick events
             // TODO: add mouse events
 
-            // we don't process other types of events
+            // don't process other types of events
             default:
                 break;
         }
@@ -135,41 +132,16 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
     return true;
 }
 
-void BaseApplication::cyclePolygonRenderingMode() {
-    Ogre::String newVal;
-    Ogre::PolygonMode pm;
-
-    switch (mController->getNodeManager()->getMainCamera()->getPolygonMode()) {
-    case Ogre::PM_SOLID:
-        newVal = "Wireframe";
-        pm = Ogre::PM_WIREFRAME;
-        break;
-    case Ogre::PM_WIREFRAME:
-        newVal = "Points";
-        pm = Ogre::PM_POINTS;
-        break;
-    default:
-        newVal = "Solid";
-        pm = Ogre::PM_SOLID;
-    }
-
-    mController->getNodeManager()->getMainCamera()->setPolygonMode(pm);
-}
-
 void BaseApplication::setupMappings() {
-//    inputManager.addOrUpdateBinding(OIS::KC_R, [&]{
-//        cyclePolygonRenderingMode();
-//    });
+    // refresh (reload) all textures
+    InputManager::instance().addKey(sf::Keyboard::F5, [&] {
+       Ogre::TextureManager::getSingleton().reloadAll();
+    });
 
-//    // reload all textures
-//    inputManager.addOrUpdateBinding(OIS::KC_F5, [&]{
-//        Ogre::TextureManager::getSingleton().reloadAll();
-//    });
-
-//    // take a screenshot
-//    inputManager.addOrUpdateBinding(OIS::KC_SYSRQ, [&]{
-//        mController->getWindow()->writeContentsToTimestampedFile("screenshot", ".jpg");
-//    });
+    // take a screenshot
+    InputManager::instance().addKey(sf::Keyboard::Pause, [&] {
+        mController->getWindow()->writeContentsToTimestampedFile("screenshot", ".jpg");
+    });
 
     // quit from the application
     InputManager::instance().addKeyUnbuf(sf::Keyboard::Escape, [&]{
@@ -181,28 +153,29 @@ void BaseApplication::setupMappings() {
         mController->getNodeManager()->getParentPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, -10.0), Ogre::SceneNode::TS_LOCAL);
     });
 
+    InputManager::instance().addKeysUnbuf({sf::Keyboard::S,
+                                           sf::Keyboard::Down}, CONTEXT_RUNNER, [&]{
+        mController->getNodeManager()->getParentPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, +10.0), Ogre::SceneNode::TS_LOCAL);
+    });
+
+    InputManager::instance().addKeysUnbuf({sf::Keyboard::A,
+                                           sf::Keyboard::Left}, CONTEXT_RUNNER, [&]{
+        mController->getNodeManager()->getParentPlayerSceneNode()->yaw(Ogre::Degree(+10.0));
+    });
+
+    InputManager::instance().addKeysUnbuf({sf::Keyboard::D,
+                                           sf::Keyboard::Right}, CONTEXT_RUNNER, [&]{
+        mController->getNodeManager()->getParentPlayerSceneNode()->yaw(Ogre::Degree(-10.0));
+    });
+
+    InputManager::instance().addAxisUnbuf(sf::Joystick::X, CONTEXT_RUNNER, [&](float f){
+        mController->getNodeManager()->getParentPlayerSceneNode()->yaw(Ogre::Degree(-10 * f / 100.0));
+    });
+
     InputManager::instance().addAxisUnbuf(sf::Joystick::Y, CONTEXT_RUNNER, [&](float f){
         mController->getNodeManager()->getParentPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, 10.0 * f / 100.0), Ogre::SceneNode::TS_LOCAL);
     });
 
-    InputManager::instance().addAxisUnbuf(sf::Joystick::X, [&](float f){
-        mController->getNodeManager()->getParentPlayerSceneNode()->yaw(Ogre::Degree(-10*f*0.0001));
-    });
-
-//    inputManager.addOrUpdateBinding({OIS::KC_S,
-//                                     OIS::KC_DOWN}, [&]{
-//        mController->getNodeManager()->getParentPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, +10.0), Ogre::SceneNode::TS_LOCAL);
-//    });
-
-//    inputManager.addOrUpdateBinding({OIS::KC_A,
-//                                     OIS::KC_LEFT}, [&]{
-//        mController->getNodeManager()->getParentPlayerSceneNode()->yaw(Ogre::Degree(+10.0));
-//    });
-
-//    inputManager.addOrUpdateBinding({OIS::KC_D,
-//                                     OIS::KC_RIGHT}, [&]{
-//        mController->getNodeManager()->getParentPlayerSceneNode()->yaw(Ogre::Degree(-10.0));
-//    });
 
     InputManager::instance().addKey(sf::Keyboard::Num1, [&]{
         mController->toggleMode();
@@ -211,7 +184,6 @@ void BaseApplication::setupMappings() {
     InputManager::instance().addKey(sf::Keyboard::Num2, [&]{
         mController->toggleDebug();
     });
-
 }
 
 }

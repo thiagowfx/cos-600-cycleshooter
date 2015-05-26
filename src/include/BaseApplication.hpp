@@ -12,7 +12,7 @@
 namespace Cycleshooter {
 class Controller;
 
-class BaseApplication : public Ogre::FrameListener, public Ogre::WindowEventListener {
+class BaseApplication : public Ogre::FrameListener {
 public:
     BaseApplication();
     virtual ~BaseApplication();
@@ -23,8 +23,6 @@ private:
     void setupHUD();
     void createScene();
     virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
-
-    void cyclePolygonRenderingMode();
 
     void setupMappings();
 

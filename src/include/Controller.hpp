@@ -71,7 +71,7 @@ class Controller : sf::NonCopyable {
     // customizable settings
     const Ogre::String RENDER_WINDOW_NAME = "Cycleshooter Render Window";
     const Ogre::String RESOURCES_CONFIG = "resources.cfg";
-    const Ogre::String MAIN_TEXTURE = "racecircuit.png";
+    const Ogre::String MAIN_TEXTURE = "racecircuit.png"; // TODO: remove this later on [?]
     const sf::Time POLAR_SLEEP_TIME = sf::milliseconds(500);
 
     // go

@@ -150,9 +150,6 @@ void Controller::gameMainLoop() {
     Ogre::LogManager::getSingleton().logMessage("--> Controller: Game Main Loop <--");
 
     while(!shutdown) {
-
-        // TODO: update logic manager.
-
         // update rendering
         oRoot->renderOneFrame();
     }
@@ -163,19 +160,15 @@ void Controller::createRoot() {
 
     oRoot = new Ogre::Root();
 
-    // alternatively, use ->restoreConfig() to load saved settings
-//    if(!(oRoot->restoreConfig()||oRoot->showConfigDialog())) {
-//        return;
-//    }
-
-    // Create Rendering System, but don't initialise it.
+    // create Rendering System, but don't initialise it.
     oRoot->setRenderSystem(oRoot->getAvailableRenderers()[0]);
     oRoot->initialise(false);
 
     Ogre::NameValuePairList misc;
     misc["currentGLContext"] = Ogre::String("true");
 
-    // create a render window | note: Window Title and Size are not important here.
+    // create a render window
+    // note: window title and size are not important here.
     oWindow = oRoot->createRenderWindow("", 0, 0, false, &misc);
     oWindow->setVisible(true);
 }
