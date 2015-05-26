@@ -69,7 +69,6 @@ void BaseApplication::go() {
 
     mController->setupDebugOn();
 
-    setupMappings();
     setupFrameAndWindowListeners();
 
     // alternatively, Ogre's own loop: Ogre::Root::startRendering() + listeners
@@ -133,60 +132,6 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
     }
 
     return true;
-}
-
-void BaseApplication::setupMappings() {
-    // refresh (reload) all textures
-    InputManager::instance().addKey(sf::Keyboard::F5, [&] {
-       Ogre::TextureManager::getSingleton().reloadAll();
-    });
-
-    // take a screenshot
-    InputManager::instance().addKey(sf::Keyboard::Pause, [&] {
-        mController->getWindow()->writeContentsToTimestampedFile("screenshot", ".jpg");
-    });
-
-    // quit from the application
-    InputManager::instance().addKeyUnbuf(sf::Keyboard::Escape, [&]{
-        mController->shutdownNow();
-    });
-
-    InputManager::instance().addKeysUnbuf({sf::Keyboard::W,
-                                           sf::Keyboard::Up}, CONTEXT_RUNNER, [&]{
-        mController->getNodeManager()->getParentPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, -10.0), Ogre::SceneNode::TS_LOCAL);
-    });
-
-    InputManager::instance().addKeysUnbuf({sf::Keyboard::S,
-                                           sf::Keyboard::Down}, CONTEXT_RUNNER, [&]{
-        mController->getNodeManager()->getParentPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, +10.0), Ogre::SceneNode::TS_LOCAL);
-    });
-
-    InputManager::instance().addKeysUnbuf({sf::Keyboard::A,
-                                           sf::Keyboard::Left}, CONTEXT_RUNNER, [&]{
-        mController->getNodeManager()->getParentPlayerSceneNode()->yaw(Ogre::Degree(+10.0));
-    });
-
-    InputManager::instance().addKeysUnbuf({sf::Keyboard::D,
-                                           sf::Keyboard::Right}, CONTEXT_RUNNER, [&]{
-        mController->getNodeManager()->getParentPlayerSceneNode()->yaw(Ogre::Degree(-10.0));
-    });
-
-    InputManager::instance().addAxisUnbuf(sf::Joystick::X, CONTEXT_RUNNER, [&](float f){
-        mController->getNodeManager()->getParentPlayerSceneNode()->yaw(Ogre::Degree(-10 * f / 100.0));
-    });
-
-    InputManager::instance().addAxisUnbuf(sf::Joystick::Y, CONTEXT_RUNNER, [&](float f){
-        mController->getNodeManager()->getParentPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, 10.0 * f / 100.0), Ogre::SceneNode::TS_LOCAL);
-    });
-
-
-    InputManager::instance().addKey(sf::Keyboard::Num1, [&]{
-        mController->toggleMode();
-    });
-
-    InputManager::instance().addKey(sf::Keyboard::Num2, [&]{
-        mController->toggleDebug();
-    });
 }
 
 }

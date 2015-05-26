@@ -1,7 +1,10 @@
 #ifndef _CONTROLLER_HPP_
 #define _CONTROLLER_HPP_
 
+#include <SFML/Window/Joystick.hpp>
+#include <SFML/Window/Keyboard.hpp>
 #include <SFML/System.hpp>
+
 #include <Ogre.h>
 #include <OgreOverlaySystem.h>
 
@@ -10,16 +13,17 @@
 
 #include "Context.hpp"
 #include "HUD.hpp"
+#include "InputManager.hpp"
 #include "NodeManager.hpp"
-#include "TerrainManager.hpp"
 #include "CollisionHandler.hpp"
+#include "TerrainManager.hpp"
 
 namespace Cycleshooter {
 
 class HUD;
 class NodeManager;
-class TerrainManager;
 class CollisionHandler;
+class TerrainManager;
 
 class Controller : sf::NonCopyable {
     /**
@@ -76,10 +80,20 @@ class Controller : sf::NonCopyable {
 
     // go
     void go();
+
+    /**
+     * Create and initialize Ogre::Root.
+     */
     void createRoot();
+
+    /**
+     * Create a scene manager.
+     */
     void createSceneManager();
     void createOverlaySystem();
     void setupResources();
+
+    void setupMappings();
 
 public:
     Controller();

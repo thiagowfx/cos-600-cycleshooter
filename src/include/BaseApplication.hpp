@@ -24,8 +24,6 @@ private:
     void createScene();
     virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
 
-    void setupMappings();
-
     Cycleshooter::Controller* mController = NULL;
     Cycleshooter::HUD* mHud = NULL;
     sf::Window* window;

@@ -92,7 +92,7 @@ void Controller::shutdownNow() {
 void Controller::go() {
     createRoot();
 
-    // logMessage should be called only after Ogre::Root is created/initialized
+    // LogManager::getSingleton() should be called only after Ogre::Root is created/initialized
     Ogre::LogManager::getSingleton().logMessage("--> Controller: go <--");
 
     createSceneManager();
@@ -119,6 +119,9 @@ void Controller::go() {
     collisionHandler = new CollisionHandler(MAIN_TEXTURE);
     collisionHandler->loadImages();
     collisionHandler->loadTensor();
+
+    // setup shortcuts/mappings
+    setupMappings();
 }
 
 void Controller::setupResources() {
@@ -146,6 +149,60 @@ void Controller::setupResources() {
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 }
 
+void Controller::setupMappings() {
+    // refresh (reload) all textures
+    InputManager::instance().addKey(sf::Keyboard::F5, [&] {
+       Ogre::TextureManager::getSingleton().reloadAll();
+    });
+
+    // take a screenshot
+    InputManager::instance().addKey(sf::Keyboard::Pause, [&] {
+        getWindow()->writeContentsToTimestampedFile("screenshot", ".jpg");
+    });
+
+    // quit from the application
+    InputManager::instance().addKeyUnbuf(sf::Keyboard::Escape, [&]{
+        shutdownNow();
+    });
+
+    InputManager::instance().addKeysUnbuf({sf::Keyboard::W,
+                                           sf::Keyboard::Up}, CONTEXT_RUNNER, [&]{
+        getNodeManager()->getParentPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, -10.0), Ogre::SceneNode::TS_LOCAL);
+    });
+
+    InputManager::instance().addKeysUnbuf({sf::Keyboard::S,
+                                           sf::Keyboard::Down}, CONTEXT_RUNNER, [&]{
+        getNodeManager()->getParentPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, +10.0), Ogre::SceneNode::TS_LOCAL);
+    });
+
+    InputManager::instance().addKeysUnbuf({sf::Keyboard::A,
+                                           sf::Keyboard::Left}, CONTEXT_RUNNER, [&]{
+        getNodeManager()->getParentPlayerSceneNode()->yaw(Ogre::Degree(+10.0));
+    });
+
+    InputManager::instance().addKeysUnbuf({sf::Keyboard::D,
+                                           sf::Keyboard::Right}, CONTEXT_RUNNER, [&]{
+        getNodeManager()->getParentPlayerSceneNode()->yaw(Ogre::Degree(-10.0));
+    });
+
+    InputManager::instance().addAxisUnbuf(sf::Joystick::X, CONTEXT_RUNNER, [&](float f){
+        getNodeManager()->getParentPlayerSceneNode()->yaw(Ogre::Degree(-10 * f / 100.0));
+    });
+
+    InputManager::instance().addAxisUnbuf(sf::Joystick::Y, CONTEXT_RUNNER, [&](float f){
+        getNodeManager()->getParentPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, 10.0 * f / 100.0), Ogre::SceneNode::TS_LOCAL);
+    });
+
+
+    InputManager::instance().addKey(sf::Keyboard::Num1, [&]{
+        toggleMode();
+    });
+
+    InputManager::instance().addKey(sf::Keyboard::Num2, [&]{
+        toggleDebug();
+    });
+}
+
 void Controller::gameMainLoop() {
     Ogre::LogManager::getSingleton().logMessage("--> Controller: Game Main Loop <--");
 
@@ -160,15 +217,14 @@ void Controller::createRoot() {
 
     oRoot = new Ogre::Root();
 
-    // create Rendering System, but don't initialise it.
-    oRoot->setRenderSystem(oRoot->getAvailableRenderers()[0]);
+    // create rendering system, but don't initialise it / the main window
+    oRoot->setRenderSystem(oRoot->getAvailableRenderers().at(0));
     oRoot->initialise(false);
 
-    Ogre::NameValuePairList misc;
-    misc["currentGLContext"] = Ogre::String("true");
+    Ogre::NameValuePairList misc = {{"currentGLContext", "true"}};
 
     // create a render window
-    // note: window title and size are not important here.
+    // note: window title and size are not important here, so we use blank values for them
     oWindow = oRoot->createRenderWindow("", 0, 0, false, &misc);
     oWindow->setVisible(true);
 }
@@ -176,7 +232,7 @@ void Controller::createRoot() {
 void Controller::createSceneManager() {
     Ogre::LogManager::getSingleton().logMessage("--> Controller: Creating Scene Manager <--");
 
-    oSceneManager = oRoot->createSceneManager(Ogre::ST_GENERIC);
+    oSceneManager = oRoot->createSceneManager(Ogre::ST_GENERIC, "sceneManager");
 }
 
 void Controller::createOverlaySystem() {
