@@ -164,12 +164,12 @@ void Controller::createRoot() {
     oRoot = new Ogre::Root();
 
     // alternatively, use ->restoreConfig() to load saved settings
-    if(!oRoot->showConfigDialog()) {
-        return;
-    }
+//    if(!(oRoot->restoreConfig()||oRoot->showConfigDialog())) {
+//        return;
+//    }
 
     // Create Rendering System, but don't initialise it.
-    // ogreRoot->setRenderSystem(ogreRoot->getAvailableRenderers()[0]);
+    oRoot->setRenderSystem(oRoot->getAvailableRenderers()[0]);
     oRoot->initialise(false);
 
     Ogre::NameValuePairList misc;

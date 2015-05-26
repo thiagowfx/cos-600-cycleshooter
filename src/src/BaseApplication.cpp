@@ -65,7 +65,7 @@ void BaseApplication::go() {
 
     // TODO: refine those peculiarities
     // TODO: change "cycleshooter" for the appropriate constant
-    window = new sf::Window(sf::VideoMode::getFullscreenModes()[0], "Cycleshooter", sf::Style::Default, sf::ContextSettings(32));
+    window = new sf::Window(sf::VideoMode::getFullscreenModes()[0], "Cycleshooter", sf::Style::Fullscreen, sf::ContextSettings(32));
 
     mController = new Controller();
 
@@ -183,6 +183,10 @@ void BaseApplication::setupMappings() {
 
     InputManager::instance().addAxisUnbuf(sf::Joystick::Y, CONTEXT_RUNNER, [&](float f){
         mController->getNodeManager()->getParentPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, 10.0 * f / 100.0), Ogre::SceneNode::TS_LOCAL);
+    });
+
+    InputManager::instance().addAxisUnbuf(sf::Joystick::X, [&](float f){
+        mController->getNodeManager()->getParentPlayerSceneNode()->yaw(Ogre::Degree(-10*f*0.0001));
     });
 
 //    inputManager.addOrUpdateBinding({OIS::KC_S,
