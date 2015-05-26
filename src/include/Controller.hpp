@@ -66,6 +66,7 @@ class Controller : sf::NonCopyable {
     Ogre::Root *oRoot = NULL;
     Ogre::SceneManager *oSceneManager = NULL;
     Ogre::OverlaySystem *oOverlaySystem = NULL;
+    Ogre::RenderWindow *oWindow = NULL;
 
     // customizable settings
     const Ogre::String RENDER_WINDOW_NAME = "Cycleshooter Render Window";

@@ -15,7 +15,7 @@ Ogre::Root *Controller::getRoot() const {
 }
 
 Ogre::RenderWindow *Controller::getWindow() const {
-    return oRoot->getAutoCreatedWindow();
+    return oWindow;
 }
 
 Ogre::SceneManager *Controller::getSceneManager() const {
@@ -50,6 +50,8 @@ Controller::~Controller() {
 
     if(logicManager)
         delete logicManager;
+
+    oRoot->destroyRenderTarget(oWindow);
 }
 
 sf::Thread *Controller::getPolarUpdater() const {
@@ -166,8 +168,16 @@ void Controller::createRoot() {
         return;
     }
 
-    // automatically create a window
-    oRoot->initialise(true, RENDER_WINDOW_NAME);
+    // Create Rendering System, but don't initialise it.
+    // ogreRoot->setRenderSystem(ogreRoot->getAvailableRenderers()[0]);
+    oRoot->initialise(false);
+
+    Ogre::NameValuePairList misc;
+    misc["currentGLContext"] = Ogre::String("true");
+
+    // create a render window | note: Window Title and Size are not important here.
+    oWindow = oRoot->createRenderWindow("", 0, 0, false, &misc);
+    oWindow->setVisible(true);
 }
 
 void Controller::createSceneManager() {

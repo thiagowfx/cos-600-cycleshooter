@@ -11,6 +11,9 @@ BaseApplication::~BaseApplication() {
     Ogre::WindowEventUtilities::removeWindowEventListener(mController->getWindow(), this);
     windowClosed(mController->getWindow());
 
+    if(window)
+        delete window;
+
     if(mHud)
         delete mHud;
 
@@ -60,6 +63,10 @@ void BaseApplication::go() {
     // randomness
     srand(time(NULL));
 
+    // TODO: refine those peculiarities
+    // TODO: change "cycleshooter" for the appropriate constant
+    window = new sf::Window(sf::VideoMode::getFullscreenModes()[0], "Cycleshooter", sf::Style::Default, sf::ContextSettings(32));
+
     mController = new Controller();
 
     setupHUD();
@@ -98,20 +105,26 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
 
     // TODO: check if there is the possibility of an infinite event loop
     // while there are pending events...
-    while (window.pollEvent(event)) {
+    while (window->pollEvent(event)) {
         // check the type of the event...
         switch (event.type)
         {
             // TODO: should this really exist??
             // window closed
             case sf::Event::Closed:
-                window.close();
+                // window->close();
+                mController->shutdownNow();
                 break;
+
+            // TODO: resize event (adjust viewport)
 
             // key pressed
             case sf::Event::KeyPressed:
                 InputManager::instance().executeAction(event.key.code, mController->getContext());
                 break;
+
+            // TODO: add joystick events
+            // TODO: add mouse events
 
             // we don't process other types of events
             default:
@@ -191,9 +204,10 @@ void BaseApplication::setupMappings() {
         mController->toggleMode();
     });
 
-//    inputManager.addOrUpdateBinding(OIS::KC_2, [&]{
-//        mController->toggleDebug();
-//    });
+    InputManager::instance().addKey(sf::Keyboard::Num2, [&]{
+        mController->toggleDebug();
+    });
+
 }
 
 }

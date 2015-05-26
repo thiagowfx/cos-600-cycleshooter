@@ -30,6 +30,7 @@ private:
 
     Cycleshooter::Controller* mController = NULL;
     Cycleshooter::HUD* mHud = NULL;
+    sf::Window* window;
 };
 
 }
