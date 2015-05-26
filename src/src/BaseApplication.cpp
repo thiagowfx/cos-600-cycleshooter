@@ -18,31 +18,6 @@ BaseApplication::~BaseApplication() {
         delete mController;
 }
 
-void BaseApplication::initializeOIS() {
-    Ogre::LogManager::getSingletonPtr()->logMessage("--> BaseApplication: Initializing OIS <--");
-
-    OIS::ParamList pl;
-    size_t windowHnd = 0;
-    std::ostringstream windowHndStr;
-
-    mController->getWindow()->getCustomAttribute("WINDOW", &windowHnd);
-    windowHndStr << windowHnd;
-    pl.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
-
-    mInputManager = OIS::InputManager::createInputSystem(pl);
-
-    // KeyboardListener
-    mInputContext.mKeyboard = static_cast<OIS::Keyboard*>(mInputManager->createInputObject(OIS::OISKeyboard, true));
-    mInputContext.mKeyboard->setEventCallback(this);
-
-    // MouseListener
-    mInputContext.mMouse = static_cast<OIS::Mouse*>(mInputManager->createInputObject(OIS::OISMouse, true));
-    mInputContext.mMouse->setEventCallback(this);
-
-    // set initial mouse clipping size
-    windowResized(mController->getWindow());
-}
-
 void BaseApplication::setupFrameAndWindowListeners() {
     Ogre::LogManager::getSingletonPtr()->logMessage("--> BaseApplication: Setting up Frame Listener <--");
 
@@ -87,13 +62,12 @@ void BaseApplication::go() {
 
     mController = new Controller();
 
-    initializeOIS();
     setupHUD();
     createScene();
 
     mController->setupDebugOn();
 
-    setupKeyboardRunnerMapping();
+    setupMappings();
     setupFrameAndWindowListeners();
 
     // alternatively, Ogre's own loop: Ogre::Root::startRendering() + listeners
@@ -112,9 +86,6 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
         return false;
     }
 
-    // capture/update each device
-    mInputContext.capture();
-
     mHud->update(evt);
 
     InputManager::instance().executeActionUnbuf(mController->getContext());
@@ -128,59 +99,6 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
     // }
 
     return true;
-}
-
-bool BaseApplication::keyPressed(const OIS::KeyEvent &arg) {
-    // InputManager::executeAction(key, mController->getContext());
-    // mCameraMan->injectKeyDown(arg);
-    return true;
-}
-
-bool BaseApplication::keyReleased(const OIS::KeyEvent &arg) {
-    // mCameraMan->injectKeyUp(arg);
-    return true;
-}
-
-bool BaseApplication::mouseMoved(const OIS::MouseEvent &arg) {
-    // mCameraMan->injectMouseMove(arg);
-    return true;
-}
-
-bool BaseApplication::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id) {
-    // mCameraMan->injectMouseDown(arg, id);
-    return true;
-}
-
-bool BaseApplication::mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id) {
-    // mCameraMan->injectMouseUp(arg, id);
-    return true;
-}
-
-void BaseApplication::windowResized(Ogre::RenderWindow* rw) {
-    Ogre::LogManager::getSingleton().logMessage("--> BaseApplication: Window Resized <--");
-
-    unsigned int width, height, depth;
-    int left, top;
-    rw->getMetrics(width, height, depth, left, top);
-
-    const OIS::MouseState &ms = mInputContext.mMouse->getMouseState();
-    ms.width = width;
-    ms.height = height;
-}
-
-// unattach OIS before window shutdown (very important under Linux)
-void BaseApplication::windowClosed(Ogre::RenderWindow* rw) {
-    Ogre::LogManager::getSingleton().logMessage("--> BaseApplication: Window Closed <--");
-
-    // only close for window that created OIS (the main window)
-    if(rw == mController->getWindow()) {
-        if(mInputManager) {
-            mInputManager->destroyInputObject(mInputContext.mMouse);
-            mInputManager->destroyInputObject(mInputContext.mKeyboard);
-            OIS::InputManager::destroyInputSystem(mInputManager);
-            mInputManager = NULL;
-        }
-    }
 }
 
 void BaseApplication::cyclePolygonRenderingMode() {
@@ -204,7 +122,7 @@ void BaseApplication::cyclePolygonRenderingMode() {
     mController->getNodeManager()->getMainCamera()->setPolygonMode(pm);
 }
 
-void BaseApplication::setupKeyboardRunnerMapping() {
+void BaseApplication::setupMappings() {
 //    inputManager.addOrUpdateBinding(OIS::KC_R, [&]{
 //        cyclePolygonRenderingMode();
 //    });

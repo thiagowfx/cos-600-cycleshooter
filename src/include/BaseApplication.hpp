@@ -2,7 +2,6 @@
 #define _BASEAPPLICATION_HPP_
 
 #include <Ogre.h>
-#include <OIS.h>
 #include <cstdlib>
 
 #include "Controller.hpp"
@@ -12,36 +11,24 @@
 namespace Cycleshooter {
 class Controller;
 
-class BaseApplication : public Ogre::FrameListener, public Ogre::WindowEventListener, public OIS::KeyListener, public OIS::MouseListener {
+class BaseApplication : public Ogre::FrameListener, public Ogre::WindowEventListener {
 public:
     BaseApplication();
     virtual ~BaseApplication();
 
 private:
     void go();
-    void initializeOIS();
     void setupFrameAndWindowListeners();
     void setupHUD();
     void createScene();
-
     virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
-    virtual bool keyPressed(const OIS::KeyEvent &arg);
-    virtual bool keyReleased(const OIS::KeyEvent &arg);
-    virtual bool mouseMoved(const OIS::MouseEvent &arg);
-    virtual bool mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
-    virtual bool mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
-    virtual void windowResized(Ogre::RenderWindow* rw);
-    virtual void windowClosed(Ogre::RenderWindow* rw);
 
     void cyclePolygonRenderingMode();
 
-    void setupKeyboardRunnerMapping();
+    void setupMappings();
 
     Cycleshooter::Controller* mController = NULL;
     Cycleshooter::HUD* mHud = NULL;
-
-    OgreBites::InputContext mInputContext;
-    OIS::InputManager* mInputManager = NULL;
 };
 
 }
