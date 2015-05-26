@@ -1,24 +1,44 @@
 #ifndef _INPUTMANAGER_HPP_
 #define _INPUTMANAGER_HPP_
 
-#include <OIS.h>
+#include "Context.hpp"
+#include <iostream>
 #include <functional>
 #include <map>
 #include <vector>
+#include <SFML/Window.hpp>
 
 namespace Cycleshooter {
 class InputManager {
-    std::map <OIS::KeyCode, std::function<void(void)> > keyBindings;
+    // constructor and copy functions
+    InputManager(){}
+    InputManager(const InputManager&) = delete;
+    void operator=(const InputManager&) = delete;
+
+    std::map<sf::Keyboard::Key, std::function<void(void)> > runnerKeyboardMap;
+    std::map<sf::Keyboard::Key, std::function<void(void)> > shooterKeyboardMap;
+
+    bool hasKey(const sf::Keyboard::Key& key, const Context& mode);
 
 public:
-    InputManager();
+    static InputManager& instance();
 
-    void addOrUpdateBinding(const OIS::KeyCode& key, const std::function<void(void)>& action);
-    void addOrUpdateBinding(const std::vector<OIS::KeyCode>& keys, const std::function<void(void)>& action);
-    void executeAction(const OIS::KeyCode& key);
-    bool hasBinding(const OIS::KeyCode& key) const;
-    void removeBinding(const OIS::KeyCode& key);
-    void removeBindings();
+    void addKey(const sf::Keyboard::Key& key, const std::function<void(void)> &action);
+
+    void addKey(const sf::Keyboard::Key& key, const Context& mode, const std::function<void(void)> &action);
+
+    void addKeys(const std::vector<sf::Keyboard::Key>& keys, const std::function<void(void)> &action);
+
+    void addKeys(const std::vector<sf::Keyboard::Key>& keys, const Context& mode, const std::function<void(void)> &action);
+
+    void removeKey(const sf::Keyboard::Key& key, const Context& mode);
+
+    void removeKeys(const std::vector<sf::Keyboard::Key>& keys, const Context& mode);
+
+    void removeAllKeys(const Context& mode);
+
+    void executeAction(const sf::Keyboard::Key& key, const Context& mode);
+
 };
 }
 

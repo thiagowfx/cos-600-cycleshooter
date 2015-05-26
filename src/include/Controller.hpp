@@ -8,6 +8,7 @@
 #include "LogicManager.hpp"
 #include "RandomPolar.hpp"
 
+#include "Context.hpp"
 #include "HUD.hpp"
 #include "NodeManager.hpp"
 #include "TerrainManager.hpp"
@@ -19,16 +20,6 @@ class HUD;
 class NodeManager;
 class TerrainManager;
 class CollisionHandler;
-
-/**
- * Current game context mode.
- * CONTEXT_RUNNER: when the player runs away from the monster.
- * CONTEXT_SHOOTER: when the player stops and tries to shoot off the monster.
- */
-enum Context {
-    CONTEXT_RUNNER,
-    CONTEXT_SHOOTER,
-};
 
 class Controller : sf::NonCopyable {
     /**

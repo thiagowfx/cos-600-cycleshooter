@@ -39,7 +39,6 @@ private:
 
     Cycleshooter::Controller* mController = NULL;
     Cycleshooter::HUD* mHud = NULL;
-    Cycleshooter::InputManager inputManager;
 
     OgreBites::InputContext mInputContext;
     OIS::InputManager* mInputManager = NULL;

@@ -117,6 +117,10 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
 
     mHud->update(evt);
 
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+        InputManager::instance().executeAction(sf::Keyboard::Escape, mController->getContext());
+    }
+
     // if (!mHUD->getTrayManager()->isDialogVisible()) {
         // If dialog isn't up, then update the camera
         // mCameraMan->frameRenderingQueued(evt);
@@ -129,7 +133,7 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
 }
 
 bool BaseApplication::keyPressed(const OIS::KeyEvent &arg) {
-    inputManager.executeAction(arg.key);
+    // InputManager::executeAction(key, mController->getContext());
     // mCameraMan->injectKeyDown(arg);
     return true;
 }
@@ -203,52 +207,52 @@ void BaseApplication::cyclePolygonRenderingMode() {
 }
 
 void BaseApplication::setupKeyboardRunnerMapping() {
-    inputManager.addOrUpdateBinding(OIS::KC_R, [&]{
-        cyclePolygonRenderingMode();
-    });
+//    inputManager.addOrUpdateBinding(OIS::KC_R, [&]{
+//        cyclePolygonRenderingMode();
+//    });
 
-    // reload all textures
-    inputManager.addOrUpdateBinding(OIS::KC_F5, [&]{
-        Ogre::TextureManager::getSingleton().reloadAll();
-    });
+//    // reload all textures
+//    inputManager.addOrUpdateBinding(OIS::KC_F5, [&]{
+//        Ogre::TextureManager::getSingleton().reloadAll();
+//    });
 
-    // take a screenshot
-    inputManager.addOrUpdateBinding(OIS::KC_SYSRQ, [&]{
-        mController->getWindow()->writeContentsToTimestampedFile("screenshot", ".jpg");
-    });
+//    // take a screenshot
+//    inputManager.addOrUpdateBinding(OIS::KC_SYSRQ, [&]{
+//        mController->getWindow()->writeContentsToTimestampedFile("screenshot", ".jpg");
+//    });
 
     // quit from the application
-    inputManager.addOrUpdateBinding(OIS::KC_ESCAPE, [&]{
+    InputManager::instance().addKey(sf::Keyboard::Escape, [&]{
         mController->shutdownNow();
     });
 
-    inputManager.addOrUpdateBinding({OIS::KC_W,
-                                     OIS::KC_UP}, [&]{
-        mController->getNodeManager()->getParentPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, -10.0), Ogre::SceneNode::TS_LOCAL);
-    });
+//    inputManager.addOrUpdateBinding({OIS::KC_W,
+//                                     OIS::KC_UP}, [&]{
+//        mController->getNodeManager()->getParentPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, -10.0), Ogre::SceneNode::TS_LOCAL);
+//    });
 
-    inputManager.addOrUpdateBinding({OIS::KC_S,
-                                     OIS::KC_DOWN}, [&]{
-        mController->getNodeManager()->getParentPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, +10.0), Ogre::SceneNode::TS_LOCAL);
-    });
+//    inputManager.addOrUpdateBinding({OIS::KC_S,
+//                                     OIS::KC_DOWN}, [&]{
+//        mController->getNodeManager()->getParentPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, +10.0), Ogre::SceneNode::TS_LOCAL);
+//    });
 
-    inputManager.addOrUpdateBinding({OIS::KC_A,
-                                     OIS::KC_LEFT}, [&]{
-        mController->getNodeManager()->getParentPlayerSceneNode()->yaw(Ogre::Degree(+10.0));
-    });
+//    inputManager.addOrUpdateBinding({OIS::KC_A,
+//                                     OIS::KC_LEFT}, [&]{
+//        mController->getNodeManager()->getParentPlayerSceneNode()->yaw(Ogre::Degree(+10.0));
+//    });
 
-    inputManager.addOrUpdateBinding({OIS::KC_D,
-                                     OIS::KC_RIGHT}, [&]{
-        mController->getNodeManager()->getParentPlayerSceneNode()->yaw(Ogre::Degree(-10.0));
-    });
+//    inputManager.addOrUpdateBinding({OIS::KC_D,
+//                                     OIS::KC_RIGHT}, [&]{
+//        mController->getNodeManager()->getParentPlayerSceneNode()->yaw(Ogre::Degree(-10.0));
+//    });
 
-    inputManager.addOrUpdateBinding(OIS::KC_1, [&]{
-        mController->toggleMode();
-    });
+//    inputManager.addOrUpdateBinding(OIS::KC_1, [&]{
+//        mController->toggleMode();
+//    });
 
-    inputManager.addOrUpdateBinding(OIS::KC_2, [&]{
-        mController->toggleDebug();
-    });
+//    inputManager.addOrUpdateBinding(OIS::KC_2, [&]{
+//        mController->toggleDebug();
+//    });
 }
 
 }
