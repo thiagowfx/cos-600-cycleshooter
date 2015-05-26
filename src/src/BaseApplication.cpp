@@ -90,15 +90,34 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
 
     mHud->update(evt);
 
+    // process unbuffered keys
     InputManager::instance().executeActionUnbuf(mController->getContext());
 
-    // if (!mHUD->getTrayManager()->isDialogVisible()) {
-        // If dialog isn't up, then update the camera
-        // mCameraMan->frameRenderingQueued(evt);
-        // if (mHUD->isDebugPanelVisible()) {
-        //     mHUD->updateDebugPanel_CameraElements(mController->getNodeManager()->getMainCamera());
-        // }
-    // }
+    // process events (in particular, buffered keys)
+    sf::Event event;
+
+    // TODO: check if there is the possibility of an infinite event loop
+    // while there are pending events...
+    while (window.pollEvent(event)) {
+        // check the type of the event...
+        switch (event.type)
+        {
+            // TODO: should this really exist??
+            // window closed
+            case sf::Event::Closed:
+                window.close();
+                break;
+
+            // key pressed
+            case sf::Event::KeyPressed:
+                InputManager::instance().executeAction(event.key.code, mController->getContext());
+                break;
+
+            // we don't process other types of events
+            default:
+                break;
+        }
+    }
 
     return true;
 }
