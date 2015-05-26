@@ -117,9 +117,7 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
 
     mHud->update(evt);
 
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-        InputManager::instance().executeAction(sf::Keyboard::Escape, mController->getContext());
-    }
+    InputManager::instance().executeActionUnbuf(mController->getContext());
 
     // if (!mHUD->getTrayManager()->isDialogVisible()) {
         // If dialog isn't up, then update the camera
@@ -222,14 +220,14 @@ void BaseApplication::setupKeyboardRunnerMapping() {
 //    });
 
     // quit from the application
-    InputManager::instance().addKey(sf::Keyboard::Escape, [&]{
+    InputManager::instance().addKeyUnbuf(sf::Keyboard::Escape, [&]{
         mController->shutdownNow();
     });
 
-//    inputManager.addOrUpdateBinding({OIS::KC_W,
-//                                     OIS::KC_UP}, [&]{
-//        mController->getNodeManager()->getParentPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, -10.0), Ogre::SceneNode::TS_LOCAL);
-//    });
+    InputManager::instance().addKeysUnbuf({sf::Keyboard::W,
+                                           sf::Keyboard::Up}, CONTEXT_RUNNER, [&]{
+        mController->getNodeManager()->getParentPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, -10.0), Ogre::SceneNode::TS_LOCAL);
+    });
 
 //    inputManager.addOrUpdateBinding({OIS::KC_S,
 //                                     OIS::KC_DOWN}, [&]{
