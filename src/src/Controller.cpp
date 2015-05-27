@@ -51,6 +51,10 @@ Controller::~Controller() {
 
     if(logicManager)
         delete logicManager;
+
+    // TODO: delete this if the program crashes on exit
+    if(sWindow)
+        delete sWindow;
 }
 
 sf::Thread *Controller::getPolarUpdater() const {
@@ -76,6 +80,65 @@ void Controller::polarUpdaterFunction() {
     }
 }
 
+bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
+    // update windows, if necessary
+    Ogre::WindowEventUtilities::messagePump();
+
+    if(oWindow->isClosed())
+        shutdownNow();
+
+    if(shutdown) {
+        // sync with other threads for a clean shutdown
+        polarUpdater->wait();
+
+        return false;
+    }
+
+    // TODO: update logic[manager] here somewhere
+    // TODO: add/use clock for unbuf
+    // TODO key->mapping massive rename
+    // TODO: merge with Podolan's branch
+
+    oHud->update(evt);
+
+    // process unbuffered keys
+    InputManager::instance().executeActionUnbuf(context);
+
+    // process events (in particular, buffered keys)
+    sf::Event event;
+
+    // TODO: check if there is the possibility of an infinite event loop
+    // while there are pending events...
+    while (sWindow->pollEvent(event)) {
+
+        // check the type of the event...
+        switch (event.type) {
+
+            // window closed
+            case sf::Event::Closed:
+                sWindow->close();
+                shutdownNow();
+                break;
+
+            // TODO: resize event (adjust viewport)
+
+            // key pressed
+            case sf::Event::KeyPressed:
+                InputManager::instance().executeAction(event.key.code, context);
+                break;
+
+            // TODO: add joystick events
+            // TODO: add mouse events
+
+            // don't process other types of events
+            default:
+                break;
+        }
+    }
+
+    return true;
+}
+
 LogicManager *Controller::getLogicManager() const {
     return logicManager;
 }
@@ -95,7 +158,8 @@ void Controller::go() {
     // randomness
     srand(time(NULL));
 
-    // initialize OGRE core elements
+    // initialize core OGRE elements
+    createSFMLWindow();
     createRoot();
     createSceneManager();
     createOverlaySystem();
@@ -106,7 +170,25 @@ void Controller::go() {
     createGameElements();
     createScene();
     createHud();
+
+    // setups
     setupMappings();
+    // TODO: setupRunnerMode() (?) -- or each element individually?
+    setupDebugOn();
+
+    // Ogre::FrameListener <-- let's begin calling frameRenderingQueued
+    oRoot->addFrameListener(this);
+    gameMainLoop();
+}
+
+void Controller::createSFMLWindow() {
+    std::cout << "--> Controller: Creating the SFML Window <--" << std::endl;
+
+    // TODO: refine those peculiarities
+    // TODO: set window icon
+    // TODO: if/else fullscreen (user configurable)
+    // TODO: if/else fullscreen resolution (user configurable)
+    sWindow = new sf::Window(sf::VideoMode::getFullscreenModes()[0], RENDER_WINDOW_NAME, sf::Style::Fullscreen, sf::ContextSettings(32));
 }
 
 void Controller::setupResources(const Ogre::String& config) {

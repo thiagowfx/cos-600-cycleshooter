@@ -3,9 +3,8 @@
 
 #include <cstdlib>
 
-#include <SFML/Window/Joystick.hpp>
-#include <SFML/Window/Keyboard.hpp>
 #include <SFML/System.hpp>
+#include <SFML/Window.hpp>
 
 #include <Ogre.h>
 #include <OgreOverlaySystem.h>
@@ -27,7 +26,7 @@ class NodeManager;
 class CollisionHandler;
 class TerrainManager;
 
-class Controller : sf::NonCopyable {
+class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     /**
      * @brief context the current game context mode
      */
@@ -63,6 +62,11 @@ class Controller : sf::NonCopyable {
      */
     Ogre::RenderWindow *oWindow = NULL;
 
+    /**
+     * @brief sWindow the sfml window
+     */
+    sf::Window* sWindow = NULL;
+
     // customizable settings
     const Ogre::String RENDER_WINDOW_NAME = "Cycleshooter Render Window";
     const sf::Time POLAR_SLEEP_TIME = sf::milliseconds(500);
@@ -71,6 +75,11 @@ class Controller : sf::NonCopyable {
      * @brief go Our smart constructor
      */
     void go();
+
+    /**
+     * @brief createSFMLWindow Create and initialize the SFML window.
+     */
+    void createSFMLWindow();
 
     /**
      * Create and initialize Ogre::Root.
@@ -157,6 +166,12 @@ class Controller : sf::NonCopyable {
      * @brief hud responsible for rendering overlay elements with useful information for the player
      */
     HUD* oHud = NULL;
+
+    /**
+     * @brief frameRenderingQueued Overriden from Ogre::FrameListener.
+     * This should be used for performancing purposes (efficiently use CPU time while GPU is working elsewhere).
+     */
+    virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
 
     //TODO: make almost everything private(?)
 public:
