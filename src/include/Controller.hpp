@@ -158,6 +158,7 @@ class Controller : sf::NonCopyable {
      */
     HUD* oHud = NULL;
 
+    //TODO: make almost everything private(?)
 public:
     Controller();
     virtual ~Controller();
@@ -219,7 +220,6 @@ public:
     Ogre::Root *getRoot() const;
     Ogre::RenderWindow *getWindow() const;
     Ogre::SceneManager *getSceneManager() const;
-    Ogre::OverlaySystem *getOverlaySystem() const;
     bool getShutdown() const;
     sf::Thread *getPolarUpdater() const;
     LogicManager *getLogicManager() const;

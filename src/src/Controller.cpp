@@ -22,10 +22,6 @@ Ogre::SceneManager *Controller::getSceneManager() const {
     return oSceneManager;
 }
 
-Ogre::OverlaySystem *Controller::getOverlaySystem() const {
-    return oOverlaySystem;
-}
-
 HUD *Controller::getHud() const {
     return oHud;
 }
