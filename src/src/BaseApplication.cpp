@@ -11,9 +11,6 @@ BaseApplication::~BaseApplication() {
     if(window)
         delete window;
 
-    if(mHud)
-        delete mHud;
-
     if(mController)
         delete mController;
 }
@@ -25,28 +22,13 @@ void BaseApplication::setupFrameAndWindowListeners() {
     mController->getRoot()->addFrameListener(this);
 }
 
-void BaseApplication::setupHUD() {
-    Ogre::LogManager::getSingletonPtr()->logMessage("--> BaseApplication: Setting up HUD <--");
-
-    mHud = new HUD(mController);
-    mHud->setHelpPanel({"1","2"},{"ToggleMode","ToggleDebug"});
-    mHud->setupRunnerMode();
-    mController->setHud(mHud);
-}
-
 void BaseApplication::go() {
-    // randomness
-    srand(time(NULL));
-
     // TODO: refine those peculiarities
     // TODO: change "cycleshooter" for the appropriate constant
     // TODO: set window icon
     window = new sf::Window(sf::VideoMode::getFullscreenModes()[0], "Cycleshooter", sf::Style::Fullscreen, sf::ContextSettings(32));
 
     mController = new Controller();
-
-    // hud before the scene...[?]
-    setupHUD();
 
     mController->setupDebugOn();
 
@@ -75,7 +57,7 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
     // TODO key->mapping massive rename
     // TODO: merge with Podolan's branch
 
-    mHud->update(evt);
+    mController->getHud()->update(evt);
 
     // process unbuffered keys
     InputManager::instance().executeActionUnbuf(mController->getContext());

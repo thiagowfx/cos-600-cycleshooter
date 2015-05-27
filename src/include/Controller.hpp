@@ -1,6 +1,8 @@
 #ifndef _CONTROLLER_HPP_
 #define _CONTROLLER_HPP_
 
+#include <cstdlib>
+
 #include <SFML/Window/Joystick.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/System.hpp>
@@ -40,11 +42,6 @@ class Controller : sf::NonCopyable {
      * @brief shutdown setting this to true will stop several while loops, thus forcing the game to finish cleanly
      */
     bool shutdown = false;
-
-    /**
-     * @brief hud responsible for rendering overlay elements with useful information for the player
-     */
-    HUD* hud = NULL;
 
     /**
      * @brief oRoot Ogre::Root
@@ -106,14 +103,19 @@ class Controller : sf::NonCopyable {
     void createGameElements();
 
     /**
-     * Setup the games shortcuts/keybindings/keymaps (mouse, joystick and keyboard)
-     */
-    void setupMappings();
-
-    /**
      * Create the initial scene.
      */
     void createScene();
+
+    /**
+     * Create the HUD and its overlay widgets
+     */
+    void createHud();
+
+    /**
+     * Setup the games shortcuts/keybindings/keymaps (mouse, joystick and keyboard)
+     */
+    void setupMappings();
 
     /**
      * @brief logicManager Manages the logic of the game.
@@ -150,6 +152,11 @@ class Controller : sf::NonCopyable {
      * Collision Handler.
      */
     CollisionHandler* collisionHandler = NULL;
+
+    /**
+     * @brief hud responsible for rendering overlay elements with useful information for the player
+     */
+    HUD* oHud = NULL;
 
 public:
     Controller();
@@ -209,7 +216,6 @@ public:
     Context getContext() const;
     NodeManager *getNodeManager() const;
     HUD *getHud() const;
-    void setHud(HUD *value);
     Ogre::Root *getRoot() const;
     Ogre::RenderWindow *getWindow() const;
     Ogre::SceneManager *getSceneManager() const;

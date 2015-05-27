@@ -27,11 +27,7 @@ Ogre::OverlaySystem *Controller::getOverlaySystem() const {
 }
 
 HUD *Controller::getHud() const {
-    return hud;
-}
-
-void Controller::setHud(HUD *value) {
-    hud = value;
+    return oHud;
 }
 
 Controller::Controller() {
@@ -39,6 +35,9 @@ Controller::Controller() {
 }
 
 Controller::~Controller() {
+    if(oHud)
+        delete oHud;
+
     if(collisionHandler)
         delete collisionHandler;
 
@@ -97,6 +96,9 @@ void Controller::go() {
     // we can't use Ogre::LogManager before creating the Ogre::Root object
     std::cout << "--> Controller: go <--" << std::endl;
 
+    // randomness
+    srand(time(NULL));
+
     // initialize OGRE core elements
     createRoot();
     createSceneManager();
@@ -106,8 +108,9 @@ void Controller::go() {
 
     // initialize our objects and our game overall
     createGameElements();
-    setupMappings();
     createScene();
+    createHud();
+    setupMappings();
 }
 
 void Controller::setupResources(const Ogre::String& config) {
@@ -164,6 +167,37 @@ void Controller::createGameElements() {
     collisionHandler->loadTensor();
 }
 
+void Controller::createScene() {
+    Ogre::LogManager::getSingleton().logMessage("--> Controller: Creating Scene <--");
+
+    Ogre::Entity* ogreEntity = getSceneManager()->createEntity("ogrehead.mesh");
+    Ogre::Entity* ogreEntity2 = getSceneManager()->createEntity("ogrehead.mesh");
+    Ogre::Entity* ogreEntity3 = getSceneManager()->createEntity("ogrehead.mesh");
+
+    Ogre::SceneNode* ogreNode = getSceneManager()->getRootSceneNode()->createChildSceneNode();
+    Ogre::SceneNode* ogreNode2 = getSceneManager()->getRootSceneNode()->createChildSceneNode();
+    Ogre::SceneNode* ogreNode3 = getSceneManager()->getRootSceneNode()->createChildSceneNode();
+
+    ogreNode2->translate(0.0, 0.0, 400.0);
+    ogreNode3->translate(0.0, 0.0, -400.0);
+
+    ogreNode->attachObject(ogreEntity);
+    ogreNode2->attachObject(ogreEntity2);
+    ogreNode3->attachObject(ogreEntity3);
+
+    getSceneManager()->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
+    Ogre::Light* light =  getSceneManager()->createLight("MainLight");
+    light->setPosition(20.0, 80.0, 50.0);
+}
+
+void Controller::createHud() {
+    Ogre::LogManager::getSingletonPtr()->logMessage("--> Controller: Creating HUD <--");
+
+    oHud = new HUD(this);
+    oHud->setHelpPanel({"1", "2"},{"ToggleMode", "ToggleDebug"});
+    oHud->setupRunnerMode();
+}
+
 void Controller::setupMappings() {
     // refresh (reload) all textures
     InputManager::instance().addKey(sf::Keyboard::F5, [&] {
@@ -218,25 +252,6 @@ void Controller::setupMappings() {
     });
 }
 
-void Controller::createScene() {
-    Ogre::LogManager::getSingleton().logMessage("--> Controller: Creating Scene <--");
-
-    getSceneManager()->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
-    Ogre::Entity* ogreEntity = getSceneManager()->createEntity("ogrehead.mesh");
-    Ogre::Entity* ogreEntity2 = getSceneManager()->createEntity("ogrehead.mesh");
-    Ogre::Entity* ogreEntity3 = getSceneManager()->createEntity("ogrehead.mesh");
-    Ogre::SceneNode* ogreNode = getSceneManager()->getRootSceneNode()->createChildSceneNode();
-    Ogre::SceneNode* ogreNode2 = getSceneManager()->getRootSceneNode()->createChildSceneNode();
-    Ogre::SceneNode* ogreNode3 = getSceneManager()->getRootSceneNode()->createChildSceneNode();
-    ogreNode2->translate(0.0, 0.0, 400.0);
-    ogreNode3->translate(0.0, 0.0, -400.0);
-    ogreNode->attachObject(ogreEntity);
-    ogreNode2->attachObject(ogreEntity2);
-    ogreNode3->attachObject(ogreEntity3);
-    Ogre::Light* light =  getSceneManager()->createLight("MainLight");
-    light->setPosition(20.0, 80.0, 50.0);
-}
-
 void Controller::gameMainLoop() {
     Ogre::LogManager::getSingleton().logMessage("--> Controller: Game Main Loop <--");
 
@@ -285,16 +300,18 @@ void Controller::setupRunnerMode() {
     Ogre::LogManager::getSingleton().logMessage("--> Controller: Setting up Runner Mode <--");
 
     context = CONTEXT_RUNNER;
+
     nodeManager->setupRunnerMode();
-    hud->setupRunnerMode();
+    oHud->setupRunnerMode();
 }
 
 void Controller::setupShooterMode() {
     Ogre::LogManager::getSingleton().logMessage("--> Controller: Setting up Shooter Mode <--");
 
     context = CONTEXT_SHOOTER;
+
     nodeManager->setupShooterMode();
-    hud->setupShooterMode();
+    oHud->setupShooterMode();
 }
 
 void Controller::toggleMode() {
@@ -319,16 +336,18 @@ void Controller::setupDebugOn() {
     Ogre::LogManager::getSingleton().logMessage("--> Controller: Turning Debug Mode On <--");
 
     debug = true;
+
     nodeManager->setDebugOn();
-    hud->setupDebugOn();
+    oHud->setupDebugOn();
 }
 
 void Controller::setupDebugOff() {
     Ogre::LogManager::getSingleton().logMessage("--> Controller: Turning Debug Mode Off <--");
 
     debug = false;
+
     nodeManager->setDebugOff();
-    hud->setupDebugOff();
+    oHud->setupDebugOff();
 }
 
 void Controller::toggleDebug() {
