@@ -1,36 +1,136 @@
 #ifndef _CONTROLLER_HPP_
 #define _CONTROLLER_HPP_
 
+#include <cstdlib>
+
 #include <SFML/System.hpp>
+#include <SFML/Window.hpp>
+
 #include <Ogre.h>
 #include <OgreOverlaySystem.h>
 
+#include "Context.hpp"
+#include "InputManager.hpp"
 #include "LogicManager.hpp"
 #include "RandomPolar.hpp"
 
 #include "HUD.hpp"
 #include "NodeManager.hpp"
-#include "TerrainManager.hpp"
 #include "CollisionHandler.hpp"
+#include "TerrainManager.hpp"
 
 namespace Cycleshooter {
 
 class HUD;
 class NodeManager;
-class TerrainManager;
 class CollisionHandler;
+class TerrainManager;
 
-/**
- * Current game context mode.
- * CONTEXT_RUNNER: when the player runs away from the monster.
- * CONTEXT_SHOOTER: when the player stops and tries to shoot off the monster.
- */
-enum Context {
-    CONTEXT_RUNNER,
-    CONTEXT_SHOOTER,
-};
+class Controller : public sf::NonCopyable, public Ogre::FrameListener {
+    /**
+     * @brief context the current game context mode
+     */
+    Context context = CONTEXT_RUNNER;
 
-class Controller : sf::NonCopyable {
+    /**
+     * @brief debug indicates whether the debug mode is activated or not
+     */
+    bool debug = false;
+
+    /**
+     * @brief shutdown setting this to true will stop several while loops, thus forcing the game to finish cleanly
+     */
+    bool shutdown = false;
+
+    /**
+     * @brief oRoot Ogre::Root
+     */
+    Ogre::Root *oRoot = NULL;
+
+    /**
+     * @brief oSceneManager Ogre::SceneManager
+     */
+    Ogre::SceneManager *oSceneManager = NULL;
+
+    /**
+     * @brief oOverlaySystem Ogre::OverlaySystem
+     */
+    Ogre::OverlaySystem *oOverlaySystem = NULL;
+
+    /**
+     * @brief oWindow Ogre::Window
+     */
+    Ogre::RenderWindow *oWindow = NULL;
+
+    /**
+     * @brief sWindow the sfml window
+     */
+    sf::Window* sWindow = NULL;
+
+    // customizable settings
+    const Ogre::String RENDER_WINDOW_NAME = "Cycleshooter Render Window";
+    const sf::Time POLAR_SLEEP_TIME = sf::milliseconds(500);
+
+    /**
+     * @brief go Our smart constructor
+     */
+    void go();
+
+    /**
+     * @brief createSFMLWindow Create and initialize the SFML window.
+     */
+    void createSFMLWindow();
+
+    /**
+     * Create and initialize Ogre::Root.
+     */
+    void createRoot();
+
+    /**
+     * Create a scene manager.
+     */
+    void createSceneManager();
+
+    /**
+     * Create the overlay system.
+     */
+    void createOverlaySystem();
+
+    /**
+     * Setup ogre resources and initialize all resource groups.
+     */
+    void setupResources(const Ogre::String& config = "resources.cfg");
+
+    /**
+     * Initialize texture settings.
+     */
+    void setupTextures();
+
+    /**
+     * Initialize and create our game elements.
+     */
+    void createGameElements();
+
+    /**
+     * Create the initial scene.
+     */
+    void createScene();
+
+    /**
+     * Create the HUD and its overlay widgets
+     */
+    void createHud();
+
+    /**
+     * Setup the games shortcuts/keybindings/keymaps (mouse, joystick and keyboard)
+     */
+    void setupMappings();
+
+    /**
+     * @brief logicManager Manages the logic of the game.
+     */
+    LogicManager* logicManager = NULL;
+
     /**
      * The polar device, from here we will get the heart rates.
      */
@@ -48,53 +148,38 @@ class Controller : sf::NonCopyable {
     void polarUpdaterFunction();
 
     /**
-     * @brief context the current game context mode
+     * Node Manager.
      */
-    Context context = CONTEXT_RUNNER;
+    NodeManager* nodeManager = NULL;
 
     /**
-     * @brief debug indicates whether the debug mode is activated or not
+     * Terrain Manager.
      */
-    bool debug = false;
+    TerrainManager* terrainManager = NULL;
 
     /**
-     * @brief shutdown setting this to true will stop several while loops, thus forcing the game to finish cleanly
+     * Collision Handler.
      */
-    bool shutdown = false;
+    CollisionHandler* collisionHandler = NULL;
 
     /**
      * @brief hud responsible for rendering overlay elements with useful information for the player
      */
-    HUD* hud = NULL;
+    HUD* oHud = NULL;
 
-    LogicManager* logicManager = NULL;
-    NodeManager* nodeManager = NULL;
-    TerrainManager* terrainManager = NULL;
-    CollisionHandler* collisionHandler = NULL;
+    /**
+     * @brief frameRenderingQueued Overriden from Ogre::FrameListener.
+     * This should be used for performancing purposes (efficiently use CPU time while GPU is working elsewhere).
+     */
+    virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
 
-    Ogre::Root *oRoot = NULL;
-    Ogre::SceneManager *oSceneManager = NULL;
-    Ogre::OverlaySystem *oOverlaySystem = NULL;
-
-    // customizable settings
-    const Ogre::String RENDER_WINDOW_NAME = "Cycleshooter Render Window";
-    const Ogre::String RESOURCES_CONFIG = "resources.cfg";
-    const Ogre::String MAIN_TEXTURE = "racecircuit.png";
-    const sf::Time POLAR_SLEEP_TIME = sf::milliseconds(500);
-
-    // go
-    void go();
-    void createRoot();
-    void createSceneManager();
-    void createOverlaySystem();
-    void setupResources();
-
+    //TODO: make almost everything private(?)
 public:
     Controller();
     virtual ~Controller();
 
     /**
-     * The game main loop. Updates logic and rendering.
+     * The (manually managed) game main loop, responsible for calling Ogre::Root::renderOneFrame()
      */
     void gameMainLoop();
 
@@ -147,11 +232,9 @@ public:
     Context getContext() const;
     NodeManager *getNodeManager() const;
     HUD *getHud() const;
-    void setHud(HUD *value);
     Ogre::Root *getRoot() const;
     Ogre::RenderWindow *getWindow() const;
     Ogre::SceneManager *getSceneManager() const;
-    Ogre::OverlaySystem *getOverlaySystem() const;
     bool getShutdown() const;
     sf::Thread *getPolarUpdater() const;
     LogicManager *getLogicManager() const;

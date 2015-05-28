@@ -44,3 +44,18 @@ material Cycleshooter/Gun : Cycleshooter/Base
         }
     }
 }
+
+material Cycleshooter/Crosshair
+{
+    technique
+    {
+        pass
+        {
+            scene_blend alpha_blend
+            texture_unit 
+            {
+                texture crosshair.png
+            }
+        }
+    }
+}

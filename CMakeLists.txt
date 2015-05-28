@@ -20,7 +20,7 @@ add_subdirectory(${VENDOR_DIR})
 
 
 if(DEPENDENCIES_READY)
-    find_package(SFML REQUIRED EXACT 2.2 COMPONENTS audio system)
+    find_package(SFML REQUIRED EXACT 2.2 COMPONENTS audio system window)
 
     if(NOT SFML_FOUND)
         message(SEND_ERROR "Failed to find SFML.")

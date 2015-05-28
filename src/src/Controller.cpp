@@ -15,23 +15,15 @@ Ogre::Root *Controller::getRoot() const {
 }
 
 Ogre::RenderWindow *Controller::getWindow() const {
-    return oRoot->getAutoCreatedWindow();
+    return oWindow;
 }
 
 Ogre::SceneManager *Controller::getSceneManager() const {
     return oSceneManager;
 }
 
-Ogre::OverlaySystem *Controller::getOverlaySystem() const {
-    return oOverlaySystem;
-}
-
 HUD *Controller::getHud() const {
-    return hud;
-}
-
-void Controller::setHud(HUD *value) {
-    hud = value;
+    return oHud;
 }
 
 Controller::Controller() {
@@ -39,6 +31,15 @@ Controller::Controller() {
 }
 
 Controller::~Controller() {
+    if(oHud)
+        delete oHud;
+
+    if(collisionHandler)
+        delete collisionHandler;
+
+    if(terrainManager)
+        delete terrainManager;
+
     if(nodeManager)
         delete nodeManager;
 
@@ -50,6 +51,10 @@ Controller::~Controller() {
 
     if(logicManager)
         delete logicManager;
+
+    // TODO: delete this if the program crashes on exit
+    if(sWindow)
+        delete sWindow;
 }
 
 sf::Thread *Controller::getPolarUpdater() const {
@@ -75,6 +80,65 @@ void Controller::polarUpdaterFunction() {
     }
 }
 
+bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
+    // update windows, if necessary
+    Ogre::WindowEventUtilities::messagePump();
+
+    if(oWindow->isClosed())
+        shutdownNow();
+
+    if(shutdown) {
+        // sync with other threads for a clean shutdown
+        polarUpdater->wait();
+
+        return false;
+    }
+
+    // TODO: update logic[manager] here somewhere
+    // TODO: add/use clock for unbuf
+    // TODO key->mapping massive rename
+    // TODO: merge with Podolan's branch
+
+    oHud->update(evt);
+
+    // process unbuffered keys
+    InputManager::instance().executeActionUnbuf(context);
+
+    // process events (in particular, buffered keys)
+    sf::Event event;
+
+    // TODO: check if there is the possibility of an infinite event loop
+    // while there are pending events...
+    while (sWindow->pollEvent(event)) {
+
+        // check the type of the event...
+        switch (event.type) {
+
+            // window closed
+            case sf::Event::Closed:
+                sWindow->close();
+                shutdownNow();
+                break;
+
+            // TODO: resize event (adjust viewport)
+
+            // key pressed
+            case sf::Event::KeyPressed:
+                InputManager::instance().executeAction(event.key.code, context);
+                break;
+
+            // TODO: add joystick events
+            // TODO: add mouse events
+
+            // don't process other types of events
+            default:
+                break;
+        }
+    }
+
+    return true;
+}
+
 LogicManager *Controller::getLogicManager() const {
     return logicManager;
 }
@@ -88,37 +152,50 @@ void Controller::shutdownNow() {
 }
 
 void Controller::go() {
+    // we can't use Ogre::LogManager before creating the Ogre::Root object
+    std::cout << "--> Controller: go <--" << std::endl;
+
+    // randomness
+    srand(time(NULL));
+
+    // initialize core OGRE elements
+    createSFMLWindow();
     createRoot();
-
-    // logMessage should be called only after Ogre::Root is created/initialized
-    Ogre::LogManager::getSingleton().logMessage("--> Controller: go <--");
-
     createSceneManager();
     createOverlaySystem();
     setupResources();
+    setupTextures();
 
-    Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
+    // initialize our objects and our game overall
+    createGameElements();
+    createScene();
+    createHud();
 
-    // logic manager should be created before any threads that update it
-    logicManager = new LogicManager();
+    // setups
+    setupMappings();
+    // TODO: setupRunnerMode() (?) -- or each element individually?
+    setupDebugOn();
 
-    polar = new RandomPolar();
-    polarUpdater = new sf::Thread(&Controller::polarUpdaterFunction, this);
-    polarUpdater->launch();
-
-    nodeManager = new NodeManager(this);
-    nodeManager->setupRunnerMode();
-
-    // to use a material, the resource group must be initialized
-    terrainManager = new TerrainManager(oSceneManager,MAIN_TEXTURE);
-    terrainManager->configureTerrain();
+    // Ogre::FrameListener <-- let's begin calling frameRenderingQueued
+    oRoot->addFrameListener(this);
+    gameMainLoop();
 }
 
-void Controller::setupResources() {
+void Controller::createSFMLWindow() {
+    std::cout << "--> Controller: Creating the SFML Window <--" << std::endl;
+
+    // TODO: refine those peculiarities
+    // TODO: set window icon
+    // TODO: if/else fullscreen (user configurable)
+    // TODO: if/else fullscreen resolution (user configurable)
+    sWindow = new sf::Window(sf::VideoMode::getFullscreenModes()[0], RENDER_WINDOW_NAME, sf::Style::Fullscreen, sf::ContextSettings(32));
+}
+
+void Controller::setupResources(const Ogre::String& config) {
     Ogre::LogManager::getSingleton().logMessage("--> Controller: Setting up Resources <--");
 
     Ogre::ConfigFile cf;
-    cf.load(RESOURCES_CONFIG);
+    cf.load(config);
 
     Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
     Ogre::String secName, typeName, archName;
@@ -139,36 +216,155 @@ void Controller::setupResources() {
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 }
 
+void Controller::setupTextures() {
+    Ogre::LogManager::getSingleton().logMessage("--> Controller: Setting up Textures <--");
+
+    Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
+}
+
+void Controller::createGameElements() {
+    Ogre::LogManager::getSingleton().logMessage("--> Controller: Create Game Elements <--");
+
+    // attention: logic manager should be created before any threads that will update it
+    logicManager = new LogicManager();
+
+    polar = new RandomPolar();
+    polarUpdater = new sf::Thread(&Controller::polarUpdaterFunction, this);
+    polarUpdater->launch();
+
+    nodeManager = new NodeManager(this);
+    nodeManager->setupRunnerMode();
+
+    // to use a material, the resource group must be initialized
+    terrainManager = new TerrainManager(oSceneManager);
+    terrainManager->createTerrain();
+
+    // starting collision handler after terrain initialization
+    collisionHandler = new CollisionHandler("racecircuit.png");
+    collisionHandler->loadImages();
+    collisionHandler->loadTensor();
+}
+
+void Controller::createScene() {
+    Ogre::LogManager::getSingleton().logMessage("--> Controller: Creating Scene <--");
+
+    Ogre::Entity* ogreEntity = getSceneManager()->createEntity("ogrehead.mesh");
+    Ogre::Entity* ogreEntity2 = getSceneManager()->createEntity("ogrehead.mesh");
+    Ogre::Entity* ogreEntity3 = getSceneManager()->createEntity("ogrehead.mesh");
+
+    Ogre::SceneNode* ogreNode = getSceneManager()->getRootSceneNode()->createChildSceneNode();
+    Ogre::SceneNode* ogreNode2 = getSceneManager()->getRootSceneNode()->createChildSceneNode();
+    Ogre::SceneNode* ogreNode3 = getSceneManager()->getRootSceneNode()->createChildSceneNode();
+
+    ogreNode2->translate(0.0, 0.0, 400.0);
+    ogreNode3->translate(0.0, 0.0, -400.0);
+
+    ogreNode->attachObject(ogreEntity);
+    ogreNode2->attachObject(ogreEntity2);
+    ogreNode3->attachObject(ogreEntity3);
+
+    getSceneManager()->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
+    Ogre::Light* light =  getSceneManager()->createLight("MainLight");
+    light->setPosition(20.0, 80.0, 50.0);
+}
+
+void Controller::createHud() {
+    Ogre::LogManager::getSingletonPtr()->logMessage("--> Controller: Creating HUD <--");
+
+    oHud = new HUD(this);
+    oHud->setHelpPanel({"1", "2"},{"ToggleMode", "ToggleDebug"});
+    oHud->setupRunnerMode();
+}
+
+void Controller::setupMappings() {
+    // refresh (reload) all textures
+    InputManager::instance().addKey(sf::Keyboard::F5, [&] {
+       Ogre::TextureManager::getSingleton().reloadAll();
+    });
+
+    // take a screenshot
+    InputManager::instance().addKey(sf::Keyboard::Pause, [&] {
+        getWindow()->writeContentsToTimestampedFile("screenshot", ".jpg");
+    });
+
+    // quit from the application
+    InputManager::instance().addKeyUnbuf(sf::Keyboard::Escape, [&]{
+        shutdownNow();
+    });
+
+    InputManager::instance().addKeysUnbuf({sf::Keyboard::W,
+                                           sf::Keyboard::Up}, CONTEXT_RUNNER, [&]{
+        getNodeManager()->getParentPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, -10.0), Ogre::SceneNode::TS_LOCAL);
+    });
+
+    InputManager::instance().addKeysUnbuf({sf::Keyboard::S,
+                                           sf::Keyboard::Down}, CONTEXT_RUNNER, [&]{
+        getNodeManager()->getParentPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, +10.0), Ogre::SceneNode::TS_LOCAL);
+    });
+
+    InputManager::instance().addKeysUnbuf({sf::Keyboard::A,
+                                           sf::Keyboard::Left}, CONTEXT_RUNNER, [&]{
+        getNodeManager()->getParentPlayerSceneNode()->yaw(Ogre::Degree(+10.0));
+    });
+
+    InputManager::instance().addKeysUnbuf({sf::Keyboard::D,
+                                           sf::Keyboard::Right}, CONTEXT_RUNNER, [&]{
+        getNodeManager()->getParentPlayerSceneNode()->yaw(Ogre::Degree(-10.0));
+    });
+
+    InputManager::instance().addAxisUnbuf(sf::Joystick::X, CONTEXT_RUNNER, [&](float f){
+        getNodeManager()->getParentPlayerSceneNode()->yaw(Ogre::Degree(-10 * f / 100.0));
+    });
+
+    InputManager::instance().addAxisUnbuf(sf::Joystick::Y, CONTEXT_RUNNER, [&](float f){
+        getNodeManager()->getParentPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, 10.0 * f / 100.0), Ogre::SceneNode::TS_LOCAL);
+    });
+
+
+    InputManager::instance().addKey(sf::Keyboard::Num1, [&]{
+        toggleMode();
+    });
+
+    InputManager::instance().addKey(sf::Keyboard::Num2, [&]{
+        toggleDebug();
+    });
+}
+
 void Controller::gameMainLoop() {
     Ogre::LogManager::getSingleton().logMessage("--> Controller: Game Main Loop <--");
 
     while(!shutdown) {
-
-        // TODO: update logic manager.
-
         // update rendering
         oRoot->renderOneFrame();
     }
 }
 
 void Controller::createRoot() {
+    // we can't use Ogre::LogManager before creating the Ogre::Root object
     std::cout << "--> Controller: creating Root <--" << std::endl;
 
     oRoot = new Ogre::Root();
 
-    // alternatively, use ->restoreConfig() to load saved settings
-    if(!oRoot->showConfigDialog()) {
-        return;
-    }
+    // create rendering system, but don't initialise it / the main window
+    oRoot->setRenderSystem(oRoot->getAvailableRenderers().at(0));
+    oRoot->initialise(false);
 
-    // automatically create a window
-    oRoot->initialise(true, RENDER_WINDOW_NAME);
+    Ogre::LogManager::getSingleton().logMessage("--> Controller: Ogre::Root object has been created and initialized with the default Render System (" + oRoot->getAvailableRenderers().at(0)->getName() + ")");
+
+    Ogre::NameValuePairList misc = {{"currentGLContext", "true"}};
+
+    // create a render window
+    // note: window title and size are not important here, so we use blank values for them
+    oWindow = oRoot->createRenderWindow("", 0, 0, false, &misc);
+    oWindow->setVisible(true);
+
+    Ogre::LogManager::getSingleton().logMessage("--> Controller: Render Window has been (manually) created <--");
 }
 
 void Controller::createSceneManager() {
     Ogre::LogManager::getSingleton().logMessage("--> Controller: Creating Scene Manager <--");
 
-    oSceneManager = oRoot->createSceneManager(Ogre::ST_GENERIC);
+    oSceneManager = oRoot->createSceneManager(Ogre::ST_GENERIC, "sceneManager");
 }
 
 void Controller::createOverlaySystem() {
@@ -182,16 +378,18 @@ void Controller::setupRunnerMode() {
     Ogre::LogManager::getSingleton().logMessage("--> Controller: Setting up Runner Mode <--");
 
     context = CONTEXT_RUNNER;
+
     nodeManager->setupRunnerMode();
-    hud->setupRunnerMode();
+    oHud->setupRunnerMode();
 }
 
 void Controller::setupShooterMode() {
     Ogre::LogManager::getSingleton().logMessage("--> Controller: Setting up Shooter Mode <--");
 
     context = CONTEXT_SHOOTER;
+
     nodeManager->setupShooterMode();
-    hud->setupShooterMode();
+    oHud->setupShooterMode();
 }
 
 void Controller::toggleMode() {
@@ -216,16 +414,18 @@ void Controller::setupDebugOn() {
     Ogre::LogManager::getSingleton().logMessage("--> Controller: Turning Debug Mode On <--");
 
     debug = true;
+
     nodeManager->setDebugOn();
-    hud->setupDebugOn();
+    oHud->setupDebugOn();
 }
 
 void Controller::setupDebugOff() {
     Ogre::LogManager::getSingleton().logMessage("--> Controller: Turning Debug Mode Off <--");
 
     debug = false;
+
     nodeManager->setDebugOff();
-    hud->setupDebugOff();
+    oHud->setupDebugOff();
 }
 
 void Controller::toggleDebug() {

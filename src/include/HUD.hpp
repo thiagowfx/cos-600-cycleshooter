@@ -15,7 +15,6 @@ class Controller;
  */
 class HUD {
     Controller* const controller = NULL;
-    OgreBites::InputContext* const inputContext = NULL;
 
     /**
      * The tray manager. Used to create, update and delete widgets.
@@ -28,14 +27,26 @@ class HUD {
     void createTrayManager();
     void createTrayWidgets();
 
+    // customizable settings
+    const OgreBites::TrayLocation CONTEXT_TL = OgreBites::TL_TOPLEFT;
+    const OgreBites::TrayLocation RUNNER_MODE_TL = OgreBites::TL_BOTTOMRIGHT;
+    const OgreBites::TrayLocation BOTH_MODES_TL = OgreBites::TL_RIGHT;
+    const OgreBites::TrayLocation FPS_TL = OgreBites::TL_BOTTOMLEFT;
+    const OgreBites::TrayLocation HELP_PANEL_TL = OgreBites::TL_BOTTOM;
+
 public:
-    HUD(Controller* controller, OgreBites::InputContext* inputContext);
+    HUD(Controller* controller);
     virtual ~HUD();
 
     /**
      * Update the HUD elements.
      */
     void update(const Ogre::FrameEvent& evt);
+
+    /**
+     * Set the params panel (static information).
+     */
+    void setHelpPanel(Ogre::StringVector params, Ogre::StringVector values);
 
     // setups
     void setupRunnerMode();
