@@ -2,10 +2,12 @@
 
 namespace Cycleshooter {
 
+
 CollisionHandler::CollisionHandler(Ogre::String collisionTexturePath):
     collisionTexture(0),
     collisionTexturePath(collisionTexturePath),
-    sharedMatrix(0)
+    collisionMatrixWidth(0),
+    collisionMatrixHeight(0)
 {
 //    collisionMap = {{WATER_COLOR,WATER_PIXEL},{BULLET_COLOR,BULLET_PIXEL},
 //                    {ROCK_COLOR,ROCK_PIXEL},{GUAGMIRE_COLOR,GUAGMIRE_PIXEL},
@@ -20,27 +22,20 @@ CollisionHandler::~CollisionHandler() {
 void CollisionHandler::loadImages(){
     collisionTexture = new Ogre::Image();
     collisionTexture->load(collisionTexturePath, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-
-    Ogre::uint32 imgW, imgH;
-    imgW = collisionTexture->getWidth();
-    imgH = collisionTexture->getHeight();
+    //Loading Matrix Dimensions.
+    collisionMatrixWidth = static_cast<int>(collisionTexture->getWidth());
+    collisionMatrixHeight = static_cast<int>(collisionTexture->getHeight());
 }
 
 void CollisionHandler::loadTensor(){
-    //Grabing images informations.
-
-    int collisionWidth, collisionHeight;
-    collisionWidth = static_cast<int>(collisionTexture->getWidth());
-    collisionHeight = static_cast<int>(collisionTexture->getHeight());
-
-    // allocating terrainMatrix
-    collisionMatrix = std::vector< std::vector<Colors> >(collisionHeight, std::vector<Colors>(collisionWidth, NONE_PIXEL));
-
+    loadImages();
+    // Allocating terrainMatrix
+    collisionMatrix = std::vector< std::vector<Colors> >(collisionMatrixHeight, std::vector<Colors>(collisionMatrixWidth, NONE_PIXEL));
     //Pixel color to both images.
     Ogre::ColourValue collisionPixel;
     //Reading (per rows) images for data.
-    for(unsigned row = 0; row < collisionHeight; row++){
-        for(unsigned col = 0; col < collisionWidth; col++){
+    for(unsigned row = 0; row < collisionMatrixHeight; row++){
+        for(unsigned col = 0; col < collisionMatrixWidth; col++){
             collisionPixel = collisionTexture->getColourAt(col, row, 0);    //receives collor from image
             Colors textureType = NONE_PIXEL;
             //const Ogre::ColourValue color = static_cast<const Ogre::ColourValue>(collisionPixel);
@@ -75,6 +70,14 @@ void CollisionHandler::printMatrix()
     }
 }
 
+bool CollisionHandler::testMatrixDimension()
+{
+    if(collisionMatrix[0].size() == collisionMatrixWidth && collisionMatrix.size() == collisionMatrixHeight)
+        return true;
+    std::cout << "Error while allocating collision matrix" << std::endl;
+    return false;
+}
+
 Ogre::ColourValue CollisionHandler::getPixelColour(int pixelWidth, int pixelHeight){
 
 }
@@ -106,6 +109,14 @@ std::pair<int,int> CollisionHandler::getStartPixel(){
 std::vector<std::vector<CollisionHandler::Colors> > CollisionHandler::getCollisionMatrix()
 {
     return collisionMatrix;
+}
+
+int CollisionHandler::getCollisionMatrixWidth() const{
+    return collisionMatrixWidth;
+}
+
+int CollisionHandler::getCollisionMatrixHeight() const{
+    return collisionMatrixHeight;
 }
 
 }

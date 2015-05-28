@@ -29,7 +29,7 @@ class CollisionHandler {
         NONE_PIXEL,
         START_PIXEL
     };
-
+    int collisionMatrixWidth, collisionMatrixHeight;
     std::vector<std::vector<Colors> > collisionMatrix;
     //std::map<Ogre::ColourValue, Colors> collisionMap;
 
@@ -41,12 +41,15 @@ public:
     void loadImages(); //Load images from files.
     void loadTensor(); //Function to load the data structure from images.
     void printMatrix(); //Testing funcition for collisionMatrix.
+    bool testMatrixDimension(); //Testing function to allocated matrix dimensions.
     Colors getPixelEnumeration(int pixelWidth, int pixelHeight); //
     Ogre::ColourValue getPixelColour(int pixelWidth, int pixelHeight);
     //Function to find the race starting point in the texture.
     std::pair<int,int> getStartPixel();
     std::vector<std::vector<Colors> > getCollisionMatrix();
-
+    //Matrix dimensions getters.
+    int getCollisionMatrixWidth() const;
+    int getCollisionMatrixHeight() const;
 };
 
 }

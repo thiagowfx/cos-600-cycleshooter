@@ -16,15 +16,24 @@ class TerrainManager {
 
     //Terrain Variables.
     Ogre::String terrainType = "Plane";
-    Ogre::Real terrainWorldSize;
-    int terrainSize;
+    Ogre::Real widthScale, heightScale,terrainWorldSizeHeight,terrainWorldSizeWidth;
+    Ogre::Vector3 terrainTranslation;
+    //Plane vertex dimensions.
+    int terrainWidth, terrainHeight;
+    CollisionHandler* collisionHandler;
 
-    collisionHandler* collisionHandler;
 public:
     TerrainManager(Ogre::SceneManager* sceneManager, std::string collisionTexturePath);
     virtual ~TerrainManager();
     void createTerrainLight();
-    void createTerrain();//Test Function to create a planar terrain.
+    void defineTerrainProperties();
+    void createTerrain();
+    void setCollisionTransformation();//Defines translation and scale to collision coordinates.
+    std::pair<int,int> getCollisionCoordinates(Ogre::Vector3 point);
+
+    //Test Functions.
+    void printCollisionTransformation();
+    void sampleCollisionTransformation();
 };
 
 }
