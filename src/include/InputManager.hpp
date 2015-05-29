@@ -6,6 +6,7 @@
 #include <vector>
 #include <SFML/Window/Joystick.hpp>
 #include <SFML/Window/Keyboard.hpp>
+#include <SFML/Window/Mouse.hpp>
 
 #include "Context.hpp"
 
@@ -23,9 +24,10 @@ class InputManager {
     std::map<sf::Keyboard::Key, std::function<void(void)> > runnerKeyboardMap;
     std::map<sf::Keyboard::Key, std::function<void(void)> > shooterKeyboardMap;
 
-    // buffered joystick keyboard
-    std::map<sf::Keyboard::Key, std::function<void(void)> > runnerJoystickKeyboardMap;
-    std::map<sf::Keyboard::Key, std::function<void(void)> > shooterJoystickKeyboardMap;
+    // TODO: test
+    // buffered joystick keys
+    std::map<unsigned int, std::function<void(void)> > runnerJoystickKeyboardMap;
+    std::map<unsigned int, std::function<void(void)> > shooterJoystickKeyboardMap;
 
     // unbuffered keyboard
     std::map<sf::Keyboard::Key, std::function<void(void)> > uRunnerKeyboardMap;
@@ -37,8 +39,7 @@ class InputManager {
 
     bool hasKey(const sf::Keyboard::Key& key, const Context& mode);
 
-    //new
-    bool hasJoystickKey(const sf::Keyboard::Key& key, const Context& mode);
+    bool hasJoystickKey(unsigned int button, const Context& mode);
 
     bool hasKeyUnbuf(const sf::Keyboard::Key& key, const Context& mode);
 
@@ -49,15 +50,13 @@ public:
 
     void addKey(const sf::Keyboard::Key& key, const std::function<void(void)> &action);
 
-    //new
-    void addJoystickKey(const sf::Keyboard::Key& key, const std::function<void(void)> &action);
+    void addJoystickKey(unsigned int button, const std::function<void(void)> &action);
 
     void addKeyUnbuf(const sf::Keyboard::Key& key, const std::function<void(void)> &action);
 
     void addAxisUnbuf(const sf::Joystick::Axis& axis, const std::function<void(float)> &action);
 
-    //new
-    void addJoystickKey(const sf::Keyboard::Key& key, const Context& mode, const std::function<void(void)> &action);
+    void addJoystickKey(unsigned int button, const Context& mode, const std::function<void(void)> &action);
 
     void addKey(const sf::Keyboard::Key& key, const Context& mode, const std::function<void(void)> &action);
 
@@ -67,22 +66,19 @@ public:
 
     void addKeys(const std::vector<sf::Keyboard::Key>& keys, const std::function<void(void)> &action);
 
-    //new
-    void addJoystickKeys(const std::vector<sf::Keyboard::Key>& keys, const std::function<void(void)> &action);
+    void addJoystickKeys(const std::vector<unsigned int>& buttons, const std::function<void(void)> &action);
 
     void addKeysUnbuf(const std::vector<sf::Keyboard::Key>& keys, const std::function<void(void)> &action);
 
     void addKeys(const std::vector<sf::Keyboard::Key>& keys, const Context& mode, const std::function<void(void)> &action);
 
-    //new
-    void addJoystickKeys(const std::vector<sf::Keyboard::Key>& keys, const Context& mode, const std::function<void(void)> &action);
+    void addJoystickKeys(const std::vector<unsigned int>& buttons, const Context& mode, const std::function<void(void)> &action);
 
     void addKeysUnbuf(const std::vector<sf::Keyboard::Key>& keys, const Context& mode, const std::function<void(void)> &action);
 
     void removeKey(const sf::Keyboard::Key& key, const Context& mode);
 
-    //new
-    void removeJoystickKey(const sf::Keyboard::Key& key, const Context& mode);
+    void removeJoystickKey(unsigned int button, const Context& mode);
 
     void removeKeyUnbuf(const sf::Keyboard::Key& key, const Context& mode);
 
@@ -90,12 +86,10 @@ public:
 
     void removeKeys(const std::vector<sf::Keyboard::Key>& keys, const Context& mode);
 
-    //new
-    void removeJoystickKeys(const std::vector<sf::Keyboard::Key>& keys, const Context& mode);
+    void removeJoystickKeys(const std::vector<unsigned int>& buttons, const Context& mode);
 
     void removeAllKeys(const Context& mode);
 
-    //new
     void removeAllJoystickKeys(const Context& mode);
 
     void removeAllKeysUnbuf(const Context& mode);
@@ -104,8 +98,7 @@ public:
 
     void executeAction(const sf::Keyboard::Key& key, const Context& mode);
 
-    //new
-    void executeJoystickKeyAction(const sf::Keyboard::Key& key, const Context& mode);
+    void executeJoystickKeyAction(unsigned int button, const Context& mode);
 
     void executeActionUnbuf(const Context& mode);
 

@@ -13,13 +13,13 @@ bool InputManager::hasKey(const sf::Keyboard::Key &key, const Context &mode) {
     }
 }
 
-bool InputManager::hasJoystickKey(const sf::Keyboard::Key &key, const Context &mode){
+bool InputManager::hasJoystickKey(unsigned int button, const Context &mode){
     switch(mode) {
     case CONTEXT_RUNNER:
-        return runnerJoystickKeyboardMap.find(key) != runnerJoystickKeyboardMap.end();
+        return runnerJoystickKeyboardMap.find(button) != runnerJoystickKeyboardMap.end();
         break;
     case CONTEXT_SHOOTER:
-        return shooterJoystickKeyboardMap.find(key) != shooterJoystickKeyboardMap.end();
+        return shooterJoystickKeyboardMap.find(button) != shooterJoystickKeyboardMap.end();
         break;
     }
 }
@@ -59,9 +59,9 @@ void InputManager::addKey(const sf::Keyboard::Key &key, const std::function<void
     addKey(key, CONTEXT_SHOOTER, action);
 }
 
-void InputManager::addJoystickKey(const sf::Keyboard::Key &key, const std::function<void ()> &action){
-    addJoystickKey(key, CONTEXT_RUNNER, action);
-    addJoystickKey(key, CONTEXT_SHOOTER, action);
+void InputManager::addJoystickKey(unsigned int button, const std::function<void ()> &action){
+    addJoystickKey(button, CONTEXT_RUNNER, action);
+    addJoystickKey(button, CONTEXT_SHOOTER, action);
 }
 
 void InputManager::addKeyUnbuf(const sf::Keyboard::Key &key, const std::function<void ()> &action) {
@@ -74,13 +74,13 @@ void InputManager::addAxisUnbuf(const sf::Joystick::Axis &axis, const std::funct
     addAxisUnbuf(axis, CONTEXT_SHOOTER, action);
 }
 
-void InputManager::addJoystickKey(const sf::Keyboard::Key &key, const Context &mode, const std::function<void ()> &action){
+void InputManager::addJoystickKey(unsigned int button, const Context &mode, const std::function<void ()> &action){
     switch(mode) {
     case CONTEXT_RUNNER:
-        runnerJoystickKeyboardMap[key] = action;
+        runnerJoystickKeyboardMap[button] = action;
         break;
     case CONTEXT_SHOOTER:
-        shooterJoystickKeyboardMap[key] = action;
+        shooterJoystickKeyboardMap[button] = action;
         break;
     }
 }
@@ -124,9 +124,9 @@ void InputManager::addKeys(const std::vector<sf::Keyboard::Key> &keys, const std
     }
 }
 
-void InputManager::addJoystickKeys(const std::vector<sf::Keyboard::Key> &keys, const std::function<void ()> &action){
-    for(const auto& key: keys) {
-        addJoystickKey(key, action);
+void InputManager::addJoystickKeys(const std::vector<unsigned int> &buttons, const std::function<void ()> &action){
+    for(const auto& button: buttons) {
+        addJoystickKey(button, action);
     }
 }
 
@@ -142,9 +142,9 @@ void InputManager::addKeys(const std::vector<sf::Keyboard::Key> &keys, const Con
     }
 }
 
-void InputManager::addJoystickKeys(const std::vector<sf::Keyboard::Key> &keys, const Context &mode, const std::function<void ()> &action){
-    for(const auto& key: keys) {
-        addJoystickKey(key, mode, action);
+void InputManager::addJoystickKeys(const std::vector<unsigned int> &buttons, const Context &mode, const std::function<void ()> &action){
+    for(const auto& button: buttons) {
+        addJoystickKey(button, mode, action);
     }
 }
 
@@ -168,16 +168,16 @@ void InputManager::removeKey(const sf::Keyboard::Key &key, const Context &mode) 
     }
 }
 
-void InputManager::removeJoystickKey(const sf::Keyboard::Key &key, const Context &mode){
-    if(!hasJoystickKey(key, mode))
+void InputManager::removeJoystickKey(unsigned int button, const Context &mode){
+    if(!hasJoystickKey(button, mode))
         return;
 
     switch(mode) {
     case CONTEXT_RUNNER:
-        runnerJoystickKeyboardMap.erase(key);
+        runnerJoystickKeyboardMap.erase(button);
         break;
     case CONTEXT_SHOOTER:
-        shooterJoystickKeyboardMap.erase(key);
+        shooterJoystickKeyboardMap.erase(button);
         break;
     }
 }
@@ -216,9 +216,9 @@ void InputManager::removeKeys(const std::vector<sf::Keyboard::Key> &keys, const 
     }
 }
 
-void InputManager::removeJoystickKeys(const std::vector<sf::Keyboard::Key> &keys, const Context &mode){
-    for(const auto& key: keys) {
-        removeJoystickKey(key, mode);
+void InputManager::removeJoystickKeys(const std::vector<unsigned int> &buttons, const Context &mode){
+    for(const auto& button: buttons) {
+        removeJoystickKey(button, mode);
     }
 }
 
@@ -280,16 +280,16 @@ void InputManager::executeAction(const sf::Keyboard::Key &key, const Context &mo
     }
 }
 
-void InputManager::executeJoystickKeyAction(const sf::Keyboard::Key &key, const Context &mode){
-    if(!hasJoystickKey(key, mode))
+void InputManager::executeJoystickKeyAction(unsigned int button, const Context &mode){
+    if(!hasJoystickKey(button, mode))
         return;
 
     switch(mode) {
     case CONTEXT_RUNNER:
-        runnerJoystickKeyboardMap[key]();
+        runnerJoystickKeyboardMap[button]();
         break;
     case CONTEXT_SHOOTER:
-        shooterJoystickKeyboardMap[key]();
+        shooterJoystickKeyboardMap[button]();
         break;
     }
 }
