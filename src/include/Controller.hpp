@@ -67,9 +67,12 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
      */
     sf::Window* sWindow = NULL;
 
+    sf::Clock clockUnbuf;
+
     // customizable settings
     const Ogre::String RENDER_WINDOW_NAME = "Cycleshooter Render Window";
     const sf::Time POLAR_SLEEP_TIME = sf::milliseconds(500);
+    const sf::Time THRESHOLD_UNBUF_KEYS = sf::milliseconds(80);
 
     /**
      * @brief go Our smart constructor

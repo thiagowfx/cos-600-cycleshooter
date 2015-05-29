@@ -102,7 +102,10 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     oHud->update(evt);
 
     // process unbuffered keys
-    InputManager::instance().executeActionUnbuf(context);
+    if(clockUnbuf.getElapsedTime() > THRESHOLD_UNBUF_KEYS) {
+        InputManager::instance().executeActionUnbuf(context);
+        clockUnbuf.restart();
+    }
 
     // process events (in particular, buffered keys)
     sf::Event event;
