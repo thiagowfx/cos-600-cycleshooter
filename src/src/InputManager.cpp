@@ -169,7 +169,7 @@ void InputManager::removeKey(const sf::Keyboard::Key &key, const Context &mode) 
 }
 
 void InputManager::removeJoystickKey(const sf::Keyboard::Key &key, const Context &mode){
-    if(!hasKey(key, mode))
+    if(!hasJoystickKey(key, mode))
         return;
 
     switch(mode) {
@@ -281,7 +281,7 @@ void InputManager::executeAction(const sf::Keyboard::Key &key, const Context &mo
 }
 
 void InputManager::executeJoystickKeyAction(const sf::Keyboard::Key &key, const Context &mode){
-    if(!hasKey(key, mode))
+    if(!hasJoystickKey(key, mode))
         return;
 
     switch(mode) {
