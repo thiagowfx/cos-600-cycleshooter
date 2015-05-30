@@ -52,7 +52,6 @@ Controller::~Controller() {
     if(logicManager)
         delete logicManager;
 
-    // TODO: delete this if the program crashes on exit
     if(sWindow)
         delete sWindow;
 }
@@ -95,9 +94,7 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     }
 
     // TODO: update logic[manager] here somewhere
-    // TODO: add/use clock for unbuf
     // TODO key->mapping massive rename
-    // TODO: merge with Podolan's branch
 
     oHud->update(evt);
 
@@ -130,7 +127,10 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
                 InputManager::instance().executeAction(event.key.code, context);
                 break;
 
-            // TODO: add joystick events
+            case sf::Event::JoystickButtonPressed:
+                InputManager::instance().executeJoystickKeyAction(event.joystickButton.button, context);
+
+            // TODO: add joystick moved events
             // TODO: add mouse events
 
             // don't process other types of events
@@ -315,6 +315,17 @@ void Controller::setupMappings() {
         getNodeManager()->getParentPlayerSceneNode()->yaw(Ogre::Degree(-10.0));
     });
 
+    InputManager::instance().addKey(sf::Keyboard::Num1, [&]{
+        toggleMode();
+    });
+
+    InputManager::instance().addKey(sf::Keyboard::Num2, [&]{
+        toggleDebug();
+    });
+
+    //
+    // joystick
+    //
     InputManager::instance().addAxisUnbuf(sf::Joystick::X, CONTEXT_RUNNER, [&](float f){
         getNodeManager()->getParentPlayerSceneNode()->yaw(Ogre::Degree(-10 * f / 100.0));
     });
@@ -323,13 +334,8 @@ void Controller::setupMappings() {
         getNodeManager()->getParentPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, 10.0 * f / 100.0), Ogre::SceneNode::TS_LOCAL);
     });
 
-
-    InputManager::instance().addKey(sf::Keyboard::Num1, [&]{
+    InputManager::instance().addJoystickKey(0, [&]{
         toggleMode();
-    });
-
-    InputManager::instance().addKey(sf::Keyboard::Num2, [&]{
-        toggleDebug();
     });
 }
 
