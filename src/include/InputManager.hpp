@@ -6,7 +6,6 @@
 #include <vector>
 #include <SFML/Window/Joystick.hpp>
 #include <SFML/Window/Keyboard.hpp>
-#include <SFML/Window/Mouse.hpp>
 
 #include "Context.hpp"
 
@@ -14,6 +13,11 @@
 #define JOYSTICK_NUMBER 0
 
 namespace Cycleshooter {
+/**
+ * A singleton class to handle all the user input (mouse, keyboard and joystick).
+ * Each different input type of events is stored in a different map for efficiency and flexibility purposes.
+ * A rich set of methods is also provided so the client application can be more easily set up.
+ */
 class InputManager {
     // constructor and copy functions
     InputManager(){}
@@ -24,7 +28,6 @@ class InputManager {
     std::map<sf::Keyboard::Key, std::function<void(void)> > runnerKeyboardMap;
     std::map<sf::Keyboard::Key, std::function<void(void)> > shooterKeyboardMap;
 
-    // TODO: test
     // buffered joystick keys
     std::map<unsigned int, std::function<void(void)> > runnerJoystickKeyboardMap;
     std::map<unsigned int, std::function<void(void)> > shooterJoystickKeyboardMap;
