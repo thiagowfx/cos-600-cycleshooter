@@ -94,13 +94,12 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     }
 
     // TODO: update logic[manager] here somewhere
-    // TODO key->mapping massive rename
 
     oHud->update(evt);
 
     // process unbuffered keys
-    if(clockUnbuf.getElapsedTime() > THRESHOLD_UNBUF_KEYS) {
-        InputManager::instance().executeActionUnbuf(context);
+    if(clockUnbuf.getElapsedTime() >= THRESHOLD_UNBUF_KEYS) {
+        InputManager::instance().executeActionsUnbuf(context);
         clockUnbuf.restart();
     }
 
@@ -114,28 +113,28 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         // check the type of the event...
         switch (event.type) {
 
-            // window closed
-            case sf::Event::Closed:
-                sWindow->close();
-                shutdownNow();
-                break;
+        // window closed
+        case sf::Event::Closed:
+            sWindow->close();
+            shutdownNow();
+            break;
 
             // TODO: resize event (adjust viewport)
 
             // key pressed
-            case sf::Event::KeyPressed:
-                InputManager::instance().executeAction(event.key.code, context);
-                break;
+        case sf::Event::KeyPressed:
+            InputManager::instance().executeKeyAction(event.key.code, context);
+            break;
 
-            case sf::Event::JoystickButtonPressed:
-                InputManager::instance().executeJoystickKeyAction(event.joystickButton.button, context);
+        case sf::Event::JoystickButtonPressed:
+            InputManager::instance().executeJoystickButtonAction(event.joystickButton.button, context);
+            break;
 
-            // TODO: add joystick moved events
             // TODO: add mouse events
 
             // don't process other types of events
-            default:
-                break;
+        default:
+            break;
         }
     }
 
@@ -326,15 +325,15 @@ void Controller::setupMappings() {
     //
     // joystick
     //
-    InputManager::instance().addAxisUnbuf(sf::Joystick::X, CONTEXT_RUNNER, [&](float f){
+    InputManager::instance().addJoystickAxisUnbuf(sf::Joystick::X, CONTEXT_RUNNER, [&](float f){
         getNodeManager()->getParentPlayerSceneNode()->yaw(Ogre::Degree(-10 * f / 100.0));
     });
 
-    InputManager::instance().addAxisUnbuf(sf::Joystick::Y, CONTEXT_RUNNER, [&](float f){
+    InputManager::instance().addJoystickAxisUnbuf(sf::Joystick::Y, CONTEXT_RUNNER, [&](float f){
         getNodeManager()->getParentPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, 10.0 * f / 100.0), Ogre::SceneNode::TS_LOCAL);
     });
 
-    InputManager::instance().addJoystickKey(0, [&]{
+    InputManager::instance().addJoystickButton(0, [&]{
         toggleMode();
     });
 }
