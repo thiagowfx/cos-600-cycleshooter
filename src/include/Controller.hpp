@@ -124,6 +124,8 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
      */
     void createHud();
 
+    void detectJoystick() const;
+
     /**
      * Setup the games shortcuts/keybindings/keymaps (mouse, joystick and keyboard)
      */

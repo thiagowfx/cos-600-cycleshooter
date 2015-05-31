@@ -89,10 +89,6 @@ public:
 
     void removeJoystickAxisUnbuf(const sf::Joystick::Axis& axis, const Context& mode);
 
-    void removeKeys(const std::vector<sf::Keyboard::Key>& keys, const Context& mode);
-
-    void removeJoystickButtons(const std::vector<unsigned int>& buttons, const Context& mode);
-
     void removeAllKeys(const Context& mode);
 
     void removeAllJoystickButtons(const Context& mode);

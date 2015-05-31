@@ -210,18 +210,6 @@ void InputManager::removeJoystickAxisUnbuf(const sf::Joystick::Axis &axis, const
     }
 }
 
-void InputManager::removeKeys(const std::vector<sf::Keyboard::Key> &keys, const Context &mode) {
-    for(const auto& key: keys) {
-        removeKey(key, mode);
-    }
-}
-
-void InputManager::removeJoystickButtons(const std::vector<unsigned int> &buttons, const Context &mode){
-    for(const auto& button: buttons) {
-        removeJoystickButton(button, mode);
-    }
-}
-
 void InputManager::removeAllKeys(const Context &mode) {
     switch(mode) {
     case CONTEXT_RUNNER:
