@@ -188,10 +188,10 @@ void Controller::createSFMLWindow() {
     std::cout << "--> Controller: Creating the SFML Window <--" << std::endl;
 
     // TODO: refine those peculiarities
-    // TODO: set window icon
     // TODO: if/else fullscreen (user configurable)
     // TODO: if/else fullscreen resolution (user configurable)
-    sWindow = new sf::Window(sf::VideoMode::getFullscreenModes()[0], RENDER_WINDOW_NAME, sf::Style::Fullscreen, sf::ContextSettings(32));
+    sWindow = new sf::Window(sf::VideoMode::getFullscreenModes()[0], APPLICATION_NAME, sf::Style::Default, sf::ContextSettings(32));
+    sWindow->setIcon(cycleshooter_icon.width, cycleshooter_icon.height, cycleshooter_icon.pixel_data);
 }
 
 void Controller::setupResources(const Ogre::String& config) {

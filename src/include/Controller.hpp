@@ -9,6 +9,7 @@
 #include <Ogre.h>
 #include <OgreOverlaySystem.h>
 
+#include "CycleshooterIcon.hpp"
 #include "Context.hpp"
 #include "InputManager.hpp"
 #include "LogicManager.hpp"
@@ -70,7 +71,7 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     sf::Clock clockUnbuf;
 
     // customizable settings
-    const Ogre::String RENDER_WINDOW_NAME = "Cycleshooter Render Window";
+    const Ogre::String APPLICATION_NAME = "Cycleshooter";
     const sf::Time POLAR_SLEEP_TIME = sf::milliseconds(500);
     const sf::Time THRESHOLD_UNBUF_KEYS = sf::milliseconds(80);
 
