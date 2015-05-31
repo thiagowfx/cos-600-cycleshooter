@@ -9,9 +9,6 @@
 
 #include "Context.hpp"
 
-// TODO: find a better way to handle this
-#define JOYSTICK_NUMBER 0
-
 namespace Cycleshooter {
 /**
  * @brief The InputManager class A singleton class to handle all the user input (mouse, keyboard and joystick).
@@ -23,6 +20,11 @@ class InputManager {
     InputManager(){}
     InputManager(const InputManager&) = delete;
     void operator=(const InputManager&) = delete;
+
+    /**
+     * @brief JOYSTICK_NUMBER The joystick (number) associated with the maps of this class.
+     */
+    unsigned int JOYSTICK_NUMBER = 0;
 
     // buffered keyboard keys
     std::map<sf::Keyboard::Key, std::function<void(void)> > runnerKeyboardMap;
@@ -104,6 +106,8 @@ public:
     void executeJoystickButtonAction(unsigned int button, const Context& mode);
 
     void executeActionsUnbuf(const Context& mode);
+
+    void setJoystickNumber(unsigned int number);
 
 };
 }

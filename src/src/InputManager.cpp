@@ -329,6 +329,10 @@ void InputManager::executeActionsUnbuf(const Context &mode) {
     }
 }
 
+void InputManager::setJoystickNumber(unsigned int number) {
+    JOYSTICK_NUMBER = number;
+}
+
 
 
 }
