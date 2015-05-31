@@ -7,7 +7,7 @@ extern "C" {
 // TODO: use argc and argv
 int main(int argc, char *argv[]) {
     try {
-        Cycleshooter::Controller* app  = new Cycleshooter::Controller();
+        Cycleshooter::Controller* app  = new Cycleshooter::Controller(argc, argv);
         delete app;
     } catch(Ogre::Exception& e)  {
         std::cerr << "An exception has occurred: " <<

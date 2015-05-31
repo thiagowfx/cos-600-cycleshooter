@@ -30,6 +30,17 @@ Controller::Controller() {
     go();
 }
 
+Controller::Controller(int argc, char *argv[]) {
+    if (argc == 2) {
+        int resolution = atoi(argv[1]);
+        if(!resolution) {
+            sFullScreen = sf::Style::Titlebar | sf::Style::Close;
+        }
+    }
+
+    go();
+}
+
 Controller::~Controller() {
     if(oHud)
         delete oHud;
@@ -190,7 +201,7 @@ void Controller::createSFMLWindow() {
     // TODO: refine those peculiarities
     // TODO: if/else fullscreen (user configurable)
     // TODO: if/else fullscreen resolution (user configurable)
-    sWindow = new sf::Window(sf::VideoMode::getFullscreenModes()[0], APPLICATION_NAME, sf::Style::Default, sf::ContextSettings(32));
+    sWindow = new sf::Window(sf::VideoMode::getFullscreenModes()[0], APPLICATION_NAME, sFullScreen, sf::ContextSettings(32));
     sWindow->setIcon(cycleshooter_icon.width, cycleshooter_icon.height, cycleshooter_icon.pixel_data);
 }
 
