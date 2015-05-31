@@ -69,9 +69,14 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     sf::Window* sWindow = NULL;
 
     /**
-     * @brief sResolution Resolution of the game window.
+     * @brief sFullScreen State of the game window: will it be fullscreen?
      */
     int sFullScreen = sf::Style::Fullscreen;
+
+    /**
+     * @brief sVideoMode Resolution of the game window (e.g. 800 x 600)
+     */
+    sf::VideoMode sVideoMode = sf::VideoMode::getFullscreenModes()[0];
 
     /**
      * @brief clockUnbuf Used to create a delay between two consecutive unbuffered inputs.
@@ -197,8 +202,7 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
 
     //TODO: make almost everything private(?)
 public:
-    Controller();
-    Controller(int argc, char *argv[]);
+    Controller(int argc = 0, char *argv[] = {});
     virtual ~Controller();
 
     /**

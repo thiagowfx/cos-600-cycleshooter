@@ -26,15 +26,27 @@ HUD *Controller::getHud() const {
     return oHud;
 }
 
-Controller::Controller() {
-    go();
-}
-
 Controller::Controller(int argc, char *argv[]) {
-    if (argc == 2) {
-        int resolution = atoi(argv[1]);
-        if(!resolution) {
+    std::cout << "--> Controller: Constructor <--" << std::endl;
+
+    int fullscreen;
+
+    if (argc >= 2) {
+        fullscreen = atoi(argv[1]);
+
+        if(!fullscreen) {
+            std::cout << " |-> Disabling FullScreen Mode" << std::endl;
             sFullScreen = sf::Style::Titlebar | sf::Style::Close;
+        }
+    }
+
+    if (argc >= 4) {
+        int width = atoi(argv[2]);
+        int height = atoi(argv[3]);
+
+        if(!fullscreen || (fullscreen && sf::VideoMode(width, height).isValid())) {
+            std::cout << " |-> Setting resolution to " + std::to_string(width) + " x " + std::to_string(height) << std::endl;
+            sVideoMode = sf::VideoMode(width, height);
         }
     }
 
@@ -198,10 +210,8 @@ void Controller::go() {
 void Controller::createSFMLWindow() {
     std::cout << "--> Controller: Creating the SFML Window <--" << std::endl;
 
-    // TODO: refine those peculiarities
-    // TODO: if/else fullscreen (user configurable)
-    // TODO: if/else fullscreen resolution (user configurable)
-    sWindow = new sf::Window(sf::VideoMode::getFullscreenModes()[0], APPLICATION_NAME, sFullScreen, sf::ContextSettings(32));
+    // TODO: refine ContextSettings? Test with 0, etc
+    sWindow = new sf::Window(sVideoMode, APPLICATION_NAME, sFullScreen, sf::ContextSettings(32));
     sWindow->setIcon(cycleshooter_icon.width, cycleshooter_icon.height, cycleshooter_icon.pixel_data);
 }
 
