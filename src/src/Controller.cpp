@@ -174,7 +174,7 @@ void Controller::go() {
     createHud();
 
     // setups
-    detectJoystick();
+    InputManager::instance().detectJoystick();
     setupMappings();
     // TODO: setupRunnerMode() (?) -- or each element individually?
     setupDebugOn();
@@ -277,21 +277,6 @@ void Controller::createHud() {
     oHud = new HUD(this);
     oHud->setHelpPanel({"1", "2"},{"ToggleMode", "ToggleDebug"});
     oHud->setupRunnerMode();
-}
-
-void Controller::detectJoystick() const {
-    Ogre::LogManager::getSingleton().logMessage("--> Controller: Detecting Joystick <--");
-
-    for(unsigned n = 0; n < sf::Joystick::Count; ++n) {
-        if(sf::Joystick::isConnected(n) &&
-           sf::Joystick::hasAxis(n, sf::Joystick::X) &&
-           sf::Joystick::hasAxis(n, sf::Joystick::Y) &&
-           sf::Joystick::getButtonCount(n) >= 1) {
-            InputManager::instance().setJoystickNumber(n);
-            Ogre::LogManager::getSingleton().logMessage(" |-> Setting joystick to number " + Ogre::StringConverter::toString(n));
-            break;
-        }
-    }
 }
 
 void Controller::setupMappings() {

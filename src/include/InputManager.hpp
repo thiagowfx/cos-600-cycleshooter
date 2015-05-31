@@ -1,6 +1,7 @@
 #ifndef _INPUTMANAGER_HPP_
 #define _INPUTMANAGER_HPP_
 
+#include <iostream>
 #include <functional>
 #include <map>
 #include <vector>
@@ -105,6 +106,11 @@ public:
 
     void setJoystickNumber(unsigned int number);
 
+    /**
+     * @brief detectJoystick Tries to detect the correct joystick.
+     * It must have both X and Y axis, and at least 1 button.
+     */
+    void detectJoystick();
 };
 }
 

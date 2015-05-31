@@ -321,6 +321,19 @@ void InputManager::setJoystickNumber(unsigned int number) {
     JOYSTICK_NUMBER = number;
 }
 
+void InputManager::detectJoystick() {
+    std::cout << "--> Controller: Detecting Joystick <--" << std::endl;
 
+    for(unsigned n = 0; n < sf::Joystick::Count; ++n) {
+        if(sf::Joystick::isConnected(n) &&
+           sf::Joystick::hasAxis(n, sf::Joystick::X) &&
+           sf::Joystick::hasAxis(n, sf::Joystick::Y) &&
+           sf::Joystick::getButtonCount(n) >= 1) {
+            std::cout << " |-> Setting joystick to number " + std::to_string(n) << std::endl;
+            setJoystickNumber(n);
+            break;
+        }
+    }
+}
 
 }
