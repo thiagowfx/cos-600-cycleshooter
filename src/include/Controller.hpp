@@ -265,6 +265,7 @@ public:
     bool getShutdown() const;
     sf::Thread *getPolarUpdater() const;
     LogicManager *getLogicManager() const;
+    bool getDebug() const;
 };
 
 }

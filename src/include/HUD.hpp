@@ -33,6 +33,7 @@ class HUD {
     const OgreBites::TrayLocation BOTH_MODES_TL = OgreBites::TL_RIGHT;
     const OgreBites::TrayLocation FPS_TL = OgreBites::TL_BOTTOMLEFT;
     const OgreBites::TrayLocation HELP_PANEL_TL = OgreBites::TL_BOTTOM;
+    const OgreBites::TrayLocation DEBUG_PANEL_TL = OgreBites::TL_LEFT;
 
 public:
     HUD(Controller* controller);

@@ -176,6 +176,10 @@ void Controller::shutdownNow() {
     shutdown = true;
 }
 
+bool Controller::getDebug() const {
+    return debug;
+}
+
 void Controller::go() {
     // we can't use Ogre::LogManager before creating the Ogre::Root object
     std::cout << "--> Controller: go <--" << std::endl;
