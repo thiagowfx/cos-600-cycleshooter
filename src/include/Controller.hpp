@@ -68,11 +68,25 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
      */
     sf::Window* sWindow = NULL;
 
+
+    /**
+     * @brief clockUnbuf Used to create a delay between two consecutive unbuffered inputs.
+     */
     sf::Clock clockUnbuf;
 
-    // customizable settings
+    /**
+     * @brief APPLICATION_NAME Name of our application
+     */
     const Ogre::String APPLICATION_NAME = "Cycleshooter";
+
+    /**
+     * @brief POLAR_SLEEP_TIME Time between polar updates.
+     */
     const sf::Time POLAR_SLEEP_TIME = sf::milliseconds(500);
+
+    /**
+     * @brief THRESHOLD_UNBUF_KEYS Threshold between two consecutive unbuffered inputs.
+     */
     const sf::Time THRESHOLD_UNBUF_KEYS = sf::milliseconds(80);
 
     /**
