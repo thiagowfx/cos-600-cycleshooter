@@ -180,15 +180,14 @@ void InputManager::setJoystickNumber(unsigned int number) {
 }
 
 void InputManager::detectJoystick() {
-    std::cout << "--> InputManager: Detecting Joystick <--" << std::endl;
+    Ogre::LogManager::getSingleton().logMessage("--> InputManager: Detecting Joystick <--");
 
     for(unsigned n = 0; n < sf::Joystick::Count; ++n) {
         if(sf::Joystick::isConnected(n) &&
            sf::Joystick::hasAxis(n, sf::Joystick::X) &&
            sf::Joystick::hasAxis(n, sf::Joystick::Y) &&
            sf::Joystick::getButtonCount(n) >= 1) {
-            std::cout << " |-> Setting joystick to number " + std::to_string(n) << std::endl;
-            setJoystickNumber(n);
+            Ogre::LogManager::getSingleton().logMessage(" |-> Setting joystick to number " + std::to_string(n));
             break;
         }
     }

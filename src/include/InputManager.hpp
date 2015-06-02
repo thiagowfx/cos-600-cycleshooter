@@ -2,9 +2,10 @@
 #define _INPUTMANAGER_HPP_
 
 #include <functional>
-#include <iostream>
 #include <map>
 #include <vector>
+
+#include <OgreLogManager.h>
 #include <SFML/Window/Joystick.hpp>
 #include <SFML/Window/Keyboard.hpp>
 
