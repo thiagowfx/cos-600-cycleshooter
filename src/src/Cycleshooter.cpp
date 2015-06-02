@@ -3,7 +3,7 @@
 
 int main(int argc, char *argv[]) {
     try {
-        if (argc == 2 && (!strcmp(argv[1], "-h") || !strcmp(argv[2], "--help"))) {
+        if (argc == 2 && (!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help"))) {
             std::cout << argv[0] << " [<fullscreen> [<width> <height>]]" << std::endl;
             std::cout << "Examples:" << std::endl;
             std::cout << "\t" << argv[0] << " 0 1366 768" << std::endl;
