@@ -48,6 +48,10 @@ Controller::Controller(int argc, char *argv[]) {
             std::cout << " |-> Setting resolution to " + std::to_string(width) + " x " + std::to_string(height) << std::endl;
             sVideoMode = sf::VideoMode(width, height);
         }
+        else {
+            std::cout << " |-> Invalid fullscreen resolution specified. Please either disable fullscreen or set a valid resolution." << std::endl;
+            exit(1);
+        }
     }
 
     go();
