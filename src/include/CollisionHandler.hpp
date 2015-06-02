@@ -21,17 +21,16 @@ class CollisionHandler {
     Ogre::String collisionTexturePath; //Path to circuit image.
 
     enum Colors{
+        NONE_PIXEL,
+        START_PIXEL,
         BULLET_PIXEL,
-        WATER_PIXEL,
         ROAD_PIXEL,
         ROCK_PIXEL,
         GUAGMIRE_PIXEL,
-        NONE_PIXEL,
-        START_PIXEL
+        WATER_PIXEL,
     };
     int collisionMatrixWidth, collisionMatrixHeight;
     std::vector<std::vector<Colors> > collisionMatrix;
-    //std::map<Ogre::ColourValue, Colors> collisionMap;
 
 public:
 
