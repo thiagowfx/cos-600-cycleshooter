@@ -47,6 +47,7 @@ void LogicManager::shoot() {
     std::cout << "LogicManager: shoot" << std::endl;
 
     if(player->getAmmo() > 0) {
+        AudioManager::instance().random_play_shoot();
         player->decrementAmmo();
 
         // TODO: (maybe) replenish ammo in the map / terrain / collision part?

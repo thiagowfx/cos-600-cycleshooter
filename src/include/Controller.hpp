@@ -9,6 +9,7 @@
 #include <Ogre.h>
 #include <OgreOverlaySystem.h>
 
+#include "AudioManager.hpp"
 #include "CycleshooterIcon.hpp"
 #include "Context.hpp"
 #include "InputManager.hpp"

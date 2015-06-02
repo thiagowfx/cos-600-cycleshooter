@@ -24,7 +24,7 @@ class Player {
     // TODO: change this later on, maybe with a (debug) button to manually increase available bullets
     // or just use a very high value. Or, better yet, add debugOn and debugOff methods to logic manager
     // a debug on should increase the available ammo for the player
-    unsigned ammo = 3;
+    unsigned ammo = 30;
 
     sf::Vector3<double> bicycleSpeed;
     sf::Vector3<double> playerPosition;
