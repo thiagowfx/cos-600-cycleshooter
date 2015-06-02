@@ -25,6 +25,8 @@ unsigned LogicManager::getAmmo() const {
 LogicManager::LogicManager(Controller* controller) :
     controller(controller)
 {
+    std::cout << "LogicManager: Constructor" << std::endl;
+
     player = new Player();
     monster = new Monster();
 }
@@ -47,12 +49,16 @@ void LogicManager::shoot() {
     if(player->getAmmo() > 0) {
         player->decrementAmmo();
 
+        // TODO: (maybe) replenish ammo in the map / terrain / collision part?
         // TODO: create singleton Audio class to manage (1) game music
         // TODO: create singleton Audio class to manage (2) game sounds
         // TODO: add several sound effects for each outcome
         // TODO: RTT crosshair + monster logic
         // TODO: if hit, then decrease monster life
         // TODO: check if monster is dead
+    }
+    else {
+        std::cout << " |-> No more ammo" << std::endl;
     }
 }
 
