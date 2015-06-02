@@ -245,7 +245,7 @@ void Controller::createGameElements() {
     Ogre::LogManager::getSingleton().logMessage("--> Controller: Create Game Elements <--");
 
     // attention: logic manager should be created before any threads that will update it
-    logicManager = new LogicManager();
+    logicManager = new LogicManager(this);
 
     polar = new RandomPolar();
     polarUpdater = new sf::Thread(&Controller::polarUpdaterFunction, this);
@@ -303,21 +303,9 @@ void Controller::createHud() {
 }
 
 void Controller::setupMappings() {
-    // refresh (reload) all textures
-    InputManager::instance().addKey(sf::Keyboard::F5, [&] {
-       Ogre::TextureManager::getSingleton().reloadAll();
-    });
-
-    // take a screenshot
-    InputManager::instance().addKey(sf::Keyboard::Pause, [&] {
-        getWindow()->writeContentsToTimestampedFile("screenshot", ".jpg");
-    });
-
-    // quit from the application
-    InputManager::instance().addKeyUnbuf(sf::Keyboard::Escape, [&]{
-        shutdownNow();
-    });
-
+    /*
+     * Runner mode mappings;
+     */
     InputManager::instance().addKeysUnbuf({sf::Keyboard::W,
                                            sf::Keyboard::Up}, CONTEXT_RUNNER, [&]{
         getNodeManager()->getParentPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, -10.0), Ogre::SceneNode::TS_LOCAL);
@@ -338,6 +326,26 @@ void Controller::setupMappings() {
         getNodeManager()->getParentPlayerSceneNode()->yaw(Ogre::Degree(-10.0));
     });
 
+    /*
+     * Shooter mode mappings.
+     */
+    InputManager::instance().addKeysUnbuf({sf::Keyboard::A,
+                                           sf::Keyboard::Left}, CONTEXT_SHOOTER, [&]{
+        crosshairManager->getCrosshair()->scroll(-0.04, 0.00);
+    });
+
+    InputManager::instance().addKeysUnbuf({sf::Keyboard::D,
+                                           sf::Keyboard::Right}, CONTEXT_SHOOTER, [&]{
+        crosshairManager->getCrosshair()->scroll(0.04, 0.00);
+    });
+
+    InputManager::instance().addKeyUnbuf(sf::Keyboard::Space, CONTEXT_SHOOTER, [&]{
+        logicManager->shoot();
+    });
+
+    /*
+     * Both modes mappings.
+     */
     InputManager::instance().addKey(sf::Keyboard::Num1, [&]{
         toggleMode();
     });
@@ -346,9 +354,24 @@ void Controller::setupMappings() {
         toggleDebug();
     });
 
-    //
-    // joystick
-    //
+    // refresh all textures
+    InputManager::instance().addKey(sf::Keyboard::F5, [&] {
+       Ogre::TextureManager::getSingleton().reloadAll();
+    });
+
+    // take a screenshot
+    InputManager::instance().addKey(sf::Keyboard::Pause, [&] {
+        getWindow()->writeContentsToTimestampedFile("screenshot", ".jpg");
+    });
+
+    // quit from the application
+    InputManager::instance().addKeyUnbuf(sf::Keyboard::Escape, [&]{
+        shutdownNow();
+    });
+
+    /*
+     * Joystick mappings.
+     */
     InputManager::instance().addJoystickAxisUnbuf(sf::Joystick::X, CONTEXT_RUNNER, [&](float f){
         getNodeManager()->getParentPlayerSceneNode()->yaw(Ogre::Degree(-10 * f / 100.0));
     });
@@ -357,9 +380,9 @@ void Controller::setupMappings() {
         getNodeManager()->getParentPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, 10.0 * f / 100.0), Ogre::SceneNode::TS_LOCAL);
     });
 
-    InputManager::instance().addJoystickButton(0, [&]{
-        toggleMode();
-    });
+//    InputManager::instance().addJoystickButton(0, [&]{
+//        toggleMode();
+//    });
 }
 
 void Controller::gameMainLoop() {

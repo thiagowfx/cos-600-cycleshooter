@@ -13,7 +13,7 @@ class Player {
     /**
      * Number of bullets available for the player.
      */
-    unsigned ammo = 0;
+    unsigned ammo = 3;
 
     sf::Vector3<double> bicycleSpeed;
     sf::Vector3<double> playerPosition;
@@ -23,21 +23,21 @@ class Player {
 public:
     Player();
 
+    /**
+     * Add a bullet to the total ammo of the player.
+     */
+    void incrementAmmo();
+
+    /**
+     * Remove a bullet from the total ammo of the player.
+     */
+    void decrementAmmo();
+
     // getters and setters
     unsigned getHeartRate() const;
     void setHeartRate(const unsigned &value);
     unsigned getAmmo() const;
     void setAmmo(const unsigned &value);
-
-    /**
-     * Fires a shot.
-     */
-    void shoot();
-
-    /**
-     * Add a bullet to the total ammo of the player.
-     */
-    void incrementAmmo();
 };
 }
 

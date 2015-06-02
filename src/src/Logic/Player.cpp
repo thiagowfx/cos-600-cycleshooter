@@ -18,16 +18,16 @@ void Player::setAmmo(const unsigned &value) {
     ammo = value;
 }
 
-void Player::shoot() {
-    std::cout << "Player: shooting" << std::endl;
-
-    --ammo;
-}
-
 void Player::incrementAmmo() {
     std::cout << "Player: incrementing ammo" << std::endl;
 
     ++ammo;
+}
+
+void Player::decrementAmmo() {
+    std::cout << "Player: decrementing ammo" << std::endl;
+
+    --ammo;
 }
 
 Player::Player() {

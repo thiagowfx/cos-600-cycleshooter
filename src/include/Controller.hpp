@@ -24,6 +24,7 @@
 namespace Cycleshooter {
 
 class HUD;
+class LogicManager;
 class NodeManager;
 class CollisionHandler;
 class TerrainManager;

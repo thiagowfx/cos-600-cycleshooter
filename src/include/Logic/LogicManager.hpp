@@ -3,6 +3,7 @@
 
 #include <OgreFrameListener.h>
 
+#include "Controller.hpp"
 #include "Player.hpp"
 #include "Monster.hpp"
 
@@ -10,17 +11,23 @@ namespace Cycleshooter {
 class Controller;
 
 class LogicManager {
+    Controller* controller;
     Player *player;
     Monster *monster;
 
 public:
-    LogicManager();
+    LogicManager(Controller* controller);
     virtual ~LogicManager();
 
     /**
      * Update the game logic.
      */
     void update(const Ogre::FrameEvent &evt);
+
+    /**
+     * Fires a shot.
+     */
+    void shoot();
 
     // getters and setters
     Player *getPlayer() const;

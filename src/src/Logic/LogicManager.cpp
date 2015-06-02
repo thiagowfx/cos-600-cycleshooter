@@ -22,7 +22,9 @@ unsigned LogicManager::getAmmo() const {
     return player->getAmmo();
 }
 
-LogicManager::LogicManager() {
+LogicManager::LogicManager(Controller* controller) :
+    controller(controller)
+{
     player = new Player();
     monster = new Monster();
 }
@@ -37,6 +39,21 @@ LogicManager::~LogicManager() {
 
 void LogicManager::update(const Ogre::FrameEvent &evt) {
     // TODO: populate this method
+}
+
+void LogicManager::shoot() {
+    std::cout << "LogicManager: shoot" << std::endl;
+
+    if(player->getAmmo() > 0) {
+        player->decrementAmmo();
+
+        // TODO: create singleton Audio class to manage (1) game music
+        // TODO: create singleton Audio class to manage (2) game sounds
+        // TODO: add several sound effects for each outcome
+        // TODO: RTT crosshair + monster logic
+        // TODO: if hit, then decrease monster life
+        // TODO: check if monster is dead
+    }
 }
 
 }
