@@ -119,8 +119,10 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         return false;
     }
 
-    // TODO: update logic[manager] here somewhere
+    // update game logic
+    logicManager->update(evt);
 
+    // update game HUD
     oHud->update(evt);
 
     // process unbuffered keys
@@ -131,11 +133,7 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
 
     // process events (in particular, buffered keys)
     sf::Event event;
-
-    // while there are pending events...
     while (sWindow->pollEvent(event)) {
-
-        // check the type of the event...
         switch (event.type) {
 
         // window closed
@@ -144,19 +142,17 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
             shutdownNow();
             break;
 
-            // key pressed
+        // key pressed
         case sf::Event::KeyPressed:
             InputManager::instance().executeKeyAction(event.key.code, context);
             break;
 
+        // joystick button pressed
         case sf::Event::JoystickButtonPressed:
             InputManager::instance().executeJoystickButtonAction(event.joystickButton.button, context);
             break;
 
-            // TODO: add mouse events
-
-        default:
-            break;
+        // TODO: add mouse events
         }
     }
 
@@ -210,7 +206,7 @@ void Controller::createSFMLWindow() {
     std::cout << "--> Controller: Creating the SFML Window <--" << std::endl;
 
     sWindow = new sf::Window(sVideoMode, APPLICATION_NAME, sFullScreen, sf::ContextSettings(32, 8, 16));
-    sWindow->setIcon(cycleshooter_icon.width, cycleshooter_icon.height, cycleshooter_icon.pixel_data);
+    sWindow->setIcon(CYCLESHOOTER_ICON.width, CYCLESHOOTER_ICON.height, CYCLESHOOTER_ICON.pixel_data);
     sWindow->setKeyRepeatEnabled(false);
 }
 

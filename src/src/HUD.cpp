@@ -28,8 +28,8 @@ void HUD::createTrayWidgets() {
     trayManager->createLabel(BOTH_MODES_TL, "ammoLabel", "Ammo: ", 125);
 
     // widgets available on runner mode only
-    trayManager->createLabel(RUNNER_MODE_TL, "speedLabel", "Speed: ", 140);
-    trayManager->createLabel(RUNNER_MODE_TL, "frictionLabel", "Friction: ", 140);
+    trayManager->createLabel(RUNNERMODE_TL, "speedLabel", "Speed: ", 140);
+    trayManager->createLabel(RUNNERMODE_TL, "frictionLabel", "Friction: ", 140);
 }
 
 void HUD::setHelpPanel(Ogre::StringVector params, Ogre::StringVector values) {
@@ -72,7 +72,7 @@ void HUD::setupRunnerMode() {
     trayManager->createDecorWidget(CONTEXT_TL, "contextLogo", "Cycleshooter/Running_man");
 
     // show/hide mode specific widgets
-    trayManager->getTrayContainer(RUNNER_MODE_TL)->show();
+    trayManager->getTrayContainer(RUNNERMODE_TL)->show();
 }
 
 void HUD::setupShooterMode() {
@@ -82,7 +82,7 @@ void HUD::setupShooterMode() {
     trayManager->createDecorWidget(CONTEXT_TL, "contextLogo", "Cycleshooter/Gun");
 
     // show/hide mode specific widgets
-    trayManager->getTrayContainer(RUNNER_MODE_TL)->hide();
+    trayManager->getTrayContainer(RUNNERMODE_TL)->hide();
 }
 
 void HUD::setupDebugOn() {

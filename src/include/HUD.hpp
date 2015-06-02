@@ -29,7 +29,7 @@ class HUD {
 
     // customizable settings
     const OgreBites::TrayLocation CONTEXT_TL = OgreBites::TL_TOPLEFT;
-    const OgreBites::TrayLocation RUNNER_MODE_TL = OgreBites::TL_BOTTOMRIGHT;
+    const OgreBites::TrayLocation RUNNERMODE_TL = OgreBites::TL_BOTTOMRIGHT;
     const OgreBites::TrayLocation BOTH_MODES_TL = OgreBites::TL_RIGHT;
     const OgreBites::TrayLocation FPS_TL = OgreBites::TL_BOTTOMLEFT;
     const OgreBites::TrayLocation HELP_PANEL_TL = OgreBites::TL_BOTTOM;

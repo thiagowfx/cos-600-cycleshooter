@@ -1,8 +1,8 @@
 #ifndef _INPUTMANAGER_HPP_
 #define _INPUTMANAGER_HPP_
 
-#include <iostream>
 #include <functional>
+#include <iostream>
 #include <map>
 #include <vector>
 #include <SFML/Window/Joystick.hpp>

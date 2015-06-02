@@ -35,5 +35,9 @@ LogicManager::~LogicManager() {
         delete player;
 }
 
+void LogicManager::update(const Ogre::FrameEvent &evt) {
+    // TODO: populate this method
+}
+
 }
 

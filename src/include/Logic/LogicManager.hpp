@@ -1,6 +1,8 @@
 #ifndef _LOGICMANAGER_HPP_
 #define _LOGICMANAGER_HPP_
 
+#include <OgreFrameListener.h>
+
 #include "Player.hpp"
 #include "Monster.hpp"
 
@@ -14,6 +16,11 @@ class LogicManager {
 public:
     LogicManager();
     virtual ~LogicManager();
+
+    /**
+     * Update the game logic.
+     */
+    void update(const Ogre::FrameEvent &evt);
 
     // getters and setters
     Player *getPlayer() const;
