@@ -138,8 +138,8 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
 
         // window closed
         case sf::Event::Closed:
-            sWindow->close();
             shutdownNow();
+            sWindow->close();
             break;
 
         // key pressed
