@@ -255,12 +255,11 @@ void Controller::createGameElements() {
     nodeManager->setupRunnerMode();
 
     // to use a material, the resource group must be initialized
-    terrainManager = new TerrainManager(oSceneManager);
+    terrainManager = new TerrainManager(oSceneManager,"racecircuit.png");
     terrainManager->createTerrain();
 
     // starting collision handler after terrain initialization
     collisionHandler = new CollisionHandler("racecircuit.png");
-    collisionHandler->loadImages();
     collisionHandler->loadTensor();
 }
 
