@@ -12,7 +12,8 @@ namespace Cycleshooter {
 /**
  * Each element represents a unique sound.
  */
-enum Soundnames {
+enum Soundname {
+    // shoot (fire weapon) sounds
     SOUND_SHOOT1,
     SOUND_SHOOT2,
     SOUND_SHOOT3,
@@ -36,7 +37,7 @@ class AudioManager {
     /**
      * Maps all soundnames to their respective soundbuffers.
      */
-    std::map<Soundnames, sf::SoundBuffer> sounds;
+    std::map<Soundname, sf::SoundBuffer> sounds;
 
     /**
      * Manages currently playing sounds.
@@ -51,7 +52,7 @@ class AudioManager {
     /**
      * Randomly plays a sound from the specified list.
      */
-    void random_play(std::vector<Soundnames> sound_list);
+    void random_play(const std::vector<Soundname>& sound_list);
 
 public:
     static AudioManager& instance();
@@ -59,7 +60,7 @@ public:
     /**
      * Play the sound specified as argument.
      */
-    void play(Soundnames soundname);
+    void play(Soundname soundname);
 
     /**
      * Play a random shoot (fire) sound.
