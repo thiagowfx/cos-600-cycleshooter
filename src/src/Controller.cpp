@@ -57,6 +57,9 @@ Controller::~Controller() {
     if(oHud)
         delete oHud;
 
+    if(crosshairManager)
+        delete crosshairManager;
+
     if(collisionHandler)
         delete collisionHandler;
 
@@ -192,6 +195,7 @@ void Controller::go() {
     // initialize our objects and our game overall
     createGameElements();
     createScene();
+    createCrosshair();
     createHud();
 
     // setups
@@ -288,6 +292,13 @@ void Controller::createScene() {
     getSceneManager()->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
     Ogre::Light* light =  getSceneManager()->createLight("MainLight");
     light->setPosition(20.0, 80.0, 50.0);
+}
+
+void Controller::createCrosshair() {
+    Ogre::LogManager::getSingletonPtr()->logMessage("--> Controller: Creating Crosshair <--");
+
+    crosshairManager = new CrosshairManager();
+    crosshairManager->setupRunnerMode();
 }
 
 void Controller::createHud() {
@@ -408,6 +419,7 @@ void Controller::setupRunnerMode() {
     context = CONTEXT_RUNNER;
 
     nodeManager->setupRunnerMode();
+    crosshairManager->setupRunnerMode();
     oHud->setupRunnerMode();
 }
 
@@ -417,6 +429,7 @@ void Controller::setupShooterMode() {
     context = CONTEXT_SHOOTER;
 
     nodeManager->setupShooterMode();
+    crosshairManager->setupShooterMode();
     oHud->setupShooterMode();
 }
 

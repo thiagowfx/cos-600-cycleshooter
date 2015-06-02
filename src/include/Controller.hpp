@@ -15,6 +15,7 @@
 #include "LogicManager.hpp"
 #include "RandomPolar.hpp"
 
+#include "CrosshairManager.hpp"
 #include "HUD.hpp"
 #include "NodeManager.hpp"
 #include "CollisionHandler.hpp"
@@ -144,6 +145,11 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     void createScene();
 
     /**
+     * Create the crosshair as an overlay element.
+     */
+    void createCrosshair();
+
+    /**
      * Create the HUD and its overlay widgets
      */
     void createHud();
@@ -188,6 +194,11 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
      * Collision Handler.
      */
     CollisionHandler* collisionHandler = NULL;
+
+    /**
+     * Crosshair Manager.
+     */
+    CrosshairManager* crosshairManager = NULL;
 
     /**
      * @brief hud responsible for rendering overlay elements with useful information for the player

@@ -53,12 +53,6 @@ NodeManager::NodeManager(Controller *controller) :
 }
 
 NodeManager::~NodeManager() {
-    if(viewportPrimary)
-        delete viewportPrimary;
-
-    if(viewportSecundary)
-        delete viewportSecundary;
-
     if(frontPlayerSceneNode)
         delete frontPlayerSceneNode;
 
