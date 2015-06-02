@@ -208,8 +208,7 @@ void Controller::go() {
 void Controller::createSFMLWindow() {
     std::cout << "--> Controller: Creating the SFML Window <--" << std::endl;
 
-    // TODO: refine ContextSettings? Test with 0, etc
-    sWindow = new sf::Window(sVideoMode, APPLICATION_NAME, sFullScreen, sf::ContextSettings(32));
+    sWindow = new sf::Window(sVideoMode, APPLICATION_NAME, sFullScreen, sf::ContextSettings(32, 8, 16));
     sWindow->setIcon(cycleshooter_icon.width, cycleshooter_icon.height, cycleshooter_icon.pixel_data);
     sWindow->setKeyRepeatEnabled(false);
 }
