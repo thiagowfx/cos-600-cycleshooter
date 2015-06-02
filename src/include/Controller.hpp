@@ -211,11 +211,6 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
      */
     virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
 
-    //TODO: make almost everything private(?)
-public:
-    Controller(int argc = 0, char *argv[] = {});
-    virtual ~Controller();
-
     /**
      * The (manually managed) game main loop, responsible for calling Ogre::Root::renderOneFrame()
      */
@@ -265,6 +260,10 @@ public:
      * Finish/shutdown the game cleanly.
      */
     void shutdownNow();
+
+public:
+    Controller(int argc = 0, char *argv[] = {});
+    virtual ~Controller();
 
     // getters and setters
     Context getContext() const;
