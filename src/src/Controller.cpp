@@ -142,8 +142,6 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
             shutdownNow();
             break;
 
-            // TODO: resize event (adjust viewport)
-
             // key pressed
         case sf::Event::KeyPressed:
             InputManager::instance().executeKeyAction(event.key.code, context);
@@ -213,6 +211,7 @@ void Controller::createSFMLWindow() {
     // TODO: refine ContextSettings? Test with 0, etc
     sWindow = new sf::Window(sVideoMode, APPLICATION_NAME, sFullScreen, sf::ContextSettings(32));
     sWindow->setIcon(cycleshooter_icon.width, cycleshooter_icon.height, cycleshooter_icon.pixel_data);
+    sWindow->setKeyRepeatEnabled(false);
 }
 
 void Controller::setupResources(const Ogre::String& config) {
