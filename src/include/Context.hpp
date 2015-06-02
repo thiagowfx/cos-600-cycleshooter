@@ -7,8 +7,8 @@
  * CONTEXT_SHOOTER: when the player stops and tries to shoot off the monster.
  */
 enum Context {
-    CONTEXT_RUNNER,
-    CONTEXT_SHOOTER,
+    CONTEXT_RUNNER = 0,
+    CONTEXT_SHOOTER = 1,
 };
 
 #endif

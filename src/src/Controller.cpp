@@ -132,7 +132,6 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     // process events (in particular, buffered keys)
     sf::Event event;
 
-    // TODO: check if there is the possibility of an infinite event loop
     // while there are pending events...
     while (sWindow->pollEvent(event)) {
 
@@ -156,7 +155,6 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
 
             // TODO: add mouse events
 
-            // don't process other types of events
         default:
             break;
         }
@@ -201,7 +199,6 @@ void Controller::go() {
     // setups
     InputManager::instance().detectJoystick();
     setupMappings();
-    // TODO: setupRunnerMode() (?) -- or each element individually?
     setupDebugOn();
 
     // Ogre::FrameListener <-- let's begin calling frameRenderingQueued

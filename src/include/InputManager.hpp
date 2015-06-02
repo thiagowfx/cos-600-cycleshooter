@@ -28,20 +28,16 @@ class InputManager {
     unsigned int JOYSTICK_NUMBER = 0;
 
     // buffered keyboard keys
-    std::map<sf::Keyboard::Key, std::function<void(void)> > runnerKeyboardMap;
-    std::map<sf::Keyboard::Key, std::function<void(void)> > shooterKeyboardMap;
+    std::map<sf::Keyboard::Key, std::function<void(void)> > keyboardMap[2];
 
     // buffered joystick buttons
-    std::map<unsigned int, std::function<void(void)> > runnerJoystickButtonMap;
-    std::map<unsigned int, std::function<void(void)> > shooterJoystickButtonMap;
+    std::map<unsigned int, std::function<void(void)> > joystickButtonMap[2];
 
     // unbuffered keyboard keys
-    std::map<sf::Keyboard::Key, std::function<void(void)> > uRunnerKeyboardMap;
-    std::map<sf::Keyboard::Key, std::function<void(void)> > uShooterKeyboardMap;
+    std::map<sf::Keyboard::Key, std::function<void(void)> > uKeyboardMap[2];
 
     // unbuffered joystick axis
-    std::map<sf::Joystick::Axis, std::function<void(float)> > uRunnerJoystickAxisMap;
-    std::map<sf::Joystick::Axis, std::function<void(float)> > uShooterJoystickAxisMap;
+    std::map<sf::Joystick::Axis, std::function<void(float)> > uJoystickAxisMap[2];
 
     bool hasKey(const sf::Keyboard::Key& key, const Context& mode);
 
