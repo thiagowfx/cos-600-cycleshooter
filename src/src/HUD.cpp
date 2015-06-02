@@ -63,6 +63,12 @@ void HUD::update(const Ogre::FrameEvent& evt) {
         dynamic_cast<OgreBites::Label*>(trayManager->getWidget("speedLabel"))->setCaption("TODO: speed");
         dynamic_cast<OgreBites::Label*>(trayManager->getWidget("frictionLabel"))->setCaption("TODO: friction");
     }
+
+    // widgets update on debug mode only
+    if(controller->getDebug()) {
+        // TODO: matheus: add your debug info here: change controller->getShutdown() for controller->getTerrainManager->getSomeString()
+        dynamic_cast<OgreBites::ParamsPanel*>(trayManager->getWidget("debugPanel"))->setParamValue(0, controller->getShutdown());
+    }
 }
 
 void HUD::setupRunnerMode() {
@@ -94,6 +100,18 @@ void HUD::setupDebugOn() {
         trayManager->moveWidgetToTray("helpPanel", HELP_PANEL_TL, 0);
         trayManager->getWidget("helpPanel")->show();
     }
+
+    // debug panel
+    if(!trayManager->getWidget("debugPanel")) {
+        const int numElements = 1;
+        Ogre::StringVector params = std::string(numElements, "");
+        Ogre::StringVector values = std::string(numElements, "");
+        trayManager->createParamsPanel(DEBUG_PANEL_TL, "debugPanel", 160, params)->setAllParamValues(values);
+    }
+    else {
+        trayManager->moveWidgetToTray("debugPanel", HELP_PANEL_TL, 0);
+        trayManager->getWidget("debugPanel")->show();
+    }
 }
 
 void HUD::setupDebugOff() {
@@ -103,6 +121,12 @@ void HUD::setupDebugOff() {
     // help panel
     if(trayManager->getWidget("helpPanel")) {
         trayManager->removeWidgetFromTray("helpPanel");
+        trayManager->getWidget("helpPanel")->hide();
+    }
+
+    // debug panel
+    if(trayManager->getWidget("debugPanel")) {
+        trayManager->removeWidgetFromTray("debugPanel");
         trayManager->getWidget("helpPanel")->hide();
     }
 }
