@@ -69,7 +69,7 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     /**
      * @brief sWindow the sfml window
      */
-    sf::Window* sWindow = NULL;
+    std::unique_ptr<sf::Window> sWindow;
 
     /**
      * @brief sFullScreen State of the game window: will it be fullscreen?
@@ -164,7 +164,7 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     /**
      * @brief logicManager Manages the logic of the game.
      */
-    LogicManager* logicManager = NULL;
+    std::unique_ptr<LogicManager> logicManager;
 
     /**
      * The polar device, from here we will get the heart rates.
@@ -185,22 +185,22 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     /**
      * Node Manager.
      */
-    NodeManager* nodeManager = NULL;
+    std::unique_ptr<NodeManager> nodeManager;
 
     /**
      * Terrain Manager.
      */
-    TerrainManager* terrainManager = NULL;
+    std::unique_ptr<TerrainManager> terrainManager;
 
     /**
      * Collision Handler.
      */
-    CollisionHandler* collisionHandler = NULL;
+    std::unique_ptr<CollisionHandler> collisionHandler;
 
     /**
      * Crosshair Manager.
      */
-    CrosshairManager* crosshairManager = NULL;
+    std::unique_ptr<CrosshairManager> crosshairManager;
 
     /**
      * @brief hud responsible for rendering overlay elements with useful information for the player

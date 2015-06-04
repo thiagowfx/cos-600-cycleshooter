@@ -7,7 +7,7 @@ Context Controller::getContext() const {
 }
 
 NodeManager *Controller::getNodeManager() const {
-    return nodeManager;
+    return nodeManager.get();
 }
 
 Ogre::Root *Controller::getRoot() const {
@@ -60,24 +60,6 @@ Controller::Controller(int argc, char *argv[]) {
 Controller::~Controller() {
     if(oHud)
         delete oHud;
-
-    if(crosshairManager)
-        delete crosshairManager;
-
-    if(collisionHandler)
-        delete collisionHandler;
-
-    if(terrainManager)
-        delete terrainManager;
-
-    if(nodeManager)
-        delete nodeManager;
-
-    if(logicManager)
-        delete logicManager;
-
-    if(sWindow)
-        delete sWindow;
 }
 
 void Controller::polarUpdaterFunction() {
@@ -154,7 +136,7 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
 }
 
 LogicManager *Controller::getLogicManager() const {
-    return logicManager;
+    return logicManager.get();
 }
 
 bool Controller::getShutdown() const {
@@ -200,7 +182,7 @@ void Controller::go() {
 void Controller::createSFMLWindow() {
     std::cout << "--> Controller: Creating the SFML Window <--" << std::endl;
 
-    sWindow = new sf::Window(sVideoMode, APPLICATION_NAME, sFullScreen, sf::ContextSettings(32, 8, 16));
+    sWindow = std::unique_ptr<sf::Window>(new sf::Window(sVideoMode, APPLICATION_NAME, sFullScreen, sf::ContextSettings(32, 8, 16)));
     sWindow->setIcon(CYCLESHOOTER_ICON.width, CYCLESHOOTER_ICON.height, CYCLESHOOTER_ICON.pixel_data);
     sWindow->setKeyRepeatEnabled(false);
 }
@@ -240,39 +222,39 @@ void Controller::createGameElements() {
     Ogre::LogManager::getSingleton().logMessage("--> Controller: Create Game Elements <--");
 
     // attention: logic manager should be created before any threads that will update it
-    logicManager = new LogicManager(this);
+    logicManager = std::unique_ptr<LogicManager>(new LogicManager(this));
 
     polar = std::unique_ptr<AbstractPolar>(new RandomPolar());
     polarUpdater = std::unique_ptr<sf::Thread>(new sf::Thread(&Controller::polarUpdaterFunction, this));
     polarUpdater->launch();
 
-    nodeManager = new NodeManager(this);
+    nodeManager = std::unique_ptr<NodeManager>(new NodeManager(this));
     nodeManager->setupRunnerMode();
 
     // to use a material, the resource group must be initialized
-    terrainManager = new TerrainManager(oSceneManager,"racecircuit.png");
+    terrainManager = std::unique_ptr<TerrainManager>(new TerrainManager(oSceneManager,"racecircuit.png"));
     terrainManager->createTerrain();
 
     // starting collision handler after terrain initialization
-    collisionHandler = new CollisionHandler("racecircuit.png");
+    collisionHandler = std::unique_ptr<CollisionHandler>(new CollisionHandler("racecircuit.png"));
     collisionHandler->loadTensor();
 }
 
 void Controller::createScene() {
     Ogre::LogManager::getSingleton().logMessage("--> Controller: Creating Scene <--");
 
-    Ogre::Entity* ogreEntity = getSceneManager()->createEntity("ogrehead.mesh");
+    Ogre::Entity* ogreEntity1 = getSceneManager()->createEntity("ogrehead.mesh");
     Ogre::Entity* ogreEntity2 = getSceneManager()->createEntity("ogrehead.mesh");
     Ogre::Entity* ogreEntity3 = getSceneManager()->createEntity("ogrehead.mesh");
 
-    Ogre::SceneNode* ogreNode = getSceneManager()->getRootSceneNode()->createChildSceneNode();
+    Ogre::SceneNode* ogreNode1 = getSceneManager()->getRootSceneNode()->createChildSceneNode();
     Ogre::SceneNode* ogreNode2 = getSceneManager()->getRootSceneNode()->createChildSceneNode();
     Ogre::SceneNode* ogreNode3 = getSceneManager()->getRootSceneNode()->createChildSceneNode();
 
     ogreNode2->translate(0.0, 0.0, 400.0);
     ogreNode3->translate(0.0, 0.0, -400.0);
 
-    ogreNode->attachObject(ogreEntity);
+    ogreNode1->attachObject(ogreEntity1);
     ogreNode2->attachObject(ogreEntity2);
     ogreNode3->attachObject(ogreEntity3);
 
@@ -284,7 +266,7 @@ void Controller::createScene() {
 void Controller::createCrosshair() {
     Ogre::LogManager::getSingletonPtr()->logMessage("--> Controller: Creating Crosshair <--");
 
-    crosshairManager = new CrosshairManager();
+    crosshairManager = std::unique_ptr<CrosshairManager>(new CrosshairManager());
     crosshairManager->setupRunnerMode();
 }
 
