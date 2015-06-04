@@ -15,8 +15,6 @@ AudioManager &AudioManager::instance() {
 }
 
 void AudioManager::play(Soundname soundname) {
-    sf::Lock lock(playing_sounds_mutex);
-
     if(playing_sounds.size() == 0) {
         playing_sounds.push_back(sf::Sound());
         playing_sounds.at(0).setBuffer(sounds[soundname]);

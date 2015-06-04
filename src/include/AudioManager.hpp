@@ -35,6 +35,7 @@ enum Musicname {
  * @brief The AudioManager class A singleton class to handle all game music and sounds.
  * It also acts as a SoundManager. Inspired originally by: http://stackoverflow.com/a/27860198
  * Note: sound = short duration; music = long duration; audio = generic word to refer to these.
+ * Only one background music is allowed at once. However, you may play several sounds simultaneously.
  */
 class AudioManager {
     // constructor and copy functions
@@ -61,11 +62,6 @@ class AudioManager {
      * Maps all musicnames to their respective Music variables.
      */
     std::map<Musicname, sf::Music> musics;
-
-    /**
-     * @brief playing_sounds_mutex Prevents simultaneous access to the playing_sounds variable.
-     */
-    sf::Mutex playing_sounds_mutex;
 
     /**
      * Manages currently playing sounds.
