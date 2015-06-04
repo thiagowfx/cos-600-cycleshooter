@@ -6,13 +6,7 @@ AudioManager::AudioManager() {
     Ogre::LogManager::getSingleton().logMessage("--> AudioManager: Singleton Constructor <--");
 
     load_sounds();
-}
-
-void AudioManager::clear_played_sounds() {
-    for(std::deque<sf::Sound>::iterator it = playing_sounds.begin(); it != playing_sounds.end(); ++it) {
-        if(it->getStatus() != sf::Sound::Playing)
-            playing_sounds.erase(it);
-    }
+    load_musics();
 }
 
 AudioManager &AudioManager::instance() {
@@ -21,19 +15,85 @@ AudioManager &AudioManager::instance() {
 }
 
 void AudioManager::play(Soundname soundname) {
-    clear_played_sounds();
+    sf::Lock lock(playing_sounds_mutex);
 
-    playing_sounds.push_back(sf::Sound());
-    playing_sounds.back().setBuffer(sounds[soundname]);
-    playing_sounds.back().play();
+    if(playing_sounds.size() == 0) {
+        playing_sounds.push_back(sf::Sound());
+        playing_sounds.at(0).setBuffer(sounds[soundname]);
+        playing_sounds.at(0).play();
+    }
+
+    else {
+        int location = -1;
+
+        for (int i = 0; i < playing_sounds.size(); ++i) {
+            if (playing_sounds.at(i).getStatus() != sf::Sound::Playing && location == -1) {
+                location = i;
+            }
+        }
+
+        if (location != -1) {
+            playing_sounds.at(location).setBuffer(sounds[soundname]);
+            playing_sounds.at(location).play();
+        }
+        else {
+            playing_sounds.push_back(sf::Sound());
+            playing_sounds.back().setBuffer(sounds[soundname]);
+            playing_sounds.back().play();
+        }
+
+    }
+}
+
+void AudioManager::play(Musicname musicname, bool restart) {
+    sf::Lock lock(current_playing_music_mutex);
+
+    Ogre::LogManager::getSingleton().logMessage("--> AudioManager: Play a new music <--");
+
+    if(current_playing_music != NULL && current_playing_music->getStatus() == sf::Music::Playing) {
+        current_playing_music->pause();
+    }
+
+    current_playing_music = &musics[musicname];
+
+    if(restart) {
+        current_playing_music->stop();
+    }
+
+    current_playing_music->play();
 }
 
 void AudioManager::load_sounds() {
     Ogre::LogManager::getSingleton().logMessage("--> AudioManager: Loading Sounds <--");
 
-    sounds[SOUND_SHOOT1].loadFromFile(AUDIO_PATH + "shoot1.wav");
-    sounds[SOUND_SHOOT2].loadFromFile(AUDIO_PATH + "shoot2.wav");
-    sounds[SOUND_SHOOT3].loadFromFile(AUDIO_PATH + "shoot3.wav");
+    auto error = [](std::string soundname) {
+        Ogre::LogManager::getSingleton().logMessage(Ogre::LML_CRITICAL, " |-> Error while loading a sound: " + soundname);
+        exit(1);
+    };
+
+    if(!sounds[SOUND_SHOOT1].loadFromFile(AUDIO_PATH + "shoot1.wav"))
+        error("shoot1.wav");
+
+    if(!sounds[SOUND_SHOOT2].loadFromFile(AUDIO_PATH + "shoot2.wav"))
+        error("shoot2.wav");
+
+    if(!sounds[SOUND_SHOOT3].loadFromFile(AUDIO_PATH + "shoot3.wav"))
+        error("shoot3.wav");
+}
+
+void AudioManager::load_musics() {
+    Ogre::LogManager::getSingleton().logMessage("--> AudioManager: Loading Musics <--");
+
+    auto error = [](std::string musicname) {
+        Ogre::LogManager::getSingleton().logMessage(Ogre::LML_CRITICAL, " |-> Error while loading a music: " + musicname);
+        exit(1);
+    };
+
+    if(!musics[MUSIC_RUNNER1].openFromFile(MUSIC_PATH + "runner1.ogg"))
+        error("runner1.ogg");
+
+    if(!musics[MUSIC_SHOOTER1].openFromFile(MUSIC_PATH + "shooter1.ogg"))
+        error("shooter1.ogg");
 }
 
 void AudioManager::random_play(const std::vector<Soundname>& sound_list) {

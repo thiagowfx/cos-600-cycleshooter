@@ -203,6 +203,7 @@ void Controller::go() {
 
     // Ogre::FrameListener <-- let's begin calling frameRenderingQueued
     oRoot->addFrameListener(this);
+    AudioManager::instance().play(MUSIC_RUNNER1);
     gameMainLoop();
 }
 
@@ -450,6 +451,7 @@ void Controller::setupRunnerMode() {
     nodeManager->setupRunnerMode();
     crosshairManager->setupRunnerMode();
     oHud->setupRunnerMode();
+    AudioManager::instance().play(MUSIC_RUNNER1);
 }
 
 void Controller::setupShooterMode() {
@@ -460,6 +462,7 @@ void Controller::setupShooterMode() {
     nodeManager->setupShooterMode();
     crosshairManager->setupShooterMode();
     oHud->setupShooterMode();
+    AudioManager::instance().play(MUSIC_SHOOTER1);
 }
 
 void Controller::toggleMode() {

@@ -6,17 +6,29 @@
 
 #include <OgreLogManager.h>
 #include <SFML/Audio.hpp>
+#include <SFML/System/Mutex.hpp>
 
 namespace Cycleshooter {
 
 /**
- * Each element represents a unique sound.
+ * Each element represents an unique sound.
  */
 enum Soundname {
     // shoot (fire weapon) sounds
     SOUND_SHOOT1,
     SOUND_SHOOT2,
     SOUND_SHOOT3,
+};
+
+/**
+ * Each element represents an unique music.
+ */
+enum Musicname {
+    // runner mode music
+    MUSIC_RUNNER1,
+
+    // shooter mode music
+    MUSIC_SHOOTER1,
 };
 
 /**
@@ -31,9 +43,14 @@ class AudioManager {
     void operator=(const AudioManager&) = delete;
 
     /**
-     * @brief AUDIO_PATH Location of the sounds.
+     * @brief AUDIO_PATH Location of the sounds. It should have a trailing slash.
      */
-    const std::string AUDIO_PATH = "../audio/";
+    const std::string AUDIO_PATH = "../audio/sounds/";
+
+    /**
+     * @brief MUSIC_PATH Location of the musics. It should have a trailing slash.
+     */
+    const std::string MUSIC_PATH = "../audio/music/";
 
     /**
      * Maps all soundnames to their respective soundbuffers.
@@ -41,14 +58,19 @@ class AudioManager {
     std::map<Soundname, sf::SoundBuffer> sounds;
 
     /**
+     * Maps all musicnames to their respective Music variables.
+     */
+    std::map<Musicname, sf::Music> musics;
+
+    /**
+     * @brief playing_sounds_mutex Prevents simultaneous access to the playing_sounds variable.
+     */
+    sf::Mutex playing_sounds_mutex;
+
+    /**
      * Manages currently playing sounds.
      */
     std::deque<sf::Sound> playing_sounds;
-
-    /**
-     * Remove already played sounds of the playing_sounds variable.
-     */
-    void clear_played_sounds();
 
     /**
      * Populate the sounds map.
@@ -56,9 +78,24 @@ class AudioManager {
     void load_sounds();
 
     /**
+     * Populate the musics map.
+     */
+    void load_musics();
+
+    /**
      * Randomly plays a sound from the specified list.
      */
     void random_play(const std::vector<Soundname>& sound_list);
+
+    /**
+     * @brief current_playing_music_mutex Prevents simultaneous access to the current_playing_music variable.
+     */
+    sf::Mutex current_playing_music_mutex;
+
+    /**
+     * The current playing music, if any.
+     */
+    sf::Music* current_playing_music = NULL;
 
 public:
     static AudioManager& instance();
@@ -67,6 +104,12 @@ public:
      * Play the sound specified as argument.
      */
     void play(Soundname soundname);
+
+    /**
+     * Stops playing the current music, and begins to play the one passed as argument.
+     * If restart is false, the music will keep playing from where it stopped before, otherwise it will begin from its start.
+     */
+    void play(Musicname musicname, bool restart = false);
 
     /**
      * Play a random shoot (fire) sound.
