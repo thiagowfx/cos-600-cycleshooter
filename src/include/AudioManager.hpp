@@ -22,6 +22,7 @@ enum Soundname {
 /**
  * @brief The AudioManager class A singleton class to handle all game music and sounds.
  * It also acts as a SoundManager. Inspired originally by: http://stackoverflow.com/a/27860198
+ * Note: sound = short duration; music = long duration; audio = generic word to refer to these.
  */
 class AudioManager {
     // constructor and copy functions
@@ -43,6 +44,11 @@ class AudioManager {
      * Manages currently playing sounds.
      */
     std::deque<sf::Sound> playing_sounds;
+
+    /**
+     * Remove already played sounds of the playing_sounds variable.
+     */
+    void clear_played_sounds();
 
     /**
      * Populate the sounds map.

@@ -3,7 +3,16 @@
 namespace Cycleshooter {
 
 AudioManager::AudioManager() {
+    Ogre::LogManager::getSingleton().logMessage("--> AudioManager: Singleton Constructor <--");
+
     load_sounds();
+}
+
+void AudioManager::clear_played_sounds() {
+    for(std::deque<sf::Sound>::iterator it = playing_sounds.begin(); it != playing_sounds.end(); ++it) {
+        if(it->getStatus() != sf::Sound::Playing)
+            playing_sounds.erase(it);
+    }
 }
 
 AudioManager &AudioManager::instance() {
@@ -12,10 +21,7 @@ AudioManager &AudioManager::instance() {
 }
 
 void AudioManager::play(Soundname soundname) {
-    for(std::deque<sf::Sound>::iterator it = playing_sounds.begin(); it != playing_sounds.end(); ++it) {
-        if(it->getStatus() != sf::Sound::Playing)
-            playing_sounds.erase(it);
-    }
+    clear_played_sounds();
 
     playing_sounds.push_back(sf::Sound());
     playing_sounds.back().setBuffer(sounds[soundname]);
@@ -23,7 +29,7 @@ void AudioManager::play(Soundname soundname) {
 }
 
 void AudioManager::load_sounds() {
-    Ogre::LogManager::getSingleton().logMessage("AudioManager: Loading Sounds");
+    Ogre::LogManager::getSingleton().logMessage("--> AudioManager: Loading Sounds <--");
 
     sounds[SOUND_SHOOT1].loadFromFile(AUDIO_PATH + "shoot1.wav");
     sounds[SOUND_SHOOT2].loadFromFile(AUDIO_PATH + "shoot2.wav");
