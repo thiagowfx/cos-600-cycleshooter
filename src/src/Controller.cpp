@@ -27,30 +27,60 @@ HUD *Controller::getHud() const {
 }
 
 Controller::Controller(int argc, char *argv[]) {
-    std::cout << "--> Controller: Constructor <--" << std::endl;
+    int fullscreen = true;
+    int width = -1, height = -1;
 
-    int fullscreen;
+    auto usage = [&]() {
+        std::cout << "Usage: " << argv[0] << " [options]" << std::endl;
+        std::cout << "Options\n"
+                     "    -h:    show this help\n"
+                     "    -f:    set fullscreen (1 = ON, 0 = OFF, default = ON)\n"
+                     "    -r:    set resolution (e.g. 1366x768, default = maximum possible)\n";
+        std::cout << "Examples: " << argv[0] << " -r 1366x768" << std::endl;
+        std::cout << "          " << argv[0] << " -f 0 -r 800x600" << std::endl;
+    };
 
-    // TODO: getopt
-    if (argc >= 2) {
-        fullscreen = atoi(argv[1]);
+    int opt;
+    while((opt = getopt(argc, argv, "f:r:h")) != EOF) {
 
-        if(!fullscreen) {
-            std::cout << " |-> Disabling FullScreen Mode" << std::endl;
-            sFullScreen = sf::Style::Titlebar | sf::Style::Close;
+        switch(opt) {
+        case 'f':
+            if(!(!strcmp(optarg, "0") || !strcmp(optarg, "1"))) {
+                std::cout << "error: unrecognized fullscreen parameter" << std::endl;
+                usage();
+                exit(1);
+            }
+            fullscreen = atoi(optarg);
+            break;
+
+        case 'r':
+            if (sscanf(optarg, "%dx%d", &width, &height) != 2) {
+                std::cout << "error: unrecognized resolution format" << std::endl;
+                usage();
+                exit(1);
+            }
+            break;
+
+        case 'h':
+        case '?':
+        default:
+            usage();
+            exit(0);
+            break;
         }
     }
 
-    if (argc >= 4) {
-        int width = atoi(argv[2]);
-        int height = atoi(argv[3]);
+    /* Set fullscreen if it is appropriate. */
+    sFullScreen = fullscreen ? sf::Style::Fullscreen : sf::Style::Titlebar | sf::Style::Close;
 
+    /* Set resolution if it is appropriate. */
+    sVideoMode = sf::VideoMode::getFullscreenModes()[0];
+    if(width != -1 && height != -1) {
         if(!fullscreen || (fullscreen && sf::VideoMode(width, height).isValid())) {
-            std::cout << " |-> Setting resolution to " + std::to_string(width) + " x " + std::to_string(height) << std::endl;
             sVideoMode = sf::VideoMode(width, height);
         }
         else {
-            std::cout << " |-> Invalid fullscreen resolution specified. Please either disable fullscreen or set a valid resolution." << std::endl;
+            std::cout << "error: invalid fullscreen resolution specified. Please either set a valid resolution or disable fullscreen." << std::endl;
             exit(1);
         }
     }

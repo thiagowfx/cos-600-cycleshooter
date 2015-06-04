@@ -5,6 +5,7 @@
 #include <OgreOverlayManager.h>
 
 namespace Cycleshooter {
+// TODO: sensibility and entropy
 class CrosshairManager {
     Ogre::Overlay* crosshair;
 

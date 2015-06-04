@@ -1,6 +1,7 @@
 #ifndef _CONTROLLER_HPP_
 #define _CONTROLLER_HPP_
 
+#include <getopt.h>
 #include <cstdlib>
 
 #include <SFML/System.hpp>
@@ -74,12 +75,12 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     /**
      * @brief sFullScreen State of the game window: will it be fullscreen?
      */
-    int sFullScreen = sf::Style::Fullscreen;
+    int sFullScreen;
 
     /**
      * @brief sVideoMode Resolution of the game window (e.g. 800 x 600)
      */
-    sf::VideoMode sVideoMode = sf::VideoMode::getFullscreenModes()[0];
+    sf::VideoMode sVideoMode;
 
     /**
      * @brief clockUnbuf Used to create a delay between two consecutive unbuffered inputs.
@@ -259,7 +260,7 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     void shutdownNow();
 
 public:
-    Controller(int argc = 0, char *argv[] = {});
+    Controller(int argc, char *argv[]);
 
     // getters and setters
     Context getContext() const;
