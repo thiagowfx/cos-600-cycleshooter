@@ -169,12 +169,12 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     /**
      * The polar device, from here we will get the heart rates.
      */
-    AbstractPolar* polar = NULL;
+    std::unique_ptr<AbstractPolar> polar;
 
     /**
      * The thread responsible for updating the heart rate.
      */
-    sf::Thread* polarUpdater = NULL;
+    std::unique_ptr<sf::Thread> polarUpdater;
 
     /**
      * Continuously updates the heart rate in our model/logic.
@@ -275,7 +275,6 @@ public:
     Ogre::RenderWindow *getWindow() const;
     Ogre::SceneManager *getSceneManager() const;
     bool getShutdown() const;
-    sf::Thread *getPolarUpdater() const;
     LogicManager *getLogicManager() const;
 };
 

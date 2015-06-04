@@ -73,12 +73,6 @@ Controller::~Controller() {
     if(nodeManager)
         delete nodeManager;
 
-    if(polarUpdater)
-        delete polarUpdater;
-
-    if(polar)
-        delete polar;
-
     if(logicManager)
         delete logicManager;
 
@@ -86,15 +80,11 @@ Controller::~Controller() {
         delete sWindow;
 }
 
-sf::Thread *Controller::getPolarUpdater() const {
-    return polarUpdater;
-}
-
 void Controller::polarUpdaterFunction() {
     while(!shutdown) {
         try {
             unsigned heartRate = polar->getInstantaneousHeartRate();
-            if(heartRate) {
+            if(heartRate != 0) {
                 logicManager->setHeartRate(heartRate);
             }
             else {
@@ -252,8 +242,8 @@ void Controller::createGameElements() {
     // attention: logic manager should be created before any threads that will update it
     logicManager = new LogicManager(this);
 
-    polar = new RandomPolar();
-    polarUpdater = new sf::Thread(&Controller::polarUpdaterFunction, this);
+    polar = std::unique_ptr<AbstractPolar>(new RandomPolar());
+    polarUpdater = std::unique_ptr<sf::Thread>(new sf::Thread(&Controller::polarUpdaterFunction, this));
     polarUpdater->launch();
 
     nodeManager = new NodeManager(this);
