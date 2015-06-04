@@ -34,12 +34,12 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     /**
      * @brief context the current game context mode
      */
-    Context context = CONTEXT_RUNNER;
+    Context context;
 
     /**
      * @brief debug indicates whether the debug mode is activated or not
      */
-    bool debug = false;
+    bool debug;
 
     /**
      * @brief shutdown setting this to true will stop several while loops, thus forcing the game to finish cleanly
@@ -232,11 +232,6 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
      * Toggle the context mode Shooter/Runner.
      */
     void toggleMode();
-
-    /**
-     * Toggle the context mode to the specified context.
-     */
-    void toggleMode(const Context& newContext);
 
     /**
      * Enable the debug mode.

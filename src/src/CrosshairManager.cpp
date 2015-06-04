@@ -12,6 +12,7 @@ CrosshairManager::CrosshairManager() {
 }
 
 CrosshairManager::~CrosshairManager() {
+    // TODO
     Ogre::OverlayManager::getSingleton().destroy("Cycleshooter/Crosshair");
 }
 

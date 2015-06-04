@@ -170,12 +170,12 @@ void Controller::go() {
 
     // setups
     InputManager::instance().detectJoystick();
-    setupMappings();
+    setupRunnerMode();
     setupDebugOn();
+    setupMappings();
 
     // Ogre::FrameListener <-- let's begin calling frameRenderingQueued
     oRoot->addFrameListener(this);
-    AudioManager::instance().play(MUSIC_RUNNER1);
     gameMainLoop();
 }
 
@@ -229,7 +229,6 @@ void Controller::createGameElements() {
     polarUpdater->launch();
 
     nodeManager = std::unique_ptr<NodeManager>(new NodeManager(this));
-    nodeManager->setupRunnerMode();
 
     // to use a material, the resource group must be initialized
     terrainManager = std::unique_ptr<TerrainManager>(new TerrainManager(oSceneManager,"racecircuit.png"));
@@ -267,7 +266,6 @@ void Controller::createCrosshair() {
     Ogre::LogManager::getSingletonPtr()->logMessage("--> Controller: Creating Crosshair <--");
 
     crosshairManager = std::unique_ptr<CrosshairManager>(new CrosshairManager());
-    crosshairManager->setupRunnerMode();
 }
 
 void Controller::createHud() {
@@ -275,7 +273,6 @@ void Controller::createHud() {
 
     oHud = new HUD(this);
     oHud->setHelpPanel({"1", "2"},{"ToggleMode", "ToggleDebug"});
-    oHud->setupRunnerMode();
 }
 
 void Controller::setupMappings() {
@@ -446,13 +443,6 @@ void Controller::toggleMode() {
         setupRunnerMode();
         break;
     }
-}
-
-void Controller::toggleMode(const Context &newContext) {
-    if (newContext == CONTEXT_RUNNER && context != CONTEXT_RUNNER)
-        setupRunnerMode();
-    else if (newContext == CONTEXT_SHOOTER && context != CONTEXT_SHOOTER)
-        setupShooterMode();
 }
 
 void Controller::setupDebugOn() {
