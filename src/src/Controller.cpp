@@ -23,7 +23,7 @@ Ogre::SceneManager *Controller::getSceneManager() const {
 }
 
 HUD *Controller::getHud() const {
-    return oHud;
+    return hud.get();
 }
 
 Controller::Controller(int argc, char *argv[]) {
@@ -31,6 +31,7 @@ Controller::Controller(int argc, char *argv[]) {
 
     int fullscreen;
 
+    // TODO: getopt
     if (argc >= 2) {
         fullscreen = atoi(argv[1]);
 
@@ -55,11 +56,6 @@ Controller::Controller(int argc, char *argv[]) {
     }
 
     go();
-}
-
-Controller::~Controller() {
-    if(oHud)
-        delete oHud;
 }
 
 void Controller::polarUpdaterFunction() {
@@ -99,7 +95,7 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     logicManager->update(evt);
 
     // update game HUD
-    oHud->update(evt);
+    hud->update(evt);
 
     // process unbuffered keys
     if(clockUnbuf.getElapsedTime() >= THRESHOLD_UNBUF_KEYS) {
@@ -271,8 +267,8 @@ void Controller::createCrosshair() {
 void Controller::createHud() {
     Ogre::LogManager::getSingletonPtr()->logMessage("--> Controller: Creating HUD <--");
 
-    oHud = new HUD(this);
-    oHud->setHelpPanel({"1", "2"},{"ToggleMode", "ToggleDebug"});
+    hud = std::unique_ptr<HUD>(new HUD(this));
+    hud->setHelpPanel({"1", "2"},{"ToggleMode", "ToggleDebug"});
 }
 
 void Controller::setupMappings() {
@@ -419,7 +415,7 @@ void Controller::setupRunnerMode() {
 
     nodeManager->setupRunnerMode();
     crosshairManager->setupRunnerMode();
-    oHud->setupRunnerMode();
+    hud->setupRunnerMode();
     AudioManager::instance().play(MUSIC_RUNNER1);
 }
 
@@ -430,7 +426,7 @@ void Controller::setupShooterMode() {
 
     nodeManager->setupShooterMode();
     crosshairManager->setupShooterMode();
-    oHud->setupShooterMode();
+    hud->setupShooterMode();
     AudioManager::instance().play(MUSIC_SHOOTER1);
 }
 
@@ -451,7 +447,7 @@ void Controller::setupDebugOn() {
     debug = true;
 
     nodeManager->setDebugOn();
-    oHud->setupDebugOn();
+    hud->setupDebugOn();
 }
 
 void Controller::setupDebugOff() {
@@ -460,7 +456,7 @@ void Controller::setupDebugOff() {
     debug = false;
 
     nodeManager->setDebugOff();
-    oHud->setupDebugOff();
+    hud->setupDebugOff();
 }
 
 void Controller::toggleDebug() {

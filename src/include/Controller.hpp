@@ -205,7 +205,7 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     /**
      * @brief hud responsible for rendering overlay elements with useful information for the player
      */
-    HUD* oHud = NULL;
+    std::unique_ptr<HUD> hud;
 
     /**
      * @brief frameRenderingQueued Overriden from Ogre::FrameListener.
@@ -260,7 +260,6 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
 
 public:
     Controller(int argc = 0, char *argv[] = {});
-    virtual ~Controller();
 
     // getters and setters
     Context getContext() const;
