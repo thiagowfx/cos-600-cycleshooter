@@ -1,23 +1,27 @@
 #ifndef _CROSSHAIRMANAGER_HPP_
 #define _CROSSHAIRMANAGER_HPP_
 
-#include "OgreOverlay.h"
-#include "OgreOverlayManager.h"
+#include <OgreOverlay.h>
+#include <OgreOverlayManager.h>
 
 namespace Cycleshooter {
 class CrosshairManager {
     Ogre::Overlay* crosshair;
 
+    const double CROSSHAIR_SCALE = 0.25;
+
+    inline void check_out_of_bounds(double& px, double &py, bool wraps);
+
 public:
     CrosshairManager();
-    virtual ~CrosshairManager();
+
+    void scroll(const double x, const double y, bool wraps = false);
+    double getScrollX() const;
+    double getScrollY() const;
 
     // setups
     void setupRunnerMode();
     void setupShooterMode();
-
-    // getter
-    Ogre::Overlay *getCrosshair() const;
 };
 }
 

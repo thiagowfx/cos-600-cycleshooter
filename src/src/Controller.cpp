@@ -300,22 +300,22 @@ void Controller::setupMappings() {
      */
     InputManager::instance().addKeysUnbuf({sf::Keyboard::A,
                                            sf::Keyboard::Left}, CONTEXT_SHOOTER, [&]{
-        crosshairManager->getCrosshair()->scroll(-0.04, 0.00);
+        crosshairManager->scroll(-0.04, 0.00);
     });
 
     InputManager::instance().addKeysUnbuf({sf::Keyboard::D,
                                            sf::Keyboard::Right}, CONTEXT_SHOOTER, [&]{
-        crosshairManager->getCrosshair()->scroll(0.04, 0.00);
+        crosshairManager->scroll(0.04, 0.00);
     });
 
     InputManager::instance().addKeysUnbuf({sf::Keyboard::W,
                                            sf::Keyboard::Up}, CONTEXT_SHOOTER, [&]{
-        crosshairManager->getCrosshair()->scroll(0.00, 0.04);
+        crosshairManager->scroll(0.00, 0.04);
     });
 
     InputManager::instance().addKeysUnbuf({sf::Keyboard::S,
                                            sf::Keyboard::Down}, CONTEXT_SHOOTER, [&]{
-        crosshairManager->getCrosshair()->scroll(0.00, -0.04);
+        crosshairManager->scroll(0.00, -0.04);
     });
 
     InputManager::instance().addKey(sf::Keyboard::Space, CONTEXT_SHOOTER, [&]{

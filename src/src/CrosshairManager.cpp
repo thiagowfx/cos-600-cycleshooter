@@ -2,18 +2,46 @@
 
 namespace Cycleshooter {
 
-Ogre::Overlay *CrosshairManager::getCrosshair() const {
-    return crosshair;
+void CrosshairManager::check_out_of_bounds(double &px, double &py, bool wraps) {
+    if(px > 1.0) {
+        px = wraps ? -1.0 : +1.0;
+    }
+    else if(px < -1.0) {
+        px = wraps ? +1.0 : -1.0;
+    }
+
+    if(py > 1.0) {
+        py = wraps ? -1.0 : +1.0;
+    }
+    else if(py < -1.0) {
+        py = wraps ? +1.0 : -1.0;
+    }
 }
 
 CrosshairManager::CrosshairManager() {
     crosshair = Ogre::OverlayManager::getSingleton().getByName("Cycleshooter/Crosshair");
-    crosshair->setScale(0.30, 0.30);
+
+    crosshair->setScale(CROSSHAIR_SCALE, CROSSHAIR_SCALE);
 }
 
-CrosshairManager::~CrosshairManager() {
-    // TODO
-    Ogre::OverlayManager::getSingleton().destroy("Cycleshooter/Crosshair");
+void CrosshairManager::scroll(const double x, const double y, bool wraps) {
+    double px = crosshair->getScrollX();
+    double py = crosshair->getScrollY();
+
+    px += x;
+    py += y;
+
+    check_out_of_bounds(px, py, wraps);
+
+    crosshair->setScroll(px, py);
+}
+
+double CrosshairManager::getScrollX() const {
+    return crosshair->getScrollX();
+}
+
+double CrosshairManager::getScrollY() const {
+    return crosshair->getScrollY();
 }
 
 void CrosshairManager::setupRunnerMode() {
