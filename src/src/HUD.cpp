@@ -12,7 +12,7 @@ void HUD::go() {
 void HUD::createTrayManager() {
     Ogre::LogManager::getSingleton().logMessage("--> HUD: Creating Tray Manager <--");
 
-    trayManager = new OgreBites::SdkTrayManager("trayManager", controller->getWindow(), OgreBites::InputContext());
+    trayManager = std::unique_ptr<OgreBites::SdkTrayManager>(new OgreBites::SdkTrayManager("trayManager", controller->getWindow(), OgreBites::InputContext()));
     trayManager->hideCursor();
 }
 
@@ -43,11 +43,6 @@ HUD::HUD(Controller *controller) :
     controller(controller)
 {
     go();
-}
-
-HUD::~HUD() {
-    if(trayManager)
-        delete trayManager;
 }
 
 void HUD::update(const Ogre::FrameEvent& evt) {

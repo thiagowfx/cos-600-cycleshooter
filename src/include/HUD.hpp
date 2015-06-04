@@ -20,7 +20,7 @@ class HUD {
      * The tray manager. Used to create, update and delete widgets.
      * We should not create our widgets directly!
      */
-    OgreBites::SdkTrayManager* trayManager = NULL;
+    std::unique_ptr<OgreBites::SdkTrayManager> trayManager;
 
     // go
     void go();
@@ -36,7 +36,6 @@ class HUD {
 
 public:
     HUD(Controller* controller);
-    virtual ~HUD();
 
     /**
      * Update the HUD elements.

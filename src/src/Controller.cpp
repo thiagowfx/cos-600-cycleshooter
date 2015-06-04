@@ -181,6 +181,7 @@ void Controller::createSFMLWindow() {
     sWindow = std::unique_ptr<sf::Window>(new sf::Window(sVideoMode, APPLICATION_NAME, sFullScreen, sf::ContextSettings(32, 8, 16)));
     sWindow->setIcon(CYCLESHOOTER_ICON.width, CYCLESHOOTER_ICON.height, CYCLESHOOTER_ICON.pixel_data);
     sWindow->setKeyRepeatEnabled(false);
+    sWindow->setMouseCursorVisible(false);
 }
 
 void Controller::setupResources(const Ogre::String& config) {
