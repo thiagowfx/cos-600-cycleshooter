@@ -4,8 +4,6 @@
 #include <Ogre.h>
 
 #include "Controller.hpp"
-#include "Player.hpp"
-#include "Monster.hpp"
 
 namespace Cycleshooter {
 class Controller;
@@ -14,9 +12,6 @@ class Controller;
 class LogicManager {
 
     Controller* const controller = NULL;
-
-    std::unique_ptr<Player> player;
-    std::unique_ptr<Monster> monster;
 
     Ogre::Viewport *viewportFull = NULL;
     Ogre::Viewport *viewportMirror = NULL;
@@ -81,8 +76,6 @@ public:
     void shoot();
 
     // getters and setters
-    Player *getPlayer() const;
-    Monster *getMonster() const;
     Ogre::SceneNode *getPlayerSceneNode() const;
     int getPlayerHeartRate() const;
     void setPlayerHeartRate(const int& value);

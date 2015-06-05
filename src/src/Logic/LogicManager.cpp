@@ -2,14 +2,6 @@
 
 namespace Cycleshooter {
 
-Player *LogicManager::getPlayer() const {
-    return player.get();
-}
-
-Monster *LogicManager::getMonster() const {
-    return monster.get();
-}
-
 int LogicManager::getPlayerHeartRate() const {
     return playerHeartRate;
 }
@@ -36,8 +28,8 @@ void LogicManager::shoot() {
     std::cout << "--> LogicManager: shoot <--" << std::endl;
 
     if(playerAmmo > 0) {
-        AudioManager::instance().random_play_shoot();
         decrementPlayerAmmo();
+        AudioManager::instance().random_play_shoot();
 
         // TODO: (maybe) replenish ammo in the map / terrain / collision part?
         // TODO: create singleton Audio class to manage (1) game music
@@ -70,9 +62,6 @@ void LogicManager::decrementPlayerAmmo(int quantity) {
 
 void LogicManager::go() {
     Ogre::LogManager::getSingleton().logMessage("--> LogicManager: go <--");
-
-    player = std::unique_ptr<Player>(new Player());
-    monster = std::unique_ptr<Monster>(new Monster());
 
     createCameras();
     createSceneNodes();
