@@ -89,7 +89,7 @@ void Controller::polarUpdaterFunction() {
         try {
             unsigned heartRate = polar->getInstantaneousHeartRate();
             if(heartRate != 0) {
-                logicManager->setHeartRate(heartRate);
+                logicManager->setPlayerHeartRate(heartRate);
             }
             else {
                 Ogre::LogManager::getSingleton().logMessage("polarUpdaterFunction: heartRate is zero!! You're either dead or far from the control board", Ogre::LML_CRITICAL);

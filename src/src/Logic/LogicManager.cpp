@@ -10,16 +10,16 @@ Monster *LogicManager::getMonster() const {
     return monster.get();
 }
 
-unsigned LogicManager::getHeartRate() const {
-    return player->getHeartRate();
+int LogicManager::getPlayerHeartRate() const {
+    return playerHeartRate;
 }
 
-void LogicManager::setHeartRate(const unsigned &value) {
-    player->setHeartRate(value);
+void LogicManager::setPlayerHeartRate(const int &value) {
+    playerHeartRate = value;
 }
 
-unsigned LogicManager::getAmmo() const {
-    return player->getAmmo();
+int LogicManager::getPlayerAmmo() const {
+    return playerAmmo;
 }
 
 LogicManager::LogicManager(Controller* controller) :
@@ -35,9 +35,9 @@ void LogicManager::update(const Ogre::FrameEvent &evt) {
 void LogicManager::shoot() {
     std::cout << "--> LogicManager: shoot <--" << std::endl;
 
-    if(player->getAmmo() > 0) {
+    if(playerAmmo > 0) {
         AudioManager::instance().random_play_shoot();
-        player->decrementAmmo();
+        decrementPlayerAmmo();
 
         // TODO: (maybe) replenish ammo in the map / terrain / collision part?
         // TODO: create singleton Audio class to manage (1) game music
@@ -54,6 +54,18 @@ void LogicManager::shoot() {
 
 Ogre::SceneNode *LogicManager::getPlayerSceneNode() const {
     return parentPlayerSceneNode;
+}
+
+void LogicManager::incrementPlayerAmmo(int quantity) {
+    Ogre::LogManager::getSingleton().logMessage("--> LogicManager: Increment Player Ammo <--");
+
+    playerAmmo += quantity;
+}
+
+void LogicManager::decrementPlayerAmmo(int quantity) {
+    Ogre::LogManager::getSingleton().logMessage("--> LogicManager: Decrement Player Ammo <--");
+
+    playerAmmo = std::max(0, playerAmmo - quantity);
 }
 
 void LogicManager::go() {
@@ -121,6 +133,9 @@ void LogicManager::setupShooterMode() {
 void LogicManager::setDebugOn() {
     controller->getSceneManager()->setDisplaySceneNodes(true);
     controller->getSceneManager()->showBoundingBoxes(true);
+
+    // bonus
+    playerAmmo += 10;
 }
 
 void LogicManager::setDebugOff() {

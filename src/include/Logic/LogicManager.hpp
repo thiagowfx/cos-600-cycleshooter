@@ -28,6 +28,31 @@ class LogicManager {
     Ogre::Camera *frontCamera = NULL;
     Ogre::Camera *rearCamera = NULL;
 
+    /*
+     * Player section.
+     */
+
+    /**
+     * Player heart rate.
+     * Should simulate or acquire a real human heart rate.
+     */
+    int playerHeartRate;
+
+    /**
+     * Number of bullets available for the player.
+     */
+    int playerAmmo = 0;
+
+    /**
+     * Add a bullet to the total ammo of the player.
+     */
+    void incrementPlayerAmmo(int quantity = 1);
+
+    /**
+     * Remove a bullet from the total ammo of the player.
+     */
+    void decrementPlayerAmmo(int quantity = 1);
+
     // go
     void go();
     void createCameras();
@@ -44,7 +69,7 @@ public:
     LogicManager(Controller* controller);
 
     /**
-     * Update the game logic overall.
+     * Update the game logic (overall).
      */
     void update(const Ogre::FrameEvent &evt);
 
@@ -59,6 +84,9 @@ public:
     Player *getPlayer() const;
     Monster *getMonster() const;
     Ogre::SceneNode *getPlayerSceneNode() const;
+    int getPlayerHeartRate() const;
+    void setPlayerHeartRate(const int& value);
+    int getPlayerAmmo() const;
 
     // setups
     void setupRunnerMode();
@@ -67,11 +95,6 @@ public:
     // debug
     void setDebugOn();
     void setDebugOff();
-
-    // methods for decoupling purposes (proxy methods)
-    unsigned getHeartRate() const;
-    void setHeartRate(const unsigned& value);
-    unsigned getAmmo() const;
 };
 }
 
