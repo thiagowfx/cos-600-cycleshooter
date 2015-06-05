@@ -35,6 +35,7 @@ void LogicManager::shoot() {
 
         monsterNode->flipVisibility();
         controller->getSceneManager()->getRootSceneNode()->flipVisibility();
+        bool debug = controller->getDebug(), setDebugOff();
 
         renderTexture->update();
         renderTexture->writeContentsToFile("start.png");
@@ -44,6 +45,7 @@ void LogicManager::shoot() {
         // TODO: if hit, then decrease monster life
         // TODO: check if monster is dead
 
+        if(debug) setDebugOn();
         controller->getSceneManager()->getRootSceneNode()->flipVisibility();
         monsterNode->flipVisibility();
     }
