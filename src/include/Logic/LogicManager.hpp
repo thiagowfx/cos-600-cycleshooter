@@ -24,6 +24,11 @@ class LogicManager {
     Ogre::Camera *rearCamera = NULL;
 
     /*
+     *  Monster section.
+     */
+    int monsterHealth = 10;
+
+    /*
      * Player section.
      */
 
@@ -75,12 +80,6 @@ public:
      */
     void shoot();
 
-    // getters and setters
-    Ogre::SceneNode *getPlayerSceneNode() const;
-    int getPlayerHeartRate() const;
-    void setPlayerHeartRate(const int& value);
-    int getPlayerAmmo() const;
-
     // setups
     void setupRunnerMode();
     void setupShooterMode();
@@ -88,6 +87,13 @@ public:
     // debug
     void setDebugOn();
     void setDebugOff();
+
+    // getters and setters
+    Ogre::SceneNode *getPlayerSceneNode() const;
+    int getPlayerHeartRate() const;
+    void setPlayerHeartRate(const int& value);
+    int getPlayerAmmo() const;
+    int getMonsterHealth() const;
 };
 }
 

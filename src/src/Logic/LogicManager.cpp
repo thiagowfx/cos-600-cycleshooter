@@ -32,8 +32,6 @@ void LogicManager::shoot() {
         AudioManager::instance().random_play_shoot();
 
         // TODO: (maybe) replenish ammo in the map / terrain / collision part?
-        // TODO: create singleton Audio class to manage (1) game music
-        // TODO: create singleton Audio class to manage (2) game sounds
         // TODO: add several sound effects for each outcome
         // TODO: RTT crosshair + monster logic
         // TODO: if hit, then decrease monster life
@@ -46,6 +44,10 @@ void LogicManager::shoot() {
 
 Ogre::SceneNode *LogicManager::getPlayerSceneNode() const {
     return parentPlayerSceneNode;
+}
+
+int LogicManager::getMonsterHealth() const {
+    return monsterHealth;
 }
 
 void LogicManager::incrementPlayerAmmo(int quantity) {

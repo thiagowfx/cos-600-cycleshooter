@@ -149,8 +149,6 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         case sf::Event::JoystickButtonPressed:
             InputManager::instance().executeJoystickButtonAction(event.joystickButton.button, context);
             break;
-
-        // TODO: add mouse events
         }
     }
 
@@ -289,7 +287,6 @@ void Controller::createHud() {
     Ogre::LogManager::getSingletonPtr()->logMessage("--> Controller: Creating HUD <--");
 
     hud = std::unique_ptr<HUD>(new HUD(this));
-    hud->setHelpPanel({"1", "2"},{"ToggleMode", "ToggleDebug"});
 }
 
 void Controller::setupMappings() {
