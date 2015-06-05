@@ -369,6 +369,10 @@ void Controller::setupMappings() {
        Ogre::TextureManager::getSingleton().reloadAll();
     });
 
+    InputManager::instance().addKey(sf::Keyboard::M, [&] {
+       AudioManager::instance().toggleMute();
+    });
+
     // take a screenshot
     InputManager::instance().addKey(sf::Keyboard::Pause, [&] {
         getWindow()->writeContentsToTimestampedFile("screenshot", ".jpg");

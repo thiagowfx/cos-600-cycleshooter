@@ -2,48 +2,8 @@
 
 namespace Cycleshooter {
 
-Controller *NodeManager::getController() const {
-    return controller;
-}
-
-Ogre::Viewport *NodeManager::getViewportPrimary() const {
-    return viewportPrimary;
-}
-
-Ogre::Viewport *NodeManager::getViewportSecundary() const {
-    return viewportSecundary;
-}
-
 Ogre::SceneNode *NodeManager::getParentPlayerSceneNode() const {
     return parentPlayerSceneNode;
-}
-
-Ogre::SceneNode *NodeManager::getFrontPlayerSceneNode() const {
-    return frontPlayerSceneNode;
-}
-
-Ogre::SceneNode *NodeManager::getRearPlayerSceneNode() const {
-    return rearPlayerSceneNode;
-}
-
-Ogre::Camera *NodeManager::getFrontCamera() const {
-    return frontCamera;
-}
-
-Ogre::Camera *NodeManager::getRearCamera() const {
-    return rearCamera;
-}
-
-Ogre::Camera *NodeManager::getMainCamera() const {
-    if(controller->getContext() == CONTEXT_RUNNER) {
-        return frontCamera;
-    }
-    else if (controller->getContext() == CONTEXT_SHOOTER) {
-        return rearCamera;
-    }
-    else {
-        OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "getMainCamera() called in CONTEXT_NONE", "getMainCamera()")
-    }
 }
 
 NodeManager::NodeManager(Controller *controller) :
@@ -52,46 +12,20 @@ NodeManager::NodeManager(Controller *controller) :
     go();
 }
 
-NodeManager::~NodeManager() {
-    if(frontPlayerSceneNode)
-        delete frontPlayerSceneNode;
-
-    if(rearPlayerSceneNode)
-        delete rearPlayerSceneNode;
-
-    if(parentPlayerSceneNode)
-        delete parentPlayerSceneNode;
-
-    if(frontCamera)
-        delete frontCamera;
-
-    if(rearCamera)
-        delete rearCamera;
-}
-
-void NodeManager::clear() {
-    if(viewportPrimary)
-        viewportPrimary->clear();
-
-    if(viewportSecundary)
-        viewportSecundary->clear();
-
-    controller->getWindow()->removeAllViewports();
-}
-
 void NodeManager::go() {
     Ogre::LogManager::getSingleton().logMessage("--> NodeManager: go <--");
 
     createCameras();
     createSceneNodes();
+    createViewports();
 }
 
 void NodeManager::createCameras() {
-    Ogre::LogManager::getSingleton().logMessage("--> Creating Cameras <--");
+    Ogre::LogManager::getSingleton().logMessage("--> NodeManager: Creating Cameras <--");
 
     // create cameras
-    frontCamera = controller->getSceneManager()->createCamera("FrontCamera");
-    rearCamera = controller->getSceneManager()->createCamera("RearCamera");
+    frontCamera = controller->getSceneManager()->createCamera("frontCamera");
+    rearCamera = controller->getSceneManager()->createCamera("rearCamera");
 
     // adjust clip distances in cameras
     frontCamera->setNearClipDistance(CAMERA_NEAR_CLIP_DISTANCE);
@@ -101,12 +35,12 @@ void NodeManager::createCameras() {
 }
 
 void NodeManager::createSceneNodes() {
-    Ogre::LogManager::getSingleton().logMessage("--> Creating Scene Nodes <--");
+    Ogre::LogManager::getSingleton().logMessage("--> NodeManager: Creating Scene Nodes <--");
 
     // create scene nodes
-    parentPlayerSceneNode = controller->getSceneManager()->getRootSceneNode()->createChildSceneNode("ParentPlayerSceneNode");
-    frontPlayerSceneNode = parentPlayerSceneNode->createChildSceneNode("FrontPlayerSceneNode");
-    rearPlayerSceneNode = parentPlayerSceneNode->createChildSceneNode("RearPlayerSceneNode");
+    parentPlayerSceneNode = controller->getSceneManager()->getRootSceneNode()->createChildSceneNode("parentPlayerSceneNode");
+    frontPlayerSceneNode = parentPlayerSceneNode->createChildSceneNode("frontPlayerSceneNode");
+    rearPlayerSceneNode = parentPlayerSceneNode->createChildSceneNode("rearPlayerSceneNode");
     rearPlayerSceneNode->yaw(Ogre::Radian(Ogre::Degree(180.0)));
 
     // attach scene nodes
@@ -114,33 +48,27 @@ void NodeManager::createSceneNodes() {
     rearPlayerSceneNode->attachObject(rearCamera);
 }
 
+void NodeManager::createViewports() {
+    Ogre::LogManager::getSingleton().logMessage("--> NodeManager: Creating Viewports <--");
+
+    viewportFull = controller->getWindow()->addViewport(frontCamera, 0);
+}
+
 void NodeManager::setupRunnerMode() {
-    clear();
+    viewportFull->setCamera(frontCamera);
+    frontCamera->setAspectRatio(Ogre::Real(viewportFull->getActualWidth()) / Ogre::Real(viewportFull->getActualHeight()));
 
-    // primary viewport
-    viewportPrimary = controller->getWindow()->addViewport(frontCamera, 0);
-    viewportPrimary->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 0.0));
-
-    // secondary viewport
-    viewportSecundary = controller->getWindow()->addViewport(rearCamera, 1, (1.0 - MIRROR_PERCENTAGE_H)/2.0, 0.0, MIRROR_PERCENTAGE_H, MIRROR_PERCENTAGE_V);
-    viewportSecundary->setBackgroundColour(VIEWPORT_BACKGROUND_COLOR);
-    viewportSecundary->setOverlaysEnabled(false);
-    viewportSecundary->setClearEveryFrame(true, Ogre::FBT_DEPTH);  // alternatively, use setClearEveryFrame(false);
-
-    // adjust aspect ratios
-    frontCamera->setAspectRatio(Ogre::Real(viewportPrimary->getActualWidth()) / Ogre::Real(viewportPrimary->getActualHeight()));
-    rearCamera->setAspectRatio(Ogre::Real(viewportSecundary->getActualWidth()) / Ogre::Real(viewportSecundary->getActualHeight()));
+    viewportMirror = controller->getWindow()->addViewport(rearCamera, 1, (1.0 - MIRROR_PERCENTAGE_H)/2.0, 0.0, MIRROR_PERCENTAGE_H, MIRROR_PERCENTAGE_V);
+    viewportMirror->setOverlaysEnabled(false);
+    viewportMirror->setClearEveryFrame(true, Ogre::FBT_DEPTH);  // alternatively, use setClearEveryFrame(false);
+    rearCamera->setAspectRatio(Ogre::Real(viewportMirror->getActualWidth()) / Ogre::Real(viewportMirror->getActualHeight()));
 }
 
 void NodeManager::setupShooterMode() {
-    clear();
+    viewportFull->setCamera(rearCamera);
+    rearCamera->setAspectRatio(Ogre::Real(viewportFull->getActualWidth()) / Ogre::Real(viewportFull->getActualHeight()));
 
-    // primary viewport
-    viewportPrimary = controller->getWindow()->addViewport(rearCamera, 0);
-    viewportPrimary->setBackgroundColour(VIEWPORT_BACKGROUND_COLOR);
-
-    // adjust aspect ratio
-    rearCamera->setAspectRatio(Ogre::Real(viewportPrimary->getActualWidth()) / Ogre::Real(viewportPrimary->getActualHeight()));
+    controller->getWindow()->removeViewport(1);
 }
 
 void NodeManager::setDebugOn() {

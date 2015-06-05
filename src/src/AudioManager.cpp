@@ -61,6 +61,12 @@ void AudioManager::play(Musicname musicname, bool restart) {
     current_playing_music->play();
 }
 
+void AudioManager::toggleMute() {
+    if(current_playing_music) {
+        current_playing_music->getVolume() == 0.0 ?  current_playing_music->setVolume(100.0) : current_playing_music->setVolume(0.0);
+    }
+}
+
 void AudioManager::load_sounds() {
     Ogre::LogManager::getSingleton().logMessage("--> AudioManager: Loading Sounds <--");
 

@@ -108,6 +108,11 @@ public:
     void play(Musicname musicname, bool restart = false);
 
     /**
+     * Mute the current playing music.
+     */
+    void toggleMute();
+
+    /**
      * Play a random shoot (fire) sound.
      */
     void random_play_shoot();
