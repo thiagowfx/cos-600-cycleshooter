@@ -410,7 +410,8 @@ void Controller::createRoot() {
 void Controller::createSceneManager() {
     Ogre::LogManager::getSingleton().logMessage("--> Controller: Creating Scene Manager <--");
 
-    oSceneManager = oRoot->createSceneManager(Ogre::ST_GENERIC, "sceneManager");
+    // oSceneManager = oRoot->createSceneManager(Ogre::ST_GENERIC, "sceneManager");
+    oSceneManager = oRoot->createSceneManager("OctreeSceneManager", "sceneManager");
 }
 
 void Controller::createOverlaySystem() {
