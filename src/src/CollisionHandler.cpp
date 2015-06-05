@@ -41,6 +41,8 @@ void CollisionHandler::loadTensor(){
             //const Ogre::ColourValue color = static_cast<const Ogre::ColourValue>(collisionPixel);
             if (collisionPixel == WATER_COLOR)
                 collisionMatrix[row][col] = WATER_PIXEL;
+            else if(collisionPixel == START_COLOR)
+                collisionMatrix[row][col] = START_PIXEL;
             else if(collisionPixel.r == collisionPixel.g && collisionPixel.b == collisionPixel.g)
                 collisionMatrix[row][col] = ROAD_PIXEL;
             else if(collisionPixel == ROCK_COLOR)
@@ -49,8 +51,6 @@ void CollisionHandler::loadTensor(){
                 collisionMatrix[row][col] = BULLET_PIXEL;
             else if(collisionPixel == GUAGMIRE_COLOR)
                 collisionMatrix[row][col] = GUAGMIRE_PIXEL;
-            else if(collisionPixel == START_COLOR)
-                collisionMatrix[row][col] = START_PIXEL;
             }
     }
     printMatrix();
