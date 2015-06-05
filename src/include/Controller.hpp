@@ -277,6 +277,7 @@ public:
     sf::Thread *getPolarUpdater() const;
     LogicManager *getLogicManager() const;
     bool getDebug() const;
+    TerrainManager *getTerrainManager() const;
 };
 
 }

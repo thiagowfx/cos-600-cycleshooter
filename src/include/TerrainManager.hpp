@@ -30,6 +30,7 @@ public:
     void createTerrain();
     void setCollisionTransformation();//Defines translation and scale to collision coordinates.
     std::pair<int,int> getCollisionCoordinates(Ogre::Vector3 point);
+    int getTerrainAt(Ogre::Vector3 coord);
 
     //Test Functions.
     void printCollisionTransformation();

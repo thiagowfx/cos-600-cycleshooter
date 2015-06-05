@@ -105,6 +105,10 @@ void Controller::polarUpdaterFunction() {
     }
 }
 
+TerrainManager *Controller::getTerrainManager() const{
+    return terrainManager;
+}
+
 bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     // update windows, if necessary
     Ogre::WindowEventUtilities::messagePump();
@@ -261,10 +265,7 @@ void Controller::createGameElements() {
     // to use a material, the resource group must be initialized
     terrainManager = new TerrainManager(oSceneManager,"racecircuit.png");
     terrainManager->createTerrain();
-
-    // starting collision handler after terrain initialization
-    collisionHandler = new CollisionHandler("racecircuit.png");
-    collisionHandler->loadTensor();
+    terrainManager->sampleCollisionTransformation();
 }
 
 void Controller::createScene() {

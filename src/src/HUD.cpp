@@ -67,7 +67,14 @@ void HUD::update(const Ogre::FrameEvent& evt) {
     // widgets update on debug mode only
     if(controller->getDebug()) {
         // TODO: matheus: add your debug info here: change controller->getShutdown() for controller->getTerrainManager->getSomeString()
-        dynamic_cast<OgreBites::ParamsPanel*>(trayManager->getWidget("debugPanel"))->setParamValue(0, controller->getShutdown());
+        Ogre::Vector3 realCoord = controller->getNodeManager()->getParentPlayerSceneNode()->getPosition();
+        std::pair<int,int> textCoord = controller->getTerrainManager()->getCollisionCoordinates(realCoord);
+        //std::cout <<Ogre::StringConverter::toString(realCoord) <<std::endl;
+        //std::cout <<realCoord <<std::endl;
+        dynamic_cast<OgreBites::ParamsPanel*>(trayManager->getWidget("debugPanel"))->setParamValue(0, Ogre::StringConverter::toString(controller->getTerrainManager()->getTerrainAt(realCoord)));
+        dynamic_cast<OgreBites::ParamsPanel*>(trayManager->getWidget("debugPanel"))->setParamValue(1, Ogre::StringConverter::toString(realCoord));
+        dynamic_cast<OgreBites::ParamsPanel*>(trayManager->getWidget("debugPanel"))->setParamValue(2, Ogre::StringConverter::toString(textCoord.first));
+        dynamic_cast<OgreBites::ParamsPanel*>(trayManager->getWidget("debugPanel"))->setParamValue(3, Ogre::StringConverter::toString(textCoord.second));
     }
 }
 
@@ -104,9 +111,12 @@ void HUD::setupDebugOn() {
     // debug panel
     if(!trayManager->getWidget("debugPanel")) {
         const int numElements = 1;
-        Ogre::StringVector params = std::string(numElements, "");
-        Ogre::StringVector values = std::string(numElements, "");
-        trayManager->createParamsPanel(DEBUG_PANEL_TL, "debugPanel", 160, params)->setAllParamValues(values);
+        // TODO: fix this mess later on
+        //Ogre::StringVector params = std::vector<Ogre::String>(numElements, "");
+        //Ogre::StringVector values = std::vector<Ogre::String>(numElements, "");
+        Ogre::StringVector params = {"Terrain Type","Position","Transform x","Transform y"};
+        Ogre::StringVector values = {"","","",""};
+        trayManager->createParamsPanel(DEBUG_PANEL_TL, "debugPanel", 300, params)->setAllParamValues(values);
     }
     else {
         trayManager->moveWidgetToTray("debugPanel", HELP_PANEL_TL, 0);
