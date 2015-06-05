@@ -36,6 +36,10 @@ void CrosshairManager::scroll(const double x, const double y, bool wraps) {
     crosshair->setScroll(px, py);
 }
 
+std::pair<double, double> CrosshairManager::getScroll() const {
+    return std::make_pair(getScrollX(), getScrollY());
+}
+
 double CrosshairManager::getScrollX() const {
     return crosshair->getScrollX();
 }

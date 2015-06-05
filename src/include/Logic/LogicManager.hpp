@@ -26,7 +26,8 @@ class LogicManager {
     /*
      *  RTT.
      */
-    Ogre::RenderTexture* renderTexture = NULL;
+    Ogre::TexturePtr rttTexture;
+    Ogre::RenderTexture* rttRenderTarget = NULL;
 
     /*
      *  Monster section.

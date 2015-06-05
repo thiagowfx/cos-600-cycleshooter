@@ -258,6 +258,7 @@ public:
     bool getShutdown() const;
     bool getDebug() const;
     TerrainManager* getTerrainManager() const;
+    CrosshairManager* getCrosshairManager() const;
 };
 
 }

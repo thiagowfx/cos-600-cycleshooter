@@ -37,8 +37,32 @@ void LogicManager::shoot() {
         controller->getSceneManager()->getRootSceneNode()->flipVisibility();
         bool debug = controller->getDebug(), setDebugOff();
 
-        renderTexture->update();
-        renderTexture->writeContentsToFile("start.png");
+        rttRenderTarget->update();
+
+        Ogre::Image rttImage;
+        rttTexture->convertToImage(rttImage);
+
+        auto crosshair_to_img_coords = [](std::pair<double, double> crosshair, Ogre::Image& image) -> std::pair<int, int> {
+            // map [-1.0, +1.0] to [0, width)
+            int retx = ((crosshair.first + 1.0) * image.getWidth()) / 2.0;
+
+            // map [-1.0, +1.0] to [0, height)
+            // int rety = ((crosshair.second + 1.0) * image.getHeight()) / 2.0;
+            int rety = image.getHeight() - static_cast<int>(((crosshair.second + 1.0) * image.getHeight()) / 2.0);
+
+            if(retx == image.getWidth())
+                --retx;
+
+            if(rety == image.getHeight())
+                --rety;
+
+            return std::make_pair(retx, rety);
+        };
+
+        auto coords = crosshair_to_img_coords(controller->getCrosshairManager()->getScroll(), rttImage);
+
+        std::cout << coords.first << " " << coords.second << std::endl;
+        std::cout << rttImage.getColourAt(coords.first, coords.second, 0) << std::endl;
 
         // TODO: (maybe) replenish ammo in the map / terrain / collision part?
         // TODO: add several sound effects for each outcome
@@ -118,7 +142,7 @@ void LogicManager::createViewports() {
 }
 
 void LogicManager::createRtt() {
-    Ogre::TexturePtr rttTexture = Ogre::TextureManager::getSingleton().createManual(
+    rttTexture = Ogre::TextureManager::getSingleton().createManual(
                 "rttTexture",
                 Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
                 Ogre::TEX_TYPE_2D,
@@ -127,12 +151,12 @@ void LogicManager::createRtt() {
                 Ogre::PF_R8G8B8,
                 Ogre::TU_RENDERTARGET);
 
-    renderTexture = rttTexture->getBuffer()->getRenderTarget();
-    renderTexture->addViewport(rearCamera);
-    renderTexture->setAutoUpdated(false);
-    renderTexture->getViewport(0)->setClearEveryFrame(true);
-    renderTexture->getViewport(0)->setOverlaysEnabled(false);
-    renderTexture->getViewport(0)->setBackgroundColour(Ogre::ColourValue::Black);
+    rttRenderTarget = rttTexture->getBuffer()->getRenderTarget();
+    rttRenderTarget->addViewport(rearCamera);
+    rttRenderTarget->setAutoUpdated(false);
+    rttRenderTarget->getViewport(0)->setClearEveryFrame(true);
+    rttRenderTarget->getViewport(0)->setOverlaysEnabled(false);
+    rttRenderTarget->getViewport(0)->setBackgroundColour(Ogre::ColourValue::Black);
 }
 
 void LogicManager::setupRunnerMode() {

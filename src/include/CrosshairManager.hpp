@@ -17,6 +17,7 @@ public:
     CrosshairManager();
 
     void scroll(const double x, const double y, bool wraps = false);
+    std::pair<double, double> getScroll() const;
     double getScrollX() const;
     double getScrollY() const;
 

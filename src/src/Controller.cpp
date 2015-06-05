@@ -99,6 +99,10 @@ void Controller::polarUpdaterFunction() {
     }
 }
 
+CrosshairManager* Controller::getCrosshairManager() const {
+    return crosshairManager.get();
+}
+
 TerrainManager* Controller::getTerrainManager() const {
     return terrainManager.get();
 }
