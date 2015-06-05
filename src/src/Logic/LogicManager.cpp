@@ -31,6 +31,10 @@ void LogicManager::shoot() {
         decrementPlayerAmmo();
         AudioManager::instance().random_play_shoot();
 
+        Ogre::RenderTexture* renderTexture = Ogre::TextureManager::getSingleton().getByName("shootRtt")->getBuffer()->getRenderTarget();
+        renderTexture->update();
+        renderTexture->writeContentsToFile("start.png");
+
         // TODO: (maybe) replenish ammo in the map / terrain / collision part?
         // TODO: add several sound effects for each outcome
         // TODO: RTT crosshair + monster logic
@@ -68,6 +72,7 @@ void LogicManager::go() {
     createCameras();
     createSceneNodes();
     createViewports();
+    createShootRtt();
 }
 
 void LogicManager::createCameras() {
@@ -102,6 +107,27 @@ void LogicManager::createViewports() {
     Ogre::LogManager::getSingleton().logMessage("--> LogicManager: Creating Viewports <--");
 
     viewportFull = controller->getWindow()->addViewport(frontCamera, 0);
+}
+
+void LogicManager::createShootRtt() {
+    Ogre::TexturePtr shootRttTexture = Ogre::TextureManager::getSingleton().createManual(
+                "shootRtt",
+                Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+                Ogre::TEX_TYPE_2D,
+                controller->getWindow()->getWidth(), controller->getWindow()->getHeight(),
+                0,
+                Ogre::PF_R8G8B8,
+                Ogre::TU_RENDERTARGET);
+
+    Ogre::RenderTexture* renderTexture = shootRttTexture->getBuffer()->getRenderTarget();
+    renderTexture->setAutoUpdated(false);
+    renderTexture->addViewport(rearCamera);
+    renderTexture->getViewport(0)->setClearEveryFrame(true);
+    renderTexture->getViewport(0)->setBackgroundColour(Ogre::ColourValue::Black);
+    renderTexture->getViewport(0)->setOverlaysEnabled(false);
+
+    renderTexture->update();
+    renderTexture->writeContentsToFile("start.png");
 }
 
 void LogicManager::setupRunnerMode() {

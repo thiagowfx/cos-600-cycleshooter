@@ -58,6 +58,7 @@ class LogicManager {
     void createCameras();
     void createSceneNodes();
     void createViewports();
+    void createShootRtt();
 
     // customizable settings
     const double CAMERA_NEAR_CLIP_DISTANCE = 5.0;
