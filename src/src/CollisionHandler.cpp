@@ -30,30 +30,30 @@ void CollisionHandler::loadImages(){
 void CollisionHandler::loadTensor(){
     loadImages();
     // Allocating terrainMatrix
-    collisionMatrix = std::vector< std::vector<Colors> >(collisionMatrixHeight, std::vector<Colors>(collisionMatrixWidth, NONE_PIXEL));
+    collisionMatrix = std::vector< std::vector<Colors> >(collisionMatrixWidth, std::vector<Colors>(collisionMatrixHeight, NONE_PIXEL));
     //Pixel color to both images.
     Ogre::ColourValue collisionPixel;
     //Reading (per rows) images for data.
-    for(int row = 0; row < collisionMatrixHeight; row++){
-        for(int col = 0; col < collisionMatrixWidth; col++){
-            collisionPixel = collisionTexture->getColourAt(col, row, 0);    //receives collor from image
-            Colors textureType = NONE_PIXEL;
+    for(int row = 0; row < collisionMatrixWidth; row++){
+        for(int col = 0; col < collisionMatrixHeight; col++){
+            collisionPixel = collisionTexture->getColourAt(row, col, 0);    //Receives collor from image
+            //std::cout <<"Image color at " <<col << "," << row <<" "<< Ogre::StringConverter::toString(collisionPixel)<<std::endl;
             //const Ogre::ColourValue color = static_cast<const Ogre::ColourValue>(collisionPixel);
             if (collisionPixel == WATER_COLOR)
-                textureType = WATER_PIXEL;
-            else if(collisionPixel == ROAD_COLOR)
-                textureType = ROAD_PIXEL;
+                collisionMatrix[row][col] = WATER_PIXEL;
+            else if(collisionPixel == START_COLOR)
+                collisionMatrix[row][col] = START_PIXEL;
+            else if(collisionPixel.r == collisionPixel.g && collisionPixel.b == collisionPixel.g)
+                collisionMatrix[row][col] = ROAD_PIXEL;
             else if(collisionPixel == ROCK_COLOR)
-                textureType = ROCK_PIXEL;
+                collisionMatrix[row][col] = ROCK_PIXEL;
             else if(collisionPixel == BULLET_COLOR)
-                textureType = BULLET_PIXEL;
+                collisionMatrix[row][col] = BULLET_PIXEL;
             else if(collisionPixel == GUAGMIRE_COLOR)
-                textureType = GUAGMIRE_PIXEL;
-            else if(collisionPixel == STAR_COLOR)
-                textureType = START_PIXEL;
-            collisionMatrix[row][col] = textureType;
+                collisionMatrix[row][col] = GUAGMIRE_PIXEL;
             }
     }
+    printMatrix();
 }
 
 void CollisionHandler::printMatrix()
@@ -62,12 +62,13 @@ void CollisionHandler::printMatrix()
     //Grabing matrix dimensions.
     matrixColNumber = collisionMatrix[0].size();
     matrixRowNumber = collisionMatrix.size();
-    for(int pixelWidth = 0;pixelWidth < matrixColNumber;pixelWidth++){
-        for(int pixelHeight = 0; pixelHeight < matrixRowNumber;pixelHeight++){
-            std::cout << "Collision Matrix at position (" << pixelWidth << "," << pixelHeight << ")";
-            std::cout << " = " << collisionMatrix[pixelHeight][pixelWidth] << std::endl;
-        }
-    }
+//    for(int pixelWidth = 0;pixelWidth < matrixColNumber;pixelWidth++){
+//        for(int pixelHeight = 0; pixelHeight < matrixRowNumber;pixelHeight++){
+//            std::cout << "Collision Matrix at position (" << pixelWidth << "," << pixelHeight << ")";
+//            std::cout << " = " << collisionMatrix[pixelHeight][pixelWidth] << std::endl;
+//        }
+//    }
+    std::cout << "Collision Matrix Dimensions " << matrixRowNumber << "," << matrixColNumber << std::endl;
 }
 
 bool CollisionHandler::testMatrixDimension()
@@ -76,10 +77,6 @@ bool CollisionHandler::testMatrixDimension()
         return true;
     std::cout << "Error while allocating collision matrix" << std::endl;
     return false;
-}
-
-Ogre::ColourValue CollisionHandler::getPixelColour(int pixelWidth, int pixelHeight){
-
 }
 
 CollisionHandler::Colors CollisionHandler::getPixelEnumeration(int pixelWidth, int pixelHeight){
@@ -106,8 +103,7 @@ std::pair<int,int> CollisionHandler::getStartPixel(){
     return pixelLocation;
 }
 
-std::vector<std::vector<CollisionHandler::Colors> > CollisionHandler::getCollisionMatrix()
-{
+std::vector<std::vector<CollisionHandler::Colors> > CollisionHandler::getCollisionMatrix(){
     return collisionMatrix;
 }
 

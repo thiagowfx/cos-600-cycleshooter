@@ -48,6 +48,18 @@ void HUD::update(const Ogre::FrameEvent& evt) {
     dynamic_cast<OgreBites::Label*>(trayManager->getWidget("loadLabel"))->setCaption("Load: TODO");
     dynamic_cast<OgreBites::Label*>(trayManager->getWidget("ammoLabel"))->setCaption("Ammo: " + Ogre::StringConverter::toString(controller->getLogicManager()->getPlayerAmmo()));
     dynamic_cast<OgreBites::Label*>(trayManager->getWidget("monsterLabel"))->setCaption("Monster: " + Ogre::StringConverter::toString(controller->getLogicManager()->getMonsterHealth()));
+
+    // widgets update on debug mode only
+    if(controller->getDebug()) {
+        Ogre::Vector3 realCoord = controller->getLogicManager()->getPlayerNode()->getPosition();
+        std::pair<int,int> textCoord = controller->getTerrainManager()->getCollisionCoordinates(realCoord);
+        //std::cout <<Ogre::StringConverter::toString(realCoord) <<std::endl;
+        //std::cout <<realCoord <<std::endl;
+        dynamic_cast<OgreBites::ParamsPanel*>(trayManager->getWidget("debugPanel"))->setParamValue(0, Ogre::StringConverter::toString(controller->getTerrainManager()->getTerrainAt(realCoord)));
+        dynamic_cast<OgreBites::ParamsPanel*>(trayManager->getWidget("debugPanel"))->setParamValue(1, Ogre::StringConverter::toString(realCoord));
+        dynamic_cast<OgreBites::ParamsPanel*>(trayManager->getWidget("debugPanel"))->setParamValue(2, Ogre::StringConverter::toString(textCoord.first));
+        dynamic_cast<OgreBites::ParamsPanel*>(trayManager->getWidget("debugPanel"))->setParamValue(3, Ogre::StringConverter::toString(textCoord.second));
+    }
 }
 
 void HUD::setupRunnerMode() {
@@ -67,11 +79,28 @@ void HUD::setupShooterMode() {
 void HUD::setupDebugOn() {
     // fps
     trayManager->showFrameStats(FPS_TL);
+
+    // debug panel
+    if(!trayManager->getWidget("debugPanel")) {
+        Ogre::StringVector params = {"Terrain Type","Position","Transform x","Transform y"};
+        Ogre::StringVector values = {"","","",""};
+        trayManager->createParamsPanel(DEBUG_PANEL_TL, "debugPanel", 300, params)->setAllParamValues(values);
+    }
+    else {
+        trayManager->moveWidgetToTray("debugPanel", DEBUG_PANEL_TL, 0);
+        trayManager->getWidget("debugPanel")->show();
+    }
 }
 
 void HUD::setupDebugOff() {
     // fps
     trayManager->hideFrameStats();
+
+    // debug panel
+    if(trayManager->getWidget("debugPanel")) {
+        trayManager->removeWidgetFromTray("debugPanel");
+        trayManager->getWidget("debugPanel")->hide();
+    }
 }
 
 }

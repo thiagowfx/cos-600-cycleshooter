@@ -256,6 +256,8 @@ public:
     Ogre::RenderWindow *getWindow() const;
     Ogre::SceneManager *getSceneManager() const;
     bool getShutdown() const;
+    bool getDebug() const;
+    TerrainManager* getTerrainManager() const;
 };
 
 }
