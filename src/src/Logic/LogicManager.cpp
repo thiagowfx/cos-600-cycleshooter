@@ -61,13 +61,17 @@ void LogicManager::shoot() {
 
         auto coords = crosshair_to_img_coords(controller->getCrosshairManager()->getScroll(), rttImage);
 
-        std::cout << coords.first << " " << coords.second << std::endl;
-        std::cout << rttImage.getColourAt(coords.first, coords.second, 0) << std::endl;
+        if (rttImage.getColourAt(coords.first, coords.second, 0) != Ogre::ColourValue::Black) {
+            decrementMonsterHealth();
+
+            if(monsterHealth == 0) {
+                system("echo Congratulations you won");
+                controller->shutdownNow();
+            }
+        }
 
         // TODO: (maybe) replenish ammo in the map / terrain / collision part?
         // TODO: add several sound effects for each outcome
-        // TODO: if hit, then decrease monster life
-        // TODO: check if monster is dead
 
         if(debug) setDebugOn();
         controller->getSceneManager()->getRootSceneNode()->flipVisibility();
@@ -84,6 +88,12 @@ Ogre::SceneNode *LogicManager::getPlayerNode() const {
 
 int LogicManager::getMonsterHealth() const {
     return monsterHealth;
+}
+
+void LogicManager::decrementMonsterHealth(int quantity) {
+    Ogre::LogManager::getSingleton().logMessage("--> LogicManager: Decrement Monster Health <--");
+
+    monsterHealth = std::max(0, monsterHealth - quantity);
 }
 
 void LogicManager::incrementPlayerAmmo(int quantity) {

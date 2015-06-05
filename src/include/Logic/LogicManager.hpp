@@ -34,6 +34,8 @@ class LogicManager {
      */
     int monsterHealth = 10;
 
+    void decrementMonsterHealth(int quantity = 1);
+
     /*
      * Player section.
      */

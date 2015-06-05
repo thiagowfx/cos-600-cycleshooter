@@ -263,7 +263,7 @@ void Controller::createScene() {
     Ogre::LogManager::getSingleton().logMessage("--> Controller: Creating Scene <--");
 
     Ogre::Entity* monsterEntity = getSceneManager()->createEntity("monsterEntity", "ogrehead.mesh");
-    Ogre::SceneNode* monsterNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("monsterNode", Ogre::Vector3(0.0, 0.0, -300.0));
+    Ogre::SceneNode* monsterNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("monsterNode", Ogre::Vector3(0.0, 0.0, +300.0));
     monsterNode->attachObject(monsterEntity);
     monsterNode->setAutoTracking(true, getLogicManager()->getPlayerNode(), Ogre::Vector3::UNIT_Z);
 
