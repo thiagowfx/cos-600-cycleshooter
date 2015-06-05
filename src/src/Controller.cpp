@@ -6,10 +6,6 @@ Context Controller::getContext() const {
     return context;
 }
 
-Ogre::Root *Controller::getRoot() const {
-    return oRoot;
-}
-
 Ogre::RenderWindow *Controller::getWindow() const {
     return oWindow;
 }

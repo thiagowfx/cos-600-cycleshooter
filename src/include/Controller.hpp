@@ -253,7 +253,6 @@ public:
     // getters and setters
     LogicManager* getLogicManager() const;
     Context getContext() const;
-    Ogre::Root *getRoot() const;
     Ogre::RenderWindow *getWindow() const;
     Ogre::SceneManager *getSceneManager() const;
     bool getShutdown() const;
