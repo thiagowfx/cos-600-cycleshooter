@@ -87,7 +87,7 @@ LogicManager *Controller::getLogicManager() const {
 void Controller::polarUpdaterFunction() {
     while(!shutdown) {
         try {
-            unsigned heartRate = polar->getInstantaneousHeartRate();
+            int heartRate = polar->getInstantaneousHeartRate();
             if(heartRate != 0) {
                 logicManager->setPlayerHeartRate(heartRate);
             }

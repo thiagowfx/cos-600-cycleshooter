@@ -9,7 +9,7 @@ namespace Cycleshooter {
  */
 class ConstantPolar : public RandomPolar {
 public:
-    ConstantPolar(unsigned peak = 90);
+    ConstantPolar(int peak = 90);
 };
 }
 

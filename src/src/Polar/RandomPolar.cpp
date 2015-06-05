@@ -2,23 +2,23 @@
 
 namespace Cycleshooter {
 
-RandomPolar::RandomPolar(unsigned minPeak, unsigned maxPeak, unsigned HRHistoryLimit) :
+RandomPolar::RandomPolar(int minPeak, int maxPeak, int HRHistoryLimit) :
     AbstractPolar(HRHistoryLimit),
     minPeak(minPeak),
     maxPeak(maxPeak)
 {
 }
 
-void RandomPolar::setMinPeak(const unsigned &value) {
+void RandomPolar::setMinPeak(const int &value) {
     minPeak = value;
 }
 
-void RandomPolar::setMaxPeak(const unsigned &value) {
+void RandomPolar::setMaxPeak(const int &value) {
     maxPeak = value;
 }
 
-unsigned RandomPolar::getInstantaneousHeartRate() {
-    unsigned heartRate = minPeak + (rand() % (maxPeak - minPeak + 1));
+int RandomPolar::getInstantaneousHeartRate() {
+    int heartRate = minPeak + (rand() % (maxPeak - minPeak + 1));
     addRecord(heartRate);
     return heartRate;
 }

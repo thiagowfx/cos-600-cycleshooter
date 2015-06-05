@@ -2,18 +2,18 @@
 
 namespace Cycleshooter {
 
-void AbstractPolar::addRecord(const unsigned &record) {
+void AbstractPolar::addRecord(const int &record) {
     if(HRHistory.size() == HRHistoryLimit)
         HRHistory.pop_front();
     HRHistory.push_back(record);
 }
 
-AbstractPolar::AbstractPolar(unsigned HRHistoryLimit) :
+AbstractPolar::AbstractPolar(int HRHistoryLimit) :
     HRHistoryLimit(HRHistoryLimit)
 {
 }
 
-unsigned AbstractPolar::getMeanHeartRate() {
+int AbstractPolar::getMeanHeartRate() {
     if(HRHistory.empty())
         return getInstantaneousHeartRate();
     return std::accumulate(HRHistory.begin(), HRHistory.end(), 0) / HRHistory.size();

@@ -8,18 +8,18 @@ namespace Cycleshooter {
  * @brief The RandomPolar class generates a random heart rate value in [minPeak, maxPeak] range.
  */
 class RandomPolar : public AbstractPolar {
-    unsigned minPeak, maxPeak;
+    int minPeak, maxPeak;
 
 public:
-    RandomPolar(unsigned minPeak = 90, unsigned maxPeak = 100, unsigned HRHistoryLimit = 120);
+    RandomPolar(int minPeak = 90, int maxPeak = 100, int HRHistoryLimit = 120);
 
     /**
      * Get a random heart rate in [minPeak, maxPeak] range.
      */
-    virtual unsigned getInstantaneousHeartRate();
+    virtual int getInstantaneousHeartRate();
 
-    void setMinPeak(const unsigned &value);
-    void setMaxPeak(const unsigned &value);
+    void setMinPeak(const int &value);
+    void setMaxPeak(const int &value);
 };
 
 }

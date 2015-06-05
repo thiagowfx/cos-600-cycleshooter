@@ -34,8 +34,8 @@ void CollisionHandler::loadTensor(){
     //Pixel color to both images.
     Ogre::ColourValue collisionPixel;
     //Reading (per rows) images for data.
-    for(unsigned row = 0; row < collisionMatrixHeight; row++){
-        for(unsigned col = 0; col < collisionMatrixWidth; col++){
+    for(int row = 0; row < collisionMatrixHeight; row++){
+        for(int col = 0; col < collisionMatrixWidth; col++){
             collisionPixel = collisionTexture->getColourAt(col, row, 0);    //receives collor from image
             Colors textureType = NONE_PIXEL;
             //const Ogre::ColourValue color = static_cast<const Ogre::ColourValue>(collisionPixel);

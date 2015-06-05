@@ -2,7 +2,7 @@
 
 namespace Cycleshooter {
 
-RealPolar::RealPolar(const char* deviceFilePath, unsigned HRHistoryLimit) :
+RealPolar::RealPolar(const char* deviceFilePath, int HRHistoryLimit) :
     AbstractPolar(HRHistoryLimit)
 {
     openSerialPort(deviceFilePath);
@@ -121,7 +121,7 @@ void RealPolar::getResponseString(char* responseString){
     responseString[i-1] = 0;
 }
 
-unsigned RealPolar::getInstantaneousHeartRate() {
+int RealPolar::getInstantaneousHeartRate() {
     // send a get heart Rate command requesting history buffer entries
     sendGetHeartRate();
 
@@ -129,7 +129,7 @@ unsigned RealPolar::getInstantaneousHeartRate() {
     char *rspBytes = new char[MAX_STRING_RESPONSE];
     getResponseString(rspBytes);
 
-    unsigned heartRate;
+    int heartRate;
 
     // discard the two first values (the heart rate is the third one)
     sscanf(rspBytes, "%*u %*u %u", &heartRate);

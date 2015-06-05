@@ -54,27 +54,27 @@ class RealPolar : public AbstractPolar {
     /**
      * Maximum number of characters that will be read until a '\r' is found.
      */
-    static const unsigned MAX_STRING_RESPONSE = 140;
+    static const int MAX_STRING_RESPONSE = 140;
 
     /**
      * Time to wait before trying to read from the serial port again if no chars available.
      * Measured in ms.
      */
-    static const unsigned READING_RETRY_TIME = 10;
+    static const int READING_RETRY_TIME = 10;
 
 public:
     /**
      * @brief RealPolar Construct a new RealPolar object.
      * @param deviceFilePath Path to the serial port (e.g. "/dev/ttyUSB0")
      */
-    RealPolar(const char* deviceFilePath, unsigned HRHistoryLimit = 120);
+    RealPolar(const char* deviceFilePath, int HRHistoryLimit = 120);
 
     virtual ~RealPolar();
 
     /**
      * Get the instantaneous heart rate value from the HRMI.
      */
-    virtual unsigned getInstantaneousHeartRate();
+    virtual int getInstantaneousHeartRate();
 };
 
 }
