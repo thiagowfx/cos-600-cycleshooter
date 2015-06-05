@@ -2,6 +2,7 @@ build/
 dest/
 CMakeLists.txt.user
 *.autosave
+.ycm_extra_conf.pyc
 
 # *.in files
 assets/bin/plugins.cfg

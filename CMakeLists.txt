@@ -15,6 +15,7 @@ option(DEPENDENCIES_READY "Are the dependencies ready?" OFF)
 
 
 add_definitions("-std=c++11 -g -Wno-deprecated-declarations")
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 
 add_subdirectory(${VENDOR_DIR})
