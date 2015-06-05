@@ -98,6 +98,8 @@ std::pair<int, int> TerrainManager::getCollisionCoordinates(Ogre::Vector3 point)
 
 int TerrainManager::getTerrainAt(Ogre::Vector3 coord){
     std::pair<int,int> collisionCoord = getCollisionCoordinates(coord);
+    if(coord.x> terrainWorldSizeWidth*0.5 || coord.y > terrainWorldSizeHeight*0.5)
+        return 0;
     return collisionHandler->getPixelEnumeration(collisionCoord.first,collisionCoord.second);
 }
 
