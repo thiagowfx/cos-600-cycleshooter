@@ -43,16 +43,6 @@ if(DEPENDENCIES_READY)
         ${OGRE_Overlay_INCLUDE_DIRS}
         )
 
-
-    find_package(OIS REQUIRED)
-
-    if(NOT OIS_FOUND)
-        message(SEND_ERROR "Failed to find OIS.")
-    endif()
-
-    include_directories(${OIS_INCLUDE_DIRS})
-
-
     # Components that need linking (NB does not include header-only components like bind)
     set(OGRE_BOOST_COMPONENTS date_time thread)
 
@@ -106,7 +96,6 @@ if(DEPENDENCIES_READY)
         ${PROJECT_NAME}
         ${SFML_LIBRARIES}
         ${OGRE_LIBRARIES}
-        ${OIS_LIBRARIES}
         )
 
     add_custom_command(

@@ -2,9 +2,9 @@
 #define _HUD_HPP_
 
 #include <Ogre.h>
-#include <SdkTrays.h>
 
 #include "Controller.hpp"
+#include "SdkTrays.hpp"
 
 namespace Cycleshooter {
 class Controller;
