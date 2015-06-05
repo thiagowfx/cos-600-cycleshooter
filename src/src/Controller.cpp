@@ -6,10 +6,6 @@ Context Controller::getContext() const {
     return context;
 }
 
-NodeManager *Controller::getNodeManager() const {
-    return nodeManager.get();
-}
-
 Ogre::Root *Controller::getRoot() const {
     return oRoot;
 }
@@ -20,10 +16,6 @@ Ogre::RenderWindow *Controller::getWindow() const {
 
 Ogre::SceneManager *Controller::getSceneManager() const {
     return oSceneManager;
-}
-
-HUD *Controller::getHud() const {
-    return hud.get();
 }
 
 Controller::Controller(int argc, char *argv[]) {
@@ -86,6 +78,10 @@ Controller::Controller(int argc, char *argv[]) {
     }
 
     go();
+}
+
+LogicManager *Controller::getLogicManager() const {
+    return logicManager.get();
 }
 
 void Controller::polarUpdaterFunction() {
@@ -159,10 +155,6 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     }
 
     return true;
-}
-
-LogicManager *Controller::getLogicManager() const {
-    return logicManager.get();
 }
 
 bool Controller::getShutdown() const {
@@ -255,8 +247,6 @@ void Controller::createGameElements() {
     polarUpdater = std::unique_ptr<sf::Thread>(new sf::Thread(&Controller::polarUpdaterFunction, this));
     polarUpdater->launch();
 
-    nodeManager = std::unique_ptr<NodeManager>(new NodeManager(this));
-
     // to use a material, the resource group must be initialized
     terrainManager = std::unique_ptr<TerrainManager>(new TerrainManager(oSceneManager,"racecircuit.png"));
     terrainManager->createTerrain();
@@ -308,22 +298,22 @@ void Controller::setupMappings() {
      */
     InputManager::instance().addKeysUnbuf({sf::Keyboard::W,
                                            sf::Keyboard::Up}, CONTEXT_RUNNER, [&]{
-        getNodeManager()->getParentPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, -10.0), Ogre::SceneNode::TS_LOCAL);
+        logicManager->getPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, -10.0), Ogre::SceneNode::TS_LOCAL);
     });
 
     InputManager::instance().addKeysUnbuf({sf::Keyboard::S,
                                            sf::Keyboard::Down}, CONTEXT_RUNNER, [&]{
-        getNodeManager()->getParentPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, +10.0), Ogre::SceneNode::TS_LOCAL);
+        logicManager->getPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, +10.0), Ogre::SceneNode::TS_LOCAL);
     });
 
     InputManager::instance().addKeysUnbuf({sf::Keyboard::A,
                                            sf::Keyboard::Left}, CONTEXT_RUNNER, [&]{
-        getNodeManager()->getParentPlayerSceneNode()->yaw(Ogre::Degree(+10.0));
+        logicManager->getPlayerSceneNode()->yaw(Ogre::Degree(+10.0));
     });
 
     InputManager::instance().addKeysUnbuf({sf::Keyboard::D,
                                            sf::Keyboard::Right}, CONTEXT_RUNNER, [&]{
-        getNodeManager()->getParentPlayerSceneNode()->yaw(Ogre::Degree(-10.0));
+        logicManager->getPlayerSceneNode()->yaw(Ogre::Degree(-10.0));
     });
 
     /*
@@ -387,11 +377,11 @@ void Controller::setupMappings() {
      * Joystick mappings.
      */
     InputManager::instance().addJoystickAxisUnbuf(sf::Joystick::X, CONTEXT_RUNNER, [&](float f){
-        getNodeManager()->getParentPlayerSceneNode()->yaw(Ogre::Degree(-10 * f / 100.0));
+        logicManager->getPlayerSceneNode()->yaw(Ogre::Degree(-10 * f / 100.0));
     });
 
     InputManager::instance().addJoystickAxisUnbuf(sf::Joystick::Y, CONTEXT_RUNNER, [&](float f){
-        getNodeManager()->getParentPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, 10.0 * f / 100.0), Ogre::SceneNode::TS_LOCAL);
+        logicManager->getPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, 10.0 * f / 100.0), Ogre::SceneNode::TS_LOCAL);
     });
 
 //    InputManager::instance().addJoystickButton(0, [&]{
@@ -448,7 +438,7 @@ void Controller::setupRunnerMode() {
 
     context = CONTEXT_RUNNER;
 
-    nodeManager->setupRunnerMode();
+    logicManager->setupRunnerMode();
     crosshairManager->setupRunnerMode();
     hud->setupRunnerMode();
     AudioManager::instance().play(MUSIC_RUNNER1);
@@ -459,7 +449,7 @@ void Controller::setupShooterMode() {
 
     context = CONTEXT_SHOOTER;
 
-    nodeManager->setupShooterMode();
+    logicManager->setupShooterMode();
     crosshairManager->setupShooterMode();
     hud->setupShooterMode();
     AudioManager::instance().play(MUSIC_SHOOTER1);
@@ -481,7 +471,7 @@ void Controller::setupDebugOn() {
 
     debug = true;
 
-    nodeManager->setDebugOn();
+    logicManager->setDebugOn();
     hud->setupDebugOn();
 }
 
@@ -490,7 +480,7 @@ void Controller::setupDebugOff() {
 
     debug = false;
 
-    nodeManager->setDebugOff();
+    logicManager->setDebugOff();
     hud->setupDebugOff();
 }
 
@@ -503,10 +493,6 @@ void Controller::toggleDebug() {
     else {
         setupDebugOn();
     }
-}
-
-bool Controller::isDebugOn() const {
-    return debug;
 }
 
 }

@@ -19,7 +19,6 @@
 
 #include "CrosshairManager.hpp"
 #include "HUD.hpp"
-#include "NodeManager.hpp"
 #include "CollisionHandler.hpp"
 #include "TerrainManager.hpp"
 
@@ -27,7 +26,6 @@ namespace Cycleshooter {
 
 class HUD;
 class LogicManager;
-class NodeManager;
 class CollisionHandler;
 class TerrainManager;
 
@@ -184,11 +182,6 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     void polarUpdaterFunction();
 
     /**
-     * Node Manager.
-     */
-    std::unique_ptr<NodeManager> nodeManager;
-
-    /**
      * Terrain Manager.
      */
     std::unique_ptr<TerrainManager> terrainManager;
@@ -250,11 +243,6 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     void toggleDebug();
 
     /**
-     * Return true if debug is activated.
-     */
-    bool isDebugOn() const;
-
-    /**
      * Finish/shutdown the game cleanly.
      */
     void shutdownNow();
@@ -263,14 +251,12 @@ public:
     Controller(int argc, char *argv[]);
 
     // getters and setters
+    LogicManager* getLogicManager() const;
     Context getContext() const;
-    NodeManager *getNodeManager() const;
-    HUD *getHud() const;
     Ogre::Root *getRoot() const;
     Ogre::RenderWindow *getWindow() const;
     Ogre::SceneManager *getSceneManager() const;
     bool getShutdown() const;
-    LogicManager *getLogicManager() const;
 };
 
 }
