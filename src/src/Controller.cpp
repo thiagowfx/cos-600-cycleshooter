@@ -433,7 +433,7 @@ void Controller::setupRunnerMode() {
     logicManager->setupRunnerMode();
     crosshairManager->setupRunnerMode();
     hud->setupRunnerMode();
-    AudioManager::instance().play(MUSIC_RUNNER1);
+    AudioManager::instance().play(MUSIC_RUNNER1_BFMV_HAND_OF_BLOOD);
 }
 
 void Controller::setupShooterMode() {
