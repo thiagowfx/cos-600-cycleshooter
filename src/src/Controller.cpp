@@ -257,24 +257,16 @@ void Controller::createGameElements() {
 void Controller::createScene() {
     Ogre::LogManager::getSingleton().logMessage("--> Controller: Creating Scene <--");
 
-    Ogre::Entity* ogreEntity1 = getSceneManager()->createEntity("ogrehead.mesh");
-    Ogre::Entity* ogreEntity2 = getSceneManager()->createEntity("ogrehead.mesh");
-    Ogre::Entity* ogreEntity3 = getSceneManager()->createEntity("ogrehead.mesh");
+    Ogre::SceneNode* monsterNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("monsterNode", Ogre::Vector3(0.0, 0.0, -300.0));
+    monsterNode->attachObject(getSceneManager()->createEntity("monsterEntity", "ogrehead.mesh"));
 
-    Ogre::SceneNode* ogreNode1 = getSceneManager()->getRootSceneNode()->createChildSceneNode();
-    Ogre::SceneNode* ogreNode2 = getSceneManager()->getRootSceneNode()->createChildSceneNode();
-    Ogre::SceneNode* ogreNode3 = getSceneManager()->getRootSceneNode()->createChildSceneNode();
-
-    ogreNode2->translate(0.0, 0.0, 400.0);
-    ogreNode3->translate(0.0, 0.0, -400.0);
-
-    ogreNode1->attachObject(ogreEntity1);
-    ogreNode2->attachObject(ogreEntity2);
-    ogreNode3->attachObject(ogreEntity3);
+    Ogre::Entity* ogreEntity = getSceneManager()->createEntity("ogrehead.mesh");
+    Ogre::SceneNode* ogreNode = getSceneManager()->getRootSceneNode()->createChildSceneNode();
+    ogreNode->translate(0.0, 0.0, 300.0);
+    ogreNode->attachObject(ogreEntity);
 
     getSceneManager()->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
-    Ogre::Light* light =  getSceneManager()->createLight("MainLight");
-    light->setPosition(20.0, 80.0, 50.0);
+    getSceneManager()->createLight("mainLight")->setPosition(20.0, 80.0, 50.0);
 }
 
 void Controller::createCrosshair() {
@@ -295,22 +287,22 @@ void Controller::setupMappings() {
      */
     InputManager::instance().addKeysUnbuf({sf::Keyboard::W,
                                            sf::Keyboard::Up}, CONTEXT_RUNNER, [&]{
-        logicManager->getPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, -10.0), Ogre::SceneNode::TS_LOCAL);
+        logicManager->getPlayerNode()->translate(Ogre::Vector3(0.0, 0.0, -10.0), Ogre::SceneNode::TS_LOCAL);
     });
 
     InputManager::instance().addKeysUnbuf({sf::Keyboard::S,
                                            sf::Keyboard::Down}, CONTEXT_RUNNER, [&]{
-        logicManager->getPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, +10.0), Ogre::SceneNode::TS_LOCAL);
+        logicManager->getPlayerNode()->translate(Ogre::Vector3(0.0, 0.0, +10.0), Ogre::SceneNode::TS_LOCAL);
     });
 
     InputManager::instance().addKeysUnbuf({sf::Keyboard::A,
                                            sf::Keyboard::Left}, CONTEXT_RUNNER, [&]{
-        logicManager->getPlayerSceneNode()->yaw(Ogre::Degree(+10.0));
+        logicManager->getPlayerNode()->yaw(Ogre::Degree(+10.0));
     });
 
     InputManager::instance().addKeysUnbuf({sf::Keyboard::D,
                                            sf::Keyboard::Right}, CONTEXT_RUNNER, [&]{
-        logicManager->getPlayerSceneNode()->yaw(Ogre::Degree(-10.0));
+        logicManager->getPlayerNode()->yaw(Ogre::Degree(-10.0));
     });
 
     /*
@@ -374,11 +366,11 @@ void Controller::setupMappings() {
      * Joystick mappings.
      */
     InputManager::instance().addJoystickAxisUnbuf(sf::Joystick::X, CONTEXT_RUNNER, [&](float f){
-        logicManager->getPlayerSceneNode()->yaw(Ogre::Degree(-10 * f / 100.0));
+        logicManager->getPlayerNode()->yaw(Ogre::Degree(-10 * f / 100.0));
     });
 
     InputManager::instance().addJoystickAxisUnbuf(sf::Joystick::Y, CONTEXT_RUNNER, [&](float f){
-        logicManager->getPlayerSceneNode()->translate(Ogre::Vector3(0.0, 0.0, 10.0 * f / 100.0), Ogre::SceneNode::TS_LOCAL);
+        logicManager->getPlayerNode()->translate(Ogre::Vector3(0.0, 0.0, 10.0 * f / 100.0), Ogre::SceneNode::TS_LOCAL);
     });
 
 //    InputManager::instance().addJoystickButton(0, [&]{

@@ -16,9 +16,9 @@ class LogicManager {
     Ogre::Viewport *viewportFull = NULL;
     Ogre::Viewport *viewportMirror = NULL;
 
-    Ogre::SceneNode* parentPlayerSceneNode = NULL;
-    Ogre::SceneNode* frontPlayerSceneNode = NULL;
-    Ogre::SceneNode* rearPlayerSceneNode = NULL;
+    Ogre::SceneNode* parentPlayerNode = NULL;
+    Ogre::SceneNode* frontPlayerNode = NULL;
+    Ogre::SceneNode* rearPlayerNode = NULL;
 
     Ogre::Camera *frontCamera = NULL;
     Ogre::Camera *rearCamera = NULL;
@@ -89,7 +89,7 @@ public:
     void setDebugOff();
 
     // getters and setters
-    Ogre::SceneNode *getPlayerSceneNode() const;
+    Ogre::SceneNode *getPlayerNode() const;
     int getPlayerHeartRate() const;
     void setPlayerHeartRate(const int& value);
     int getPlayerAmmo() const;

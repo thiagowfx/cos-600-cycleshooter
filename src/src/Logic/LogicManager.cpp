@@ -42,8 +42,8 @@ void LogicManager::shoot() {
     }
 }
 
-Ogre::SceneNode *LogicManager::getPlayerSceneNode() const {
-    return parentPlayerSceneNode;
+Ogre::SceneNode *LogicManager::getPlayerNode() const {
+    return parentPlayerNode;
 }
 
 int LogicManager::getMonsterHealth() const {
@@ -88,14 +88,14 @@ void LogicManager::createSceneNodes() {
     Ogre::LogManager::getSingleton().logMessage("--> LogicManager: Creating Scene Nodes <--");
 
     // create scene nodes
-    parentPlayerSceneNode = controller->getSceneManager()->getRootSceneNode()->createChildSceneNode("parentPlayerSceneNode");
-    frontPlayerSceneNode = parentPlayerSceneNode->createChildSceneNode("frontPlayerSceneNode");
-    rearPlayerSceneNode = parentPlayerSceneNode->createChildSceneNode("rearPlayerSceneNode");
-    rearPlayerSceneNode->yaw(Ogre::Radian(Ogre::Degree(180.0)));
+    parentPlayerNode = controller->getSceneManager()->getRootSceneNode()->createChildSceneNode("parentPlayerNode");
+    frontPlayerNode = parentPlayerNode->createChildSceneNode("frontPlayerNode");
+    rearPlayerNode = parentPlayerNode->createChildSceneNode("rearPlayerNode");
+    rearPlayerNode->yaw(Ogre::Radian(Ogre::Degree(180.0)));
 
     // attach scene nodes
-    frontPlayerSceneNode->attachObject(frontCamera);
-    rearPlayerSceneNode->attachObject(rearCamera);
+    frontPlayerNode->attachObject(frontCamera);
+    rearPlayerNode->attachObject(rearCamera);
 }
 
 void LogicManager::createViewports() {
