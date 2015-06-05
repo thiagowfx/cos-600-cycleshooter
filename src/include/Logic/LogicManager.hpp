@@ -24,6 +24,11 @@ class LogicManager {
     Ogre::Camera *rearCamera = NULL;
 
     /*
+     *  RTT.
+     */
+    Ogre::RenderTexture* renderTexture = NULL;
+
+    /*
      *  Monster section.
      */
     int monsterHealth = 10;
@@ -58,7 +63,7 @@ class LogicManager {
     void createCameras();
     void createSceneNodes();
     void createViewports();
-    void createShootRtt();
+    void createRtt();
 
     // customizable settings
     const double CAMERA_NEAR_CLIP_DISTANCE = 5.0;

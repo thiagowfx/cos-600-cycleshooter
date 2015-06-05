@@ -31,15 +31,21 @@ void LogicManager::shoot() {
         decrementPlayerAmmo();
         AudioManager::instance().random_play_shoot();
 
-        Ogre::RenderTexture* renderTexture = Ogre::TextureManager::getSingleton().getByName("shootRtt")->getBuffer()->getRenderTarget();
+        Ogre::SceneNode* monsterNode = controller->getSceneManager()->getSceneNode("monsterNode");
+
+        monsterNode->flipVisibility();
+        controller->getSceneManager()->getRootSceneNode()->flipVisibility();
+
         renderTexture->update();
         renderTexture->writeContentsToFile("start.png");
 
         // TODO: (maybe) replenish ammo in the map / terrain / collision part?
         // TODO: add several sound effects for each outcome
-        // TODO: RTT crosshair + monster logic
         // TODO: if hit, then decrease monster life
         // TODO: check if monster is dead
+
+        controller->getSceneManager()->getRootSceneNode()->flipVisibility();
+        monsterNode->flipVisibility();
     }
     else {
         std::cout << " |-> No more ammo" << std::endl;
@@ -72,7 +78,7 @@ void LogicManager::go() {
     createCameras();
     createSceneNodes();
     createViewports();
-    createShootRtt();
+    createRtt();
 }
 
 void LogicManager::createCameras() {
@@ -109,9 +115,9 @@ void LogicManager::createViewports() {
     viewportFull = controller->getWindow()->addViewport(frontCamera, 0);
 }
 
-void LogicManager::createShootRtt() {
-    Ogre::TexturePtr shootRttTexture = Ogre::TextureManager::getSingleton().createManual(
-                "shootRtt",
+void LogicManager::createRtt() {
+    Ogre::TexturePtr rttTexture = Ogre::TextureManager::getSingleton().createManual(
+                "rttTexture",
                 Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
                 Ogre::TEX_TYPE_2D,
                 controller->getWindow()->getWidth(), controller->getWindow()->getHeight(),
@@ -119,15 +125,12 @@ void LogicManager::createShootRtt() {
                 Ogre::PF_R8G8B8,
                 Ogre::TU_RENDERTARGET);
 
-    Ogre::RenderTexture* renderTexture = shootRttTexture->getBuffer()->getRenderTarget();
-    renderTexture->setAutoUpdated(false);
+    renderTexture = rttTexture->getBuffer()->getRenderTarget();
     renderTexture->addViewport(rearCamera);
+    renderTexture->setAutoUpdated(false);
     renderTexture->getViewport(0)->setClearEveryFrame(true);
-    renderTexture->getViewport(0)->setBackgroundColour(Ogre::ColourValue::Black);
     renderTexture->getViewport(0)->setOverlaysEnabled(false);
-
-    renderTexture->update();
-    renderTexture->writeContentsToFile("start.png");
+    renderTexture->getViewport(0)->setBackgroundColour(Ogre::ColourValue::Black);
 }
 
 void LogicManager::setupRunnerMode() {
