@@ -57,7 +57,7 @@ protected:
     }
 
 public:
-    AbstractPolar(){};
+    AbstractPolar(){}
 
     /**
      * Get a single value to represent the heart rate.
