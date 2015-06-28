@@ -63,6 +63,7 @@ void TerrainManager::createTerrain(){
     terrainEntity->setCastShadows(false);
     //Defines which texture will be used. 
     terrainEntity->setMaterialName("Examples/Ground");
+    generateBullets(100);
 }
 
 void TerrainManager::setCollisionTransformation(){
@@ -101,6 +102,28 @@ int TerrainManager::getTerrainAt(Ogre::Vector3 coord){
     if(coord.x> terrainWorldSizeWidth*0.5 || coord.y > terrainWorldSizeHeight*0.5)
         return 0;
     return collisionHandler->getPixelEnumeration(collisionCoord.first,collisionCoord.second);
+}
+
+void TerrainManager::generateBullets(int numOfBullets){
+    std::default_random_engine randomGenerator;
+    Ogre::Real wlimit = terrainWorldSizeWidth*0.5;
+    Ogre::Real hLimit = terrainWorldSizeHeight*0.5;
+    std::uniform_real_distribution<float> randomWidthDistribution (-wlimit,wlimit);
+    std::uniform_real_distribution<float> randomHeightDistribution (-hLimit,hLimit);
+    float randomWidth, randomHeight = 0.0f;
+    int test = 0;
+    std::cout << "Testing Random coordinates." << std::endl;
+    for(int i= 0;i<numOfBullets;i++){
+        randomWidth = randomWidthDistribution(randomGenerator);
+        randomHeight = randomHeightDistribution(randomGenerator);
+        Ogre::Vector3 coord(randomWidth,0,randomHeight);
+        std::pair<int,int> location = getCollisionCoordinates(coord);
+        test++;
+        collisionHandler->setBulletAt(location.first,location.second,true,coord);
+        std::cout << "Width = " << randomWidth <<" Height = "<<randomHeight<<" i = "<<i <<std::endl;
+    }
+    std::cout<<"Testing = " << test <<std::endl;
+    collisionHandler->printBullets();
 }
 
 void TerrainManager::sampleCollisionTransformation(){

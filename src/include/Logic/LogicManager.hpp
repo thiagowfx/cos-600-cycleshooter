@@ -100,7 +100,7 @@ public:
     void setDebugOff();
 
     //Move functions.
-    void translatePlayer(int difficulty, Ogre::Vector3 translation);
+    void translateMonster(int difficulty, Ogre::Vector3 translation);
     void yawCamera();
 
 

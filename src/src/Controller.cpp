@@ -256,7 +256,7 @@ void Controller::createGameElements() {
     // to use a material, the resource group must be initialized
     terrainManager = std::unique_ptr<TerrainManager>(new TerrainManager(oSceneManager,"racecircuit.png"));
     terrainManager->createTerrain();
-    terrainManager->sampleCollisionTransformation();
+    //terrainManager->sampleCollisionTransformation();
 }
 
 void Controller::createScene() {

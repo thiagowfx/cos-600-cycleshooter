@@ -32,6 +32,9 @@ public:
     std::pair<int,int> getCollisionCoordinates(Ogre::Vector3 point);
     int getTerrainAt(Ogre::Vector3 coord);
 
+    //Random bullets Generator.
+    void generateBullets(int numOfBullets);
+
     //Test Functions.
     void printCollisionTransformation();
     void sampleCollisionTransformation();

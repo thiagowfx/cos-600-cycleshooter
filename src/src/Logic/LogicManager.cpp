@@ -212,7 +212,7 @@ void LogicManager::setDebugOff() {
     controller->getSceneManager()->showBoundingBoxes(false);
 }
 
-void LogicManager::translatePlayer(int difficulty, Ogre::Vector3 translation){
+void LogicManager::translateMonster(int difficulty, Ogre::Vector3 translation){
     float parameter = 1/difficultyParamenter[difficulty];
     parentPlayerNode->translate(translation*parameter);
 }

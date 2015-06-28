@@ -7,6 +7,7 @@
 #include <iostream>
 #include <utility>
 #include <map>
+#include <random>
 
 namespace Cycleshooter {
 class CollisionHandler {
@@ -31,6 +32,7 @@ class CollisionHandler {
     };
     int collisionMatrixWidth, collisionMatrixHeight;
     std::vector<std::vector<Colors> > collisionMatrix;
+    std::vector<std::vector<std::pair<bool, Ogre::Vector3> > > bulletMatrix;
 
 public:
 
@@ -39,8 +41,6 @@ public:
 
     void loadImages(); //Load images from files.
     void loadTensor(); //Function to load the data structure from images.
-    void printMatrix(); //Testing funcition for collisionMatrix.
-    bool testMatrixDimension(); //Testing function to allocated matrix dimensions.
     Colors getPixelEnumeration(int pixelWidth, int pixelHeight); //
     //Function to find the race starting point in the texture.
     std::pair<int,int> getStartPixel();
@@ -48,6 +48,14 @@ public:
     //Matrix dimensions getters.
     int getCollisionMatrixWidth() const;
     int getCollisionMatrixHeight() const;
+
+    //Functions to add and remove bullets.
+    void setBulletAt(int width, int height, bool exist, Ogre::Vector3 coord);
+
+    //Testing functions
+    void printMatrix(); //Testing funcition for collisionMatrix.
+    void printBullets(); //Testing function for bulletMatrix.
+    bool testMatrixDimension(); //Testing function to allocated matrix dimensions.
 };
 
 }
