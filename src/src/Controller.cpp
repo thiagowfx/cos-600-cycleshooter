@@ -99,6 +99,10 @@ void Controller::polarUpdaterFunction() {
     }
 }
 
+CrosshairManager* Controller::getCrosshairManager() const {
+    return crosshairManager.get();
+}
+
 TerrainManager* Controller::getTerrainManager() const {
     return terrainManager.get();
 }
@@ -258,8 +262,9 @@ void Controller::createGameElements() {
 void Controller::createScene() {
     Ogre::LogManager::getSingleton().logMessage("--> Controller: Creating Scene <--");
 
-    Ogre::SceneNode* monsterNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("monsterNode", Ogre::Vector3(0.0, 0.0, -300.0));
-    monsterNode->attachObject(getSceneManager()->createEntity("monsterEntity", "ogrehead.mesh"));
+    Ogre::Entity* monsterEntity = getSceneManager()->createEntity("monsterEntity", "ogrehead.mesh");
+    Ogre::SceneNode* monsterNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("monsterNode", Ogre::Vector3(0.0, 0.0, +300.0));
+    monsterNode->attachObject(monsterEntity);
     monsterNode->setAutoTracking(true, getLogicManager()->getPlayerNode(), Ogre::Vector3::UNIT_Z);
 
     getSceneManager()->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
@@ -409,7 +414,8 @@ void Controller::createRoot() {
 void Controller::createSceneManager() {
     Ogre::LogManager::getSingleton().logMessage("--> Controller: Creating Scene Manager <--");
 
-    oSceneManager = oRoot->createSceneManager(Ogre::ST_GENERIC, "sceneManager");
+    // oSceneManager = oRoot->createSceneManager(Ogre::ST_GENERIC, "sceneManager");
+    oSceneManager = oRoot->createSceneManager("OctreeSceneManager", "sceneManager");
 }
 
 void Controller::createOverlaySystem() {
@@ -427,7 +433,7 @@ void Controller::setupRunnerMode() {
     logicManager->setupRunnerMode();
     crosshairManager->setupRunnerMode();
     hud->setupRunnerMode();
-    AudioManager::instance().play(MUSIC_RUNNER1);
+    AudioManager::instance().play(MUSIC_RUNNER1_BFMV_HAND_OF_BLOOD);
 }
 
 void Controller::setupShooterMode() {

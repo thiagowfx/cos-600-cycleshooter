@@ -62,7 +62,7 @@ void TerrainManager::createTerrain(){
     sceneManager->getRootSceneNode()->createChildSceneNode()->attachObject(terrainEntity);
     terrainEntity->setCastShadows(false);
     //Defines which texture will be used. 
-    terrainEntity->setMaterialName("Examples/HugeGround");
+    terrainEntity->setMaterialName("Examples/Ground");
 }
 
 void TerrainManager::setCollisionTransformation(){

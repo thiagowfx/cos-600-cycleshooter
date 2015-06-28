@@ -3,6 +3,7 @@ project(Cycleshooter C CXX)
 
 
 set(ASSETS_DIR "${PROJECT_SOURCE_DIR}/assets")
+set(ASSETS_BINARY_DIR "${PROJECT_BINARY_DIR}/assets")
 set(DEST_DIR "${PROJECT_BINARY_DIR}/dest")
 set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
 set(VENDOR_DIR "${PROJECT_SOURCE_DIR}/vendor")
@@ -14,6 +15,7 @@ option(DEPENDENCIES_READY "Are the dependencies ready?" OFF)
 
 
 add_definitions("-std=c++11 -g -Wno-deprecated-declarations")
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 
 add_subdirectory(${VENDOR_DIR})
@@ -41,16 +43,6 @@ if(DEPENDENCIES_READY)
         ${OGRE_Terrain_INCLUDE_DIRS}
         ${OGRE_Overlay_INCLUDE_DIRS}
         )
-
-
-    find_package(OIS REQUIRED)
-
-    if(NOT OIS_FOUND)
-        message(SEND_ERROR "Failed to find OIS.")
-    endif()
-
-    include_directories(${OIS_INCLUDE_DIRS})
-
 
     # Components that need linking (NB does not include header-only components like bind)
     set(OGRE_BOOST_COMPONENTS date_time thread)
@@ -105,7 +97,6 @@ if(DEPENDENCIES_READY)
         ${PROJECT_NAME}
         ${SFML_LIBRARIES}
         ${OGRE_LIBRARIES}
-        ${OIS_LIBRARIES}
         )
 
     add_custom_command(
@@ -130,6 +121,7 @@ if(DEPENDENCIES_READY)
     # configure *.in -> *
     foreach(IN_FILE ${IN_FILES})
         string(REGEX REPLACE "\\.in$" "" OUT_FILE "${IN_FILE}")
+        string(REGEX REPLACE "${ASSETS_DIR}" "${ASSETS_BINARY_DIR}" OUT_FILE "${OUT_FILE}")
         configure_file(
             ${IN_FILE}
             ${OUT_FILE}

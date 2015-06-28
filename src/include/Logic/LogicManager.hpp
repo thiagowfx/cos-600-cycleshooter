@@ -24,9 +24,17 @@ class LogicManager {
     Ogre::Camera *rearCamera = NULL;
 
     /*
+     *  RTT.
+     */
+    Ogre::TexturePtr rttTexture;
+    Ogre::RenderTexture* rttRenderTarget = NULL;
+
+    /*
      *  Monster section.
      */
     int monsterHealth = 10;
+
+    void decrementMonsterHealth(int quantity = 1);
 
     /*
      * Player section.
@@ -58,6 +66,7 @@ class LogicManager {
     void createCameras();
     void createSceneNodes();
     void createViewports();
+    void createRtt();
 
     // customizable settings
     const double CAMERA_NEAR_CLIP_DISTANCE = 5.0;
@@ -65,6 +74,8 @@ class LogicManager {
     const double MIRROR_PERCENTAGE_H = 0.675;
     const double MIRROR_PERCENTAGE_V = 0.135;
 
+    //Data structure for difficulty mapping.
+    std::vector<float> difficultyParamenter;
 public:
     LogicManager(Controller* controller);
 
@@ -88,12 +99,18 @@ public:
     void setDebugOn();
     void setDebugOff();
 
+    //Move functions.
+    void translatePlayer(int difficulty, Ogre::Vector3 translation);
+    void yawCamera();
+
+
     // getters and setters
     Ogre::SceneNode *getPlayerNode() const;
     int getPlayerHeartRate() const;
     void setPlayerHeartRate(const int& value);
     int getPlayerAmmo() const;
     int getMonsterHealth() const;
+    void setDifficultyParamenter();
 };
 }
 
