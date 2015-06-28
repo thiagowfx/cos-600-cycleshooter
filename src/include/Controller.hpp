@@ -242,13 +242,13 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
      */
     void toggleDebug();
 
+public:
+    Controller(int argc, char *argv[]);
+
     /**
      * Finish/shutdown the game cleanly.
      */
     void shutdownNow();
-
-public:
-    Controller(int argc, char *argv[]);
 
     // getters and setters
     LogicManager* getLogicManager() const;
@@ -258,6 +258,7 @@ public:
     bool getShutdown() const;
     bool getDebug() const;
     TerrainManager* getTerrainManager() const;
+    CrosshairManager* getCrosshairManager() const;
 };
 
 }

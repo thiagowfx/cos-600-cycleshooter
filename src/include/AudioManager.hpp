@@ -25,7 +25,9 @@ enum Soundname {
  */
 enum Musicname {
     // runner mode music
-    MUSIC_RUNNER1,
+    MUSIC_RUNNER1_BFMV_HAND_OF_BLOOD,
+    MUSIC_RUNNER2_DISTURBED_DECADENCE,
+    MUSIC_RUNNER3_THREE_DAYS_GRACE_ANIMAL_I_HAVE_BECOME,
 
     // shooter mode music
     MUSIC_SHOOTER1,

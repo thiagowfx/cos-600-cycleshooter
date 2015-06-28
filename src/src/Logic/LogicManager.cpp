@@ -31,11 +31,51 @@ void LogicManager::shoot() {
         decrementPlayerAmmo();
         AudioManager::instance().random_play_shoot();
 
+        Ogre::SceneNode* monsterNode = controller->getSceneManager()->getSceneNode("monsterNode");
+
+        monsterNode->flipVisibility();
+        controller->getSceneManager()->getRootSceneNode()->flipVisibility();
+        bool debug = controller->getDebug(), setDebugOff();
+
+        rttRenderTarget->update();
+
+        Ogre::Image rttImage;
+        rttTexture->convertToImage(rttImage);
+
+        auto crosshair_to_img_coords = [](std::pair<double, double> crosshair, Ogre::Image& image) -> std::pair<int, int> {
+            // map [-1.0, +1.0] to [0, width)
+            int retx = ((crosshair.first + 1.0) * image.getWidth()) / 2.0;
+
+            // map [-1.0, +1.0] to [0, height)
+            // int rety = ((crosshair.second + 1.0) * image.getHeight()) / 2.0;
+            int rety = image.getHeight() - static_cast<int>(((crosshair.second + 1.0) * image.getHeight()) / 2.0);
+
+            if(retx == image.getWidth())
+                --retx;
+
+            if(rety == image.getHeight())
+                --rety;
+
+            return std::make_pair(retx, rety);
+        };
+
+        auto coords = crosshair_to_img_coords(controller->getCrosshairManager()->getScroll(), rttImage);
+
+        if (rttImage.getColourAt(coords.first, coords.second, 0) != Ogre::ColourValue::Black) {
+            decrementMonsterHealth();
+
+            if(monsterHealth == 0) {
+                system("echo Congratulations you won");
+                controller->shutdownNow();
+            }
+        }
+
         // TODO: (maybe) replenish ammo in the map / terrain / collision part?
         // TODO: add several sound effects for each outcome
-        // TODO: RTT crosshair + monster logic
-        // TODO: if hit, then decrease monster life
-        // TODO: check if monster is dead
+
+        if(debug) setDebugOn();
+        controller->getSceneManager()->getRootSceneNode()->flipVisibility();
+        monsterNode->flipVisibility();
     }
     else {
         std::cout << " |-> No more ammo" << std::endl;
@@ -48,6 +88,12 @@ Ogre::SceneNode *LogicManager::getPlayerNode() const {
 
 int LogicManager::getMonsterHealth() const {
     return monsterHealth;
+}
+
+void LogicManager::decrementMonsterHealth(int quantity) {
+    Ogre::LogManager::getSingleton().logMessage("--> LogicManager: Decrement Monster Health <--");
+
+    monsterHealth = std::max(0, monsterHealth - quantity);
 }
 
 void LogicManager::incrementPlayerAmmo(int quantity) {
@@ -68,6 +114,7 @@ void LogicManager::go() {
     createCameras();
     createSceneNodes();
     createViewports();
+    createRtt();
 }
 
 void LogicManager::createCameras() {
@@ -102,6 +149,24 @@ void LogicManager::createViewports() {
     Ogre::LogManager::getSingleton().logMessage("--> LogicManager: Creating Viewports <--");
 
     viewportFull = controller->getWindow()->addViewport(frontCamera, 0);
+}
+
+void LogicManager::createRtt() {
+    rttTexture = Ogre::TextureManager::getSingleton().createManual(
+                "rttTexture",
+                Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+                Ogre::TEX_TYPE_2D,
+                controller->getWindow()->getWidth(), controller->getWindow()->getHeight(),
+                0,
+                Ogre::PF_R8G8B8,
+                Ogre::TU_RENDERTARGET);
+
+    rttRenderTarget = rttTexture->getBuffer()->getRenderTarget();
+    rttRenderTarget->addViewport(rearCamera);
+    rttRenderTarget->setAutoUpdated(false);
+    rttRenderTarget->getViewport(0)->setClearEveryFrame(true);
+    rttRenderTarget->getViewport(0)->setOverlaysEnabled(false);
+    rttRenderTarget->getViewport(0)->setBackgroundColour(Ogre::ColourValue::Black);
 }
 
 void LogicManager::setupRunnerMode() {

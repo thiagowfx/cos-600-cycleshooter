@@ -61,6 +61,7 @@ void AudioManager::play(Musicname musicname, bool restart) {
     current_playing_music->play();
 }
 
+// TODO: fix this when toggling modes
 void AudioManager::toggleMute() {
     if(current_playing_music) {
         current_playing_music->getVolume() == 0.0 ?  current_playing_music->setVolume(100.0) : current_playing_music->setVolume(0.0);
@@ -93,8 +94,14 @@ void AudioManager::load_musics() {
         exit(1);
     };
 
-    if(!musics[MUSIC_RUNNER1].openFromFile(MUSIC_PATH + "runner1.ogg"))
-        error("runner1.ogg");
+    if(!musics[MUSIC_RUNNER1_BFMV_HAND_OF_BLOOD].openFromFile(MUSIC_PATH + "bfmv-hand-of-blood.ogg"))
+        error("bfmv-hand-of-blood.ogg");
+
+    if(!musics[MUSIC_RUNNER2_DISTURBED_DECADENCE].openFromFile(MUSIC_PATH + "disturbed-decadence.ogg"))
+        error("disturbed-decadence.ogg");
+
+    if(!musics[MUSIC_RUNNER3_THREE_DAYS_GRACE_ANIMAL_I_HAVE_BECOME].openFromFile(MUSIC_PATH + "three-days-grace-animal-i-have-become.ogg"))
+        error("three-days-grace-animal-i-have-become.ogg");
 
     if(!musics[MUSIC_SHOOTER1].openFromFile(MUSIC_PATH + "shooter1.ogg"))
         error("shooter1.ogg");
