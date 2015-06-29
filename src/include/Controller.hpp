@@ -81,6 +81,11 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     sf::VideoMode sVideoMode;
 
     /**
+     * @brief clockHeartbeat Used to sample heartbeat sounds.
+     */
+    sf::Clock clockHeartbeat;
+
+    /**
      * @brief clockUnbuf Used to create a delay between two consecutive unbuffered inputs.
      */
     sf::Clock clockUnbuf;

@@ -124,6 +124,11 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     // update game logic
     logicManager->update(evt);
 
+    if(context == CONTEXT_SHOOTER && clockHeartbeat.getElapsedTime() >= sf::milliseconds(430)) {
+        AudioManager::instance().play_heartbeat(logicManager->getPlayerHeartRate(), 80, 130);
+        clockHeartbeat.restart();
+    }
+
     // update game HUD
     hud->update(evt);
 
