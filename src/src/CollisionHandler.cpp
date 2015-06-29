@@ -80,12 +80,13 @@ void CollisionHandler::printBullets(){
     //Grabing matrix dimensions.
     matrixColNumber = bulletMatrix[0].size();
     matrixRowNumber = bulletMatrix.size();
-    for(int pixelWidth = 0;pixelWidth < matrixColNumber;pixelWidth++){
-        for(int pixelHeight = 0; pixelHeight < matrixRowNumber;pixelHeight++){
+    for(int pixelWidth = 0;pixelWidth < matrixRowNumber;pixelWidth++){
+        for(int pixelHeight = 0; pixelHeight < matrixColNumber;pixelHeight++){
             if(bulletMatrix[pixelWidth][pixelHeight].first){
-                std::cout << "Bullet Matrix at (" << pixelWidth << "," << pixelHeight << ")"<< " exists!" << std::endl;
-                //std::cout << bulletMatrix[pixelWidth][pixelHeight].second.getScenenodeName() << std::endl;
+                //std::cout << "Bullet Matrix at (" << pixelWidth << "," << pixelHeight << ")"<< " exists!" << std::endl;
+                std::cout << bulletMatrix[pixelWidth][pixelHeight].second.getScenenodeName() << std::endl;
             }
+            std::cout << bulletMatrix[pixelWidth][pixelHeight].first << std::endl;
         }
     }
 }
@@ -137,11 +138,36 @@ int CollisionHandler::getCollisionMatrixHeight() const{
 void CollisionHandler::setBulletAt(int width, int height,bool exist, Ogre::Vector3 coord){
     //if(bulletMatrix[width][height].first) std::cout << "There is a bullet here!" << std::endl;
     //Setting the new bullet.
+    bulletMatrix[width][height].first = true;
     bulletMatrix[width][height].second.setNewBullet(coord,bulletCount);
     BulletElement test = bulletMatrix[width][height].second;
     std::cout << "Testing name " << test.getScenenodeName()<<std::endl;
     //Increasing bullet identifiers.
     bulletCount++;
+}
+
+std::pair<std::vector<Ogre::String> , std::vector<Ogre::Vector3> > CollisionHandler::getSceneNodeNames(){
+    std::vector<Ogre::String> names;
+    std::vector<Ogre::Vector3> coords;
+    int matrixColNumber, matrixRowNumber;
+    //Grabing matrix dimensions.
+    matrixColNumber = bulletMatrix[0].size();
+    matrixRowNumber = bulletMatrix.size();
+    //printBullets();
+    Ogre::LogManager::getSingletonPtr()->logMessage("--> CollisionHandler: Searching Bullets <--");
+    for(int pixelWidth = 0;pixelWidth < matrixRowNumber;pixelWidth++){
+        for(int pixelHeight = 0; pixelHeight < matrixColNumber;pixelHeight++){
+            if(bulletMatrix[pixelWidth][pixelHeight].first){
+                Ogre::LogManager::getSingletonPtr()->logMessage("--> CollisionHandler: Found Bullet <--");
+                BulletElement e = bulletMatrix[pixelWidth][pixelHeight].second;
+                Ogre::String s = e.getScenenodeName();
+                Ogre::Vector3 v = e.getCoordinate();
+                names.push_back(s);
+                coords.push_back(v);
+            }
+        }
+    }
+    return std::make_pair(names, coords);
 }
 
 }

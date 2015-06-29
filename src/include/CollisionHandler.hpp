@@ -51,6 +51,7 @@ public:
 
     //Functions to add and remove bullets.
     void setBulletAt(int width, int height, bool exist, Ogre::Vector3 coord);
+    std::pair<std::vector<Ogre::String> , std::vector<Ogre::Vector3> > getSceneNodeNames();
 
     //Testing functions
     void printMatrix(); //Testing funcition for collisionMatrix.
