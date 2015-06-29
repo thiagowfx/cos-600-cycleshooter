@@ -88,7 +88,6 @@ void AudioManager::populate_sounds() {
     LOAD_TEMPLATE(SOUND_SHOOT02, "shoot/shoot02.wav");
     LOAD_TEMPLATE(SOUND_SHOOT03, "shoot/shoot03.wav");
     LOAD_TEMPLATE(SOUND_SHOOT04, "shoot/shoot04.wav");
-    LOAD_TEMPLATE(SOUND_SHOOT05, "shoot/shoot05.wav");
     LOAD_TEMPLATE(SOUND_HEARTBEAT01, "heartbeat/heartbeat01.wav");
     LOAD_TEMPLATE(SOUND_HEARTBEAT02, "heartbeat/heartbeat02.wav");
     LOAD_TEMPLATE(SOUND_HEARTBEAT03, "heartbeat/heartbeat03.wav");
@@ -125,7 +124,7 @@ void AudioManager::play_random(const std::vector<Soundname>& sound_list) {
 void AudioManager::play_random_shoot() {
     Ogre::LogManager::getSingleton().logMessage("--> AudioManager: Play Random Shoot <--");
 
-    static std::vector<Soundname> shoot_sound_list = {SOUND_SHOOT01, SOUND_SHOOT02, SOUND_SHOOT03, SOUND_SHOOT04, SOUND_SHOOT05};
+    static std::vector<Soundname> shoot_sound_list = {SOUND_SHOOT01, SOUND_SHOOT02, SOUND_SHOOT03, SOUND_SHOOT04};
     play_random(shoot_sound_list);
 }
 
