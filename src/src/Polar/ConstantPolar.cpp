@@ -3,7 +3,7 @@
 namespace Cycleshooter {
 
 ConstantPolar::ConstantPolar(int peak) :
-    RandomPolar(peak, peak, 1)
+    RandomPolar(peak, peak)
 {
 }
 

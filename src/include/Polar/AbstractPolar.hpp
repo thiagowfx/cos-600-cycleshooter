@@ -2,28 +2,34 @@
 #define _ABSTRACTPOLAR_HPP_
 
 #include <algorithm>
-#include <deque>
+#include <iostream>
+#include <cstring>
 
 namespace Cycleshooter {
 class AbstractPolar {
 protected:
     /**
-     * Record/History of latest heart rates.
+     * Sum of the values acquired in this section.
      */
-    std::deque<int> HRHistory;
+    long long int sum = 0;
 
     /**
-     * Maximum number of entries in heart rate history.
+     * Number of the values of acquired in this section.
      */
-    const int HRHistoryLimit;
-
+    long long int count = 0;
     /**
-     * Add a new record to the history of heart rates.
+     * Max value of a heart beat.
      */
-    void addRecord(const int& record);
+    long long int max;
+    /**
+     * Min value of a heart beat.
+     */
+    long long int min;
+
+    void updateStatistics(int heartRate);
 
 public:
-    AbstractPolar(int HRHistoryLimit = 120);
+    AbstractPolar();
 
     /**
      * Get a single value to represent the heart rate and record it.
@@ -34,7 +40,7 @@ public:
      * Get the mean of the recorded heart rates.
      * Useful to get the base heart rate in the beginning of the game.
      */
-    int getMeanHeartRate();
+    std::string printStatistics();
 };
 
 }

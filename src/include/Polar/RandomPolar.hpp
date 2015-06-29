@@ -11,7 +11,7 @@ class RandomPolar : public AbstractPolar {
     int minPeak, maxPeak;
 
 public:
-    RandomPolar(int minPeak = 90, int maxPeak = 100, int HRHistoryLimit = 120);
+    RandomPolar(int minPeak = 90, int maxPeak = 100);
 
     /**
      * Get a random heart rate in [minPeak, maxPeak] range.

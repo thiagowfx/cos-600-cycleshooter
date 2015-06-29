@@ -2,8 +2,8 @@
 
 namespace Cycleshooter {
 
-RealPolar::RealPolar(const char* deviceFilePath, int HRHistoryLimit) :
-    AbstractPolar(HRHistoryLimit)
+RealPolar::RealPolar(const char* deviceFilePath) :
+    AbstractPolar()
 {
     openSerialPort(deviceFilePath);
 }
@@ -136,7 +136,8 @@ int RealPolar::getInstantaneousHeartRate() {
 
     delete rspBytes;
 
-    addRecord(heartRate);
+    updateStatistics(heartRate);
+
     return heartRate;
 }
 
