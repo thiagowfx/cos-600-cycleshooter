@@ -7,7 +7,8 @@ CollisionHandler::CollisionHandler(Ogre::String collisionTexturePath):
     collisionTexture(0),
     collisionTexturePath(collisionTexturePath),
     collisionMatrixWidth(0),
-    collisionMatrixHeight(0)
+    collisionMatrixHeight(0),
+    bulletCount(0)
 {
 //    collisionMap = {{WATER_COLOR,WATER_PIXEL},{BULLET_COLOR,BULLET_PIXEL},
 //                    {ROCK_COLOR,ROCK_PIXEL},{GUAGMIRE_COLOR,GUAGMIRE_PIXEL},
@@ -31,7 +32,7 @@ void CollisionHandler::loadTensor(){
     loadImages();
     // Allocating terrainMatrix
     collisionMatrix = std::vector< std::vector<Colors> >(collisionMatrixWidth, std::vector<Colors>(collisionMatrixHeight, NONE_PIXEL));
-    bulletMatrix = std::vector<std::vector<std::pair<bool, Ogre::Vector3> > > (collisionMatrixWidth,std::vector<std::pair<bool, Ogre::Vector3> >(collisionMatrixHeight,std::make_pair(false,Ogre::Vector3::ZERO)));
+    bulletMatrix = std::vector<std::vector<std::pair<bool, BulletElement> > > (collisionMatrixWidth,std::vector<std::pair<bool, BulletElement> >(collisionMatrixHeight,std::make_pair(false,BulletElement())));
     //Pixel color to both images.
     Ogre::ColourValue collisionPixel;
     //Reading (per rows) images for data.
@@ -79,16 +80,14 @@ void CollisionHandler::printBullets(){
     //Grabing matrix dimensions.
     matrixColNumber = bulletMatrix[0].size();
     matrixRowNumber = bulletMatrix.size();
-    int bulletCount = 0;
     for(int pixelWidth = 0;pixelWidth < matrixColNumber;pixelWidth++){
         for(int pixelHeight = 0; pixelHeight < matrixRowNumber;pixelHeight++){
             if(bulletMatrix[pixelWidth][pixelHeight].first){
                 std::cout << "Bullet Matrix at (" << pixelWidth << "," << pixelHeight << ")"<< " exists!" << std::endl;
-                bulletCount++;
+                //std::cout << bulletMatrix[pixelWidth][pixelHeight].second.getScenenodeName() << std::endl;
             }
         }
     }
-    std::cout << "Total of Bullets = " << bulletCount << std::endl;
 }
 
 bool CollisionHandler::testMatrixDimension()
@@ -137,7 +136,12 @@ int CollisionHandler::getCollisionMatrixHeight() const{
 
 void CollisionHandler::setBulletAt(int width, int height,bool exist, Ogre::Vector3 coord){
     //if(bulletMatrix[width][height].first) std::cout << "There is a bullet here!" << std::endl;
-    bulletMatrix[width][height] = std::make_pair(exist,coord);
+    //Setting the new bullet.
+    bulletMatrix[width][height].second.setNewBullet(coord,bulletCount);
+    BulletElement test = bulletMatrix[width][height].second;
+    std::cout << "Testing name " << test.getScenenodeName()<<std::endl;
+    //Increasing bullet identifiers.
+    bulletCount++;
 }
 
 }

@@ -6,8 +6,8 @@
 #include <fstream>
 #include <iostream>
 #include <utility>
-#include <map>
 #include <random>
+#include <BulletElement.hpp>
 
 namespace Cycleshooter {
 class CollisionHandler {
@@ -20,7 +20,7 @@ class CollisionHandler {
 
     Ogre::Image* collisionTexture; //Texture to specify terrain type.
     Ogre::String collisionTexturePath; //Path to circuit image.
-
+    int bulletCount;
     enum Colors{
         NONE_PIXEL,
         START_PIXEL,
@@ -32,7 +32,7 @@ class CollisionHandler {
     };
     int collisionMatrixWidth, collisionMatrixHeight;
     std::vector<std::vector<Colors> > collisionMatrix;
-    std::vector<std::vector<std::pair<bool, Ogre::Vector3> > > bulletMatrix;
+    std::vector<std::vector<std::pair<bool, BulletElement> > > bulletMatrix;
 
 public:
 

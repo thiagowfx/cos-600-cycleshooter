@@ -106,19 +106,24 @@ int TerrainManager::getTerrainAt(Ogre::Vector3 coord){
 
 void TerrainManager::generateBullets(int numOfBullets){
     std::default_random_engine randomGenerator;
+    //Defining terrain limits.
     Ogre::Real wlimit = terrainWorldSizeWidth*0.5;
     Ogre::Real hLimit = terrainWorldSizeHeight*0.5;
+    //Initializing pseudo-random generators.
     std::uniform_real_distribution<float> randomWidthDistribution (-wlimit,wlimit);
     std::uniform_real_distribution<float> randomHeightDistribution (-hLimit,hLimit);
     float randomWidth, randomHeight = 0.0f;
     int test = 0;
     std::cout << "Testing Random coordinates." << std::endl;
+    //Generating random values.
     for(int i= 0;i<numOfBullets;i++){
         randomWidth = randomWidthDistribution(randomGenerator);
         randomHeight = randomHeightDistribution(randomGenerator);
         Ogre::Vector3 coord(randomWidth,0,randomHeight);
         std::pair<int,int> location = getCollisionCoordinates(coord);
         test++;
+        //Inserting random bullets in collision handler.
+        //TODO: Correct bugs in the bullets number.
         collisionHandler->setBulletAt(location.first,location.second,true,coord);
         std::cout << "Width = " << randomWidth <<" Height = "<<randomHeight<<" i = "<<i <<std::endl;
     }

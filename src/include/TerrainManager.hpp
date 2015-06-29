@@ -5,6 +5,7 @@
 #include <OgreTerrain.h>
 #include <OgreTerrainGroup.h>
 #include <CollisionHandler.hpp>
+#include <OgreSceneManager.h>
 
 namespace Cycleshooter {
 
@@ -32,8 +33,9 @@ public:
     std::pair<int,int> getCollisionCoordinates(Ogre::Vector3 point);
     int getTerrainAt(Ogre::Vector3 coord);
 
-    //Random bullets Generator.
-    void generateBullets(int numOfBullets);
+
+    void generateBullets(int numOfBullets);//Random bullets Generator.
+    void renderBullets();
 
     //Test Functions.
     void printCollisionTransformation();
