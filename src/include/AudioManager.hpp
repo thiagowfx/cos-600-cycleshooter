@@ -14,9 +14,18 @@ namespace Cycleshooter {
  */
 enum Soundname {
     // shoot (weapon fire) sounds
-    SOUND_SHOOT1,
-    SOUND_SHOOT2,
-    SOUND_SHOOT3,
+    SOUND_SHOOT01,
+    SOUND_SHOOT02,
+    SOUND_SHOOT03,
+    SOUND_SHOOT04,
+    SOUND_SHOOT05,
+
+    // heartbeat sounds
+    SOUND_HEARTBEAT01,
+    SOUND_HEARTBEAT02,
+    SOUND_HEARTBEAT03,
+    SOUND_HEARTBEAT04,
+    SOUND_HEARTBEAT05,
 };
 
 /**
@@ -127,6 +136,11 @@ public:
      * Play a random shoot (weapon fire) sound.
      */
     void play_random_shoot();
+
+    /**
+     *  Play a heartbeat sound, according to the specified level.
+     */
+    void play_heartbeat(int level, int minimum, int maximum);
 };
 }
 

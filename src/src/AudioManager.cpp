@@ -84,9 +84,16 @@ void AudioManager::populate_sounds() {
             error(soundfile);\
     } while(0)
 
-    LOAD_TEMPLATE(SOUND_SHOOT1, "shoot1.wav");
-    LOAD_TEMPLATE(SOUND_SHOOT2, "shoot2.wav");
-    LOAD_TEMPLATE(SOUND_SHOOT3, "shoot3.wav");
+    LOAD_TEMPLATE(SOUND_SHOOT01, "shoot/shoot01.wav");
+    LOAD_TEMPLATE(SOUND_SHOOT02, "shoot/shoot02.wav");
+    LOAD_TEMPLATE(SOUND_SHOOT03, "shoot/shoot03.wav");
+    LOAD_TEMPLATE(SOUND_SHOOT04, "shoot/shoot04.wav");
+    LOAD_TEMPLATE(SOUND_SHOOT05, "shoot/shoot05.wav");
+    LOAD_TEMPLATE(SOUND_HEARTBEAT01, "heartbeat/heartbeat01.wav");
+    LOAD_TEMPLATE(SOUND_HEARTBEAT02, "heartbeat/heartbeat02.wav");
+    LOAD_TEMPLATE(SOUND_HEARTBEAT03, "heartbeat/heartbeat03.wav");
+    LOAD_TEMPLATE(SOUND_HEARTBEAT04, "heartbeat/heartbeat04-2.wav");
+    LOAD_TEMPLATE(SOUND_HEARTBEAT05, "heartbeat/heartbeat05-2.wav");
 
 #undef LOAD_TEMPLATE
 }
@@ -118,8 +125,18 @@ void AudioManager::play_random(const std::vector<Soundname>& sound_list) {
 void AudioManager::play_random_shoot() {
     Ogre::LogManager::getSingleton().logMessage("--> AudioManager: Play Random Shoot <--");
 
-    static std::vector<Soundname> shoot_sound_list = {SOUND_SHOOT1, SOUND_SHOOT2, SOUND_SHOOT3};
+    static std::vector<Soundname> shoot_sound_list = {SOUND_SHOOT01, SOUND_SHOOT02, SOUND_SHOOT03, SOUND_SHOOT04, SOUND_SHOOT05};
     play_random(shoot_sound_list);
+}
+
+void AudioManager::play_heartbeat(int level, int minimum, int maximum) {
+    static std::vector<Soundname> heartbeat_sound_list = {SOUND_HEARTBEAT01, SOUND_HEARTBEAT02, SOUND_HEARTBEAT03, SOUND_HEARTBEAT04, SOUND_HEARTBEAT05};
+    static const int tam = heartbeat_sound_list.size();
+    // TODO
+    // 0, 50, 5
+    // 60, 75, 110, 5
+    // map level to 0-(tam-1)
+    // int range_size = (maximum - minimum) / tam;
 }
 
 }
