@@ -88,6 +88,9 @@ void AudioManager::populate_sounds() {
     LOAD_TEMPLATE(SOUND_SHOOT02, "shoot/shoot02.wav");
     LOAD_TEMPLATE(SOUND_SHOOT03, "shoot/shoot03.wav");
     LOAD_TEMPLATE(SOUND_SHOOT04, "shoot/shoot04.wav");
+
+    LOAD_TEMPLATE(SOUND_DRY_SHOOT, "shoot/dry_shoot.wav");
+
     LOAD_TEMPLATE(SOUND_HEARTBEAT01, "heartbeat/heartbeat01.wav");
     LOAD_TEMPLATE(SOUND_HEARTBEAT02, "heartbeat/heartbeat02.wav");
     LOAD_TEMPLATE(SOUND_HEARTBEAT03, "heartbeat/heartbeat03.wav");
@@ -135,7 +138,7 @@ void AudioManager::play_heartbeat(int level, int minimum, int maximum) {
     // 0, 50, 5
     // 60, 75, 110, 5
     // map level to 0-(tam-1)
-    // int range_size = (maximum - minimum) / tam;
+    // int range_size  = (maximum - minimum) / tam;
 }
 
 }
