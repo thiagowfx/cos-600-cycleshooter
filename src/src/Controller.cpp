@@ -249,7 +249,7 @@ void Controller::createGameElements() {
     // attention: logic manager should be created before any threads that will update it
     logicManager = std::unique_ptr<LogicManager>(new LogicManager(this));
 
-    polar = std::unique_ptr<AbstractPolar>(new RandomPolar());
+    polar = std::unique_ptr<AbstractPolar>(new RandomPolar(80, 130));
     polarUpdater = std::unique_ptr<sf::Thread>(new sf::Thread(&Controller::polarUpdaterFunction, this));
     polarUpdater->launch();
 
