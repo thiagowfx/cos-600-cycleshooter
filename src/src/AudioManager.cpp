@@ -131,7 +131,7 @@ void AudioManager::play_random_shoot() {
     play_random(shoot_sound_list);
 }
 
-void AudioManager::play_heartbeat(int level, int minimum, int maximum) {
+Soundname AudioManager::get_soundname_from_heartbeat(int level, int minimum, int maximum) {
     static std::vector<Soundname> heartbeat_sound_list = {SOUND_HEARTBEAT01, SOUND_HEARTBEAT02, SOUND_HEARTBEAT03, SOUND_HEARTBEAT04, SOUND_HEARTBEAT05};
     static const int range_size = (maximum - minimum) / heartbeat_sound_list.size();
 
@@ -143,22 +143,26 @@ void AudioManager::play_heartbeat(int level, int minimum, int maximum) {
 
     switch(sound) {
     case 0:
-        play_sound(SOUND_HEARTBEAT01);
-        break;
+        return SOUND_HEARTBEAT01;
     case 1:
-        play_sound(SOUND_HEARTBEAT02);
-        break;
+        return SOUND_HEARTBEAT02;
     case 2:
-        play_sound(SOUND_HEARTBEAT03);
-        break;
+        return SOUND_HEARTBEAT03;
     case 3:
-        play_sound(SOUND_HEARTBEAT04);
-        break;
+        return SOUND_HEARTBEAT04;
     case 4:
     default:
-        play_sound(SOUND_HEARTBEAT05);
-        break;
+        return SOUND_HEARTBEAT05;
     }
+}
+
+void AudioManager::play_heartbeat(int level, int minimum, int maximum) {
+    if(is_heartbeat_playing)
+        return;
+    is_heartbeat_playing = true;
+
+    Soundname soundname = get_soundname_from_heartbeat(level, minimum, maximum);
+    play_sound(soundname);
 }
 
 }

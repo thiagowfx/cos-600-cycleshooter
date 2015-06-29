@@ -119,6 +119,16 @@ private:
      */
     void do_mute();
 
+    /**
+     * Is a heartbeat sound playing currently?
+     */
+    bool is_heartbeat_playing = false;
+
+    /**
+     * Map a heartbeat level to a heartbeat sound.
+     */
+    Soundname get_soundname_from_heartbeat(int level, int minimum, int maximum);
+
 public:
     /**
      * Play the sound specified as argument.
