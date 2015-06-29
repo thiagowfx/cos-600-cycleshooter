@@ -122,7 +122,7 @@ private:
     /**
      * Is a heartbeat sound playing currently?
      */
-    bool is_heartbeat_playing = false;
+    sf::Sound heartbeat_sound;
 
     /**
      * Map a heartbeat level to a heartbeat sound.
