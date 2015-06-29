@@ -2,35 +2,20 @@
 
 namespace Cycleshooter {
 
-AbstractPolar::AbstractPolar()
-{
+void AbstractPolar::print_statistics(std::ostream& os) const {
+    os << "Statistics of Heart Rates" << std::endl;
+    os << "=========================" << std::endl;
+    os << "- Number of records acquired: "<< stats.count << std::endl;
+    os << "- Mean: " << static_cast<double>(stats.sum) / stats.count << std::endl;
+    os << "- Greatest Heart beat: " << stats.greatest << std::endl;
+    os << "- Lowest Heart beat: " << stats.lowest << std::endl;
 }
 
-std::string AbstractPolar::printStatistics() {
-    std::cout << "Number of records acquired in the game: "<< count << std::endl;
-    std::cout << "Median of Heart beats: " << (sum/count) << std::endl;
-    std::cout << "Greatest record of Heart beat: " << max << std::endl;
-    std::cout << "Lowest record of Heart beat: " << min << std::endl;
-}
-
-void AbstractPolar::updateStatistics(int heartRate){
-    // Statistics variables
-    if (count == 0){
-        max = heartRate;
-        min = heartRate;
-
-    } else {
-        if (heartRate > max)
-            max = heartRate;
-
-        if (heartRate < min)
-            min = heartRate;
-    }
-
-    // Updating variables
-    sum += heartRate;
-    count++;
-
+void AbstractPolar::update_statistics(const long long int& heartRate) {
+    stats.lowest = std::min(stats.lowest, heartRate);
+    stats.greatest = std::max(stats.greatest, heartRate);
+    stats.sum += heartRate;
+    ++stats.count;
 }
 
 }

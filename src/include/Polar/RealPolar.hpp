@@ -69,6 +69,9 @@ public:
      */
     RealPolar(const char* deviceFilePath);
 
+    /**
+     * Cleanly close the serial port.
+     */
     virtual ~RealPolar();
 
     /**

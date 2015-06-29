@@ -136,8 +136,7 @@ int RealPolar::getInstantaneousHeartRate() {
 
     delete rspBytes;
 
-    updateStatistics(heartRate);
-
+    update_statistics(heartRate);
     return heartRate;
 }
 
