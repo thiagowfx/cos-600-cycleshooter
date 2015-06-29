@@ -66,7 +66,7 @@ void AudioManager::toggle_mute() {
 
 void AudioManager::do_mute() {
     if(current_playing_music) {
-        mute_music ? current_playing_music->setVolume(0.0) : current_playing_music->setVolume(100.0);
+        mute_music ? current_playing_music->setVolume(0.0) : current_playing_music->setVolume(MUSIC_VOLUME_RATIO * 100.0);
     }
 }
 

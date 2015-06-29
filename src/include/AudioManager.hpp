@@ -70,6 +70,12 @@ private:
     const std::string MUSIC_PATH = "../audio/music/";
 
     /**
+     * @brief SOUND_MUSIC_VOLUME_RATIO How much is the music volume lower than the sound volume, relatively?
+     * E.g. 0.5 means the music is 50% lower than the sound.
+     */
+    const double MUSIC_VOLUME_RATIO = 0.33;
+
+    /**
      * Maps all soundnames to their respective soundbuffers.
      */
     std::map<Soundname, sf::SoundBuffer> sound_map;
