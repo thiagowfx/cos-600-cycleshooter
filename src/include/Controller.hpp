@@ -15,7 +15,10 @@
 #include "Context.hpp"
 #include "InputManager.hpp"
 #include "LogicManager.hpp"
+
+#include "ConstantPolar.hpp"
 #include "RandomPolar.hpp"
+#include "RealPolar.hpp"
 
 #include "CrosshairManager.hpp"
 #include "HUD.hpp"
@@ -81,16 +84,6 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     sf::VideoMode sVideoMode;
 
     /**
-     * @brief clockHeartbeat Used to sample heartbeat sounds.
-     */
-    sf::Clock clockHeartbeat;
-
-    /**
-     * @brief clockUnbuf Used to create a delay between two consecutive unbuffered inputs.
-     */
-    sf::Clock clockUnbuf;
-
-    /**
      * @brief APPLICATION_NAME Name of our application
      */
     const Ogre::String APPLICATION_NAME = "Cycleshooter";
@@ -99,6 +92,26 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
      * @brief POLAR_SLEEP_TIME Time between polar updates.
      */
     const sf::Time POLAR_SLEEP_TIME = sf::milliseconds(500);
+
+    /**
+     * @brief POLAR_PEAK_CHANGE Variation of the heart beat between sucessive increments/decrements.
+     */
+    const int POLAR_PEAK_CHANGE = 5;
+
+    /**
+     * @brief HEARTBEAT_PLAY_CHECK_PERIOD Time period to check if a heart beat sound should be played or not.
+     */
+    const sf::Time HEARTBEAT_PLAY_CHECK_PERIOD = sf::milliseconds(220);
+
+    /**
+     * @brief HEARTBEAT_MINIMUM_ASSUMED The minimumum expected heart beat. Used to choose a sound.
+     */
+    const int HEARTBEAT_MINIMUM_ASSUMED = 75;
+
+    /**
+     * @brief HEARTBEAT_MAXIMUM_ASSUMED The maximum expected heart beat. Used to choose a sound.
+     */
+    const int HEARTBEAT_MAXIMUM_ASSUMED = 150;
 
     /**
      * @brief THRESHOLD_UNBUF_KEYS Threshold between two consecutive unbuffered inputs.

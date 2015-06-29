@@ -124,8 +124,10 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     // update game logic
     logicManager->update(evt);
 
-    if(context == CONTEXT_SHOOTER && clockHeartbeat.getElapsedTime() >= sf::milliseconds(430)) {
-        AudioManager::instance().play_heartbeat(logicManager->getPlayerHeartRate(), 80, 130);
+    // play heart beat sound if appropriate
+    static sf::Clock clockHeartbeat;
+    if(context == CONTEXT_SHOOTER && clockHeartbeat.getElapsedTime() >= HEARTBEAT_PLAY_CHECK_PERIOD) {
+        AudioManager::instance().play_heartbeat(logicManager->getPlayerHeartRate(), HEARTBEAT_MINIMUM_ASSUMED, HEARTBEAT_MAXIMUM_ASSUMED);
         clockHeartbeat.restart();
     }
 
@@ -133,6 +135,7 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     hud->update(evt);
 
     // process unbuffered keys
+    static sf::Clock clockUnbuf;
     if(clockUnbuf.getElapsedTime() >= THRESHOLD_UNBUF_KEYS) {
         InputManager::instance().executeActionsUnbuf(context);
         clockUnbuf.restart();
@@ -254,7 +257,7 @@ void Controller::createGameElements() {
     // attention: logic manager should be created before any threads that will update it
     logicManager = std::unique_ptr<LogicManager>(new LogicManager(this));
 
-    polar = std::unique_ptr<AbstractPolar>(new RandomPolar(80, 130));
+    polar = std::unique_ptr<AbstractPolar>(new RandomPolar(80, 95));
     polarUpdater = std::unique_ptr<sf::Thread>(new sf::Thread(&Controller::polarUpdaterFunction, this));
     polarUpdater->launch();
 
@@ -348,6 +351,14 @@ void Controller::setupMappings() {
 
     InputManager::instance().addKey(sf::Keyboard::Num2, [&]{
         toggleDebug();
+    });
+
+    InputManager::instance().addKey(sf::Keyboard::LBracket, [&]{
+        polar->changePeaks(-POLAR_PEAK_CHANGE);
+    });
+
+    InputManager::instance().addKey(sf::Keyboard::RBracket, [&]{
+        polar->changePeaks(POLAR_PEAK_CHANGE);
     });
 
     // refresh all textures
