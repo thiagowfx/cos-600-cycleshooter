@@ -78,7 +78,8 @@ void LogicManager::shoot() {
         monsterNode->flipVisibility();
     }
     else {
-        std::cout << " |-> No more ammo" << std::endl;
+        AudioManager::instance().play_sound(SOUND_DRY_SHOOT);
+        std::cout << "----> No more ammo" << std::endl;
     }
 }
 

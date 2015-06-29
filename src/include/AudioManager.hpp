@@ -20,6 +20,9 @@ enum Soundname {
     SOUND_SHOOT04,
     SOUND_SHOOT05,
 
+    // dry shoot (=no ammo left)
+    SOUND_DRY_SHOOT,
+
     // heartbeat sounds
     SOUND_HEARTBEAT01,
     SOUND_HEARTBEAT02,
@@ -51,6 +54,7 @@ class AudioManager {
     AudioManager();
     AudioManager(const AudioManager&) = delete;
     void operator=(const AudioManager&) = delete;
+
 public:
     static AudioManager& instance();
 
@@ -142,6 +146,7 @@ public:
      */
     void play_heartbeat(int level, int minimum, int maximum);
 };
+
 }
 
 #endif
