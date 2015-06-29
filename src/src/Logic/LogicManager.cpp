@@ -29,7 +29,7 @@ void LogicManager::shoot() {
 
     if(playerAmmo > 0) {
         decrementPlayerAmmo();
-        AudioManager::instance().random_play_shoot();
+        AudioManager::instance().play_random_shoot();
 
         Ogre::SceneNode* monsterNode = controller->getSceneManager()->getSceneNode("monsterNode");
 

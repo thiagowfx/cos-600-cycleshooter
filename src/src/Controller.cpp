@@ -351,7 +351,7 @@ void Controller::setupMappings() {
     });
 
     InputManager::instance().addKey(sf::Keyboard::M, [&] {
-       AudioManager::instance().toggleMute();
+       AudioManager::instance().toggle_mute();
     });
 
     // take a screenshot
@@ -433,7 +433,7 @@ void Controller::setupRunnerMode() {
     logicManager->setupRunnerMode();
     crosshairManager->setupRunnerMode();
     hud->setupRunnerMode();
-    AudioManager::instance().play(MUSIC_RUNNER1_BFMV_HAND_OF_BLOOD);
+    AudioManager::instance().play_music(MUSIC_RUNNER);
 }
 
 void Controller::setupShooterMode() {
@@ -444,7 +444,7 @@ void Controller::setupShooterMode() {
     logicManager->setupShooterMode();
     crosshairManager->setupShooterMode();
     hud->setupShooterMode();
-    AudioManager::instance().play(MUSIC_SHOOTER1);
+    AudioManager::instance().play_music(MUSIC_SHOOTER);
 }
 
 void Controller::toggleMode() {

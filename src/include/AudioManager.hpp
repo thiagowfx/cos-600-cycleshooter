@@ -3,7 +3,6 @@
 
 #include <deque>
 #include <map>
-
 #include <OgreLogManager.h>
 #include <SFML/Audio.hpp>
 #include <SFML/System/Mutex.hpp>
@@ -14,7 +13,7 @@ namespace Cycleshooter {
  * Each element represents an unique sound.
  */
 enum Soundname {
-    // shoot (fire weapon) sounds
+    // shoot (weapon fire) sounds
     SOUND_SHOOT1,
     SOUND_SHOOT2,
     SOUND_SHOOT3,
@@ -25,99 +24,109 @@ enum Soundname {
  */
 enum Musicname {
     // runner mode music
-    MUSIC_RUNNER1_BFMV_HAND_OF_BLOOD,
-    MUSIC_RUNNER2_DISTURBED_DECADENCE,
-    MUSIC_RUNNER3_THREE_DAYS_GRACE_ANIMAL_I_HAVE_BECOME,
+    MUSIC_RUNNER,
 
     // shooter mode music
-    MUSIC_SHOOTER1,
+    MUSIC_SHOOTER,
 };
 
 /**
  * @brief The AudioManager class A singleton class to handle all game music and sounds.
+ *
  * It also acts as a SoundManager. Inspired originally by: http://stackoverflow.com/a/27860198
- * Note: sound = short duration; music = long duration; audio = generic word to refer to these.
- * Only one background music is allowed at once. However, you may play several sounds simultaneously.
+ * Note: sound = short duration; music = long duration; audio = generic word to refer to these ones.
+ * Only one background music is allowed at any time. However, you may play several sound effects simultaneously.
  */
 class AudioManager {
-    // constructor and copy functions
+    // constructor and copy functions to make this class a singleton
     AudioManager();
     AudioManager(const AudioManager&) = delete;
     void operator=(const AudioManager&) = delete;
+public:
+    static AudioManager& instance();
 
+private:
     /**
-     * @brief AUDIO_PATH Location of the sounds. It should have a trailing slash.
+     * @brief AUDIO_PATH Location of the sounds. It must have a trailing slash.
      */
-    const std::string AUDIO_PATH = "../audio/sounds/";
+    const std::string SOUND_PATH = "../audio/sounds/";
 
     /**
-     * @brief MUSIC_PATH Location of the musics. It should have a trailing slash.
+     * @brief MUSIC_PATH Location of the musics. It must have a trailing slash.
      */
     const std::string MUSIC_PATH = "../audio/music/";
 
     /**
      * Maps all soundnames to their respective soundbuffers.
      */
-    std::map<Soundname, sf::SoundBuffer> sounds;
+    std::map<Soundname, sf::SoundBuffer> sound_map;
 
     /**
      * Maps all musicnames to their respective Music variables.
      */
-    std::map<Musicname, sf::Music> musics;
-
-    /**
-     * Manages currently playing sounds.
-     */
-    std::deque<sf::Sound> playing_sounds;
+    std::map<Musicname, sf::Music> music_map;
 
     /**
      * Populate the sounds map.
      */
-    void load_sounds();
+    void populate_sounds();
 
     /**
      * Populate the musics map.
      */
-    void load_musics();
+    void populate_musics();
 
     /**
-     * Randomly plays a sound from the specified list.
+     * Manages sounds being played currently.
      */
-    void random_play(const std::vector<Soundname>& sound_list);
-
-    /**
-     * @brief current_playing_music_mutex Prevents simultaneous access to the current_playing_music variable.
-     */
-    sf::Mutex current_playing_music_mutex;
+    std::deque<sf::Sound> playing_sounds;
 
     /**
      * The current playing music, if any.
      */
     sf::Music* current_playing_music = NULL;
 
-public:
-    static AudioManager& instance();
+    /**
+     * Prevents simultaneous access to the current_playing_music variable.
+     */
+    sf::Mutex current_playing_music_mutex;
 
+    /**
+     * Randomly plays a sound from the specified sound list.
+     */
+    void play_random(const std::vector<Soundname>& sound_list);
+
+    /**
+     * Is the music muted?
+     */
+    bool mute_music = false;
+
+    /**
+     * Mute the current playing music if the mute_music variable is set to true.
+     */
+    void do_mute();
+
+public:
     /**
      * Play the sound specified as argument.
      */
-    void play(Soundname soundname);
+    void play_sound(const Soundname& soundname);
 
     /**
-     * Stops playing the current music, and begins to play the one passed as argument.
-     * If restart is false, the music will keep playing from where it stopped before, otherwise it will begin from its start.
+     * Play the music specified as argument, stopping the current one·
+     * If restart is false, then it resumes the playback from the latest point where it stopped.
      */
-    void play(Musicname musicname, bool restart = false);
+    void play_music(const Musicname& musicname, bool restart = false);
 
     /**
-     * Mute the current playing music.
+     * Toggle the mute status of the music.
      */
-    void toggleMute();
+    void toggle_mute();
 
     /**
-     * Play a random shoot (fire) sound.
+     * Play a random shoot (weapon fire) sound.
      */
-    void random_play_shoot();
+    void play_random_shoot();
 };
 }
 
