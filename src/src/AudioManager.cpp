@@ -95,8 +95,8 @@ void AudioManager::populate_sounds() {
     LOAD_TEMPLATE(SOUND_HEARTBEAT01, "heartbeat/heartbeat01.wav");
     LOAD_TEMPLATE(SOUND_HEARTBEAT02, "heartbeat/heartbeat02.wav");
     LOAD_TEMPLATE(SOUND_HEARTBEAT03, "heartbeat/heartbeat03.wav");
-    LOAD_TEMPLATE(SOUND_HEARTBEAT04, "heartbeat/heartbeat04-2.wav");
-    LOAD_TEMPLATE(SOUND_HEARTBEAT05, "heartbeat/heartbeat05-2.wav");
+    LOAD_TEMPLATE(SOUND_HEARTBEAT04, "heartbeat/heartbeat04.wav");
+    LOAD_TEMPLATE(SOUND_HEARTBEAT05, "heartbeat/heartbeat05.wav");
 
 #undef LOAD_TEMPLATE
 }
@@ -134,12 +134,32 @@ void AudioManager::play_random_shoot() {
 
 void AudioManager::play_heartbeat(int level, int minimum, int maximum) {
     static std::vector<Soundname> heartbeat_sound_list = {SOUND_HEARTBEAT01, SOUND_HEARTBEAT02, SOUND_HEARTBEAT03, SOUND_HEARTBEAT04, SOUND_HEARTBEAT05};
-    static const int tam = heartbeat_sound_list.size();
-    // TODO
-    // 0, 50, 5
-    // 60, 75, 110, 5
-    // map level to 0-(tam-1)
-    // int range_size  = (maximum - minimum) / tam;
+    static const int range_size = (maximum - minimum) / heartbeat_sound_list.size();
+
+    // clamping
+    level = std::min(maximum, level);
+    level = std::max(minimum, level);
+
+    int sound = (level - minimum) / range_size;
+
+    switch(sound) {
+    case 0:
+        play_sound(SOUND_HEARTBEAT01);
+        break;
+    case 1:
+        play_sound(SOUND_HEARTBEAT02);
+        break;
+    case 2:
+        play_sound(SOUND_HEARTBEAT03);
+        break;
+    case 3:
+        play_sound(SOUND_HEARTBEAT04);
+        break;
+    case 4:
+    default:
+        play_sound(SOUND_HEARTBEAT05);
+        break;
+    }
 }
 
 }
