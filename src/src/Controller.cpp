@@ -116,7 +116,7 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
 
     if(shutdown) {
         // sync with other threads for a clean shutdown
-        polarUpdater->wait();
+        wait_threads();
 
         return false;
     }
@@ -180,6 +180,12 @@ void Controller::shutdownNow(bool gameWon) {
 
 bool Controller::getDebug() const {
     return debug;
+}
+
+void Controller::wait_threads() const {
+    Ogre::LogManager::getSingleton().logMessage("--> Controller: Wait Threads <--");
+
+    polarUpdater->wait();
 }
 
 void Controller::go() {
@@ -407,6 +413,7 @@ void Controller::gameMainLoop() {
         oRoot->renderOneFrame();
     }
 
+    wait_threads();
     do_game_end();
 }
 

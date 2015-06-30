@@ -54,6 +54,11 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     bool gameWon = false;
 
     /**
+     * Wait for other threads to finish. Like 'join' for C++11 threads.
+     */
+    void wait_threads() const;
+
+    /**
      * @brief oRoot Ogre::Root
      */
     Ogre::Root *oRoot = NULL;
