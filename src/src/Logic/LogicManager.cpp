@@ -181,6 +181,10 @@ void LogicManager::setDifficultyParamenter(){
     difficultyParamenter[6] = 4.0f;
 }
 
+void LogicManager::externalIncrement(){
+    incrementPlayerAmmo();
+}
+
 
 void LogicManager::setupRunnerMode() {
     viewportFull->setCamera(frontCamera);

@@ -250,6 +250,8 @@ public:
      */
     void shutdownNow();
 
+    void incrementPlayerAmmo();
+
     // getters and setters
     LogicManager* getLogicManager() const;
     Context getContext() const;

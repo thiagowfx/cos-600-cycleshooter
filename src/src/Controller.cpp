@@ -167,6 +167,14 @@ void Controller::shutdownNow() {
     shutdown = true;
 }
 
+void Controller::incrementPlayerAmmo(){
+    Ogre::Vector3 realCoord = logicManager->getPlayerNode()->getPosition();
+    std::pair<int,int> textCoord = terrainManager->getCollisionCoordinates(realCoord);
+    bool increment = terrainManager->getTerrainAt(realCoord).second;
+    if(increment)
+        logicManager->externalIncrement();
+}
+
 bool Controller::getDebug() const {
     return debug;
 }

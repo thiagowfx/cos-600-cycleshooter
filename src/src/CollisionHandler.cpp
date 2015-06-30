@@ -135,6 +135,10 @@ int CollisionHandler::getCollisionMatrixHeight() const{
     return collisionMatrixHeight;
 }
 
+bool CollisionHandler::isBulletAt(int pixelWidth, int pixelHeight){
+    return bulletMatrix[pixelWidth][pixelHeight].first;
+}
+
 void CollisionHandler::setBulletAt(int width, int height,bool exist, Ogre::Vector3 coord){
     //if(bulletMatrix[width][height].first) std::cout << "There is a bullet here!" << std::endl;
     //Setting the new bullet.

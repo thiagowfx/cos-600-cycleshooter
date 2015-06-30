@@ -63,7 +63,8 @@ void TerrainManager::createTerrain(){
     terrainEntity->setCastShadows(false);
     //Defines which texture will be used. 
     terrainEntity->setMaterialName("Examples/Ground");
-    generateBullets(10);
+    generateBullets(1);
+    renderBullets();
 }
 
 void TerrainManager::setCollisionTransformation(){
@@ -97,19 +98,25 @@ std::pair<int, int> TerrainManager::getCollisionCoordinates(Ogre::Vector3 point)
     return coord;
 }
 
-int TerrainManager::getTerrainAt(Ogre::Vector3 coord){
+std::pair<int, bool> TerrainManager::getTerrainAt(Ogre::Vector3 coord){
     std::pair<int,int> collisionCoord = getCollisionCoordinates(coord);
-    if(coord.x> terrainWorldSizeWidth*0.5 || coord.y > terrainWorldSizeHeight*0.5)
-        return 0;
-    return collisionHandler->getPixelEnumeration(collisionCoord.first,collisionCoord.second);
+    //Getting terrain property.
+    std::pair<int,bool> terrainAt = std::make_pair(0,false);
+    if(coord.x> terrainWorldSizeWidth*0.5 || coord.y > terrainWorldSizeHeight*0.5){
+        return std::make_pair(-1,false);
+    }
+    terrainAt.first = collisionHandler->getPixelEnumeration(collisionCoord.first,collisionCoord.second);
+    //Discover if a bullet exists in the terrain point.
+    terrainAt.second = collisionHandler->isBulletAt(collisionCoord.first,collisionCoord.second);
+    return terrainAt;
 }
 
 void TerrainManager::generateBullets(int numOfBullets){
     Ogre::LogManager::getSingletonPtr()->logMessage("--> TerrainManager: Generatig Random Values <--");
     std::default_random_engine randomGenerator;
     //Defining terrain limits.
-    Ogre::Real wlimit = terrainWorldSizeWidth*0.5;
-    Ogre::Real hLimit = terrainWorldSizeHeight*0.5;
+    Ogre::Real wlimit = terrainWorldSizeWidth*0.125;
+    Ogre::Real hLimit = terrainWorldSizeHeight*0.125;
     //Initializing pseudo-random generators.
     std::uniform_real_distribution<float> randomWidthDistribution (-wlimit,wlimit);
     std::uniform_real_distribution<float> randomHeightDistribution (-hLimit,hLimit);
@@ -131,7 +138,7 @@ void TerrainManager::generateBullets(int numOfBullets){
     std::cout<<"Testing = " << test <<std::endl;
     Ogre::LogManager::getSingletonPtr()->logMessage("--> TerrainManager: Rendering Bullets <--");
     //collisionHandler->printBullets();
-    renderBullets();
+    //renderBullets();
 }
 
 void TerrainManager::renderBullets(){
@@ -139,6 +146,7 @@ void TerrainManager::renderBullets(){
     std::pair<std::vector<Ogre::String> , std::vector<Ogre::Vector3> > renderSettings = collisionHandler-> getSceneNodeNames();
     Ogre::Entity* bulletEntity = sceneManager->createEntity("bulletEntity", "ogrehead.mesh");
     for(int i = 0;i < renderSettings.first.size();i++){
+        Ogre::LogManager::getSingletonPtr()->logMessage("--> TerrainManger: Rendering one Bullet <--");
         Ogre::SceneNode* bulletNode = sceneManager->getRootSceneNode()->createChildSceneNode(renderSettings.first[i], renderSettings.second[i]);
         bulletNode->attachObject(bulletEntity);
     }

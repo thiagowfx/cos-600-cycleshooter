@@ -111,6 +111,7 @@ public:
     int getPlayerAmmo() const;
     int getMonsterHealth() const;
     void setDifficultyParamenter();
+    void externalIncrement();
 };
 }
 
