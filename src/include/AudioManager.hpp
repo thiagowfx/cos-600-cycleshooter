@@ -23,6 +23,9 @@ enum Soundname {
     // dry shoot (=no ammo left)
     SOUND_DRY_SHOOT,
 
+    // game events
+    SOUND_GAME_LOSS,
+
     // heartbeat sounds
     SOUND_HEARTBEAT01,
     SOUND_HEARTBEAT02,

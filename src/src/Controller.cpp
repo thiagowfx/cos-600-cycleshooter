@@ -439,7 +439,7 @@ void Controller::do_game_end() {
         endViewport->setBackgroundColour(Ogre::ColourValue::Green);
     }
     else {
-        // TODO: AudioManager::instance().play_sound(SOUND_GAME_LOSS);
+        AudioManager::instance().play_sound(SOUND_GAME_LOSS);
         std::cout << "Go exercise yourself a little more, you little lazy person!" << std::endl;
         endViewport->setBackgroundColour(Ogre::ColourValue::Red);
     }
