@@ -409,14 +409,34 @@ void Controller::gameMainLoop() {
 }
 
 void Controller::do_game_end() {
-    std::cout << "--> Controller: GAME END <--" << std::endl;
+    std::cout << "--> Controller: Game End <--" << std::endl;
+
+    // DESTROY THEM ALL
+    hud.reset(nullptr);
+    Ogre::Root::getSingleton().shutdown();
+
+    // Recreate our Ogre environment
+    createRoot();
+    createSceneManager();
+    createOverlaySystem();
+    setupResources();
+    setupTextures();
+
+    // Create the Final Scene
+    Ogre::Camera* endCamera = oSceneManager->createCamera("endCamera");
+    Ogre::Viewport* endViewport = oWindow->addViewport(endCamera);
 
     if(gameWon) {
         std::cout << "Congratulations, you've won!" << std::endl;
+        endViewport->setBackgroundColour(Ogre::ColourValue::Green);
     }
     else {
         std::cout << "Go exercise yourself a little more, you little lazy person!" << std::endl;
+        endViewport->setBackgroundColour(Ogre::ColourValue::Red);
     }
+
+    oWindow->update();
+    sf::sleep(sf::seconds(2));
 }
 
 void Controller::createRoot() {

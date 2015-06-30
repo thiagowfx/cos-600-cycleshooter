@@ -49,7 +49,7 @@ class LogicManager {
     /**
      * Number of bullets available for the player.
      */
-    int playerAmmo = 0;
+    int playerAmmo = 10;
 
     /**
      * Add a bullet to the total ammo of the player.
