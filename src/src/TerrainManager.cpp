@@ -63,7 +63,7 @@ void TerrainManager::createTerrain(){
     terrainEntity->setCastShadows(false);
     //Defines which texture will be used. 
     terrainEntity->setMaterialName("Examples/Ground");
-    generateBullets(1);
+    generateBullets(3);
     renderBullets();
 }
 
@@ -114,7 +114,7 @@ std::pair<int, bool> TerrainManager::getTerrainAt(Ogre::Vector3 coord){
         terrainAt.second = true;
         std::cout << terrainAt.second<<std::endl;
     }
-   std::cout<< "terrainAt" << terrainAt.first << " " <<terrainAt.second<<std::endl;
+    //std::cout<< "terrainAt" << terrainAt.first << " " <<terrainAt.second<<std::endl;
     return terrainAt;
 }
 
@@ -151,9 +151,10 @@ void TerrainManager::generateBullets(int numOfBullets){
 void TerrainManager::renderBullets(){
     Ogre::LogManager::getSingletonPtr()->logMessage("--> TerrainManager: Preparing Bullets <--");
     std::pair<std::vector<Ogre::String> , std::vector<Ogre::Vector3> > renderSettings = collisionHandler-> getSceneNodeNames();
-    Ogre::Entity* bulletEntity = sceneManager->createEntity("bulletEntity", "ogrehead.mesh");
     for(int i = 0;i < renderSettings.first.size();i++){
+        Ogre::Entity* bulletEntity = sceneManager->createEntity(renderSettings.first[i], "ogrehead.mesh");
         Ogre::LogManager::getSingletonPtr()->logMessage("--> TerrainManger: Rendering one Bullet <--");
+        std::cout << "SceneNode name = " << renderSettings.first[i] << std::endl;
         Ogre::SceneNode* bulletNode = sceneManager->getRootSceneNode()->createChildSceneNode(renderSettings.first[i], renderSettings.second[i]);
         bulletNode->attachObject(bulletEntity);
     }
