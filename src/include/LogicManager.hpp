@@ -50,7 +50,12 @@ class LogicManager {
      * Bicycle speed.
      * Should simulate or acquire a real bike speed.
      */
-    double speed = 0.0;
+    double speed = 10 * 10.0;
+
+    /**
+     * Update the player position according to the passed time.
+     */
+    void updatePlayerPosition(const double& time);
 
     /**
      * Number of bullets available for the player.

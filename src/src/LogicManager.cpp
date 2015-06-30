@@ -21,7 +21,12 @@ LogicManager::LogicManager(Controller* controller) :
 }
 
 void LogicManager::update(const Ogre::FrameEvent &evt) {
-    // TODO: populate this method
+    if(controller->getContext() == CONTEXT_RUNNER) {
+        updatePlayerPosition(evt.timeSinceLastFrame);
+    }
+    else {
+
+    }
 }
 
 void LogicManager::shoot() {
@@ -92,6 +97,12 @@ void LogicManager::decrementMonsterHealth(int quantity) {
     if(monsterHealth <= 0) {
         controller->shutdownNow(true);
     }
+}
+
+void LogicManager::updatePlayerPosition(const double &time) {
+    double distance = speed * time;
+    Ogre::Vector3 playerOrientation = frontCamera->getDirection();
+    getPlayerNode()->translate(distance * playerOrientation, Ogre::SceneNode::TS_LOCAL);
 }
 
 void LogicManager::incrementPlayerAmmo(int quantity) {
