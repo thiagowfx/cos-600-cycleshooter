@@ -438,16 +438,14 @@ void Controller::do_game_end() {
     AudioManager::instance().stop_music();
     InputManager::instance().reset();
 
-    std::cout << "===============================" << std::endl;
-
     if(gameWon) {
         AudioManager::instance().play_sound(SOUND_GAME_VICTORY);
-        std::cout << "Congratulations, you've won!" << std::endl;
+        std::cout << "==> VICTORY :: Congratulations!" << std::endl;
         endViewport->setBackgroundColour(Ogre::ColourValue::Green);
     }
     else {
         AudioManager::instance().play_sound(SOUND_GAME_LOSS);
-        std::cout << "Go exercise yourself a little more, you little lazy person!" << std::endl;
+        std::cout << "==> GAME OVER :: Go exercise yourself a little more, you little lazy person!" << std::endl;
         endViewport->setBackgroundColour(Ogre::ColourValue::Red);
     }
 

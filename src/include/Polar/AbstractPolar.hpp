@@ -37,7 +37,12 @@ protected:
     /**
      * Update the statistics about the heart rates.
      */
-    void update_statistics(const long long int& heartRate);
+    void update_statistics(const long long int& heartRate) {
+        stats.lowest = std::min(stats.lowest, heartRate);
+        stats.greatest = std::max(stats.greatest, heartRate);
+        stats.sum += heartRate;
+        ++stats.count;
+    }
 
 public:
     AbstractPolar(){};
@@ -51,7 +56,15 @@ public:
     /**
      * Print the statistics about this session.
      */
-    void print_statistics(std::ostream& os = std::cout) const;
+    void print_statistics(std::ostream& os = std::cout) const {
+        os << "==========================" << std::endl;
+        os << "=  Hearbeats Statistics  =" << std::endl;
+        os << "==========================" << std::endl;
+        os << "- Number of records acquired: "<< stats.count << std::endl;
+        os << "- Greatest Heartbeat: " << stats.greatest << std::endl;
+        os << "- Lowest Heartbeat: " << stats.lowest << std::endl;
+        os << "- Mean: " << static_cast<double>(stats.sum) / stats.count << std::endl;
+    }
 
     /**
      * Change (increment or decrement) the peaks by the specified value.
