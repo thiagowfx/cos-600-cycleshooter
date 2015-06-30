@@ -22,8 +22,6 @@ class HUD {
      */
     std::unique_ptr<OgreBites::SdkTrayManager> trayManager;
 
-    // go
-    void go();
     void createTrayManager();
     void createTrayWidgets();
 
@@ -34,7 +32,12 @@ class HUD {
     const OgreBites::TrayLocation DEBUG_PANEL_TL = OgreBites::TL_LEFT;
 
 public:
-    HUD(Controller* controller);
+    HUD(Controller* controller) :
+        controller(controller) {
+        Ogre::LogManager::getSingleton().logMessage("--> HUD: Constructor <--");
+        createTrayManager();
+        createTrayWidgets();
+    }
 
     /**
      * Update the HUD elements.
@@ -46,8 +49,7 @@ public:
     void setupShooterMode();
 
     // debug
-    void setupDebugOn();
-    void setupDebugOff();
+    void setDebug(bool debug);
 };
 }
 

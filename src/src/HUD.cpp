@@ -2,13 +2,6 @@
 
 namespace Cycleshooter {
 
-void HUD::go() {
-    Ogre::LogManager::getSingleton().logMessage("--> HUD: go <--");
-
-    createTrayManager();
-    createTrayWidgets();
-}
-
 void HUD::createTrayManager() {
     Ogre::LogManager::getSingleton().logMessage("--> HUD: Creating Tray Manager <--");
 
@@ -32,19 +25,13 @@ void HUD::createTrayWidgets() {
     trayManager->createLabel(INFO_WIDGETS_TL, "monsterLabel", "Monster: ", INFO_SIZE );
 }
 
-HUD::HUD(Controller *controller) :
-    controller(controller)
-{
-    go();
-}
-
 void HUD::update(const Ogre::FrameEvent& evt) {
     // update the trayManager
     trayManager->frameRenderingQueued(evt);
 
     // update information widgets
-    dynamic_cast<OgreBites::Label*>(trayManager->getWidget("polarLabel"))->setCaption("HR: " + Ogre::StringConverter::toString(controller->getLogicManager()->getPlayerHeartRate()));
-    dynamic_cast<OgreBites::Label*>(trayManager->getWidget("speedLabel"))->setCaption("Speed: TODO");
+    dynamic_cast<OgreBites::Label*>(trayManager->getWidget("polarLabel"))->setCaption("HR: " + Ogre::StringConverter::toString(controller->getPolar()->getHeartRate()));
+    dynamic_cast<OgreBites::Label*>(trayManager->getWidget("speedLabel"))->setCaption("Speed: " + Ogre::StringConverter::toString(controller->getLogicManager()->getSpeed()));
     dynamic_cast<OgreBites::Label*>(trayManager->getWidget("loadLabel"))->setCaption("Load: TODO");
     dynamic_cast<OgreBites::Label*>(trayManager->getWidget("ammoLabel"))->setCaption("Ammo: " + Ogre::StringConverter::toString(controller->getLogicManager()->getPlayerAmmo()));
     dynamic_cast<OgreBites::Label*>(trayManager->getWidget("monsterLabel"))->setCaption("Monster: " + Ogre::StringConverter::toString(controller->getLogicManager()->getMonsterHealth()));
@@ -76,30 +63,26 @@ void HUD::setupShooterMode() {
     trayManager->createDecorWidget(CONTEXT_TL, "contextLogo", "Cycleshooter/Gun");
 }
 
-void HUD::setupDebugOn() {
+void HUD::setDebug(bool debug) {
     // fps
-    trayManager->showFrameStats(FPS_TL);
+    debug ? trayManager->showFrameStats(FPS_TL) : trayManager->hideFrameStats();
 
-    // debug panel
-    if(!trayManager->getWidget("debugPanel")) {
-        Ogre::StringVector params = {"Terrain Type","Position","Transform x","Transform y"};
-        Ogre::StringVector values = {"","","",""};
-        trayManager->createParamsPanel(DEBUG_PANEL_TL, "debugPanel", 300, params)->setAllParamValues(values);
+    if(debug) {
+        if(!trayManager->getWidget("debugPanel")) {
+            Ogre::StringVector params = {"Terrain Type","Position","Transform x","Transform y"};
+            Ogre::StringVector values = Ogre::StringVector(params.size(), "");
+            trayManager->createParamsPanel(DEBUG_PANEL_TL, "debugPanel", 300, params)->setAllParamValues(values);
+        }
+        else {
+            trayManager->moveWidgetToTray("debugPanel", DEBUG_PANEL_TL, 0);
+            trayManager->getWidget("debugPanel")->show();
+        }
     }
     else {
-        trayManager->moveWidgetToTray("debugPanel", DEBUG_PANEL_TL, 0);
-        trayManager->getWidget("debugPanel")->show();
-    }
-}
-
-void HUD::setupDebugOff() {
-    // fps
-    trayManager->hideFrameStats();
-
-    // debug panel
-    if(trayManager->getWidget("debugPanel")) {
-        trayManager->removeWidgetFromTray("debugPanel");
-        trayManager->getWidget("debugPanel")->hide();
+        if(trayManager->getWidget("debugPanel")) {
+            trayManager->removeWidgetFromTray("debugPanel");
+            trayManager->getWidget("debugPanel")->hide();
+        }
     }
 }
 

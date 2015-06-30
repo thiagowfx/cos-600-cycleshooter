@@ -1,11 +1,7 @@
 build/
 dest/
-CMakeLists.txt.user
+CMakeLists.txt.*user*
 *.autosave
-.ycm_extra_conf.pyc
-
-# *.in files
-assets/bin/plugins.cfg
 
 # Created by https://www.gitignore.io
 

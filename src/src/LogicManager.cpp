@@ -2,14 +2,6 @@
 
 namespace Cycleshooter {
 
-int LogicManager::getPlayerHeartRate() const {
-    return playerHeartRate;
-}
-
-void LogicManager::setPlayerHeartRate(const int &value) {
-    playerHeartRate = value;
-}
-
 int LogicManager::getPlayerAmmo() const {
     return playerAmmo;
 }
@@ -21,7 +13,12 @@ LogicManager::LogicManager(Controller* controller) :
 }
 
 void LogicManager::update(const Ogre::FrameEvent &evt) {
-    // TODO: populate this method
+    if(controller->getContext() == CONTEXT_RUNNER) {
+        updatePlayerPosition(evt.timeSinceLastFrame);
+    }
+    else {
+
+    }
 }
 
 void LogicManager::shoot() {
@@ -29,7 +26,7 @@ void LogicManager::shoot() {
 
     if(playerAmmo > 0) {
         decrementPlayerAmmo();
-        AudioManager::instance().random_play_shoot();
+        AudioManager::instance().play_random_shoot();
 
         Ogre::SceneNode* monsterNode = controller->getSceneManager()->getSceneNode("monsterNode");
 
@@ -62,23 +59,17 @@ void LogicManager::shoot() {
         auto coords = crosshair_to_img_coords(controller->getCrosshairManager()->getScroll(), rttImage);
 
         if (rttImage.getColourAt(coords.first, coords.second, 0) != Ogre::ColourValue::Black) {
+            // TODO: AudioManager::instance().play_sound(SOUND_MONSTER_HIT);
             decrementMonsterHealth();
-
-            if(monsterHealth == 0) {
-                system("echo Congratulations you won");
-                controller->shutdownNow();
-            }
         }
-
-        // TODO: (maybe) replenish ammo in the map / terrain / collision part?
-        // TODO: add several sound effects for each outcome
 
         if(debug) setDebugOn();
         controller->getSceneManager()->getRootSceneNode()->flipVisibility();
         monsterNode->flipVisibility();
     }
     else {
-        std::cout << " |-> No more ammo" << std::endl;
+        // no more ammo
+        AudioManager::instance().play_sound(SOUND_DRY_SHOOT);
     }
 }
 
@@ -94,6 +85,16 @@ void LogicManager::decrementMonsterHealth(int quantity) {
     Ogre::LogManager::getSingleton().logMessage("--> LogicManager: Decrement Monster Health <--");
 
     monsterHealth = std::max(0, monsterHealth - quantity);
+
+    if(monsterHealth <= 0) {
+        controller->shutdownNow(true);
+    }
+}
+
+void LogicManager::updatePlayerPosition(const double &time) {
+    double distance = speed * time;
+    Ogre::Vector3 playerOrientation = frontCamera->getDirection();
+    getPlayerNode()->translate(distance * playerOrientation, Ogre::SceneNode::TS_LOCAL);
 }
 
 void LogicManager::incrementPlayerAmmo(int quantity) {
@@ -189,14 +190,15 @@ void LogicManager::setupShooterMode() {
 void LogicManager::setDebugOn() {
     controller->getSceneManager()->setDisplaySceneNodes(true);
     controller->getSceneManager()->showBoundingBoxes(true);
-
-    // bonus
-    playerAmmo += 10;
 }
 
 void LogicManager::setDebugOff() {
     controller->getSceneManager()->setDisplaySceneNodes(false);
     controller->getSceneManager()->showBoundingBoxes(false);
+}
+
+double LogicManager::getSpeed() const {
+    return speed;
 }
 
 }

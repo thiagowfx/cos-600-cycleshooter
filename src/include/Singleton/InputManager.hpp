@@ -18,11 +18,18 @@ namespace Cycleshooter {
  * A rich set of methods is also provided so the client application can be more easily set up.
  */
 class InputManager {
-    // constructor and copy functions
+    // constructor and copy functions to make this class a singleton
     InputManager(){}
     InputManager(const InputManager&) = delete;
     void operator=(const InputManager&) = delete;
 
+public:
+    static InputManager& instance() {
+        static InputManager instance;
+        return instance;
+    }
+
+private:
     /**
      * @brief JOYSTICK_NUMBER The joystick (number) associated with the maps of this class.
      */
@@ -49,7 +56,6 @@ class InputManager {
     bool hasJoystickAxisUnbuf(const sf::Joystick::Axis& axis, const Context& mode);
 
 public:
-    static InputManager& instance();
 
     void addKey(const sf::Keyboard::Key& key, const std::function<void(void)> &action);
 
@@ -87,11 +93,19 @@ public:
 
     void removeJoystickAxisUnbuf(const sf::Joystick::Axis& axis, const Context& mode);
 
+    void removeAllKeys();
+
     void removeAllKeys(const Context& mode);
+
+    void removeAllJoystickButtons();
 
     void removeAllJoystickButtons(const Context& mode);
 
+    void removeAllKeysUnbuf();
+
     void removeAllKeysUnbuf(const Context& mode);
+
+    void removeAllJoystickAxisUnbuf();
 
     void removeAllJoystickAxisUnbuf(const Context& mode);
 
@@ -102,6 +116,8 @@ public:
     void executeActionsUnbuf(const Context& mode);
 
     void setJoystickNumber(unsigned int number);
+
+    void reset();
 
     /**
      * @brief detectJoystick Tries to detect the correct joystick.

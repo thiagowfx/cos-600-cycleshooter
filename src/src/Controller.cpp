@@ -80,25 +80,6 @@ LogicManager *Controller::getLogicManager() const {
     return logicManager.get();
 }
 
-void Controller::polarUpdaterFunction() {
-    while(!shutdown) {
-        try {
-            int heartRate = polar->getInstantaneousHeartRate();
-            if(heartRate != 0) {
-                logicManager->setPlayerHeartRate(heartRate);
-            }
-            else {
-                Ogre::LogManager::getSingleton().logMessage("polarUpdaterFunction: heartRate is zero!! You're either dead or far from the control board", Ogre::LML_CRITICAL);
-            }
-        }
-        catch (...) {
-            Ogre::LogManager::getSingleton().logMessage("polarUpdaterFunction: caught exception", Ogre::LML_CRITICAL);
-        }
-
-        sf::sleep(POLAR_SLEEP_TIME);
-    }
-}
-
 CrosshairManager* Controller::getCrosshairManager() const {
     return crosshairManager.get();
 }
@@ -112,11 +93,11 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     Ogre::WindowEventUtilities::messagePump();
 
     if(oWindow->isClosed())
-        shutdownNow();
+        shutdownNow(false);
 
     if(shutdown) {
         // sync with other threads for a clean shutdown
-        polarUpdater->wait();
+        wait_threads();
 
         return false;
     }
@@ -124,10 +105,20 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     // update game logic
     logicManager->update(evt);
 
+    if(context == CONTEXT_SHOOTER) {
+        // play heart beat sound if appropriate
+        static sf::Clock clockHeartbeat;
+        if(clockHeartbeat.getElapsedTime() >= HEARTBEAT_PLAY_CHECK_PERIOD) {
+            AudioManager::instance().play_heartbeat(polar->getHeartRate(), HEARTBEAT_MINIMUM_ASSUMED, HEARTBEAT_MAXIMUM_ASSUMED);
+            clockHeartbeat.restart();
+        }
+    }
+
     // update game HUD
     hud->update(evt);
 
     // process unbuffered keys
+    static sf::Clock clockUnbuf;
     if(clockUnbuf.getElapsedTime() >= THRESHOLD_UNBUF_KEYS) {
         InputManager::instance().executeActionsUnbuf(context);
         clockUnbuf.restart();
@@ -140,7 +131,7 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
 
         // window closed
         case sf::Event::Closed:
-            shutdownNow();
+            shutdownNow(false);
             sWindow->close();
             break;
 
@@ -163,12 +154,19 @@ bool Controller::getShutdown() const {
     return shutdown;
 }
 
-void Controller::shutdownNow() {
+void Controller::shutdownNow(bool gameWon) {
     shutdown = true;
+    this->gameWon = gameWon;
 }
 
 bool Controller::getDebug() const {
     return debug;
+}
+
+void Controller::wait_threads() const {
+    Ogre::LogManager::getSingleton().logMessage("--> Controller: Wait Threads <--");
+
+    polarUpdater->wait();
 }
 
 void Controller::go() {
@@ -249,8 +247,14 @@ void Controller::createGameElements() {
     // attention: logic manager should be created before any threads that will update it
     logicManager = std::unique_ptr<LogicManager>(new LogicManager(this));
 
-    polar = std::unique_ptr<AbstractPolar>(new RandomPolar());
-    polarUpdater = std::unique_ptr<sf::Thread>(new sf::Thread(&Controller::polarUpdaterFunction, this));
+    polar = std::unique_ptr<AbstractPolar>(new RandomPolar(80, 100));
+    polarUpdater = std::unique_ptr<sf::Thread>(new sf::Thread([&](){
+        while(!shutdown) {
+            try { polar->updateHeartRate(); }
+            catch (...) { Ogre::LogManager::getSingleton().logMessage("WARNING: Controller (heartRate thread): exception caught", Ogre::LML_CRITICAL); }
+            sf::sleep(POLAR_SLEEP_TIME);
+        }
+    }));
     polarUpdater->launch();
 
     // to use a material, the resource group must be initialized
@@ -345,13 +349,21 @@ void Controller::setupMappings() {
         toggleDebug();
     });
 
+    InputManager::instance().addKey(sf::Keyboard::LBracket, [&]{
+        polar->changePeaks(-POLAR_PEAK_CHANGE);
+    });
+
+    InputManager::instance().addKey(sf::Keyboard::RBracket, [&]{
+        polar->changePeaks(POLAR_PEAK_CHANGE);
+    });
+
     // refresh all textures
     InputManager::instance().addKey(sf::Keyboard::F5, [&] {
        Ogre::TextureManager::getSingleton().reloadAll();
     });
 
     InputManager::instance().addKey(sf::Keyboard::M, [&] {
-       AudioManager::instance().toggleMute();
+       AudioManager::instance().toggle_mute();
     });
 
     // take a screenshot
@@ -361,7 +373,7 @@ void Controller::setupMappings() {
 
     // quit from the application
     InputManager::instance().addKeyUnbuf(sf::Keyboard::Escape, [&]{
-        shutdownNow();
+        shutdownNow(false);
     });
 
     /*
@@ -380,6 +392,10 @@ void Controller::setupMappings() {
 //    });
 }
 
+AbstractPolar* Controller::getPolar() const {
+    return polar.get();
+}
+
 void Controller::gameMainLoop() {
     Ogre::LogManager::getSingleton().logMessage("--> Controller: Game Main Loop <--");
 
@@ -387,6 +403,48 @@ void Controller::gameMainLoop() {
         // update rendering
         oRoot->renderOneFrame();
     }
+
+    wait_threads();
+    do_game_end();
+}
+
+void Controller::do_game_end() {
+    std::cout << "--> Controller: Game End <--" << std::endl;
+
+    // DESTROY THEM ALL
+    hud.reset(nullptr);
+    Ogre::Root::getSingleton().shutdown();
+
+    // Recreate our Ogre environment
+    createRoot();
+    createSceneManager();
+    createOverlaySystem();
+    setupResources();
+    setupTextures();
+
+    // Create the Final Scene
+    Ogre::Camera* endCamera = oSceneManager->createCamera("endCamera");
+    Ogre::Viewport* endViewport = oWindow->addViewport(endCamera);
+
+    AudioManager::instance().stop_music();
+    InputManager::instance().reset();
+
+    if(gameWon) {
+        AudioManager::instance().play_sound(SOUND_GAME_VICTORY);
+        std::cout << "==> VICTORY :: Congratulations!" << std::endl;
+        endViewport->setBackgroundColour(Ogre::ColourValue::Green);
+    }
+    else {
+        AudioManager::instance().play_sound(SOUND_GAME_LOSS);
+        std::cout << "==> GAME OVER :: Go exercise yourself a little more, you little lazy person!" << std::endl;
+        endViewport->setBackgroundColour(Ogre::ColourValue::Red);
+    }
+
+    // TODO: print this on the screen instead of std::cout
+    polar->print_statistics();
+
+    oWindow->update();
+    sf::sleep(sf::milliseconds(3800));
 }
 
 void Controller::createRoot() {
@@ -433,7 +491,7 @@ void Controller::setupRunnerMode() {
     logicManager->setupRunnerMode();
     crosshairManager->setupRunnerMode();
     hud->setupRunnerMode();
-    AudioManager::instance().play(MUSIC_RUNNER1_BFMV_HAND_OF_BLOOD);
+    AudioManager::instance().play_music(MUSIC_RUNNER);
 }
 
 void Controller::setupShooterMode() {
@@ -444,7 +502,7 @@ void Controller::setupShooterMode() {
     logicManager->setupShooterMode();
     crosshairManager->setupShooterMode();
     hud->setupShooterMode();
-    AudioManager::instance().play(MUSIC_SHOOTER1);
+    AudioManager::instance().play_music(MUSIC_SHOOTER);
 }
 
 void Controller::toggleMode() {
@@ -464,7 +522,7 @@ void Controller::setupDebugOn() {
     debug = true;
 
     logicManager->setDebugOn();
-    hud->setupDebugOn();
+    hud->setDebug(true);
 }
 
 void Controller::setupDebugOff() {
@@ -473,7 +531,7 @@ void Controller::setupDebugOff() {
     debug = false;
 
     logicManager->setDebugOff();
-    hud->setupDebugOff();
+    hud->setDebug(false);
 }
 
 void Controller::toggleDebug() {

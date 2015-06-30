@@ -35,7 +35,6 @@
 #include "OgreTimer.h"
 
 #if OGRE_COMPILER == OGRE_COMPILER_MSVC
-// TODO - remove this
 #   pragma warning (disable : 4244)
 #endif
 

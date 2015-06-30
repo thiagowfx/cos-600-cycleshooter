@@ -18,15 +18,6 @@ bool InputManager::hasJoystickAxisUnbuf(const sf::Joystick::Axis& axis, const Co
     return uJoystickAxisMap[mode].find(axis) != uJoystickAxisMap[mode].end();
 }
 
-InputManager &InputManager::instance() {
-    /*
-     * Guaranteed to be destroyed
-     * Instantiated on first use
-     */
-    static InputManager instance;
-    return instance;
-}
-
 void InputManager::addKey(const sf::Keyboard::Key &key, const std::function<void ()> &action) {
     addKey(key, CONTEXT_RUNNER, action);
     addKey(key, CONTEXT_SHOOTER, action);
@@ -127,16 +118,36 @@ void InputManager::removeJoystickAxisUnbuf(const sf::Joystick::Axis &axis, const
     uJoystickAxisMap[mode].erase(axis);
 }
 
+void InputManager::removeAllKeys() {
+    removeAllKeys(CONTEXT_RUNNER);
+    removeAllKeys(CONTEXT_SHOOTER);
+}
+
 void InputManager::removeAllKeys(const Context &mode) {
     keyboardMap[mode].clear();
+}
+
+void InputManager::removeAllJoystickButtons() {
+    removeAllJoystickButtons(CONTEXT_RUNNER);
+    removeAllJoystickButtons(CONTEXT_SHOOTER);
 }
 
 void InputManager::removeAllJoystickButtons(const Context &mode){
     joystickButtonMap[mode].clear();
 }
 
+void InputManager::removeAllKeysUnbuf() {
+    removeAllKeysUnbuf(CONTEXT_RUNNER);
+    removeAllKeysUnbuf(CONTEXT_SHOOTER);
+}
+
 void InputManager::removeAllKeysUnbuf(const Context &mode) {
     uKeyboardMap[mode].clear();
+}
+
+void InputManager::removeAllJoystickAxisUnbuf() {
+    removeAllJoystickAxisUnbuf(CONTEXT_RUNNER);
+    removeAllJoystickAxisUnbuf(CONTEXT_SHOOTER);
 }
 
 void InputManager::removeAllJoystickAxisUnbuf(const Context &mode) {
@@ -179,6 +190,13 @@ void InputManager::setJoystickNumber(unsigned int number) {
     JOYSTICK_NUMBER = number;
 }
 
+void InputManager::reset() {
+    removeAllKeys();
+    removeAllKeysUnbuf();
+    removeAllJoystickButtons();
+    removeAllJoystickAxisUnbuf();
+}
+
 void InputManager::detectJoystick() {
     Ogre::LogManager::getSingleton().logMessage("--> InputManager: Detecting Joystick <--");
 
@@ -187,8 +205,11 @@ void InputManager::detectJoystick() {
            sf::Joystick::hasAxis(n, sf::Joystick::X) &&
            sf::Joystick::hasAxis(n, sf::Joystick::Y) &&
            sf::Joystick::getButtonCount(n) >= 1) {
-            Ogre::LogManager::getSingleton().logMessage(" |-> Setting joystick to number " + std::to_string(n));
+            Ogre::LogManager::getSingleton().logMessage("----> Setting joystick to number " + std::to_string(n));
             break;
+        }
+        else {
+            Ogre::LogManager::getSingleton().logMessage("----> No suitable joystick detected.");
         }
     }
 }

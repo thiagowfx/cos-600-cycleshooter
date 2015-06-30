@@ -11,15 +11,28 @@ class RandomPolar : public AbstractPolar {
     int minPeak, maxPeak;
 
 public:
-    RandomPolar(int minPeak = 90, int maxPeak = 100, int HRHistoryLimit = 120);
+    RandomPolar(int minPeak, int maxPeak) :
+        AbstractPolar(),
+        minPeak(minPeak),
+        maxPeak(maxPeak)
+    {}
 
     /**
      * Get a random heart rate in [minPeak, maxPeak] range.
      */
-    virtual int getInstantaneousHeartRate();
+    virtual void updateHeartRate() {
+        auto heartRate = minPeak + (rand() % (maxPeak - minPeak + 1));
+        update_statistics(heartRate);
+    }
 
-    void setMinPeak(const int &value);
-    void setMaxPeak(const int &value);
+    /**
+     * Change (increment or decrement) the maximum and the minimum peak by the specified value.
+     */
+    virtual void changePeaks(const int& amount) {
+        minPeak += amount;
+        maxPeak += amount;
+    }
+
 };
 
 }

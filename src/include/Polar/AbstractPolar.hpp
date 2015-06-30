@@ -2,39 +2,93 @@
 #define _ABSTRACTPOLAR_HPP_
 
 #include <algorithm>
-#include <deque>
+#include <cstring>
+#include <iostream>
+#include <limits>
 
 namespace Cycleshooter {
+
 class AbstractPolar {
+
+private:
+    struct {
+        /**
+        * Sum of the values acquired in this session.
+        */
+        long long int sum = 0;
+
+        /**
+        * Number of the values acquired in this session.
+        */
+        long long int count = 0;
+
+        /**
+        * Maximum value of a heart beat in this session.
+        */
+        long long int greatest = std::numeric_limits<long long int>::min();
+
+        /**
+        * Minimum value of a heart beat in this session.
+        */
+        long long int lowest = std::numeric_limits<long long int>::max();
+    } stats;
+
 protected:
-    /**
-     * Record/History of latest heart rates.
-     */
-    std::deque<int> HRHistory;
 
     /**
-     * Maximum number of entries in heart rate history.
+     * The last obtained heartRate.
      */
-    const int HRHistoryLimit;
+    int heartRate;
 
     /**
-     * Add a new record to the history of heart rates.
+     * Update the statistics about the heart rates.
      */
-    void addRecord(const int& record);
+    void update_statistics(const long long int& heartRate) {
+        if(!heartRate) {
+            std::cout << "WARNING: AbstractPolar: heartRate is ZERO!!" << std::endl;
+            return;
+        }
+
+        this->heartRate = heartRate;
+        stats.lowest = std::min(stats.lowest, heartRate);
+        stats.greatest = std::max(stats.greatest, heartRate);
+        stats.sum += heartRate;
+        ++stats.count;
+    }
 
 public:
-    AbstractPolar(int HRHistoryLimit = 120);
+    AbstractPolar(){};
 
     /**
-     * Get a single value to represent the heart rate and record it.
+     * Get a single value to represent the heart rate.
+     * Also, update statistics.
      */
-    virtual int getInstantaneousHeartRate() = 0;
+    virtual void updateHeartRate() = 0;
 
     /**
-     * Get the mean of the recorded heart rates.
-     * Useful to get the base heart rate in the beginning of the game.
+     * Print the statistics about this session.
      */
-    int getMeanHeartRate();
+    void print_statistics(std::ostream& os = std::cout) const {
+        os << "==========================" << std::endl;
+        os << "=  Hearbeats Statistics  =" << std::endl;
+        os << "==========================" << std::endl;
+        os << "- Number of records acquired: "<< stats.count << std::endl;
+        os << "- Greatest Heartbeat: " << stats.greatest << std::endl;
+        os << "- Lowest Heartbeat: " << stats.lowest << std::endl;
+        os << "- Mean: " << static_cast<double>(stats.sum) / stats.count << std::endl;
+    }
+
+    /**
+     * Change (increment or decrement) the peaks by the specified value.
+     */
+    virtual void changePeaks(const int& amount) {}
+
+    /**
+     * Return the last obtained heart rate.
+     */
+    int getHeartRate() const {
+        return heartRate;
+    }
 };
 
 }

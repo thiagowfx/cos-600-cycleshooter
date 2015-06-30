@@ -15,7 +15,10 @@
 #include "Context.hpp"
 #include "InputManager.hpp"
 #include "LogicManager.hpp"
+
+#include "ConstantPolar.hpp"
 #include "RandomPolar.hpp"
+#include "RealPolar.hpp"
 
 #include "CrosshairManager.hpp"
 #include "HUD.hpp"
@@ -44,6 +47,16 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
      * @brief shutdown setting this to true will stop several while loops, thus forcing the game to finish cleanly
      */
     bool shutdown = false;
+
+    /**
+     * @brief gameWon Determines whether the player won or lost the game should it end.
+     */
+    bool gameWon = false;
+
+    /**
+     * Wait for other threads to finish. Like 'join' for C++11 threads.
+     */
+    void wait_threads() const;
 
     /**
      * @brief oRoot Ogre::Root
@@ -81,11 +94,6 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     sf::VideoMode sVideoMode;
 
     /**
-     * @brief clockUnbuf Used to create a delay between two consecutive unbuffered inputs.
-     */
-    sf::Clock clockUnbuf;
-
-    /**
      * @brief APPLICATION_NAME Name of our application
      */
     const Ogre::String APPLICATION_NAME = "Cycleshooter";
@@ -94,6 +102,26 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
      * @brief POLAR_SLEEP_TIME Time between polar updates.
      */
     const sf::Time POLAR_SLEEP_TIME = sf::milliseconds(500);
+
+    /**
+     * @brief POLAR_PEAK_CHANGE Variation of the heart beat between sucessive increments/decrements.
+     */
+    const int POLAR_PEAK_CHANGE = 5;
+
+    /**
+     * @brief HEARTBEAT_PLAY_CHECK_PERIOD Time period to check if a heart beat sound should be played or not.
+     */
+    const sf::Time HEARTBEAT_PLAY_CHECK_PERIOD = sf::milliseconds(220);
+
+    /**
+     * @brief HEARTBEAT_MINIMUM_ASSUMED The minimumum expected heart beat. Used to choose a sound.
+     */
+    const int HEARTBEAT_MINIMUM_ASSUMED = 75;
+
+    /**
+     * @brief HEARTBEAT_MAXIMUM_ASSUMED The maximum expected heart beat. Used to choose a sound.
+     */
+    const int HEARTBEAT_MAXIMUM_ASSUMED = 150;
 
     /**
      * @brief THRESHOLD_UNBUF_KEYS Threshold between two consecutive unbuffered inputs.
@@ -166,7 +194,7 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     std::unique_ptr<LogicManager> logicManager;
 
     /**
-     * The polar device, from here we will get the heart rates.
+     * The polar device, from where we will get the heart rates.
      */
     std::unique_ptr<AbstractPolar> polar;
 
@@ -174,12 +202,6 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
      * The thread responsible for updating the heart rate.
      */
     std::unique_ptr<sf::Thread> polarUpdater;
-
-    /**
-     * Continuously updates the heart rate in our model/logic.
-     * It gets the value from the polar device.
-     */
-    void polarUpdaterFunction();
 
     /**
      * Terrain Manager.
@@ -211,6 +233,11 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
      * The (manually managed) game main loop, responsible for calling Ogre::Root::renderOneFrame()
      */
     void gameMainLoop();
+
+    /**
+     * @brief do_game_end The game has ended. What should we do?
+     */
+    void do_game_end();
 
     /**
      * Setup the context mode to the runner mode.
@@ -248,7 +275,7 @@ public:
     /**
      * Finish/shutdown the game cleanly.
      */
-    void shutdownNow();
+    void shutdownNow(bool gameWon);
 
     // getters and setters
     LogicManager* getLogicManager() const;
@@ -259,6 +286,7 @@ public:
     bool getDebug() const;
     TerrainManager* getTerrainManager() const;
     CrosshairManager* getCrosshairManager() const;
+    AbstractPolar* getPolar() const;
 };
 
 }

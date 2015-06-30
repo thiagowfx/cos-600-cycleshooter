@@ -41,15 +41,20 @@ class LogicManager {
      */
 
     /**
-     * Player heart rate.
-     * Should simulate or acquire a real human heart rate.
+     * Bicycle speed.
+     * Should simulate or acquire a real bike speed.
      */
-    int playerHeartRate;
+    double speed = 10 * 10.0;
+
+    /**
+     * Update the player position according to the passed time.
+     */
+    void updatePlayerPosition(const double& time);
 
     /**
      * Number of bullets available for the player.
      */
-    int playerAmmo = 0;
+    int playerAmmo = 10;
 
     /**
      * Add a bullet to the total ammo of the player.
@@ -99,10 +104,9 @@ public:
 
     // getters and setters
     Ogre::SceneNode *getPlayerNode() const;
-    int getPlayerHeartRate() const;
-    void setPlayerHeartRate(const int& value);
     int getPlayerAmmo() const;
     int getMonsterHealth() const;
+    double getSpeed() const;
 };
 }
 
