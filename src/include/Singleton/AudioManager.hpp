@@ -60,7 +60,10 @@ class AudioManager {
     void operator=(const AudioManager&) = delete;
 
 public:
-    static AudioManager& instance();
+    static AudioManager& instance() {
+        static AudioManager instance;
+        return instance;
+    }
 
 private:
     /**

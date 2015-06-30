@@ -9,11 +9,6 @@ AudioManager::AudioManager() {
     populate_musics();
 }
 
-AudioManager &AudioManager::instance() {
-    static AudioManager instance;
-    return instance;
-}
-
 void AudioManager::play_sound(const Soundname& soundname) {
     if(playing_sounds.size() == 0) {
         playing_sounds.push_back(sf::Sound());
