@@ -135,8 +135,20 @@ int CollisionHandler::getCollisionMatrixHeight() const{
     return collisionMatrixHeight;
 }
 
-bool CollisionHandler::isBulletAt(int pixelWidth, int pixelHeight){
-    return bulletMatrix[pixelWidth][pixelHeight].first;
+bool CollisionHandler::isBulletAt(int pixelWidth, int pixelHeight,Ogre::Vector3 coord){
+    BulletElement e = bulletMatrix[pixelWidth][pixelHeight].second;
+    bool test = bulletMatrix[pixelWidth][pixelHeight].first;
+    if(test)
+        return true;
+    else
+        return false;
+    //return bulletMatrix[pixelWidth][pixelHeight].first;
+}
+
+//TODO: change this to be called by isBullet().
+//This responsability lay upon CollisionHanlder, not TerrainManager.
+void CollisionHandler::changeBulletState(int pixelWidth, int pixelHeight){
+    bulletMatrix[pixelWidth][pixelHeight].first = false;
 }
 
 void CollisionHandler::setBulletAt(int width, int height,bool exist, Ogre::Vector3 coord){

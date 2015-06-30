@@ -182,7 +182,7 @@ void LogicManager::setDifficultyParamenter(){
 }
 
 void LogicManager::externalIncrement(){
-    incrementPlayerAmmo();
+    incrementPlayerAmmo(1);
 }
 
 

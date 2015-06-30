@@ -107,7 +107,13 @@ std::pair<int, bool> TerrainManager::getTerrainAt(Ogre::Vector3 coord){
     }
     terrainAt.first = collisionHandler->getPixelEnumeration(collisionCoord.first,collisionCoord.second);
     //Discover if a bullet exists in the terrain point.
-    terrainAt.second = collisionHandler->isBulletAt(collisionCoord.first,collisionCoord.second);
+    bool isBullet = collisionHandler->isBulletAt(collisionCoord.first,collisionCoord.second,coord);
+    if(isBullet){
+        Ogre::LogManager::getSingletonPtr()->logMessage("--> TerrainManager: Exist Bullet Here! <--");
+        //collisionHandler->changeBulletState(collisionCoord.first,collisionCoord.second);
+        terrainAt.second = true;
+        std::cout << terrainAt.second<<std::endl;
+    }
     return terrainAt;
 }
 
