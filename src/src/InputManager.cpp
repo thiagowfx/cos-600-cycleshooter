@@ -127,16 +127,36 @@ void InputManager::removeJoystickAxisUnbuf(const sf::Joystick::Axis &axis, const
     uJoystickAxisMap[mode].erase(axis);
 }
 
+void InputManager::removeAllKeys() {
+    removeAllKeys(CONTEXT_RUNNER);
+    removeAllKeys(CONTEXT_SHOOTER);
+}
+
 void InputManager::removeAllKeys(const Context &mode) {
     keyboardMap[mode].clear();
+}
+
+void InputManager::removeAllJoystickButtons() {
+    removeAllJoystickButtons(CONTEXT_RUNNER);
+    removeAllJoystickButtons(CONTEXT_SHOOTER);
 }
 
 void InputManager::removeAllJoystickButtons(const Context &mode){
     joystickButtonMap[mode].clear();
 }
 
+void InputManager::removeAllKeysUnbuf() {
+    removeAllKeysUnbuf(CONTEXT_RUNNER);
+    removeAllKeysUnbuf(CONTEXT_SHOOTER);
+}
+
 void InputManager::removeAllKeysUnbuf(const Context &mode) {
     uKeyboardMap[mode].clear();
+}
+
+void InputManager::removeAllJoystickAxisUnbuf() {
+    removeAllJoystickAxisUnbuf(CONTEXT_RUNNER);
+    removeAllJoystickAxisUnbuf(CONTEXT_SHOOTER);
 }
 
 void InputManager::removeAllJoystickAxisUnbuf(const Context &mode) {
@@ -177,6 +197,13 @@ void InputManager::executeActionsUnbuf(const Context &mode) {
 
 void InputManager::setJoystickNumber(unsigned int number) {
     JOYSTICK_NUMBER = number;
+}
+
+void InputManager::reset() {
+    removeAllKeys();
+    removeAllKeysUnbuf();
+    removeAllJoystickButtons();
+    removeAllJoystickAxisUnbuf();
 }
 
 void InputManager::detectJoystick() {

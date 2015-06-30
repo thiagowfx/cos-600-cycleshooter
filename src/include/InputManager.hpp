@@ -87,11 +87,19 @@ public:
 
     void removeJoystickAxisUnbuf(const sf::Joystick::Axis& axis, const Context& mode);
 
+    void removeAllKeys();
+
     void removeAllKeys(const Context& mode);
+
+    void removeAllJoystickButtons();
 
     void removeAllJoystickButtons(const Context& mode);
 
+    void removeAllKeysUnbuf();
+
     void removeAllKeysUnbuf(const Context& mode);
+
+    void removeAllJoystickAxisUnbuf();
 
     void removeAllJoystickAxisUnbuf(const Context& mode);
 
@@ -102,6 +110,8 @@ public:
     void executeActionsUnbuf(const Context& mode);
 
     void setJoystickNumber(unsigned int number);
+
+    void reset();
 
     /**
      * @brief detectJoystick Tries to detect the correct joystick.

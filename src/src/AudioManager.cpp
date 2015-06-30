@@ -59,6 +59,12 @@ void AudioManager::play_music(const Musicname &musicname, bool restart) {
     current_playing_music->play();
 }
 
+void AudioManager::stop_music() {
+    if(current_playing_music) {
+        current_playing_music->stop();
+    }
+}
+
 void AudioManager::toggle_mute() {
     mute_music = !mute_music;
     do_mute();

@@ -148,6 +148,11 @@ public:
     void play_music(const Musicname& musicname, bool restart = false);
 
     /**
+     * Stop the game music.
+     */
+    void stop_music();
+
+    /**
      * Toggle the mute status of the music.
      */
     void toggle_mute();
