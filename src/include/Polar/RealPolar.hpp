@@ -159,7 +159,9 @@ public:
      * @brief RealPolar Construct a new RealPolar object.
      * @param deviceFilePath Path to the serial port (e.g. "/dev/ttyUSB0")
      */
-    RealPolar(const char* deviceFilePath) {
+    RealPolar(const char* deviceFilePath) :
+        AbstractPolar()
+    {
         openSerialPort(deviceFilePath);
     }
 

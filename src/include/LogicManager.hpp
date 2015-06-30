@@ -47,6 +47,12 @@ class LogicManager {
     int playerHeartRate;
 
     /**
+     * Bicycle speed.
+     * Should simulate or acquire a real bike speed.
+     */
+    double speed = 0.0;
+
+    /**
      * Number of bullets available for the player.
      */
     int playerAmmo = 10;
@@ -103,6 +109,7 @@ public:
     void setPlayerHeartRate(const int& value);
     int getPlayerAmmo() const;
     int getMonsterHealth() const;
+    double getSpeed() const;
 };
 }
 

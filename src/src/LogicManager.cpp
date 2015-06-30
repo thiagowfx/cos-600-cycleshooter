@@ -194,4 +194,8 @@ void LogicManager::setDebugOff() {
     controller->getSceneManager()->showBoundingBoxes(false);
 }
 
+double LogicManager::getSpeed() const {
+    return speed;
+}
+
 }

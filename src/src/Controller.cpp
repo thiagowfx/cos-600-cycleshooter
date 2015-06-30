@@ -531,7 +531,7 @@ void Controller::setupDebugOn() {
     debug = true;
 
     logicManager->setDebugOn();
-    hud->setupDebugOn();
+    hud->setDebug(true);
 }
 
 void Controller::setupDebugOff() {
@@ -540,7 +540,7 @@ void Controller::setupDebugOff() {
     debug = false;
 
     logicManager->setDebugOff();
-    hud->setupDebugOff();
+    hud->setDebug(false);
 }
 
 void Controller::toggleDebug() {
