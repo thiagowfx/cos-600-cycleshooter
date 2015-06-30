@@ -169,13 +169,14 @@ void Controller::shutdownNow() {
 
 void Controller::incrementPlayerAmmo(){
     Ogre::Vector3 realCoord = logicManager->getPlayerNode()->getPosition();
-    std::pair<int,int> textCoord = terrainManager->getCollisionCoordinates(realCoord);
-    bool increment = terrainManager->getTerrainAt(realCoord).second;
-    if(increment){
+    //std::pair<int,int> textCoord = terrainManager->getCollisionCoordinates(realCoord);
+    //bool increment = terrainManager->getTerrainAt(realCoord).second;
+    //std::cout << "increment" << increment<< std::endl;
+    if(terrainManager->getTerrainAt(realCoord).second){
         Ogre::LogManager::getSingletonPtr()->logMessage("--> Controller: Incresgin player ammo! <--");
         logicManager->externalIncrement();
         //BIG ERROR here
-        //collisionHandler->changeBulletState(textCoord.first,textCoord.second);
+        //collisionHandler->removeBullet(textCoord.first,textCoord.second);
     }
 }
 

@@ -114,6 +114,7 @@ std::pair<int, bool> TerrainManager::getTerrainAt(Ogre::Vector3 coord){
         terrainAt.second = true;
         std::cout << terrainAt.second<<std::endl;
     }
+   std::cout<< "terrainAt" << terrainAt.first << " " <<terrainAt.second<<std::endl;
     return terrainAt;
 }
 
