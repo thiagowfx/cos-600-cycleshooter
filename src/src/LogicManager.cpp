@@ -2,14 +2,6 @@
 
 namespace Cycleshooter {
 
-int LogicManager::getPlayerHeartRate() const {
-    return playerHeartRate;
-}
-
-void LogicManager::setPlayerHeartRate(const int &value) {
-    playerHeartRate = value;
-}
-
 int LogicManager::getPlayerAmmo() const {
     return playerAmmo;
 }

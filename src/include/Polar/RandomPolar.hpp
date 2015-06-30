@@ -20,10 +20,9 @@ public:
     /**
      * Get a random heart rate in [minPeak, maxPeak] range.
      */
-    virtual int getInstantaneousHeartRate() {
+    virtual void updateHeartRate() {
         auto heartRate = minPeak + (rand() % (maxPeak - minPeak + 1));
         update_statistics(heartRate);
-        return heartRate;
     }
 
     /**

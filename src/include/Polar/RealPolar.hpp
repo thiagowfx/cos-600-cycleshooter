@@ -175,7 +175,7 @@ public:
     /**
      * Get the instantaneous heart rate value from the HRMI.
      */
-    virtual int getInstantaneousHeartRate() {
+    virtual void updateHeartRate() {
         // send a get heart Rate command requesting history buffer entries
         sendGetHeartRate();
 
@@ -188,7 +188,6 @@ public:
         sscanf(&rspBytes[0], "%*u %*u %u", &heartRate);
 
         update_statistics(heartRate);
-        return heartRate;
     }
 };
 

@@ -20,9 +20,8 @@ public:
     /**
      * Get the heart rate.
      */
-    virtual int getInstantaneousHeartRate() {
+    virtual void updateHeartRate() {
         update_statistics(peak);
-        return peak;
     }
 
     /**

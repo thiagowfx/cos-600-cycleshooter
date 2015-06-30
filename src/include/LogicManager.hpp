@@ -41,12 +41,6 @@ class LogicManager {
      */
 
     /**
-     * Player heart rate.
-     * Should simulate or acquire a real human heart rate.
-     */
-    int playerHeartRate;
-
-    /**
      * Bicycle speed.
      * Should simulate or acquire a real bike speed.
      */
@@ -110,8 +104,6 @@ public:
 
     // getters and setters
     Ogre::SceneNode *getPlayerNode() const;
-    int getPlayerHeartRate() const;
-    void setPlayerHeartRate(const int& value);
     int getPlayerAmmo() const;
     int getMonsterHealth() const;
     double getSpeed() const;

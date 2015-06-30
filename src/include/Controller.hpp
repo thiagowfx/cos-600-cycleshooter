@@ -194,7 +194,7 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     std::unique_ptr<LogicManager> logicManager;
 
     /**
-     * The polar device, from here we will get the heart rates.
+     * The polar device, from where we will get the heart rates.
      */
     std::unique_ptr<AbstractPolar> polar;
 
@@ -202,12 +202,6 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
      * The thread responsible for updating the heart rate.
      */
     std::unique_ptr<sf::Thread> polarUpdater;
-
-    /**
-     * Continuously updates the heart rate in our model/logic.
-     * It gets the value from the polar device.
-     */
-    void polarUpdaterFunction();
 
     /**
      * Terrain Manager.
@@ -292,6 +286,7 @@ public:
     bool getDebug() const;
     TerrainManager* getTerrainManager() const;
     CrosshairManager* getCrosshairManager() const;
+    AbstractPolar* getPolar() const;
 };
 
 }

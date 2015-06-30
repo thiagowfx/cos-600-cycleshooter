@@ -80,25 +80,6 @@ LogicManager *Controller::getLogicManager() const {
     return logicManager.get();
 }
 
-void Controller::polarUpdaterFunction() {
-    while(!shutdown) {
-        try {
-            int heartRate = polar->getInstantaneousHeartRate();
-            if(heartRate != 0) {
-                logicManager->setPlayerHeartRate(heartRate);
-            }
-            else {
-                Ogre::LogManager::getSingleton().logMessage("polarUpdaterFunction: heartRate is zero!! You're either dead or far from the control board", Ogre::LML_CRITICAL);
-            }
-        }
-        catch (...) {
-            Ogre::LogManager::getSingleton().logMessage("polarUpdaterFunction: caught exception", Ogre::LML_CRITICAL);
-        }
-
-        sf::sleep(POLAR_SLEEP_TIME);
-    }
-}
-
 CrosshairManager* Controller::getCrosshairManager() const {
     return crosshairManager.get();
 }
@@ -128,7 +109,7 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         // play heart beat sound if appropriate
         static sf::Clock clockHeartbeat;
         if(clockHeartbeat.getElapsedTime() >= HEARTBEAT_PLAY_CHECK_PERIOD) {
-            AudioManager::instance().play_heartbeat(logicManager->getPlayerHeartRate(), HEARTBEAT_MINIMUM_ASSUMED, HEARTBEAT_MAXIMUM_ASSUMED);
+            AudioManager::instance().play_heartbeat(polar->getHeartRate(), HEARTBEAT_MINIMUM_ASSUMED, HEARTBEAT_MAXIMUM_ASSUMED);
             clockHeartbeat.restart();
         }
     }
@@ -266,8 +247,14 @@ void Controller::createGameElements() {
     // attention: logic manager should be created before any threads that will update it
     logicManager = std::unique_ptr<LogicManager>(new LogicManager(this));
 
-    polar = std::unique_ptr<AbstractPolar>(new RandomPolar(80, 95));
-    polarUpdater = std::unique_ptr<sf::Thread>(new sf::Thread(&Controller::polarUpdaterFunction, this));
+    polar = std::unique_ptr<AbstractPolar>(new RandomPolar(80, 100));
+    polarUpdater = std::unique_ptr<sf::Thread>(new sf::Thread([&](){
+        while(!shutdown) {
+            try { polar->updateHeartRate(); }
+            catch (...) { Ogre::LogManager::getSingleton().logMessage("WARNING: Controller (heartRate thread): exception caught", Ogre::LML_CRITICAL); }
+            sf::sleep(POLAR_SLEEP_TIME);
+        }
+    }));
     polarUpdater->launch();
 
     // to use a material, the resource group must be initialized
@@ -403,6 +390,10 @@ void Controller::setupMappings() {
 //    InputManager::instance().addJoystickButton(0, [&]{
 //        toggleMode();
 //    });
+}
+
+AbstractPolar* Controller::getPolar() const {
+    return polar.get();
 }
 
 void Controller::gameMainLoop() {

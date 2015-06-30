@@ -30,7 +30,7 @@ void HUD::update(const Ogre::FrameEvent& evt) {
     trayManager->frameRenderingQueued(evt);
 
     // update information widgets
-    dynamic_cast<OgreBites::Label*>(trayManager->getWidget("polarLabel"))->setCaption("HR: " + Ogre::StringConverter::toString(controller->getLogicManager()->getPlayerHeartRate()));
+    dynamic_cast<OgreBites::Label*>(trayManager->getWidget("polarLabel"))->setCaption("HR: " + Ogre::StringConverter::toString(controller->getPolar()->getHeartRate()));
     dynamic_cast<OgreBites::Label*>(trayManager->getWidget("speedLabel"))->setCaption("Speed: " + Ogre::StringConverter::toString(controller->getLogicManager()->getSpeed()));
     dynamic_cast<OgreBites::Label*>(trayManager->getWidget("loadLabel"))->setCaption("Load: TODO");
     dynamic_cast<OgreBites::Label*>(trayManager->getWidget("ammoLabel"))->setCaption("Ammo: " + Ogre::StringConverter::toString(controller->getLogicManager()->getPlayerAmmo()));
