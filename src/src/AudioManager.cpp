@@ -98,6 +98,7 @@ void AudioManager::populate_sounds() {
     LOAD_TEMPLATE(SOUND_DRY_SHOOT, "shoot/dry_shoot.wav");
 
     LOAD_TEMPLATE(SOUND_GAME_LOSS, "events/game_loss.wav");
+    LOAD_TEMPLATE(SOUND_GAME_VICTORY, "events/game_victory.wav");
 
     LOAD_TEMPLATE(SOUND_HEARTBEAT01, "heartbeat/heartbeat01.wav");
     LOAD_TEMPLATE(SOUND_HEARTBEAT02, "heartbeat/heartbeat02.wav");

@@ -434,7 +434,7 @@ void Controller::do_game_end() {
     std::cout << "===============================" << std::endl;
 
     if(gameWon) {
-        // TODO: AudioManager::instance().play_sound(SOUND_GAME_VICTORY);
+        AudioManager::instance().play_sound(SOUND_GAME_VICTORY);
         std::cout << "Congratulations, you've won!" << std::endl;
         endViewport->setBackgroundColour(Ogre::ColourValue::Green);
     }
@@ -448,7 +448,7 @@ void Controller::do_game_end() {
     polar->print_statistics();
 
     oWindow->update();
-    sf::sleep(sf::seconds(2));
+    sf::sleep(sf::milliseconds(3800));
 }
 
 void Controller::createRoot() {
