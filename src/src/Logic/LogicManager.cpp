@@ -63,23 +63,16 @@ void LogicManager::shoot() {
 
         if (rttImage.getColourAt(coords.first, coords.second, 0) != Ogre::ColourValue::Black) {
             decrementMonsterHealth();
-
-            if(monsterHealth == 0) {
-                system("echo Congratulations you won");
-                controller->shutdownNow();
-            }
+            // TODO: play a sound if monster is hit
         }
-
-        // TODO: (maybe) replenish ammo in the map / terrain / collision part?
-        // TODO: add several sound effects for each outcome
 
         if(debug) setDebugOn();
         controller->getSceneManager()->getRootSceneNode()->flipVisibility();
         monsterNode->flipVisibility();
     }
     else {
+        // no more ammo
         AudioManager::instance().play_sound(SOUND_DRY_SHOOT);
-        std::cout << "----> No more ammo" << std::endl;
     }
 }
 
@@ -95,6 +88,10 @@ void LogicManager::decrementMonsterHealth(int quantity) {
     Ogre::LogManager::getSingleton().logMessage("--> LogicManager: Decrement Monster Health <--");
 
     monsterHealth = std::max(0, monsterHealth - quantity);
+
+    if(monsterHealth <= 0) {
+        controller->shutdownNow(true);
+    }
 }
 
 void LogicManager::incrementPlayerAmmo(int quantity) {
@@ -190,9 +187,6 @@ void LogicManager::setupShooterMode() {
 void LogicManager::setDebugOn() {
     controller->getSceneManager()->setDisplaySceneNodes(true);
     controller->getSceneManager()->showBoundingBoxes(true);
-
-    // bonus
-    playerAmmo += 10;
 }
 
 void LogicManager::setDebugOff() {

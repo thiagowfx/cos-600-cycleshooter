@@ -112,7 +112,7 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     Ogre::WindowEventUtilities::messagePump();
 
     if(oWindow->isClosed())
-        shutdownNow();
+        shutdownNow(false);
 
     if(shutdown) {
         // sync with other threads for a clean shutdown
@@ -148,7 +148,7 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
 
         // window closed
         case sf::Event::Closed:
-            shutdownNow();
+            shutdownNow(false);
             sWindow->close();
             break;
 
@@ -171,8 +171,9 @@ bool Controller::getShutdown() const {
     return shutdown;
 }
 
-void Controller::shutdownNow() {
+void Controller::shutdownNow(bool gameWon) {
     shutdown = true;
+    this->gameWon = gameWon;
 }
 
 bool Controller::getDebug() const {
@@ -377,7 +378,7 @@ void Controller::setupMappings() {
 
     // quit from the application
     InputManager::instance().addKeyUnbuf(sf::Keyboard::Escape, [&]{
-        shutdownNow();
+        shutdownNow(false);
     });
 
     /*
@@ -402,6 +403,19 @@ void Controller::gameMainLoop() {
     while(!shutdown) {
         // update rendering
         oRoot->renderOneFrame();
+    }
+
+    do_game_end();
+}
+
+void Controller::do_game_end() {
+    std::cout << "--> Controller: GAME END <--" << std::endl;
+
+    if(gameWon) {
+        std::cout << "Congratulations, you've won!" << std::endl;
+    }
+    else {
+        std::cout << "Go exercise yourself a little more, you little lazy person!" << std::endl;
     }
 }
 

@@ -49,6 +49,11 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     bool shutdown = false;
 
     /**
+     * @brief gameWon Determines whether the player won or lost the game should it end.
+     */
+    bool gameWon = false;
+
+    /**
      * @brief oRoot Ogre::Root
      */
     Ogre::Root *oRoot = NULL;
@@ -231,6 +236,11 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     void gameMainLoop();
 
     /**
+     * @brief do_game_end The game has ended. What should we do?
+     */
+    void do_game_end();
+
+    /**
      * Setup the context mode to the runner mode.
      */
     void setupRunnerMode();
@@ -266,7 +276,7 @@ public:
     /**
      * Finish/shutdown the game cleanly.
      */
-    void shutdownNow();
+    void shutdownNow(bool gameWon);
 
     // getters and setters
     LogicManager* getLogicManager() const;
