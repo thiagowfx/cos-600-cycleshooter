@@ -463,6 +463,7 @@ void Controller::do_game_end() {
 
     // TODO: print this on the screen instead of std::cout
     polar->print_statistics();
+    bicycle->print_statistics();
 
     oWindow->update();
     sf::sleep(sf::milliseconds(3800));

@@ -17,7 +17,9 @@ public:
         setFriction(0);
     }
 
-    virtual void updateSpeed() {}
+    virtual void updateSpeed() {
+        update_statistics(speed);
+    }
 
     virtual void setFriction(const int& value) {
         friction = value;

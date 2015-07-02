@@ -226,7 +226,7 @@ public:
         speed = atoi(response.substr(1,3).c_str());
         std::cout << "----> RealBicycle: Read speed: " << speed << std::endl;
 
-        // TODO: validation of the speed(?)
+        update_statistics(speed);
     }
 
     /**

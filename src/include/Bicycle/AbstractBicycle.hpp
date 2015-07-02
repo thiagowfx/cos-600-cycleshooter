@@ -1,10 +1,34 @@
 #ifndef _ABSTRACTBICYCLE_HPP_
 #define _ABSTRACTBICYCLE_HPP_
 
+#include <limits>
+
 namespace Cycleshooter {
 
 // TODO: estatísticas. Utilizar uma função update_statistics(...); deixar parecido com a polar.
 class AbstractBicycle {
+private:
+    struct {
+        /**
+         * Sum of the values acquired in this session.
+         */
+        long long int sum = 0;
+
+        /**
+         * Number of the values acquired in this session.
+         */
+        long long int count = 0;
+
+        /**
+         * Maximum value of the velocity in this session.
+         */
+        long long int greatest = std::numeric_limits<long long int>::min();
+
+        /**
+         * Minimum value of the velocity in this session.
+         */
+        long long int lowest = std::numeric_limits<long long int>::max();
+    } stats;
 
     /**
      * Factor to convert from the real speed (RPM) to the logical speed (units of the game).
@@ -23,12 +47,36 @@ protected:
      */
     double speed;
 
+    /**
+     * Update the statistics about the Bicycle.
+     */
+    void update_statistics(const long long int& speed) {
+        this->speed = speed;
+        stats.lowest = std::min(stats.lowest, speed);
+        stats.greatest = std::max(stats.greatest, speed);
+        stats.sum += speed;
+        ++stats.count;
+    }
+
 public:
     AbstractBicycle(){}
 
     AbstractBicycle(const double& speed) :
         speed(speed)
     {}
+
+    /**
+     * Print the statistics about this session.
+     */
+    void print_statistics(std::ostream& os = std::cout) const {
+        os << "==========================" << std::endl;
+        os << "|    Bicycle Statistics   |" << std::endl;
+        os << "==========================" << std::endl;
+        os << "- # of records acquired: "<< stats.count << std::endl;
+        os << "- Lowest Velocity: " << stats.lowest << std::endl;
+        os << "- Greatest Velocity: " << stats.greatest << std::endl;
+        os << "- Mean: " << static_cast<double>(stats.sum) / stats.count << std::endl << std::endl;
+    }
 
     /**
      * Get the current speed of the bicycle (in speed units of the game).
