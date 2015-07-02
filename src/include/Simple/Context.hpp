@@ -8,7 +8,7 @@
  */
 enum Context {
     CONTEXT_RUNNER = 0,
-    CONTEXT_SHOOTER = 1,
+    CONTEXT_SHOOTER,
 };
 
 #endif

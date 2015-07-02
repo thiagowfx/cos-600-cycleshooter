@@ -205,11 +205,11 @@ void InputManager::detectJoystick() {
            sf::Joystick::hasAxis(n, sf::Joystick::X) &&
            sf::Joystick::hasAxis(n, sf::Joystick::Y) &&
            sf::Joystick::getButtonCount(n) >= 1) {
-            Ogre::LogManager::getSingleton().logMessage("----> Setting joystick to number " + std::to_string(n));
+            Ogre::LogManager::getSingleton().logMessage("----> InputManager: Setting joystick to number " + std::to_string(n));
             break;
         }
         else {
-            Ogre::LogManager::getSingleton().logMessage("----> No suitable joystick detected.");
+            Ogre::LogManager::getSingleton().logMessage("----> InputManager: No suitable joystick detected.");
         }
     }
 }

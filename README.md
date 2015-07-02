@@ -39,7 +39,7 @@ Dependencies
 
 If you want to build Ogre or SFML, you must have some dependencies already installed on your system:
 
-On Ubuntu:
+On Debian/Ubuntu:
 - `sudo apt-get build-dep libogre-1.9-dev libsfml-dev; sudo apt-get install cmake libglew-dev libudev-dev`
 
 On Arch Linux:
