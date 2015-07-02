@@ -17,7 +17,7 @@
 #include "LogicManager.hpp"
 
 #include "ConstantBicycle.hpp"
-// TODO: #include "RealBicycle.hpp"
+#include "RealBicycle.hpp"
 
 #include "ConstantPolar.hpp"
 #include "RandomPolar.hpp"
@@ -110,6 +110,8 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
      * @brief BICYCLE_SPEED_CHANGE Variation of the bicycle speed between sucessive increments/decrements.
      */
     const double BICYCLE_SPEED_CHANGE = 10;
+
+    const int BICYCLE_FRICTION_CHANGE = 25;
 
     /**
      * @brief POLAR_SLEEP_TIME Period between polar updates.

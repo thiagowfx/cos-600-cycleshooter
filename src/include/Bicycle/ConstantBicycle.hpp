@@ -14,6 +14,7 @@ public:
     ConstantBicycle(const double& speed) :
         AbstractBicycle(speed)
     {
+        setFriction(0);
     }
 
     virtual void updateSpeed() {}

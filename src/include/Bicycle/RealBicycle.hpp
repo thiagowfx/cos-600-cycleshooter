@@ -44,7 +44,7 @@ class RealBicycle : public AbstractBicycle {
     /**
      * Maximun number of characters that might be read at a time.
      */
-    static const int MAX_STRING_RESPONSE = ((std::string("B000000").size() + 1) * 2);
+    static const int MAX_STRING_RESPONSE = 16;
 
     /**
      * Open the serial port in the specified path.
@@ -206,9 +206,11 @@ public:
         AbstractBicycle()
     {
         openSerialPort(deviceFilePath);
+        setFriction(0);
     }
 
     virtual ~RealBicycle() {
+        //setFriction(0);
         closeSerialPort();
     }
 
@@ -244,6 +246,13 @@ public:
         friction = value;
         writeToSerialPort(command.str());
     }
+
+    virtual void changeFriction(const int& value) {
+        friction = std::max(0, friction + value);
+        friction = std::min(400, friction);
+        setFriction(friction);
+    }
+
 };
 }
 

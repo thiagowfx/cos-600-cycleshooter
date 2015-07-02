@@ -324,6 +324,14 @@ void Controller::setupMappings() {
         logicManager->getPlayerNode()->yaw(Ogre::Degree(-10.0));
     });
 
+    InputManager::instance().addKey(sf::Keyboard::Q, CONTEXT_RUNNER, [&]{
+        bicycle->changeFriction(-BICYCLE_FRICTION_CHANGE);
+    });
+
+    InputManager::instance().addKey(sf::Keyboard::E, CONTEXT_RUNNER, [&]{
+        bicycle->changeFriction(BICYCLE_FRICTION_CHANGE);
+    });
+
     /*
      * Shooter mode mappings.
      */

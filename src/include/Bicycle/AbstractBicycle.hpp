@@ -54,6 +54,11 @@ public:
      */
     virtual void setFriction(const int& value) = 0;
 
+    virtual void changeFriction(const int& value) {
+        friction = std::max(0, friction + value);
+        friction = std::min(400, friction);
+    }
+
     /**
      * Change (increment or decrement) the speed by the specified value.
      */
