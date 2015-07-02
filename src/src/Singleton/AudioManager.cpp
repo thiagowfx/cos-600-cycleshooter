@@ -76,7 +76,7 @@ void AudioManager::populate_sounds() {
 
     auto error = [](const std::string& soundname) {
         Ogre::LogManager::getSingleton().logMessage(Ogre::LML_CRITICAL, "----> Error while loading a sound: " + soundname);
-        exit(1);
+        exit(EXIT_FAILURE);
     };
 
 #define LOAD_TEMPLATE(soundname, soundfile)\
@@ -110,7 +110,7 @@ void AudioManager::populate_musics() {
 
     auto error = [](const std::string& musicname) {
         Ogre::LogManager::getSingleton().logMessage(Ogre::LML_CRITICAL, "----> Error while loading a music: " + musicname);
-        exit(1);
+        exit(EXIT_FAILURE);
     };
 
 #define LOAD_TEMPLATE(musicname, musicfile)\
