@@ -25,6 +25,10 @@ protected:
 public:
     AbstractBicycle(){}
 
+    AbstractBicycle(const double& speed) :
+        speed(speed)
+    {}
+
     /**
      * Get the current speed of the bicycle (in speed units of the game).
      */

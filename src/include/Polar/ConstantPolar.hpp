@@ -28,7 +28,7 @@ public:
      * Change (increment or decrement) the peak by the specified value.
      */
     virtual void changePeaks(const int& amount) {
-        peak += amount;
+        peak = std::max(0, peak + amount);
     }
 
 };

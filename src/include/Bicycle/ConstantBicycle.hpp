@@ -11,9 +11,8 @@ namespace Cycleshooter {
 class ConstantBicycle : public AbstractBicycle {
 
 public:
-    ConstantBicycle(double speed) :
-        AbstractBicycle(),
-        speed(speed)
+    ConstantBicycle(const double& speed) :
+        AbstractBicycle(speed)
     {
     }
 
@@ -24,7 +23,7 @@ public:
     }
 
     virtual void changeSpeed(const double& amount) {
-        speed += amount;
+        speed = std::max(0.0, speed + amount);
     }
 };
 

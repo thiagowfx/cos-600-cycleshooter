@@ -29,6 +29,9 @@ public:
      * Change (increment or decrement) the maximum and the minimum peak by the specified value.
      */
     virtual void changePeaks(const int& amount) {
+        if(minPeak + amount < 0)
+            return;
+
         minPeak += amount;
         maxPeak += amount;
     }
