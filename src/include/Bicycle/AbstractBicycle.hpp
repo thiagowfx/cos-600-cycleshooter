@@ -48,6 +48,11 @@ public:
      * Set the friction of the bicycle, by sending a command to the controller circuit.
      */
     virtual void setFriction(const int& value) = 0;
+
+    /**
+     * Change (increment or decrement) the speed by the specified value.
+     */
+    virtual void changeSpeed(const double& amount) {}
 };
 
 }

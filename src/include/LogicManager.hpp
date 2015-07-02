@@ -41,12 +41,6 @@ class LogicManager {
      */
 
     /**
-     * Bicycle speed.
-     * Should simulate or acquire a real bike speed.
-     */
-    double speed = 10 * 10.0;
-
-    /**
      * Update the player position according to the passed time.
      */
     void updatePlayerPosition(const double& time);
@@ -106,7 +100,6 @@ public:
     Ogre::SceneNode *getPlayerNode() const;
     int getPlayerAmmo() const;
     int getMonsterHealth() const;
-    double getSpeed() const;
 };
 }
 
