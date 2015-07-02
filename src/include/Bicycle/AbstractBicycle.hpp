@@ -3,6 +3,7 @@
 
 namespace Cycleshooter {
 
+// TODO: estatísticas. Utilizar uma função update_statistics(...); deixar parecido com a polar.
 class AbstractBicycle {
 
     /**
