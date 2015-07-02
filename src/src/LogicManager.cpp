@@ -59,7 +59,7 @@ void LogicManager::shoot() {
         auto coords = crosshair_to_img_coords(controller->getCrosshairManager()->getScroll(), rttImage);
 
         if (rttImage.getColourAt(coords.first, coords.second, 0) != Ogre::ColourValue::Black) {
-            // TODO: AudioManager::instance().play_sound(SOUND_MONSTER_HIT);
+            AudioManager::instance().play_sound(SOUND_MONSTER_HIT);
             decrementMonsterHealth();
         }
 
