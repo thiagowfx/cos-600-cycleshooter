@@ -166,6 +166,7 @@ bool Controller::getDebug() const {
 void Controller::wait_threads() const {
     Ogre::LogManager::getSingleton().logMessage("--> Controller: Wait Threads <--");
 
+    bicycleUpdater->wait();
     polarUpdater->wait();
 }
 
@@ -247,11 +248,21 @@ void Controller::createGameElements() {
     // attention: logic manager should be created before any threads that will update it
     logicManager = std::unique_ptr<LogicManager>(new LogicManager(this));
 
+    bicycle = std::unique_ptr<AbstractBicycle>(new ConstantBicycle(20));
+    bicycleUpdater = std::unique_ptr<sf::Thread>(new sf::Thread([&](){
+        while(!shutdown) {
+            try { bicycle->updateSpeed(); }
+            catch (...) { Ogre::LogManager::getSingleton().logMessage("WARNING: Controller (bicycle thread): exception caught", Ogre::LML_CRITICAL); }
+            sf::sleep(BICYCLE_SLEEP_TIME);
+        }
+    }));
+    bicycleUpdater->launch();
+
     polar = std::unique_ptr<AbstractPolar>(new RandomPolar(80, 100));
     polarUpdater = std::unique_ptr<sf::Thread>(new sf::Thread([&](){
         while(!shutdown) {
             try { polar->updateHeartRate(); }
-            catch (...) { Ogre::LogManager::getSingleton().logMessage("WARNING: Controller (heartRate thread): exception caught", Ogre::LML_CRITICAL); }
+            catch (...) { Ogre::LogManager::getSingleton().logMessage("WARNING: Controller (polar thread): exception caught", Ogre::LML_CRITICAL); }
             sf::sleep(POLAR_SLEEP_TIME);
         }
     }));
@@ -293,12 +304,14 @@ void Controller::setupMappings() {
      */
     InputManager::instance().addKeysUnbuf({sf::Keyboard::W,
                                            sf::Keyboard::Up}, CONTEXT_RUNNER, [&]{
-        logicManager->getPlayerNode()->translate(Ogre::Vector3(0.0, 0.0, -10.0), Ogre::SceneNode::TS_LOCAL);
+        // logicManager->getPlayerNode()->translate(Ogre::Vector3(0.0, 0.0, -10.0), Ogre::SceneNode::TS_LOCAL);
+        bicycle->changeSpeed(BICYCLE_SPEED_CHANGE);
     });
 
     InputManager::instance().addKeysUnbuf({sf::Keyboard::S,
                                            sf::Keyboard::Down}, CONTEXT_RUNNER, [&]{
-        logicManager->getPlayerNode()->translate(Ogre::Vector3(0.0, 0.0, +10.0), Ogre::SceneNode::TS_LOCAL);
+        // logicManager->getPlayerNode()->translate(Ogre::Vector3(0.0, 0.0, +10.0), Ogre::SceneNode::TS_LOCAL);
+        bicycle->changeSpeed(-BICYCLE_SPEED_CHANGE);
     });
 
     InputManager::instance().addKeysUnbuf({sf::Keyboard::A,
@@ -309,6 +322,14 @@ void Controller::setupMappings() {
     InputManager::instance().addKeysUnbuf({sf::Keyboard::D,
                                            sf::Keyboard::Right}, CONTEXT_RUNNER, [&]{
         logicManager->getPlayerNode()->yaw(Ogre::Degree(-10.0));
+    });
+
+    InputManager::instance().addKey(sf::Keyboard::Q, CONTEXT_RUNNER, [&]{
+        bicycle->changeFriction(-BICYCLE_FRICTION_CHANGE);
+    });
+
+    InputManager::instance().addKey(sf::Keyboard::E, CONTEXT_RUNNER, [&]{
+        bicycle->changeFriction(BICYCLE_FRICTION_CHANGE);
     });
 
     /*
@@ -442,6 +463,7 @@ void Controller::do_game_end() {
 
     // TODO: print this on the screen instead of std::cout
     polar->print_statistics();
+    bicycle->print_statistics();
 
     oWindow->update();
     sf::sleep(sf::milliseconds(3800));
@@ -543,6 +565,10 @@ void Controller::toggleDebug() {
     else {
         setupDebugOn();
     }
+}
+
+AbstractBicycle* Controller::getBicycle() const {
+    return bicycle.get();
 }
 
 }

@@ -57,7 +57,7 @@ protected:
     }
 
 public:
-    AbstractPolar(){};
+    AbstractPolar(){}
 
     /**
      * Get a single value to represent the heart rate.
@@ -75,7 +75,7 @@ public:
         os << "- # of records acquired: "<< stats.count << std::endl;
         os << "- Lowest Heartbeat: " << stats.lowest << std::endl;
         os << "- Greatest Heartbeat: " << stats.greatest << std::endl;
-        os << "- Mean: " << static_cast<double>(stats.sum) / stats.count << std::endl;
+        os << "- Mean: " << static_cast<double>(stats.sum) / stats.count << std::endl << std::endl;
     }
 
     /**

@@ -16,6 +16,9 @@
 #include "InputManager.hpp"
 #include "LogicManager.hpp"
 
+#include "ConstantBicycle.hpp"
+#include "RealBicycle.hpp"
+
 #include "ConstantPolar.hpp"
 #include "RandomPolar.hpp"
 #include "RealPolar.hpp"
@@ -96,10 +99,22 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     /**
      * @brief APPLICATION_NAME Name of our application
      */
-    const Ogre::String APPLICATION_NAME = "Cycleshooter";
+    const std::string APPLICATION_NAME = "Cycleshooter";
 
     /**
-     * @brief POLAR_SLEEP_TIME Time between polar updates.
+     * @brief BICYCLE_SLEEP_TIME Period between bicycle updates.
+     */
+    const sf::Time BICYCLE_SLEEP_TIME = sf::milliseconds(500);
+
+    /**
+     * @brief BICYCLE_SPEED_CHANGE Variation of the bicycle speed between sucessive increments/decrements.
+     */
+    const double BICYCLE_SPEED_CHANGE = 10;
+
+    const int BICYCLE_FRICTION_CHANGE = 25;
+
+    /**
+     * @brief POLAR_SLEEP_TIME Period between polar updates.
      */
     const sf::Time POLAR_SLEEP_TIME = sf::milliseconds(500);
 
@@ -194,6 +209,16 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     std::unique_ptr<LogicManager> logicManager;
 
     /**
+     * The bicycle, from where we get the speed and set the friction.
+     */
+    std::unique_ptr<AbstractBicycle> bicycle;
+
+    /**
+     * The thread responsible for updating the bicycle speed.
+     */
+    std::unique_ptr<sf::Thread> bicycleUpdater;
+
+    /**
      * The polar device, from where we will get the heart rates.
      */
     std::unique_ptr<AbstractPolar> polar;
@@ -286,6 +311,7 @@ public:
     bool getDebug() const;
     TerrainManager* getTerrainManager() const;
     CrosshairManager* getCrosshairManager() const;
+    AbstractBicycle* getBicycle() const;
     AbstractPolar* getPolar() const;
 };
 

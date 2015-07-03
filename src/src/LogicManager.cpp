@@ -92,7 +92,7 @@ void LogicManager::decrementMonsterHealth(int quantity) {
 }
 
 void LogicManager::updatePlayerPosition(const double &time) {
-    double distance = speed * time;
+    double distance = controller->getBicycle()->getSpeed() * time;
     Ogre::Vector3 playerOrientation = frontCamera->getDirection();
     getPlayerNode()->translate(distance * playerOrientation, Ogre::SceneNode::TS_LOCAL);
 }
@@ -195,10 +195,6 @@ void LogicManager::setDebugOn() {
 void LogicManager::setDebugOff() {
     controller->getSceneManager()->setDisplaySceneNodes(false);
     controller->getSceneManager()->showBoundingBoxes(false);
-}
-
-double LogicManager::getSpeed() const {
-    return speed;
 }
 
 }
