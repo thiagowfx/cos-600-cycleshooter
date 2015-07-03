@@ -49,7 +49,7 @@ public:
     int getCollisionMatrixWidth() const;
     int getCollisionMatrixHeight() const;
 
-    bool isBulletAt(int pixelWidth, int pixelHeight, Ogre::Vector3 coord);
+    std::pair<bool,Ogre::String>  isBulletAt(int pixelWidth, int pixelHeight, Ogre::Vector3 coord, Ogre::Real radius);
     void removeBullet(int pixelWidth, int pixelHeight);
     //Functions to add and remove bullets.
     void setBulletAt(int width, int height, bool exist, Ogre::Vector3 coord);
