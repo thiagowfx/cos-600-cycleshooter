@@ -3,6 +3,7 @@ project(Cycleshooter C CXX)
 
 
 set(ASSETS_DIR "${PROJECT_SOURCE_DIR}/assets")
+set(ASSETS_BINARY_DIR "${PROJECT_BINARY_DIR}/assets")
 set(DEST_DIR "${PROJECT_BINARY_DIR}/dest")
 set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
 set(VENDOR_DIR "${PROJECT_SOURCE_DIR}/vendor")
@@ -14,7 +15,6 @@ option(DEPENDENCIES_READY "Are the dependencies ready?" OFF)
 
 
 add_definitions("-std=c++11 -g -Wno-deprecated-declarations")
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 
 add_subdirectory(${VENDOR_DIR})

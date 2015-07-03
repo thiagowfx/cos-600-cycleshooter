@@ -5,6 +5,7 @@
 #include <OgreTerrain.h>
 #include <OgreTerrainGroup.h>
 #include <CollisionHandler.hpp>
+#include <OgreSceneManager.h>
 
 namespace Cycleshooter {
 
@@ -16,7 +17,9 @@ class TerrainManager {
 
     //Terrain Variables.
     Ogre::String terrainType = "Plane";
-    Ogre::Real widthScale, heightScale,terrainWorldSizeHeight,terrainWorldSizeWidth;
+    Ogre::Real terrainWorldSizeHeight,terrainWorldSizeWidth;
+    //Transformation properties.
+    Ogre::Real widthScale, heightScale;
     Ogre::Vector3 terrainTranslation;
     //Plane vertex dimensions.
     int terrainWidth, terrainHeight;
@@ -28,9 +31,14 @@ public:
     void createTerrainLight();
     void defineTerrainProperties();
     void createTerrain();
-    void setCollisionTransformation();//Defines translation and scale to collision coordinates.
-    std::pair<int,int> getCollisionCoordinates(Ogre::Vector3 point);
-    int getTerrainAt(Ogre::Vector3 coord);
+    //Defines translation and scale to collision coordinates(maps continous rectangles in  discrete rectangles).
+    void setCollisionTransformation();
+    std::pair<int,int> getCollisionCoordinates(Ogre::Vector3 point);//Transfors Ogre 3d point in data structure indexes.
+    std::pair<int,bool> getTerrainAt(Ogre::Vector3 coord); //Method to discover terrain property and bullet existence.
+
+
+    void generateBullets(int numOfBullets);//Random bullets Generator.
+    void renderBullets();
 
     //Test Functions.
     void printCollisionTransformation();

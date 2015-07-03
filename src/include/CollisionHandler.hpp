@@ -6,7 +6,8 @@
 #include <fstream>
 #include <iostream>
 #include <utility>
-#include <map>
+#include <random>
+#include <BulletElement.hpp>
 
 namespace Cycleshooter {
 class CollisionHandler {
@@ -19,7 +20,7 @@ class CollisionHandler {
 
     Ogre::Image* collisionTexture; //Texture to specify terrain type.
     Ogre::String collisionTexturePath; //Path to circuit image.
-
+    int bulletCount;
     enum Colors{
         NONE_PIXEL,
         START_PIXEL,
@@ -31,6 +32,7 @@ class CollisionHandler {
     };
     int collisionMatrixWidth, collisionMatrixHeight;
     std::vector<std::vector<Colors> > collisionMatrix;
+    std::vector<std::vector<std::pair<bool, BulletElement> > > bulletMatrix;
 
 public:
 
@@ -39,8 +41,6 @@ public:
 
     void loadImages(); //Load images from files.
     void loadTensor(); //Function to load the data structure from images.
-    void printMatrix(); //Testing funcition for collisionMatrix.
-    bool testMatrixDimension(); //Testing function to allocated matrix dimensions.
     Colors getPixelEnumeration(int pixelWidth, int pixelHeight); //
     //Function to find the race starting point in the texture.
     std::pair<int,int> getStartPixel();
@@ -48,6 +48,18 @@ public:
     //Matrix dimensions getters.
     int getCollisionMatrixWidth() const;
     int getCollisionMatrixHeight() const;
+
+    //Function that discover if a bullet exists and also the scene node name related to it.
+    std::pair<bool,Ogre::String>  isBulletAt(int pixelWidth, int pixelHeight, Ogre::Vector3 coord, Ogre::Real radius);
+    void removeBullet(int pixelWidth, int pixelHeight);//Deprecated
+    //Functions to add and remove bullets.
+    void setBulletAt(int width, int height, bool exist, Ogre::Vector3 coord);
+    std::pair<std::vector<Ogre::String> , std::vector<Ogre::Vector3> > getSceneNodeNames();
+
+    //Testing functions
+    void printMatrix(); //Testing funcition for collisionMatrix.
+    void printBullets(); //Testing function for bulletMatrix.
+    bool testMatrixDimension(); //Testing function to allocated matrix dimensions.
 };
 
 }
