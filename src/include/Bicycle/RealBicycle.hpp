@@ -107,15 +107,13 @@ class RealBicycle : public AbstractBicycle {
     }
 
     /**
-     * @brief readSerialPort
+     * @brief readSerialPort Read from the serial port the string which returns,
+     * in particular, the speed of the bicycle.
      */
     std::string readFromSerialPort() {
-        // TODO: review this whole function
-
         /*
-         * String format: B000000
+         * String format: B000000, at once
          */
-
         char detectB[2];
         int i = 0;
 
@@ -140,9 +138,11 @@ class RealBicycle : public AbstractBicycle {
 
         } while(detectB[0] != 'B');
 
-        // from here we wave to
-        // (1) read 6 digits
-        // and (2) return them concatenated as a std::string, plus add a "B" before them
+	/*
+	 * From here we have to:
+	 * 1. Read 6 digits;
+	 * 2. and return them concatenated as a std::string, preceded by a "B"
+	 */
 
         char digit[6 + 1];
 
@@ -154,44 +154,20 @@ class RealBicycle : public AbstractBicycle {
                 throw std::runtime_error("----> RealBicycle: Error getting the response string from the bycicle (2) -- " + std::string(strerror(errno)) + "(" + std::to_string(errno) + ")");
             }
 
-            // TODO: maybe remove this if
             if (n == 0) {
                 // wait a little bit before trying again
                 usleep(READING_RETRY_TIME_MS * 1e3);
                 continue;
             }
 
-            // TODO: maybe compare n with 6 for further validation (see read(2))
         } while(false);
 
         return "B" + std::string(digit, digit + 6);
-        // TODO: for further testing, if necessary: assert(std::string("B" + std::string(digit, digit + 6)).size() == 7);
     }
 
-
-//        char* responseString;
-//        char b[2];
-//        int i = 0;
-
-//        do {
-//            if(i == 0 && b[0] != 'B'){
-//                responseString[i++] = b[0];
-//            }
-
-//            // store the character
-//            responseString[i++] = b[0];
-
-
-//        } while((b[0] != 0x0D) && (i < MAX_STRING_RESPONSE));
-
-//        // null terminate the string (replace the <CR>)
-//        responseString[i-1] = 0;
-
-//        return responseString;
-//    }
-
     /**
-     * @brief writeSerialPort
+     * @brief writeSerialPort Write to the serial port the string to change the
+     * load of the bicycle.
      */
     void writeToSerialPort(const std::string& command) {
         std::cout << "--> RealBicycle: Writing to Serial Port: " << command << " <-- " << std::endl;
@@ -210,7 +186,11 @@ public:
     }
 
     virtual ~RealBicycle() {
-        //setFriction(0);
+	/*
+	 * Rationale: this would "reset" the bicycle to its original state
+	 * However, in practice, this doesn't work.
+	 */
+        // setFriction(0);
         closeSerialPort();
     }
 
@@ -218,14 +198,8 @@ public:
      * Update the speed value of the bicycle, by reading it from the controller circuit.
      */
     virtual void updateSpeed() {
-        std::cout << "--> RealBicycle: Updating Speed" << std::endl;
-
         std::string response = readFromSerialPort();
-        std::cout << "----> RealBicycle: Read response: " << response << std::endl;
-
-        speed = atoi(response.substr(1,3).c_str());
-        std::cout << "----> RealBicycle: Read speed: " << speed << std::endl;
-
+        auto speed = atoi(response.substr(1,3).c_str());
         update_statistics(speed);
     }
 

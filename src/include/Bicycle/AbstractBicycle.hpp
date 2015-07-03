@@ -5,14 +5,14 @@
 
 namespace Cycleshooter {
 
-// TODO: estatísticas. Utilizar uma função update_statistics(...); deixar parecido com a polar.
 class AbstractBicycle {
+
 private:
     struct {
         /**
          * Sum of the values acquired in this session.
          */
-        long long int sum = 0;
+        long long int sum = 0.0;
 
         /**
          * Number of the values acquired in this session.
@@ -23,11 +23,6 @@ private:
          * Maximum value of the velocity in this session.
          */
         long long int greatest = std::numeric_limits<long long int>::min();
-
-        /**
-         * Minimum value of the velocity in this session.
-         */
-        long long int lowest = std::numeric_limits<long long int>::max();
     } stats;
 
     /**
@@ -52,10 +47,12 @@ protected:
      */
     void update_statistics(const long long int& speed) {
         this->speed = speed;
-        stats.lowest = std::min(stats.lowest, speed);
-        stats.greatest = std::max(stats.greatest, speed);
-        stats.sum += speed;
-        ++stats.count;
+
+        if(speed > 0.0) {
+            stats.greatest = std::max(stats.greatest, speed);
+            stats.sum += speed;
+            ++stats.count;
+        }
     }
 
 public:
@@ -70,12 +67,12 @@ public:
      */
     void print_statistics(std::ostream& os = std::cout) const {
         os << "==========================" << std::endl;
-        os << "|    Bicycle Statistics   |" << std::endl;
+        os << "|    Bicycle Statistics  |" << std::endl;
         os << "==========================" << std::endl;
         os << "- # of records acquired: "<< stats.count << std::endl;
-        os << "- Lowest Velocity: " << stats.lowest << std::endl;
-        os << "- Greatest Velocity: " << stats.greatest << std::endl;
-        os << "- Mean: " << static_cast<double>(stats.sum) / stats.count << std::endl << std::endl;
+        os << "- Greatest speed: " << stats.greatest * RPM_TO_LOGICAL_SPEED << std::endl;
+        os << "- Mean: " << (static_cast<double>(stats.sum) / stats.count) * RPM_TO_LOGICAL_SPEED << std::endl;
+	os << "--------------------------" << std::endl;
     }
 
     /**
