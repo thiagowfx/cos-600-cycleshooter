@@ -68,7 +68,7 @@ void TerrainManager::createTerrain(){
 }
 
 void TerrainManager::setCollisionTransformation(){
-    //Get datastructure dimensions.
+    //Get data structure dimensions.
     int collisionWidth = collisionHandler->getCollisionMatrixWidth(); 
     int collisionHeigth = collisionHandler->getCollisionMatrixHeight();
     collisionHeigth -= 1;
@@ -102,6 +102,7 @@ std::pair<int, bool> TerrainManager::getTerrainAt(Ogre::Vector3 coord){
     std::pair<int,int> collisionCoord = getCollisionCoordinates(coord);
     //Getting terrain property.
     std::pair<int,bool> terrainAt = std::make_pair(0,false);
+    //Prevents segfault. In release, the clause must not be true anytime.
     if(coord.x> terrainWorldSizeWidth*0.5 || coord.y > terrainWorldSizeHeight*0.5){
         return std::make_pair(-1,false);
     }
@@ -111,7 +112,6 @@ std::pair<int, bool> TerrainManager::getTerrainAt(Ogre::Vector3 coord){
     std::pair<bool,Ogre::String> isBullet = collisionHandler->isBulletAt(collisionCoord.first,collisionCoord.second,coord,rad);
     if(isBullet.first){
         Ogre::LogManager::getSingletonPtr()->logMessage("--> TerrainManager: Exist Bullet Here! <--");
-        //collisionHandler->changeBulletState(collisionCoord.first,collisionCoord.second);
         terrainAt.second = true;
         std::cout << terrainAt.second<<std::endl;
         sceneManager->getSceneNode(isBullet.second)->getAttachedObject(isBullet.second)->setVisible(false);

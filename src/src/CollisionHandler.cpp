@@ -151,8 +151,9 @@ std::pair<bool,Ogre::String> CollisionHandler::isBulletAt(int pixelWidth, int pi
     ty = ty * ty;
     tz = tz * tz;
     Ogre::Real sum = tx + ty + tz;
+    Ogre::Real r = radius * radius;
     //Comparing sphere discriminant with radius
-    bool belongsToSphere = sum <= radius * radius;
+    bool belongsToSphere = sum <= r;
     //Logically removing bullet from the scene.
     if(belongsToSphere){
         bulletMatrix[pixelWidth][pixelHeight].first = false;
@@ -160,7 +161,6 @@ std::pair<bool,Ogre::String> CollisionHandler::isBulletAt(int pixelWidth, int pi
     }
     else
         return std::make_pair(false,e.getScenenodeName());
-    //return bulletMatrix[pixelWidth][pixelHeight].first;
 }
 
 //TODO: change this to be called by isBullet().
@@ -191,7 +191,6 @@ std::pair<std::vector<Ogre::String> , std::vector<Ogre::Vector3> > CollisionHand
     //Grabing matrix dimensions.
     matrixColNumber = bulletMatrix[0].size();
     matrixRowNumber = bulletMatrix.size();
-    //printBullets();
     Ogre::LogManager::getSingletonPtr()->logMessage("--> CollisionHandler: Searching Bullets <--");
     for(int pixelWidth = 0;pixelWidth < matrixRowNumber;pixelWidth++){
         for(int pixelHeight = 0; pixelHeight < matrixColNumber;pixelHeight++){
