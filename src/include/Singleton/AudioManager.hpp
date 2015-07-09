@@ -134,7 +134,7 @@ private:
     void do_mute();
 
     /**
-     * Is a heartbeat sound playing currently?
+     * The heartbeat sound that is played occasionally.
      */
     sf::Sound heartbeat_sound;
 

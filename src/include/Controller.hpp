@@ -124,14 +124,9 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     const int POLAR_PEAK_CHANGE = 5;
 
     /**
-     * @brief HEARTBEAT_PLAY_CHECK_PERIOD Time period to check if a heart beat sound should be played or not.
-     */
-    const sf::Time HEARTBEAT_PLAY_CHECK_PERIOD = sf::milliseconds(220);
-
-    /**
      * @brief HEARTBEAT_MINIMUM_ASSUMED The minimumum expected heart beat. Used to choose a sound.
      */
-    const int HEARTBEAT_MINIMUM_ASSUMED = 75;
+    const int HEARTBEAT_MINIMUM_ASSUMED = 60;
 
     /**
      * @brief HEARTBEAT_MAXIMUM_ASSUMED The maximum expected heart beat. Used to choose a sound.

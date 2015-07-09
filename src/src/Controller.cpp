@@ -106,10 +106,13 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     logicManager->update(evt);
 
     if(context == CONTEXT_SHOOTER) {
-        // play heart beat sound if appropriate
         static sf::Clock clockHeartbeat;
-        if(clockHeartbeat.getElapsedTime() >= HEARTBEAT_PLAY_CHECK_PERIOD) {
-            AudioManager::instance().play_heartbeat(polar->getHeartRate(), HEARTBEAT_MINIMUM_ASSUMED, HEARTBEAT_MAXIMUM_ASSUMED);
+        static int next_heartbeat_waiting_time_ms = 0;
+
+        if(clockHeartbeat.getElapsedTime().asMilliseconds() >= next_heartbeat_waiting_time_ms) {
+            auto heartRate = polar->getHeartRate();
+            next_heartbeat_waiting_time_ms = (60.0 * 1000.0) / double(heartRate);
+            AudioManager::instance().play_heartbeat(heartRate, HEARTBEAT_MINIMUM_ASSUMED, HEARTBEAT_MAXIMUM_ASSUMED);
             clockHeartbeat.restart();
         }
     }
