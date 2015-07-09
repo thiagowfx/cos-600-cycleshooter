@@ -174,6 +174,11 @@ public:
      *  Play a heartbeat sound, according to the specified level.
      */
     void play_heartbeat(int level, int minimum, int maximum);
+
+    /**
+     * Return the duration of the given sound.
+     */
+    sf::Time get_sound_duration(const Soundname& soundname);
 };
 
 }

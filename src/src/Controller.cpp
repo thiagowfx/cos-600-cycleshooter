@@ -448,41 +448,41 @@ void Controller::gameMainLoop() {
 void Controller::do_game_end() {
     std::cout << "--> Controller: Game End <--" << std::endl;
 
-    // DESTROY THEM ALL
-    hud.reset(nullptr);
-    Ogre::Root::getSingleton().shutdown();
+    AudioManager::instance().stop_music();
+    InputManager::instance().reset();
 
-    // Recreate our Ogre environment
-    createRoot();
+    // DESTROY THEM ALL -- then recreate what is actually needed
+    hud.reset(nullptr);
+    oWindow->removeAllViewports();
+    Ogre::Root::getSingleton().destroySceneManager(oSceneManager);
     createSceneManager();
     createOverlaySystem();
-    setupResources();
-    setupTextures();
 
     // Create the Final Scene
     Ogre::Camera* endCamera = oSceneManager->createCamera("endCamera");
     Ogre::Viewport* endViewport = oWindow->addViewport(endCamera);
 
-    AudioManager::instance().stop_music();
-    InputManager::instance().reset();
+    Soundname endSound;
 
     if(gameWon) {
-        AudioManager::instance().play_sound(SOUND_GAME_VICTORY);
-        std::cout << "==> VICTORY :: Congratulations!" << std::endl;
+        endSound = SOUND_GAME_VICTORY;
+        std::cout << "==>GAME VICTORY :: Congratulations!" << std::endl;
         endViewport->setBackgroundColour(Ogre::ColourValue::Green);
     }
     else {
-        AudioManager::instance().play_sound(SOUND_GAME_LOSS);
+        endSound = SOUND_GAME_LOSS;
         std::cout << "==> GAME OVER :: Go exercise yourself a little more, you little lazy person!" << std::endl;
         endViewport->setBackgroundColour(Ogre::ColourValue::Red);
     }
+
+    AudioManager::instance().play_sound(endSound);
 
     // TODO: print this on the screen instead of std::cout
     polar->print_statistics();
     bicycle->print_statistics();
 
     oWindow->update();
-    sf::sleep(sf::milliseconds(3800));
+    sf::sleep(AudioManager::instance().get_sound_duration(endSound));
 }
 
 void Controller::createRoot() {

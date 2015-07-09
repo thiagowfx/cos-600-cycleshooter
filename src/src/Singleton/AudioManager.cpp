@@ -162,12 +162,13 @@ Soundname AudioManager::get_soundname_from_heartbeat(int level, int minimum, int
 }
 
 void AudioManager::play_heartbeat(int level, int minimum, int maximum) {
-    if(heartbeat_sound.getStatus() == sf::Sound::Playing)
-        return;
-
     Soundname soundname = get_soundname_from_heartbeat(level, minimum, maximum);
     heartbeat_sound.setBuffer(sound_map[soundname]);
     heartbeat_sound.play();
+}
+
+sf::Time AudioManager::get_sound_duration(const Soundname &soundname) {
+    return sound_map[soundname].getDuration();
 }
 
 }
