@@ -66,9 +66,9 @@ class LogicManager {
     void incrementPlayerAmmo(int quantity = 1);
 
     /**
-     * Remove a bullet from the total ammo of the player.
+     * Remove a bullet from the total ammo of the player. Return false if out of ammo before this operation.
      */
-    void decrementPlayerAmmo(int quantity = 1);
+    bool decrementPlayerAmmo(int quantity = 1);
 
     // go
     void go();

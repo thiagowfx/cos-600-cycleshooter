@@ -33,8 +33,7 @@ void LogicManager::update(const Ogre::FrameEvent &evt) {
 void LogicManager::shoot() {
     std::cout << "--> LogicManager: shoot <--" << std::endl;
 
-    if(playerAmmo > 0) {
-        decrementPlayerAmmo();
+    if(decrementPlayerAmmo()) {
         AudioManager::instance().play_random_shoot();
 
         Ogre::SceneNode* monsterNode = controller->getSceneManager()->getSceneNode("monsterNode");
@@ -48,24 +47,7 @@ void LogicManager::shoot() {
         Ogre::Image rttImage;
         rttTexture->convertToImage(rttImage);
 
-        auto crosshair_to_img_coords = [](std::pair<double, double> crosshair, Ogre::Image& image) -> std::pair<int, int> {
-            // map [-1.0, +1.0] to [0, width)
-            int retx = ((crosshair.first + 1.0) * image.getWidth()) / 2.0;
-
-            // map [-1.0, +1.0] to [0, height)
-            // int rety = ((crosshair.second + 1.0) * image.getHeight()) / 2.0;
-            int rety = image.getHeight() - static_cast<int>(((crosshair.second + 1.0) * image.getHeight()) / 2.0);
-
-            if(retx == image.getWidth())
-                --retx;
-
-            if(rety == image.getHeight())
-                --rety;
-
-            return std::make_pair(retx, rety);
-        };
-
-        auto coords = crosshair_to_img_coords(controller->getCrosshairManager()->getScroll(), rttImage);
+        std::pair<int, int> coords = controller->getCrosshairManager()->convertToImageCoordinates(rttImage);
 
         if (rttImage.getColourAt(coords.first, coords.second, 0) != Ogre::ColourValue::Black) {
             AudioManager::instance().play_sound(SOUND_MONSTER_HIT);
@@ -124,11 +106,10 @@ void LogicManager::updateMonsterPosition(const Ogre::Real &time) {
 
 bool LogicManager::checkPlayerMonsterCollision() {
     Ogre::SceneNode* monsterNode = controller->getSceneManager()->getSceneNode("monsterNode");
-    Ogre::SceneNode* playerNode = controller->getSceneManager()->getSceneNode("parentPlayerNode");
 
     Ogre::Real thresholdDistance = controller->getSceneManager()->getEntity("monsterEntity")->getBoundingRadius();
 
-    return monsterNode->getPosition().squaredDistance(playerNode->getPosition()) < thresholdDistance * thresholdDistance;
+    return monsterNode->getPosition().squaredDistance(parentPlayerNode->getPosition()) < thresholdDistance * thresholdDistance;
 }
 
 void LogicManager::incrementPlayerAmmo(int quantity) {
@@ -137,10 +118,16 @@ void LogicManager::incrementPlayerAmmo(int quantity) {
     playerAmmo += quantity;
 }
 
-void LogicManager::decrementPlayerAmmo(int quantity) {
+bool LogicManager::decrementPlayerAmmo(int quantity) {
     Ogre::LogManager::getSingleton().logMessage("--> LogicManager: Decrement Player Ammo <--");
 
-    playerAmmo = std::max(0, playerAmmo - quantity);
+    if(playerAmmo - quantity >= 0) {
+        playerAmmo -= quantity;
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 
 void LogicManager::go() {
