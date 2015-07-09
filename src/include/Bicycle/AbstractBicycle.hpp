@@ -28,7 +28,7 @@ private:
     /**
      * Factor to convert from the real speed (RPM) to the logical speed (units of the game).
      */
-    const double RPM_TO_LOGICAL_SPEED = 10.0;
+    const double RPM_TO_LOGICAL_SPEED = 15.0;
 
 protected:
     /**
@@ -70,15 +70,22 @@ public:
         os << "|    Bicycle Statistics  |" << std::endl;
         os << "==========================" << std::endl;
         os << "- # of records acquired: "<< stats.count << std::endl;
-        os << "- Greatest speed: " << stats.greatest * RPM_TO_LOGICAL_SPEED << std::endl;
-        os << "- Mean: " << (static_cast<double>(stats.sum) / stats.count) * RPM_TO_LOGICAL_SPEED << std::endl;
+        os << "- Greatest speed: " << stats.greatest << std::endl;
+        os << "- Mean: " << (static_cast<double>(stats.sum) / stats.count) << std::endl;
 	os << "--------------------------" << std::endl;
+    }
+
+    /**
+     * Get the current speed of the bicycle (in RPM, the real speed provided by the bicycle, without any conversion).
+     */
+    double getRpmSpeed() const {
+        return speed;
     }
 
     /**
      * Get the current speed of the bicycle (in speed units of the game).
      */
-    double getSpeed() const {
+    double getGameSpeed() const {
         return RPM_TO_LOGICAL_SPEED * speed;
     }
 
