@@ -2,8 +2,8 @@
 #define _AUDIOMANAGER_HPP_
 
 #include <deque>
+#include <iostream>
 #include <map>
-#include <OgreLogManager.h>
 #include <SFML/Audio.hpp>
 #include <SFML/System/Mutex.hpp>
 

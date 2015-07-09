@@ -3,7 +3,7 @@
 namespace Cycleshooter {
 
 AudioManager::AudioManager() {
-    Ogre::LogManager::getSingleton().logMessage("--> AudioManager: Constructor (Singleton) <--");
+    std::cout << "--> AudioManager: Constructor (Singleton) <--" << std::endl;
 
     populate_sounds();
     populate_musics();
@@ -39,7 +39,7 @@ void AudioManager::play_sound(const Soundname& soundname) {
 
 void AudioManager::play_music(const Musicname &musicname, bool restart) {
     sf::Lock lock(current_playing_music_mutex);
-    Ogre::LogManager::getSingleton().logMessage("--> AudioManager: Play Music <--");
+    std::cout << "--> AudioManager: Play Music <--" << std::endl;
 
     if(current_playing_music != NULL && current_playing_music->getStatus() == sf::Music::Playing) {
         current_playing_music->pause();
@@ -72,10 +72,10 @@ void AudioManager::do_mute() {
 }
 
 void AudioManager::populate_sounds() {
-    Ogre::LogManager::getSingleton().logMessage("--> AudioManager: Populate Sounds <--");
+    std::cout << "--> AudioManager: Populate Sounds <--" << std::endl;
 
     auto error = [](const std::string& soundname) {
-        Ogre::LogManager::getSingleton().logMessage(Ogre::LML_CRITICAL, "----> AudioManager: Error while loading this sound: " + soundname);
+        std::cout << "----> AudioManager: Error while loading this sound: " << soundname << std::endl;
         exit(EXIT_FAILURE);
     };
 
@@ -106,10 +106,10 @@ void AudioManager::populate_sounds() {
 }
 
 void AudioManager::populate_musics() {
-    Ogre::LogManager::getSingleton().logMessage("--> AudioManager: Populate Musics <--");
+    std::cout << "--> AudioManager: Populate Musics <--" << std::endl;
 
     auto error = [](const std::string& musicname) {
-        Ogre::LogManager::getSingleton().logMessage(Ogre::LML_CRITICAL, "----> AudioManager: Error while loading this music: " + musicname);
+        std::cout <<  "----> AudioManager: Error while loading this music: " << musicname << std::endl;
         exit(EXIT_FAILURE);
     };
 
@@ -130,7 +130,7 @@ void AudioManager::play_random(const std::vector<Soundname>& sound_list) {
 }
 
 void AudioManager::play_random_shoot() {
-    Ogre::LogManager::getSingleton().logMessage("--> AudioManager: Play Random Shoot <--");
+    std::cout << "--> AudioManager: Play Random Shoot <--" << std::endl;
 
     static std::vector<Soundname> shoot_sound_list = {SOUND_SHOOT01, SOUND_SHOOT02, SOUND_SHOOT03, SOUND_SHOOT04};
     play_random(shoot_sound_list);
