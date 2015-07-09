@@ -159,6 +159,19 @@ void Controller::shutdownNow(bool gameWon) {
     this->gameWon = gameWon;
 }
 
+void Controller::incrementPlayerAmmo(){
+    Ogre::Vector3 realCoord = logicManager->getPlayerNode()->getPosition();
+    //std::pair<int,int> textCoord = terrainManager->getCollisionCoordinates(realCoord);
+    //bool increment = terrainManager->getTerrainAt(realCoord).second;
+    //std::cout << "increment" << increment<< std::endl;
+    if(terrainManager->getTerrainAt(realCoord).second){
+        Ogre::LogManager::getSingletonPtr()->logMessage("--> Controller: Incresgin player ammo! <--");
+        logicManager->externalIncrement();
+        //BIG ERROR here
+        //collisionHandler->removeBullet(textCoord.first,textCoord.second);
+    }
+}
+
 bool Controller::getDebug() const {
     return debug;
 }
@@ -271,7 +284,7 @@ void Controller::createGameElements() {
     // to use a material, the resource group must be initialized
     terrainManager = std::unique_ptr<TerrainManager>(new TerrainManager(oSceneManager,"racecircuit.png"));
     terrainManager->createTerrain();
-    terrainManager->sampleCollisionTransformation();
+    //terrainManager->sampleCollisionTransformation();
 }
 
 void Controller::createScene() {

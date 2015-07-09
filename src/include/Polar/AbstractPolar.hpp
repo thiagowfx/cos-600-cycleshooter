@@ -75,7 +75,8 @@ public:
         os << "- # of records acquired: "<< stats.count << std::endl;
         os << "- Lowest Heartbeat: " << stats.lowest << std::endl;
         os << "- Greatest Heartbeat: " << stats.greatest << std::endl;
-        os << "- Mean: " << static_cast<double>(stats.sum) / stats.count << std::endl << std::endl;
+        os << "- Mean: " << static_cast<double>(stats.sum) / stats.count << std::endl;
+	os << "--------------------------" << std::endl;
     }
 
     /**

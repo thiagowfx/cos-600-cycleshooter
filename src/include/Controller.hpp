@@ -302,6 +302,8 @@ public:
      */
     void shutdownNow(bool gameWon);
 
+    void incrementPlayerAmmo();
+
     // getters and setters
     LogicManager* getLogicManager() const;
     Context getContext() const;

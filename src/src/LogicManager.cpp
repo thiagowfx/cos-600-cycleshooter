@@ -9,6 +9,9 @@ int LogicManager::getPlayerAmmo() const {
 LogicManager::LogicManager(Controller* controller) :
     controller(controller)
 {
+    int numOfTerrainTypes = 7;
+    difficultyParamenter = std::vector<float> (numOfTerrainTypes,0);
+    setDifficultyParamenter();
     go();
 }
 
@@ -170,6 +173,20 @@ void LogicManager::createRtt() {
     rttRenderTarget->getViewport(0)->setBackgroundColour(Ogre::ColourValue::Black);
 }
 
+void LogicManager::setDifficultyParamenter() {
+    difficultyParamenter[0] = 1.0f;
+    difficultyParamenter[1] = 1.0f;
+    difficultyParamenter[2] = 1.0f;
+    difficultyParamenter[3] = 1.0f;
+    difficultyParamenter[4] = 2.0f;
+    difficultyParamenter[5] = 3.0f;
+    difficultyParamenter[6] = 4.0f;
+}
+
+void LogicManager::externalIncrement(){
+    incrementPlayerAmmo(1);
+}
+
 void LogicManager::setupRunnerMode() {
     viewportFull->setCamera(frontCamera);
     frontCamera->setAspectRatio(Ogre::Real(viewportFull->getActualWidth()) / Ogre::Real(viewportFull->getActualHeight()));
@@ -195,6 +212,11 @@ void LogicManager::setDebugOn() {
 void LogicManager::setDebugOff() {
     controller->getSceneManager()->setDisplaySceneNodes(false);
     controller->getSceneManager()->showBoundingBoxes(false);
+}
+
+void LogicManager::translateMonster(int difficulty, Ogre::Vector3 translation){
+    float parameter = 1/difficultyParamenter[difficulty];
+    parentPlayerNode->translate(translation*parameter);
 }
 
 }
