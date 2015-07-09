@@ -43,7 +43,17 @@ class LogicManager {
     /**
      * Update the player position according to the passed time.
      */
-    void updatePlayerPosition(const double& time);
+    void updatePlayerPosition(const Ogre::Real& time);
+
+    /**
+     * Update the monster position according to the passed time.
+     */
+    void updateMonsterPosition(const Ogre::Real& time);
+
+    /**
+     * Return true if the monster is near enough in relation to the player.
+     */
+    bool checkPlayerMonsterCollision();
 
     /**
      * Number of bullets available for the player.

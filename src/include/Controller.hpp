@@ -179,11 +179,6 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     void createGameElements();
 
     /**
-     * Create the initial scene.
-     */
-    void createScene();
-
-    /**
      * Create the crosshair as an overlay element.
      */
     void createCrosshair();

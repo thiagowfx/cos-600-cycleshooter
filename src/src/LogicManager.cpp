@@ -16,11 +16,17 @@ LogicManager::LogicManager(Controller* controller) :
 }
 
 void LogicManager::update(const Ogre::FrameEvent &evt) {
-    if(controller->getContext() == CONTEXT_RUNNER) {
-        updatePlayerPosition(evt.timeSinceLastFrame);
-    }
-    else {
+    auto elapsedTime = evt.timeSinceLastFrame;
 
+    if(controller->getContext() == CONTEXT_RUNNER) {
+        updatePlayerPosition(elapsedTime);
+    }
+
+    updateMonsterPosition(elapsedTime);
+
+    if(checkPlayerMonsterCollision()) {
+        // TODO: maybe pass an enum to this function so we know exactly why the game ended. Define it on the Simple/ directory.
+        controller->shutdownNow(false);
     }
 }
 
@@ -94,10 +100,35 @@ void LogicManager::decrementMonsterHealth(int quantity) {
     }
 }
 
-void LogicManager::updatePlayerPosition(const double &time) {
+void LogicManager::updatePlayerPosition(const Ogre::Real &time) {
+    // distance = speed x time (Physics I, yay!)
     double distance = controller->getBicycle()->getGameSpeed() * time;
+
     Ogre::Vector3 playerOrientation = frontCamera->getDirection();
+
     getPlayerNode()->translate(distance * playerOrientation, Ogre::SceneNode::TS_LOCAL);
+}
+
+void LogicManager::updateMonsterPosition(const Ogre::Real &time) {
+    auto monsterSpeed = 200.0;
+    Ogre::SceneNode* monsterNode = controller->getSceneManager()->getSceneNode("monsterNode");
+
+    // distance = speed x time (Physics I, yay!)
+    double distance = monsterSpeed * time;
+
+    // upstream: http://stackoverflow.com/questions/4727079/getting-object-direction-in-ogre
+    Ogre::Vector3 monsterOrientation = monsterNode->getOrientation() * Ogre::Vector3::UNIT_Z;
+
+    monsterNode->translate(distance * monsterOrientation, Ogre::SceneNode::TS_LOCAL);
+}
+
+bool LogicManager::checkPlayerMonsterCollision() {
+    Ogre::SceneNode* monsterNode = controller->getSceneManager()->getSceneNode("monsterNode");
+    Ogre::SceneNode* playerNode = controller->getSceneManager()->getSceneNode("parentPlayerNode");
+
+    Ogre::Real thresholdDistance = controller->getSceneManager()->getEntity("monsterEntity")->getBoundingRadius();
+
+    return monsterNode->getPosition().squaredDistance(playerNode->getPosition()) < thresholdDistance * thresholdDistance;
 }
 
 void LogicManager::incrementPlayerAmmo(int quantity) {

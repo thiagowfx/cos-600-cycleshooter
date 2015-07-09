@@ -203,7 +203,6 @@ void Controller::go() {
 
     // initialize our objects and our game overall
     createGameElements();
-    createScene();
     createCrosshair();
     createHud();
 
@@ -274,7 +273,7 @@ void Controller::createGameElements() {
     }));
     bicycleUpdater->launch();
 
-    polar = std::unique_ptr<AbstractPolar>(new RandomPolar(80, 100));
+    polar = std::unique_ptr<AbstractPolar>(new RandomPolar(HEARTBEAT_MINIMUM_ASSUMED, HEARTBEAT_MAXIMUM_ASSUMED));
     polarUpdater = std::unique_ptr<sf::Thread>(new sf::Thread([&](){
         while(!shutdown) {
             try { polar->updateHeartRate(); }
@@ -288,18 +287,15 @@ void Controller::createGameElements() {
     terrainManager = std::unique_ptr<TerrainManager>(new TerrainManager(oSceneManager,"racecircuit.png"));
     terrainManager->createTerrain();
     //terrainManager->sampleCollisionTransformation();
-}
-
-void Controller::createScene() {
-    Ogre::LogManager::getSingleton().logMessage("--> Controller: Creating Scene <--");
 
     Ogre::Entity* monsterEntity = getSceneManager()->createEntity("monsterEntity", "ogrehead.mesh");
     Ogre::SceneNode* monsterNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("monsterNode", Ogre::Vector3(0.0, 0.0, +300.0));
     monsterNode->attachObject(monsterEntity);
-    monsterNode->setAutoTracking(true, getLogicManager()->getPlayerNode(), Ogre::Vector3::UNIT_Z);
 
-    getSceneManager()->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
+    getSceneManager()->setAmbientLight(Ogre::ColourValue(0.6, 0.6, 0.6));
     getSceneManager()->createLight("mainLight")->setPosition(20.0, 80.0, 50.0);
+    getSceneManager()->createLight("auxLight1")->setPosition(+100.0, +100.0, +100.0);
+    getSceneManager()->createLight("auxLight2")->setPosition(-100.0, +50.0, -100.0);
 }
 
 void Controller::createCrosshair() {
