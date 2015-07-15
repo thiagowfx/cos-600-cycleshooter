@@ -2,6 +2,7 @@
 #define _SINGLETON_HPP_
 
 /**
+ * Make a class a singleton.
  * Usage:
  *
  *      class Name {

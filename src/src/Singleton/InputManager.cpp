@@ -2,19 +2,19 @@
 
 namespace Cycleshooter {
 
-bool InputManager::hasKey(const sf::Keyboard::Key &key, const Context &mode) {
+bool InputManager::hasKey(const sf::Keyboard::Key &key, const Context &mode) const {
     return keyboardMap[mode].find(key) != keyboardMap[mode].end();
 }
 
-bool InputManager::hasJoystickButton(unsigned int button, const Context &mode){
+bool InputManager::hasJoystickButton(int button, const Context &mode) const {
     return joystickButtonMap[mode].find(button) != joystickButtonMap[mode].end();
 }
 
-bool InputManager::hasKeyUnbuf(const sf::Keyboard::Key &key, const Context &mode) {
+bool InputManager::hasKeyUnbuf(const sf::Keyboard::Key &key, const Context &mode) const {
     return uKeyboardMap[mode].find(key) != uKeyboardMap[mode].end();
 }
 
-bool InputManager::hasJoystickAxisUnbuf(const sf::Joystick::Axis& axis, const Context &mode) {
+bool InputManager::hasJoystickAxisUnbuf(const sf::Joystick::Axis& axis, const Context &mode) const {
     return uJoystickAxisMap[mode].find(axis) != uJoystickAxisMap[mode].end();
 }
 
@@ -23,7 +23,7 @@ void InputManager::addKey(const sf::Keyboard::Key &key, const std::function<void
     addKey(key, CONTEXT_SHOOTER, action);
 }
 
-void InputManager::addJoystickButton(unsigned int button, const std::function<void ()> &action){
+void InputManager::addJoystickButton(int button, const std::function<void ()> &action){
     addJoystickButton(button, CONTEXT_RUNNER, action);
     addJoystickButton(button, CONTEXT_SHOOTER, action);
 }
@@ -38,7 +38,7 @@ void InputManager::addJoystickAxisUnbuf(const sf::Joystick::Axis &axis, const st
     addJoystickAxisUnbuf(axis, CONTEXT_SHOOTER, action);
 }
 
-void InputManager::addJoystickButton(unsigned int button, const Context &mode, const std::function<void ()> &action){
+void InputManager::addJoystickButton(int button, const Context &mode, const std::function<void ()> &action){
     joystickButtonMap[mode][button] = action;
 }
 
@@ -60,7 +60,7 @@ void InputManager::addKeys(const std::vector<sf::Keyboard::Key> &keys, const std
     }
 }
 
-void InputManager::addJoystickButtons(const std::vector<unsigned int> &buttons, const std::function<void ()> &action){
+void InputManager::addJoystickButtons(const std::vector<int> &buttons, const std::function<void ()> &action){
     for(const auto& button: buttons) {
         addJoystickButton(button, action);
     }
@@ -78,7 +78,7 @@ void InputManager::addKeys(const std::vector<sf::Keyboard::Key> &keys, const Con
     }
 }
 
-void InputManager::addJoystickButtons(const std::vector<unsigned int> &buttons, const Context &mode, const std::function<void ()> &action){
+void InputManager::addJoystickButtons(const std::vector<int> &buttons, const Context &mode, const std::function<void ()> &action){
     for(const auto& button: buttons) {
         addJoystickButton(button, mode, action);
     }
@@ -91,31 +91,27 @@ void InputManager::addKeysUnbuf(const std::vector<sf::Keyboard::Key> &keys, cons
 }
 
 void InputManager::removeKey(const sf::Keyboard::Key &key, const Context &mode) {
-    if(!hasKey(key, mode))
-        return;
-
-    keyboardMap[mode].erase(key);
+    if(hasKey(key, mode)) {
+        keyboardMap[mode].erase(key);
+    }
 }
 
-void InputManager::removeJoystickButton(unsigned int button, const Context &mode){
-    if(!hasJoystickButton(button, mode))
-        return;
-
-    joystickButtonMap[mode].erase(button);
+void InputManager::removeJoystickButton(int button, const Context &mode){
+    if(hasJoystickButton(button, mode)) {
+        joystickButtonMap[mode].erase(button);
+    }
 }
 
 void InputManager::removeKeyUnbuf(const sf::Keyboard::Key &key, const Context &mode) {
-    if(!hasKeyUnbuf(key, mode))
-        return;
-
-    uKeyboardMap[mode].erase(key);
+    if(hasKeyUnbuf(key, mode)) {
+        uKeyboardMap[mode].erase(key);
+    }
 }
 
 void InputManager::removeJoystickAxisUnbuf(const sf::Joystick::Axis &axis, const Context &mode) {
-    if(!hasJoystickAxisUnbuf(axis, mode))
-        return;
-
-    uJoystickAxisMap[mode].erase(axis);
+    if(hasJoystickAxisUnbuf(axis, mode)) {
+        uJoystickAxisMap[mode].erase(axis);
+    }
 }
 
 void InputManager::removeAllKeys() {
@@ -155,17 +151,15 @@ void InputManager::removeAllJoystickAxisUnbuf(const Context &mode) {
 }
 
 void InputManager::executeKeyAction(const sf::Keyboard::Key &key, const Context &mode) {
-    if(!hasKey(key, mode))
-        return;
-
-    keyboardMap[mode][key]();
+    if(hasKey(key, mode)) {
+        keyboardMap[mode][key]();
+    }
 }
 
-void InputManager::executeJoystickButtonAction(unsigned int button, const Context &mode){
-    if(!hasJoystickButton(button, mode))
-        return;
-
-    joystickButtonMap[mode][button]();
+void InputManager::executeJoystickButtonAction(int button, const Context &mode){
+    if(hasJoystickButton(button, mode)) {
+        joystickButtonMap[mode][button]();
+    }
 }
 
 void InputManager::executeActionsUnbuf(const Context &mode) {
@@ -173,20 +167,21 @@ void InputManager::executeActionsUnbuf(const Context &mode) {
 
     // keyboard
     for(std::map<sf::Keyboard::Key, std::function<void(void)> >::iterator it = uKeyboardMap[mode].begin(); it != uKeyboardMap[mode].end(); ++it) {
-        if(sf::Keyboard::isKeyPressed(it->first))
+        if(sf::Keyboard::isKeyPressed(it->first)) {
             it->second();
+        }
     }
 
     // joystick axis
     for(std::map<sf::Joystick::Axis, std::function<void(float)> >::iterator it = uJoystickAxisMap[mode].begin(); it != uJoystickAxisMap[mode].end(); ++it) {
         float axisPosition = sf::Joystick::getAxisPosition(JOYSTICK_NUMBER, it->first);
-        if(axisPosition != 0) {
+        if(axisPosition != 0.0) {
             it->second(axisPosition);
         }
     }
 }
 
-void InputManager::setJoystickNumber(unsigned int number) {
+void InputManager::setJoystickNumber(int number) {
     JOYSTICK_NUMBER = number;
 }
 
@@ -198,19 +193,23 @@ void InputManager::reset() {
 }
 
 void InputManager::detectJoystick() {
-    std::cout << "--> InputManager: Detecting Joystick <--" << std::endl;
+    LOG("Detecting Joystick");
+    bool joystickDetected = false;
 
-    for(unsigned n = 0; n < sf::Joystick::Count; ++n) {
+    for(int n = 0; n < sf::Joystick::Count; ++n) {
         if(sf::Joystick::isConnected(n) &&
            sf::Joystick::hasAxis(n, sf::Joystick::X) &&
            sf::Joystick::hasAxis(n, sf::Joystick::Y) &&
            sf::Joystick::getButtonCount(n) >= 1) {
-            std::cout << "----> InputManager: Setting joystick to number " << n << std::endl;
+            LOG("Setting joystick to number %d", n);
+            setJoystickNumber(n);
+            joystickDetected = true;
             break;
         }
-        else {
-            std::cout << "----> InputManager: No suitable joystick detected." << std::endl;
-        }
+    }
+
+    if(!joystickDetected) {
+        LOG("No compatible joystick detected");
     }
 }
 
