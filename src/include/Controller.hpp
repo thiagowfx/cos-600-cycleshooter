@@ -3,6 +3,7 @@
 
 #include <getopt.h>
 #include <cstdlib>
+#include<time.h>
 
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>

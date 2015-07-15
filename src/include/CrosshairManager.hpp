@@ -30,6 +30,11 @@ public:
         crosshair->setScale(CROSSHAIR_SCALE_SIZE, CROSSHAIR_SCALE_SIZE);
     }
 
+    static CrosshairManager& instance() {
+        static CrosshairManager instance;
+        return instance;
+    }
+
     /**
      * Move/scroll the crosshair by the amount specified. Optionally it may wrap around the screen too.
      */
@@ -43,6 +48,18 @@ public:
         py = (py > 1.0) ? (wraps ? -1.0 : +1.0) : py;
         py = (py < -1.0) ? (wraps ? +1.0 : -1.0) : py;
 
+        crosshair->setScroll(px, py);
+    }
+
+    /**
+     * Move the crosshair randomly each period of time in a square proportional to the heart beat.
+     */
+    void randomCrosshair(const double heartRate, double seed) {
+        srand((unsigned int) seed);
+        double dx = (double) (rand() % 20 - 10)/1000;
+        double dy = (double) (rand() % 20 - 10)/1000;
+        double px = crosshair->getScrollX() + (heartRate/150)*dx;
+        double py = crosshair->getScrollY() + (heartRate/150)*dy;
         crosshair->setScroll(px, py);
     }
 

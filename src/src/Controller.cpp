@@ -108,12 +108,20 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     if(context == CONTEXT_SHOOTER) {
         static sf::Clock clockHeartbeat;
         static int next_heartbeat_waiting_time_ms = 0;
+        static sf::Clock clockCrosshair;
 
         if(clockHeartbeat.getElapsedTime().asMilliseconds() >= next_heartbeat_waiting_time_ms) {
             auto heartRate = polar->getHeartRate();
             next_heartbeat_waiting_time_ms = (60.0 * 1000.0) / double(heartRate);
             AudioManager::instance().play_heartbeat(heartRate, HEARTBEAT_MINIMUM_ASSUMED, HEARTBEAT_MAXIMUM_ASSUMED);
             clockHeartbeat.restart();
+        }
+
+        if(clockCrosshair.getElapsedTime().asMilliseconds() >= next_heartbeat_waiting_time_ms) {
+            auto heartRate = polar->getHeartRate();
+            next_heartbeat_waiting_time_ms = (60.0 * 1000.0) / double(heartRate);
+            CrosshairManager::instance().randomCrosshair(heartRate, time(NULL));
+            clockCrosshair.restart();
         }
     }
 
