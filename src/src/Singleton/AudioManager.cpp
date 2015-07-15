@@ -74,7 +74,7 @@ void AudioManager::populateSounds() {
     LOG("Populating sounds");
 
     auto error = [](const std::string& soundname) {
-        LOG_FATAL("Couldn't load the %s sound", soundname);
+        LOG_FATAL("Couldn't load the %s sound", soundname.c_str());
         exit(EXIT_FAILURE);
     };
 
@@ -108,7 +108,7 @@ void AudioManager::populateMusics() {
     LOG("Populating musics");
 
     auto error = [](const std::string& musicname) {
-        LOG_FATAL("Couldn't load the %s music", musicname);
+        LOG_FATAL("Couldn't load the %s music", musicname.c_str());
         exit(EXIT_FAILURE);
     };
 
