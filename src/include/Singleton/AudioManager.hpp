@@ -22,7 +22,6 @@ enum Soundname {
     SOUND_SHOOT03,
     SOUND_SHOOT04,
 
-
     /* dry shoot (=no ammo left) */
     SOUND_DRY_SHOOT,
 

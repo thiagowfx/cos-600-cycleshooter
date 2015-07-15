@@ -24,6 +24,13 @@ namespace Cycleshooter {
 
 #endif
 
+#define LOG_WARN(...)\
+    do{\
+        printf("WARNING: ");\
+        printf(__VA_ARGS__);\
+        printf("\n");\
+    } while(false);
+
 #define LOG_FATAL(...)\
     do{\
         printf("ERROR: ");\

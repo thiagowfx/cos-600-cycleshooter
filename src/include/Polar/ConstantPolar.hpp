@@ -5,8 +5,7 @@
 
 namespace Cycleshooter {
 /**
- * @brief The ConstantPolar class generates a constant heart rate value,
- * which might be increased or decreased by a certain amount later on.
+ * @brief Generates a constant heart rate value which might be increased or decreased later on.
  */
 class ConstantPolar : public AbstractPolar {
     int peak;
@@ -21,7 +20,7 @@ public:
      * Get the heart rate.
      */
     virtual void updateHeartRate() {
-        update_statistics(peak);
+        updateStatistics(peak);
     }
 
     /**

@@ -6,6 +6,8 @@
 #include <iostream>
 #include <limits>
 
+#include "Logging.hpp"
+
 namespace Cycleshooter {
 
 class AbstractPolar {
@@ -43,9 +45,9 @@ protected:
     /**
      * Update the statistics about the heart rates.
      */
-    void update_statistics(const long long int& heartRate) {
+    void updateStatistics(const long long int& heartRate) {
         if(!heartRate) {
-            std::cout << "AbstractPolar: WARNING: heartRate is ZERO!!" << std::endl;
+            LOG_WARN("Heartrate is ZERO");
             return;
         }
 
@@ -60,23 +62,22 @@ public:
     AbstractPolar(){}
 
     /**
-     * Get a single value to represent the heart rate.
-     * Also, update statistics.
+     * Acquire the heart rate and update statistics.
      */
     virtual void updateHeartRate() = 0;
 
     /**
-     * Print the statistics about this session.
+     * Print statistics of this session.
      */
-    void print_statistics(std::ostream& os = std::cout) const {
-        os << "==========================" << std::endl;
-        os << "|  Hearbeats Statistics  |" << std::endl;
-        os << "==========================" << std::endl;
-        os << "- # of records acquired: "<< stats.count << std::endl;
-        os << "- Lowest Heartbeat: " << stats.lowest << std::endl;
-        os << "- Greatest Heartbeat: " << stats.greatest << std::endl;
-        os << "- Mean: " << static_cast<double>(stats.sum) / stats.count << std::endl;
-	os << "--------------------------" << std::endl;
+    void printStatistics(std::ostream& os = std::cout) const {
+        os << "==========================\n"
+              "|  Hearbeats Statistics  |\n"
+              "==========================\n"
+              "- # of records acquired: " << stats.count << std::endl <<
+              "- Lowest Heartbeat: " << stats.lowest << std::endl <<
+              "- Greatest Heartbeat: " << stats.greatest << std::endl <<
+              "- Mean: " << static_cast<double>(stats.sum) / stats.count << std::endl <<
+              "--------------------------" << std::endl;
     }
 
     /**
