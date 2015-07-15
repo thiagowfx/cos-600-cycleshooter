@@ -34,7 +34,7 @@ void LogicManager::shoot() {
     std::cout << "--> LogicManager: shoot <--" << std::endl;
 
     if(decrementPlayerAmmo()) {
-        AudioManager::instance().play_random_shoot();
+        AudioManager::instance().playRandomShoot();
 
         Ogre::SceneNode* monsterNode = controller->getSceneManager()->getSceneNode("monsterNode");
 
@@ -50,7 +50,7 @@ void LogicManager::shoot() {
         std::pair<int, int> coords = controller->getCrosshairManager()->convertToImageCoordinates(rttImage);
 
         if (rttImage.getColourAt(coords.first, coords.second, 0) != Ogre::ColourValue::Black) {
-            AudioManager::instance().play_sound(SOUND_MONSTER_HIT);
+            AudioManager::instance().playSound(SOUND_MONSTER_HIT);
             decrementMonsterHealth();
         }
 
@@ -60,7 +60,7 @@ void LogicManager::shoot() {
     }
     else {
         // no more ammo
-        AudioManager::instance().play_sound(SOUND_DRY_SHOOT);
+        AudioManager::instance().playSound(SOUND_DRY_SHOOT);
     }
 }
 

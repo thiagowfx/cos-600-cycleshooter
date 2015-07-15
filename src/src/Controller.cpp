@@ -112,7 +112,7 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         if(clockHeartbeat.getElapsedTime().asMilliseconds() >= next_heartbeat_waiting_time_ms) {
             auto heartRate = polar->getHeartRate();
             next_heartbeat_waiting_time_ms = (60.0 * 1000.0) / double(heartRate);
-            AudioManager::instance().play_heartbeat(heartRate, HEARTBEAT_MINIMUM_ASSUMED, HEARTBEAT_MAXIMUM_ASSUMED);
+            AudioManager::instance().playHeartbeat(heartRate, HEARTBEAT_MINIMUM_ASSUMED, HEARTBEAT_MAXIMUM_ASSUMED);
             clockHeartbeat.restart();
         }
     }
@@ -396,7 +396,7 @@ void Controller::setupMappings() {
     });
 
     InputManager::instance().addKey(sf::Keyboard::M, [&] {
-       AudioManager::instance().toggle_mute();
+       AudioManager::instance().toggleMute();
     });
 
     // take a screenshot
@@ -444,7 +444,7 @@ void Controller::gameMainLoop() {
 void Controller::do_game_end() {
     std::cout << "--> Controller: Game End <--" << std::endl;
 
-    AudioManager::instance().stop_music();
+    AudioManager::instance().stopMusic();
     InputManager::instance().reset();
 
     // DESTROY THEM ALL -- then recreate what is actually needed
@@ -471,14 +471,14 @@ void Controller::do_game_end() {
         endViewport->setBackgroundColour(Ogre::ColourValue::Red);
     }
 
-    AudioManager::instance().play_sound(endSound);
+    AudioManager::instance().playSound(endSound);
 
     // TODO: print this on the screen instead of std::cout
     polar->print_statistics();
     bicycle->print_statistics();
 
     oWindow->update();
-    sf::sleep(AudioManager::instance().get_sound_duration(endSound));
+    sf::sleep(AudioManager::instance().getSoundDuration(endSound));
 }
 
 void Controller::createRoot() {
@@ -525,7 +525,7 @@ void Controller::setupRunnerMode() {
     logicManager->setupRunnerMode();
     crosshairManager->setupRunnerMode();
     hud->setupRunnerMode();
-    AudioManager::instance().play_music(MUSIC_RUNNER);
+    AudioManager::instance().playMusic(MUSIC_RUNNER);
 }
 
 void Controller::setupShooterMode() {
@@ -536,7 +536,7 @@ void Controller::setupShooterMode() {
     logicManager->setupShooterMode();
     crosshairManager->setupShooterMode();
     hud->setupShooterMode();
-    AudioManager::instance().play_music(MUSIC_SHOOTER);
+    AudioManager::instance().playMusic(MUSIC_SHOOTER);
 }
 
 void Controller::toggleMode() {

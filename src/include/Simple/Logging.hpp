@@ -10,15 +10,26 @@ namespace Cycleshooter {
   */
 
 #ifdef LOGGING_ENABLED
+
 #define LOG(...)\
     do {\
         printf("INFO: ");\
         printf(__VA_ARGS__);\
         printf("\n");\
     } while(false)
+
 #else
+
 #define LOG(...)
+
 #endif
+
+#define LOG_FATAL(...)\
+    do{\
+        printf("ERROR: ");\
+        printf(__VA_ARGS__);\
+        printf("\n");\
+    } while(false);
 
 }
 
