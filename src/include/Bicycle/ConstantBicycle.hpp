@@ -5,28 +5,28 @@
 
 namespace Cycleshooter {
 /**
- * @brief The ConstantBicycle class simulates a bicycle with a fixed amount of
+ * @brief Simulates a bicycle with a fixed amount of
  * speed, which can be increased or decreased manually over time.
  */
 class ConstantBicycle : public AbstractBicycle {
 
 public:
-    ConstantBicycle(const double& speed) :
+    ConstantBicycle(const int& speed) :
         AbstractBicycle(speed)
     {
         setFriction(0);
     }
 
     virtual void updateSpeed() {
-        update_statistics(speed);
+        updateStatistics(speed);
     }
 
     virtual void setFriction(const int& value) {
         friction = value;
     }
 
-    virtual void changeSpeed(const double& amount) {
-        speed = std::max(0.0, speed + amount);
+    virtual void changeSpeed(const int& amount) {
+        speed = std::max(0, speed + amount);
     }
 };
 

@@ -3,7 +3,6 @@ project(Cycleshooter C CXX)
 
 
 set(ASSETS_DIR "${PROJECT_SOURCE_DIR}/assets")
-set(ASSETS_BINARY_DIR "${PROJECT_BINARY_DIR}/assets")
 set(DEST_DIR "${PROJECT_BINARY_DIR}/dest")
 set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
 set(VENDOR_DIR "${PROJECT_SOURCE_DIR}/vendor")
@@ -14,7 +13,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${DEST_DIR}/bin")
 option(DEPENDENCIES_READY "Are the dependencies ready?" OFF)
 
 
-add_definitions("-std=c++11 -g -Wno-deprecated-declarations")
+add_definitions("-std=c++11 -g -DLOGGING_ENABLED -Wno-deprecated-declarations")
 
 
 add_subdirectory(${VENDOR_DIR})
@@ -136,5 +135,5 @@ if(DEPENDENCIES_READY)
         EXCLUDE
         )
 else()
-    message(WARNING "***DEPENDENCIES_READY variable is set to OFF, project won't build***")
+    message(WARNING "*** DEPENDENCIES_READY variable is set to OFF, project won't build ***")
 endif()

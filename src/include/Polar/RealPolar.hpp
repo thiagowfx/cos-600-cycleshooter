@@ -1,8 +1,6 @@
 #ifndef _REALPOLAR_HPP_
 #define _REALPOLAR_HPP_
 
-#include "AbstractPolar.hpp"
-
 #include <cerrno>
 #include <fcntl.h>
 #include <sys/ioctl.h>
@@ -13,6 +11,7 @@
 #include <iostream>
 #include <stdexcept>
 
+#include "AbstractPolar.hpp"
 #include "Logging.hpp"
 
 namespace Cycleshooter {

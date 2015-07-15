@@ -474,8 +474,8 @@ void Controller::do_game_end() {
     AudioManager::instance().playSound(endSound);
 
     // TODO: print this on the screen instead of std::cout
-    polar->print_statistics();
-    bicycle->print_statistics();
+    polar->printStatistics();
+    bicycle->printStatistics();
 
     oWindow->update();
     sf::sleep(AudioManager::instance().getSoundDuration(endSound));

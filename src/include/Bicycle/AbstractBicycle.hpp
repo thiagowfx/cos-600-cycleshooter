@@ -7,12 +7,11 @@ namespace Cycleshooter {
 
 class AbstractBicycle {
 
-private:
     struct {
         /**
          * Sum of the values acquired in this session.
          */
-        long long int sum = 0.0;
+        long long int sum = 0;
 
         /**
          * Number of the values acquired in this session.
@@ -22,7 +21,7 @@ private:
         /**
          * Maximum value of the velocity in this session.
          */
-        long long int greatest = std::numeric_limits<long long int>::min();
+        int greatest = std::numeric_limits<int>::min();
     } stats;
 
     /**
@@ -40,15 +39,15 @@ protected:
     /**
      * Current speed of the bicycle (RPM). Tipically in the 0--100 range.
      */
-    double speed;
+    int speed;
 
     /**
      * Update the statistics about the Bicycle.
      */
-    void update_statistics(const long long int& speed) {
+    void updateStatistics(const int& speed) {
         this->speed = speed;
 
-        if(speed > 0.0) {
+        if(speed > 0) {
             stats.greatest = std::max(stats.greatest, speed);
             stats.sum += speed;
             ++stats.count;
@@ -58,27 +57,27 @@ protected:
 public:
     AbstractBicycle(){}
 
-    AbstractBicycle(const double& speed) :
+    AbstractBicycle(const int& speed) :
         speed(speed)
     {}
 
     /**
      * Print the statistics about this session.
      */
-    void print_statistics(std::ostream& os = std::cout) const {
-        os << "==========================" << std::endl;
-        os << "|    Bicycle Statistics  |" << std::endl;
-        os << "==========================" << std::endl;
-        os << "- # of records acquired: "<< stats.count << std::endl;
-        os << "- Greatest speed: " << stats.greatest << std::endl;
-        os << "- Mean: " << (static_cast<double>(stats.sum) / stats.count) << std::endl;
-	os << "--------------------------" << std::endl;
+    void printStatistics(std::ostream& os = std::cout) const {
+        os << "==========================\n"
+              "|    Bicycle Statistics  |\n"
+              "==========================\n"
+              "- # of records acquired: "<< stats.count << std::endl <<
+              "- Greatest speed: " << stats.greatest << std::endl <<
+              "- Mean: " << (static_cast<double>(stats.sum) / stats.count) << std::endl <<
+              "--------------------------" << std::endl;
     }
 
     /**
      * Get the current speed of the bicycle (in RPM, the real speed provided by the bicycle, without any conversion).
      */
-    double getRpmSpeed() const {
+    int getRpmSpeed() const {
         return speed;
     }
 
@@ -114,7 +113,7 @@ public:
     /**
      * Change (increment or decrement) the speed by the specified value.
      */
-    virtual void changeSpeed(const double& amount) {}
+    virtual void changeSpeed(const int& amount) {}
 };
 
 }
