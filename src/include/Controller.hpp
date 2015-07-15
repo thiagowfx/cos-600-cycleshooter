@@ -11,9 +11,11 @@
 #include <OgreOverlaySystem.h>
 
 #include "AudioManager.hpp"
+#include "InputManager.hpp"
+#include "TextManager.hpp"
+
 #include "CycleshooterIcon.hpp"
 #include "Context.hpp"
-#include "InputManager.hpp"
 #include "LogicManager.hpp"
 
 #include "ConstantBicycle.hpp"

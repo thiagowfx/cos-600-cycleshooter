@@ -5,6 +5,9 @@
 #include <OgreOverlay.h>
 #include <OgreOverlayManager.h>
 
+#include <Ogre.h>
+#include <OgreSingleton.h>
+
 namespace Cycleshooter {
 // TODO: sensibility and entropy
 class CrosshairManager {

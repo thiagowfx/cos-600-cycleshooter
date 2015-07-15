@@ -449,6 +449,11 @@ void Controller::do_game_end() {
 
     // DESTROY THEM ALL -- then recreate what is actually needed
     hud.reset(nullptr);
+
+    new TextManager();
+    TextManager::getSingleton().addTextBox("GameCredits", "Thiago Perrotta", 200, 200, 200, 300);
+    sf::sleep(sf::seconds(2));
+
     oWindow->removeAllViewports();
     Ogre::Root::getSingleton().destroySceneManager(oSceneManager);
     createSceneManager();
