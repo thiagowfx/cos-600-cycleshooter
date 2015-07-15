@@ -45,7 +45,7 @@ material Cycleshooter/Gun : Cycleshooter/Base
     }
 }
 
-material Cycleshooter/Crosshair
+material Cycleshooter/VirtualCrosshair
 {
     technique
     {
@@ -54,7 +54,22 @@ material Cycleshooter/Crosshair
             scene_blend alpha_blend
             texture_unit 
             {
-                texture crosshair.png
+                texture VirtualCrosshair.png
+            }
+        }
+    }
+}
+
+material Cycleshooter/RealCrosshair
+{
+    technique
+    {
+        pass
+        {
+            scene_blend alpha_blend
+            texture_unit 
+            {
+                texture RealCrosshair.png
             }
         }
     }

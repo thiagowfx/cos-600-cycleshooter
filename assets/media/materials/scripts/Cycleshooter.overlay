@@ -18,11 +18,11 @@ template container Panel(Cycleshooter/Gun)
 	height 64
 }
 
-Cycleshooter/Crosshair
+Cycleshooter/VirtualCrosshair
 {
     zorder 200
 
-    container Panel(UIelements/CrossHairPanel)
+    container Panel(VirtualCrosshairPanel)
     {
         metrics_mode pixels
         horz_align center
@@ -31,6 +31,23 @@ Cycleshooter/Crosshair
         top -64
         width 128
         height 128
-        material Cycleshooter/Crosshair
+        material Cycleshooter/VirtualCrosshair
+    }
+}
+
+Cycleshooter/RealCrosshair
+{
+    zorder 201
+
+    container Panel(RealCrosshairPanel)
+    {
+        metrics_mode pixels
+        horz_align center
+        vert_align center
+        left -64
+        top -64
+        width 128
+        height 128
+        material Cycleshooter/RealCrosshair
     }
 }

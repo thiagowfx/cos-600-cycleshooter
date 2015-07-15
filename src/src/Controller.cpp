@@ -113,7 +113,7 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
             auto heartRate = polar->getHeartRate();
             next_heartbeat_waiting_time_ms = (60.0 * 1000.0) / double(heartRate);
             AudioManager::instance().playHeartbeat(heartRate, HEARTBEAT_MINIMUM_ASSUMED, HEARTBEAT_MAXIMUM_ASSUMED);
-            crosshairManager->randomizeCrosshair(heartRate);
+            crosshairManager->randomizeRealCrosshair(heartRate);
             clockHeartbeat.restart();
         }
     }
@@ -348,26 +348,28 @@ void Controller::setupMappings() {
     /*
      * Shooter mode mappings.
      */
-    const double SCROLL_SENSIBILITY = 0.04;
-
     InputManager::instance().addKeysUnbuf({sf::Keyboard::A,
                                            sf::Keyboard::Left}, CONTEXT_SHOOTER, [&]{
-        crosshairManager->scroll(polar->getHeartRate(), -SCROLL_SENSIBILITY, 0.00);
+        int heartRate = polar->getHeartRate();
+        crosshairManager->scrollVirtualCrosshair(heartRate, -0.04, 0.00);
     });
 
     InputManager::instance().addKeysUnbuf({sf::Keyboard::D,
                                            sf::Keyboard::Right}, CONTEXT_SHOOTER, [&]{
-        crosshairManager->scroll(polar->getHeartRate(), SCROLL_SENSIBILITY, 0.00);
+        int heartRate = polar->getHeartRate();
+        crosshairManager->scrollVirtualCrosshair(heartRate, +0.04, 0.00);
     });
 
     InputManager::instance().addKeysUnbuf({sf::Keyboard::W,
                                            sf::Keyboard::Up}, CONTEXT_SHOOTER, [&]{
-        crosshairManager->scroll(polar->getHeartRate(), 0.00, SCROLL_SENSIBILITY);
+        int heartRate = polar->getHeartRate();
+        crosshairManager->scrollVirtualCrosshair(heartRate, 0.00, 0.04);
     });
 
     InputManager::instance().addKeysUnbuf({sf::Keyboard::S,
                                            sf::Keyboard::Down}, CONTEXT_SHOOTER, [&]{
-        crosshairManager->scroll(polar->getHeartRate(), 0.00, -SCROLL_SENSIBILITY);
+        int heartRate = polar->getHeartRate();
+        crosshairManager->scrollVirtualCrosshair(heartRate, 0.00, -0.04);
     });
 
     InputManager::instance().addKey(sf::Keyboard::Space, CONTEXT_SHOOTER, [&]{
