@@ -6,7 +6,9 @@
 #include <OgreOverlayManager.h>
 
 namespace Cycleshooter {
-// TODO: sensibility and entropy
+
+#define SQUARE(X) ((X)*(X))
+
 class CrosshairManager {
 
     /**
@@ -15,28 +17,61 @@ class CrosshairManager {
     Ogre::Overlay* crosshair;
 
     /**
+     * Virtual crosshair.
+     */
+    std::pair<double, double> virtualCrosshair;
+
+    /**
      * Reduction scale of the crosshair size.
      */
     const double CROSSHAIR_SCALE_SIZE = 0.25;
+
+    /**
+     * Scale of the crosshair sensibility.
+     */
+    const double CROSSHAIR_SENSIBILITY = 5e-3;
+
+    /**
+     * Return a random integer in the [-interval, +interval] range.
+     */
+    int getRandomIntRange(int interval) const {
+        return (rand() % (2 * interval + 1)) - interval;
+    }
 
 public:
     CrosshairManager() {
         crosshair = Ogre::OverlayManager::getSingleton().getByName("Cycleshooter/Crosshair");
         crosshair->setScale(CROSSHAIR_SCALE_SIZE, CROSSHAIR_SCALE_SIZE);
+
+        setVirtualCrosshair(std::pair<double,double>(crosshair->getScrollX(), crosshair->getScrollY()));
     }
 
     /**
      * Move/scroll the crosshair by the amount specified. Optionally it may wrap around the screen too.
      */
-    void scroll(const double& dx, const double& dy, bool wraps = false) {
-        double px = crosshair->getScrollX() + dx;
-        double py = crosshair->getScrollY() + dy;
+    void scroll(const double heartRate, const double& dx, const double& dy, bool wraps = false) {
+        double px = virtualCrosshair.first + CROSSHAIR_SENSIBILITY * SQUARE(heartRate) * dx;
+        double py = virtualCrosshair.second + CROSSHAIR_SENSIBILITY * SQUARE(heartRate) * dy;
 
         px = (px > 1.0) ? (wraps ? -1.0 : +1.0) : px;
         px = (px < -1.0) ? (wraps ? +1.0 : -1.0) : px;
 
         py = (py > 1.0) ? (wraps ? -1.0 : +1.0) : py;
         py = (py < -1.0) ? (wraps ? +1.0 : -1.0) : py;
+
+        setVirtualCrosshair(std::pair<double, double>(px, py));
+    }
+
+    /**
+     * Move the crosshair randomly each period of time in a square proportional to the heart beat.
+     */
+    void randomizeCrosshair(const double& heartRate) {
+        int half_interval = 10;
+        double dx = getRandomIntRange(half_interval) / 250.0;
+        double dy = getRandomIntRange(half_interval) / 250.0;
+
+        double px = virtualCrosshair.first + (heartRate / 150.0) * dx;
+        double py = virtualCrosshair.second + (heartRate / 150.0) * dy;
 
         crosshair->setScroll(px, py);
     }
@@ -93,7 +128,16 @@ public:
         crosshair->show();
     }
 
+    void setVirtualCrosshair(const std::pair<double, double> &value) {
+        virtualCrosshair = value;
+    }
+
+    std::pair<double, double> getVirtualCrosshair() const {
+        return virtualCrosshair;
+    }
+
 };
+
 }
 
 #endif

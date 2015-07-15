@@ -1,8 +1,8 @@
 #ifndef _CONTROLLER_HPP_
 #define _CONTROLLER_HPP_
 
-#include <getopt.h>
 #include <cstdlib>
+#include <getopt.h>
 
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
