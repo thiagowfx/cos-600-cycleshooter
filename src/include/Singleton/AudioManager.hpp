@@ -6,6 +6,7 @@
 #include <map>
 #include <SFML/Audio.hpp>
 #include <SFML/System/Mutex.hpp>
+#include "Singleton.hpp"
 
 namespace Cycleshooter {
 
@@ -55,18 +56,8 @@ enum Musicname {
  * Only one background music is allowed at any time. However, you may play several sound effects simultaneously.
  */
 class AudioManager {
-    // constructor and copy functions to make this class a singleton
-    AudioManager();
-    AudioManager(const AudioManager&) = delete;
-    void operator=(const AudioManager&) = delete;
+    SINGLETON(AudioManager)
 
-public:
-    static AudioManager& instance() {
-        static AudioManager instance;
-        return instance;
-    }
-
-private:
     /**
      * @brief AUDIO_PATH Location of the sounds. It must have a trailing slash.
      */

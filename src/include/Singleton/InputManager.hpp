@@ -7,6 +7,7 @@
 #include <vector>
 #include <SFML/Window/Joystick.hpp>
 #include <SFML/Window/Keyboard.hpp>
+#include "Singleton.hpp"
 
 #include "Context.hpp"
 
@@ -17,18 +18,8 @@ namespace Cycleshooter {
  * A rich set of methods is also provided so the client application can be more easily set up.
  */
 class InputManager {
-    // constructor and copy functions to make this class a singleton
-    InputManager(){}
-    InputManager(const InputManager&) = delete;
-    void operator=(const InputManager&) = delete;
+    SINGLETON_NC(InputManager)
 
-public:
-    static InputManager& instance() {
-        static InputManager instance;
-        return instance;
-    }
-
-private:
     /**
      * @brief JOYSTICK_NUMBER The joystick (number) associated with the maps of this class.
      */
