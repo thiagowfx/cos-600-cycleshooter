@@ -52,7 +52,7 @@ material Cycleshooter/Crosshair
         pass
         {
             scene_blend alpha_blend
-            texture_unit 
+            texture_unit
             {
                 texture crosshair.png
             }
