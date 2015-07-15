@@ -53,7 +53,6 @@ public:
         //double py = crosshair->getScrollY() + CROSSHAIR_SENSIBILITY * heartRate * heartRate * dy;
         double py = getVirtualCrosshair().second + CROSSHAIR_SENSIBILITY * heartRate * heartRate * dy;
         std::pair<double, double> vCrosshair(px,py);
-        std::cout << "========" << vCrosshair.first << " " << vCrosshair.second << std::endl;
         px = (px > 1.0) ? (wraps ? -1.0 : +1.0) : px;
         px = (px < -1.0) ? (wraps ? +1.0 : -1.0) : px;
 
