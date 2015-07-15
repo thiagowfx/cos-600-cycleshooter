@@ -19,6 +19,11 @@ class CrosshairManager {
      */
     const double CROSSHAIR_SCALE_SIZE = 0.25;
 
+    /**
+     * Scale of the crosshair sensibility.
+     */
+    const double CROSSHAIR_SENSIBILITY = 0.00005;
+
 public:
     CrosshairManager() {
         crosshair = Ogre::OverlayManager::getSingleton().getByName("Cycleshooter/Crosshair");
@@ -28,9 +33,9 @@ public:
     /**
      * Move/scroll the crosshair by the amount specified. Optionally it may wrap around the screen too.
      */
-    void scroll(const double& dx, const double& dy, bool wraps = false) {
-        double px = crosshair->getScrollX() + dx;
-        double py = crosshair->getScrollY() + dy;
+    void scroll(const double heartRate, const double& dx, const double& dy, bool wraps = false) {
+        double px = crosshair->getScrollX() + CROSSHAIR_SENSIBILITY * heartRate * heartRate * dx;
+        double py = crosshair->getScrollY() + CROSSHAIR_SENSIBILITY * heartRate * heartRate * dy;
 
         px = (px > 1.0) ? (wraps ? -1.0 : +1.0) : px;
         px = (px < -1.0) ? (wraps ? +1.0 : -1.0) : px;
