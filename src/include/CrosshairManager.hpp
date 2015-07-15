@@ -15,6 +15,11 @@ class CrosshairManager {
     Ogre::Overlay* crosshair;
 
     /**
+     * virtual crosshair
+     */
+    std::pair<double, double> virtualCrosshair;
+
+    /**
      * Reduction scale of the crosshair size.
      */
     const double CROSSHAIR_SCALE_SIZE = 0.25;
@@ -22,12 +27,15 @@ class CrosshairManager {
     /**
      * Scale of the crosshair sensibility.
      */
-    const double CROSSHAIR_SENSIBILITY = 0.00005;
+    const double CROSSHAIR_SENSIBILITY = 0.005;
 
 public:
     CrosshairManager() {
         crosshair = Ogre::OverlayManager::getSingleton().getByName("Cycleshooter/Crosshair");
         crosshair->setScale(CROSSHAIR_SCALE_SIZE, CROSSHAIR_SCALE_SIZE);
+
+        std::pair<double,double>vCrosshair(crosshair->getScrollX(),crosshair->getScrollY());
+        setVirtualCrosshair(vCrosshair);
     }
 
     static CrosshairManager& instance() {
@@ -39,16 +47,21 @@ public:
      * Move/scroll the crosshair by the amount specified. Optionally it may wrap around the screen too.
      */
     void scroll(const double heartRate, const double& dx, const double& dy, bool wraps = false) {
-        double px = crosshair->getScrollX() + CROSSHAIR_SENSIBILITY * heartRate * heartRate * dx;
-        double py = crosshair->getScrollY() + CROSSHAIR_SENSIBILITY * heartRate * heartRate * dy;
+        //double px = crosshair->getScrollX() + CROSSHAIR_SENSIBILITY * heartRate * heartRate * dx;
+        double px = getVirtualCrosshair().first + CROSSHAIR_SENSIBILITY * heartRate * heartRate * dx;
 
+        //double py = crosshair->getScrollY() + CROSSHAIR_SENSIBILITY * heartRate * heartRate * dy;
+        double py = getVirtualCrosshair().second + CROSSHAIR_SENSIBILITY * heartRate * heartRate * dy;
+        std::pair<double, double> vCrosshair(px,py);
+        std::cout << "========" << vCrosshair.first << " " << vCrosshair.second << std::endl;
         px = (px > 1.0) ? (wraps ? -1.0 : +1.0) : px;
         px = (px < -1.0) ? (wraps ? +1.0 : -1.0) : px;
 
         py = (py > 1.0) ? (wraps ? -1.0 : +1.0) : py;
         py = (py < -1.0) ? (wraps ? +1.0 : -1.0) : py;
 
-        crosshair->setScroll(px, py);
+        setVirtualCrosshair(vCrosshair);
+        //crosshair->setScroll(px, py);
     }
 
     /**
@@ -56,10 +69,12 @@ public:
      */
     void randomCrosshair(const double heartRate, double seed) {
         srand((unsigned int) seed);
-        double dx = (double) (rand() % 20 - 10)/1000;
-        double dy = (double) (rand() % 20 - 10)/1000;
-        double px = crosshair->getScrollX() + (heartRate/150)*dx;
-        double py = crosshair->getScrollY() + (heartRate/150)*dy;
+        double dx = (double) (rand() % 20 - 10)/250;
+        double dy = (double) (rand() % 20 - 10)/250;
+        //double px = crosshair->getScrollX() + (heartRate/150)*dx;
+        double px = getVirtualCrosshair().first + (heartRate/150)*dx;
+        //double py = crosshair->getScrollY() + (heartRate/150)*dy;
+        double py = getVirtualCrosshair().second + (heartRate/150)*dy;
         crosshair->setScroll(px, py);
     }
 
@@ -113,6 +128,15 @@ public:
 
     void setupShooterMode() {
         crosshair->show();
+    }
+
+    void setVirtualCrosshair(const std::pair<double, double> &value)
+    {
+        virtualCrosshair = value;
+    }
+    std::pair<double, double> getVirtualCrosshair() const
+    {
+        return virtualCrosshair;
     }
 
 };
