@@ -36,7 +36,7 @@ Controller::Controller(int argc, char *argv[]) {
             if(!(!strcmp(optarg, "0") || !strcmp(optarg, "1"))) {
                 std::cout << "error: unrecognized fullscreen parameter" << std::endl;
                 usage();
-                exit(1);
+                exit(EXIT_FAILURE);
             }
             fullscreen = atoi(optarg);
             break;
@@ -45,7 +45,7 @@ Controller::Controller(int argc, char *argv[]) {
             if (sscanf(optarg, "%dx%d", &width, &height) != 2) {
                 std::cout << "error: unrecognized resolution format" << std::endl;
                 usage();
-                exit(1);
+                exit(EXIT_FAILURE);
             }
             break;
 
@@ -53,7 +53,7 @@ Controller::Controller(int argc, char *argv[]) {
         case '?':
         default:
             usage();
-            exit(0);
+            exit(EXIT_SUCCESS);
             break;
         }
     }
@@ -69,7 +69,7 @@ Controller::Controller(int argc, char *argv[]) {
         }
         else {
             std::cout << "error: invalid fullscreen resolution specified. Please either set a valid resolution or disable fullscreen." << std::endl;
-            exit(1);
+            exit(EXIT_FAILURE);
         }
     }
 
@@ -106,10 +106,13 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     logicManager->update(evt);
 
     if(context == CONTEXT_SHOOTER) {
-        // play heart beat sound if appropriate
         static sf::Clock clockHeartbeat;
-        if(clockHeartbeat.getElapsedTime() >= HEARTBEAT_PLAY_CHECK_PERIOD) {
-            AudioManager::instance().play_heartbeat(polar->getHeartRate(), HEARTBEAT_MINIMUM_ASSUMED, HEARTBEAT_MAXIMUM_ASSUMED);
+        static int next_heartbeat_waiting_time_ms = 0;
+
+        if(clockHeartbeat.getElapsedTime().asMilliseconds() >= next_heartbeat_waiting_time_ms) {
+            auto heartRate = polar->getHeartRate();
+            next_heartbeat_waiting_time_ms = (60.0 * 1000.0) / double(heartRate);
+            AudioManager::instance().play_heartbeat(heartRate, HEARTBEAT_MINIMUM_ASSUMED, HEARTBEAT_MAXIMUM_ASSUMED);
             clockHeartbeat.restart();
         }
     }
@@ -159,6 +162,19 @@ void Controller::shutdownNow(bool gameWon) {
     this->gameWon = gameWon;
 }
 
+void Controller::incrementPlayerAmmo(){
+    Ogre::Vector3 realCoord = logicManager->getPlayerNode()->getPosition();
+    //std::pair<int,int> textCoord = terrainManager->getCollisionCoordinates(realCoord);
+    //bool increment = terrainManager->getTerrainAt(realCoord).second;
+    //std::cout << "increment" << increment<< std::endl;
+    if(terrainManager->getTerrainAt(realCoord).second){
+        Ogre::LogManager::getSingletonPtr()->logMessage("--> Controller: Incresgin player ammo! <--");
+        logicManager->externalIncrement();
+        //BIG ERROR here
+        //collisionHandler->removeBullet(textCoord.first,textCoord.second);
+    }
+}
+
 bool Controller::getDebug() const {
     return debug;
 }
@@ -166,6 +182,7 @@ bool Controller::getDebug() const {
 void Controller::wait_threads() const {
     Ogre::LogManager::getSingleton().logMessage("--> Controller: Wait Threads <--");
 
+    bicycleUpdater->wait();
     polarUpdater->wait();
 }
 
@@ -186,7 +203,6 @@ void Controller::go() {
 
     // initialize our objects and our game overall
     createGameElements();
-    createScene();
     createCrosshair();
     createHud();
 
@@ -247,11 +263,21 @@ void Controller::createGameElements() {
     // attention: logic manager should be created before any threads that will update it
     logicManager = std::unique_ptr<LogicManager>(new LogicManager(this));
 
-    polar = std::unique_ptr<AbstractPolar>(new RandomPolar(80, 100));
+    bicycle = std::unique_ptr<AbstractBicycle>(new ConstantBicycle(20));
+    bicycleUpdater = std::unique_ptr<sf::Thread>(new sf::Thread([&](){
+        while(!shutdown) {
+            try { bicycle->updateSpeed(); }
+            catch (...) { Ogre::LogManager::getSingleton().logMessage("WARNING: Controller (bicycle thread): exception caught", Ogre::LML_CRITICAL); }
+            sf::sleep(BICYCLE_SLEEP_TIME);
+        }
+    }));
+    bicycleUpdater->launch();
+
+    polar = std::unique_ptr<AbstractPolar>(new RandomPolar(HEARTBEAT_MINIMUM_ASSUMED, HEARTBEAT_MAXIMUM_ASSUMED));
     polarUpdater = std::unique_ptr<sf::Thread>(new sf::Thread([&](){
         while(!shutdown) {
             try { polar->updateHeartRate(); }
-            catch (...) { Ogre::LogManager::getSingleton().logMessage("WARNING: Controller (heartRate thread): exception caught", Ogre::LML_CRITICAL); }
+            catch (...) { Ogre::LogManager::getSingleton().logMessage("WARNING: Controller (polar thread): exception caught", Ogre::LML_CRITICAL); }
             sf::sleep(POLAR_SLEEP_TIME);
         }
     }));
@@ -260,19 +286,16 @@ void Controller::createGameElements() {
     // to use a material, the resource group must be initialized
     terrainManager = std::unique_ptr<TerrainManager>(new TerrainManager(oSceneManager,"racecircuit.png"));
     terrainManager->createTerrain();
-    terrainManager->sampleCollisionTransformation();
-}
-
-void Controller::createScene() {
-    Ogre::LogManager::getSingleton().logMessage("--> Controller: Creating Scene <--");
+    //terrainManager->sampleCollisionTransformation();
 
     Ogre::Entity* monsterEntity = getSceneManager()->createEntity("monsterEntity", "ogrehead.mesh");
     Ogre::SceneNode* monsterNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("monsterNode", Ogre::Vector3(0.0, 0.0, +300.0));
     monsterNode->attachObject(monsterEntity);
-    monsterNode->setAutoTracking(true, getLogicManager()->getPlayerNode(), Ogre::Vector3::UNIT_Z);
 
-    getSceneManager()->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
+    getSceneManager()->setAmbientLight(Ogre::ColourValue(0.6, 0.6, 0.6));
     getSceneManager()->createLight("mainLight")->setPosition(20.0, 80.0, 50.0);
+    getSceneManager()->createLight("auxLight1")->setPosition(+100.0, +100.0, +100.0);
+    getSceneManager()->createLight("auxLight2")->setPosition(-100.0, +50.0, -100.0);
 }
 
 void Controller::createCrosshair() {
@@ -293,12 +316,14 @@ void Controller::setupMappings() {
      */
     InputManager::instance().addKeysUnbuf({sf::Keyboard::W,
                                            sf::Keyboard::Up}, CONTEXT_RUNNER, [&]{
-        logicManager->getPlayerNode()->translate(Ogre::Vector3(0.0, 0.0, -10.0), Ogre::SceneNode::TS_LOCAL);
+        // logicManager->getPlayerNode()->translate(Ogre::Vector3(0.0, 0.0, -10.0), Ogre::SceneNode::TS_LOCAL);
+        bicycle->changeSpeed(BICYCLE_SPEED_CHANGE);
     });
 
     InputManager::instance().addKeysUnbuf({sf::Keyboard::S,
                                            sf::Keyboard::Down}, CONTEXT_RUNNER, [&]{
-        logicManager->getPlayerNode()->translate(Ogre::Vector3(0.0, 0.0, +10.0), Ogre::SceneNode::TS_LOCAL);
+        // logicManager->getPlayerNode()->translate(Ogre::Vector3(0.0, 0.0, +10.0), Ogre::SceneNode::TS_LOCAL);
+        bicycle->changeSpeed(-BICYCLE_SPEED_CHANGE);
     });
 
     InputManager::instance().addKeysUnbuf({sf::Keyboard::A,
@@ -309,6 +334,14 @@ void Controller::setupMappings() {
     InputManager::instance().addKeysUnbuf({sf::Keyboard::D,
                                            sf::Keyboard::Right}, CONTEXT_RUNNER, [&]{
         logicManager->getPlayerNode()->yaw(Ogre::Degree(-10.0));
+    });
+
+    InputManager::instance().addKey(sf::Keyboard::Q, CONTEXT_RUNNER, [&]{
+        bicycle->changeFriction(-BICYCLE_FRICTION_CHANGE);
+    });
+
+    InputManager::instance().addKey(sf::Keyboard::E, CONTEXT_RUNNER, [&]{
+        bicycle->changeFriction(BICYCLE_FRICTION_CHANGE);
     });
 
     /*
@@ -411,40 +444,41 @@ void Controller::gameMainLoop() {
 void Controller::do_game_end() {
     std::cout << "--> Controller: Game End <--" << std::endl;
 
-    // DESTROY THEM ALL
-    hud.reset(nullptr);
-    Ogre::Root::getSingleton().shutdown();
+    AudioManager::instance().stop_music();
+    InputManager::instance().reset();
 
-    // Recreate our Ogre environment
-    createRoot();
+    // DESTROY THEM ALL -- then recreate what is actually needed
+    hud.reset(nullptr);
+    oWindow->removeAllViewports();
+    Ogre::Root::getSingleton().destroySceneManager(oSceneManager);
     createSceneManager();
     createOverlaySystem();
-    setupResources();
-    setupTextures();
 
     // Create the Final Scene
     Ogre::Camera* endCamera = oSceneManager->createCamera("endCamera");
     Ogre::Viewport* endViewport = oWindow->addViewport(endCamera);
 
-    AudioManager::instance().stop_music();
-    InputManager::instance().reset();
+    Soundname endSound;
 
     if(gameWon) {
-        AudioManager::instance().play_sound(SOUND_GAME_VICTORY);
-        std::cout << "==> VICTORY :: Congratulations!" << std::endl;
+        endSound = SOUND_GAME_VICTORY;
+        std::cout << "==>GAME VICTORY :: Congratulations!" << std::endl;
         endViewport->setBackgroundColour(Ogre::ColourValue::Green);
     }
     else {
-        AudioManager::instance().play_sound(SOUND_GAME_LOSS);
+        endSound = SOUND_GAME_LOSS;
         std::cout << "==> GAME OVER :: Go exercise yourself a little more, you little lazy person!" << std::endl;
         endViewport->setBackgroundColour(Ogre::ColourValue::Red);
     }
 
+    AudioManager::instance().play_sound(endSound);
+
     // TODO: print this on the screen instead of std::cout
     polar->print_statistics();
+    bicycle->print_statistics();
 
     oWindow->update();
-    sf::sleep(sf::milliseconds(3800));
+    sf::sleep(AudioManager::instance().get_sound_duration(endSound));
 }
 
 void Controller::createRoot() {
@@ -543,6 +577,10 @@ void Controller::toggleDebug() {
     else {
         setupDebugOn();
     }
+}
+
+AbstractBicycle* Controller::getBicycle() const {
+    return bicycle.get();
 }
 
 }

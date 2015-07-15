@@ -9,23 +9,31 @@ int LogicManager::getPlayerAmmo() const {
 LogicManager::LogicManager(Controller* controller) :
     controller(controller)
 {
+    int numOfTerrainTypes = 7;
+    difficultyParamenter = std::vector<float> (numOfTerrainTypes,0);
+    setDifficultyParamenter();
     go();
 }
 
 void LogicManager::update(const Ogre::FrameEvent &evt) {
-    if(controller->getContext() == CONTEXT_RUNNER) {
-        updatePlayerPosition(evt.timeSinceLastFrame);
-    }
-    else {
+    auto elapsedTime = evt.timeSinceLastFrame;
 
+    if(controller->getContext() == CONTEXT_RUNNER) {
+        updatePlayerPosition(elapsedTime);
+    }
+
+    updateMonsterPosition(elapsedTime);
+
+    if(checkPlayerMonsterCollision()) {
+        // TODO: maybe pass an enum to this function so we know exactly why the game ended. Define it on the Simple/ directory.
+        controller->shutdownNow(false);
     }
 }
 
 void LogicManager::shoot() {
     std::cout << "--> LogicManager: shoot <--" << std::endl;
 
-    if(playerAmmo > 0) {
-        decrementPlayerAmmo();
+    if(decrementPlayerAmmo()) {
         AudioManager::instance().play_random_shoot();
 
         Ogre::SceneNode* monsterNode = controller->getSceneManager()->getSceneNode("monsterNode");
@@ -39,27 +47,10 @@ void LogicManager::shoot() {
         Ogre::Image rttImage;
         rttTexture->convertToImage(rttImage);
 
-        auto crosshair_to_img_coords = [](std::pair<double, double> crosshair, Ogre::Image& image) -> std::pair<int, int> {
-            // map [-1.0, +1.0] to [0, width)
-            int retx = ((crosshair.first + 1.0) * image.getWidth()) / 2.0;
-
-            // map [-1.0, +1.0] to [0, height)
-            // int rety = ((crosshair.second + 1.0) * image.getHeight()) / 2.0;
-            int rety = image.getHeight() - static_cast<int>(((crosshair.second + 1.0) * image.getHeight()) / 2.0);
-
-            if(retx == image.getWidth())
-                --retx;
-
-            if(rety == image.getHeight())
-                --rety;
-
-            return std::make_pair(retx, rety);
-        };
-
-        auto coords = crosshair_to_img_coords(controller->getCrosshairManager()->getScroll(), rttImage);
+        std::pair<int, int> coords = controller->getCrosshairManager()->convertToImageCoordinates(rttImage);
 
         if (rttImage.getColourAt(coords.first, coords.second, 0) != Ogre::ColourValue::Black) {
-            // TODO: AudioManager::instance().play_sound(SOUND_MONSTER_HIT);
+            AudioManager::instance().play_sound(SOUND_MONSTER_HIT);
             decrementMonsterHealth();
         }
 
@@ -91,10 +82,34 @@ void LogicManager::decrementMonsterHealth(int quantity) {
     }
 }
 
-void LogicManager::updatePlayerPosition(const double &time) {
-    double distance = speed * time;
+void LogicManager::updatePlayerPosition(const Ogre::Real &time) {
+    // distance = speed x time (Physics I, yay!)
+    double distance = controller->getBicycle()->getGameSpeed() * time;
+
     Ogre::Vector3 playerOrientation = frontCamera->getDirection();
+
     getPlayerNode()->translate(distance * playerOrientation, Ogre::SceneNode::TS_LOCAL);
+}
+
+void LogicManager::updateMonsterPosition(const Ogre::Real &time) {
+    auto monsterSpeed = 200.0;
+    Ogre::SceneNode* monsterNode = controller->getSceneManager()->getSceneNode("monsterNode");
+
+    // distance = speed x time (Physics I, yay!)
+    double distance = monsterSpeed * time;
+
+    // upstream: http://stackoverflow.com/questions/4727079/getting-object-direction-in-ogre
+    Ogre::Vector3 monsterOrientation = monsterNode->getOrientation() * Ogre::Vector3::UNIT_Z;
+
+    monsterNode->translate(distance * monsterOrientation, Ogre::SceneNode::TS_LOCAL);
+}
+
+bool LogicManager::checkPlayerMonsterCollision() {
+    Ogre::SceneNode* monsterNode = controller->getSceneManager()->getSceneNode("monsterNode");
+
+    Ogre::Real thresholdDistance = controller->getSceneManager()->getEntity("monsterEntity")->getBoundingRadius();
+
+    return monsterNode->getPosition().squaredDistance(parentPlayerNode->getPosition()) < thresholdDistance * thresholdDistance;
 }
 
 void LogicManager::incrementPlayerAmmo(int quantity) {
@@ -103,10 +118,16 @@ void LogicManager::incrementPlayerAmmo(int quantity) {
     playerAmmo += quantity;
 }
 
-void LogicManager::decrementPlayerAmmo(int quantity) {
+bool LogicManager::decrementPlayerAmmo(int quantity) {
     Ogre::LogManager::getSingleton().logMessage("--> LogicManager: Decrement Player Ammo <--");
 
-    playerAmmo = std::max(0, playerAmmo - quantity);
+    if(playerAmmo - quantity >= 0) {
+        playerAmmo -= quantity;
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 
 void LogicManager::go() {
@@ -170,6 +191,20 @@ void LogicManager::createRtt() {
     rttRenderTarget->getViewport(0)->setBackgroundColour(Ogre::ColourValue::Black);
 }
 
+void LogicManager::setDifficultyParamenter() {
+    difficultyParamenter[0] = 1.0f;
+    difficultyParamenter[1] = 1.0f;
+    difficultyParamenter[2] = 1.0f;
+    difficultyParamenter[3] = 1.0f;
+    difficultyParamenter[4] = 2.0f;
+    difficultyParamenter[5] = 3.0f;
+    difficultyParamenter[6] = 4.0f;
+}
+
+void LogicManager::externalIncrement(){
+    incrementPlayerAmmo(1);
+}
+
 void LogicManager::setupRunnerMode() {
     viewportFull->setCamera(frontCamera);
     frontCamera->setAspectRatio(Ogre::Real(viewportFull->getActualWidth()) / Ogre::Real(viewportFull->getActualHeight()));
@@ -197,8 +232,9 @@ void LogicManager::setDebugOff() {
     controller->getSceneManager()->showBoundingBoxes(false);
 }
 
-double LogicManager::getSpeed() const {
-    return speed;
+void LogicManager::translateMonster(int difficulty, Ogre::Vector3 translation){
+    float parameter = 1/difficultyParamenter[difficulty];
+    parentPlayerNode->translate(translation*parameter);
 }
 
 }

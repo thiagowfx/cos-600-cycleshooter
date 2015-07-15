@@ -2,8 +2,8 @@
 #define _AUDIOMANAGER_HPP_
 
 #include <deque>
+#include <iostream>
 #include <map>
-#include <OgreLogManager.h>
 #include <SFML/Audio.hpp>
 #include <SFML/System/Mutex.hpp>
 
@@ -26,6 +26,7 @@ enum Soundname {
     // game events
     SOUND_GAME_LOSS,
     SOUND_GAME_VICTORY,
+    SOUND_MONSTER_HIT,
 
     // heartbeat sounds
     SOUND_HEARTBEAT01,
@@ -133,7 +134,7 @@ private:
     void do_mute();
 
     /**
-     * Is a heartbeat sound playing currently?
+     * The heartbeat sound that is played occasionally.
      */
     sf::Sound heartbeat_sound;
 
@@ -173,6 +174,11 @@ public:
      *  Play a heartbeat sound, according to the specified level.
      */
     void play_heartbeat(int level, int minimum, int maximum);
+
+    /**
+     * Return the duration of the given sound.
+     */
+    sf::Time get_sound_duration(const Soundname& soundname);
 };
 
 }

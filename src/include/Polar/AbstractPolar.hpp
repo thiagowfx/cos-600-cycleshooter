@@ -38,14 +38,14 @@ protected:
     /**
      * The last obtained heartRate.
      */
-    int heartRate;
+    int heartRate = 0;
 
     /**
      * Update the statistics about the heart rates.
      */
     void update_statistics(const long long int& heartRate) {
         if(!heartRate) {
-            std::cout << "WARNING: AbstractPolar: heartRate is ZERO!!" << std::endl;
+            std::cout << "AbstractPolar: WARNING: heartRate is ZERO!!" << std::endl;
             return;
         }
 
@@ -57,7 +57,7 @@ protected:
     }
 
 public:
-    AbstractPolar(){};
+    AbstractPolar(){}
 
     /**
      * Get a single value to represent the heart rate.
@@ -70,12 +70,13 @@ public:
      */
     void print_statistics(std::ostream& os = std::cout) const {
         os << "==========================" << std::endl;
-        os << "=  Hearbeats Statistics  =" << std::endl;
+        os << "|  Hearbeats Statistics  |" << std::endl;
         os << "==========================" << std::endl;
-        os << "- Number of records acquired: "<< stats.count << std::endl;
-        os << "- Greatest Heartbeat: " << stats.greatest << std::endl;
+        os << "- # of records acquired: "<< stats.count << std::endl;
         os << "- Lowest Heartbeat: " << stats.lowest << std::endl;
+        os << "- Greatest Heartbeat: " << stats.greatest << std::endl;
         os << "- Mean: " << static_cast<double>(stats.sum) / stats.count << std::endl;
+	os << "--------------------------" << std::endl;
     }
 
     /**

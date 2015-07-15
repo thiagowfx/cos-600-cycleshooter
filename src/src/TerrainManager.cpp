@@ -62,11 +62,13 @@ void TerrainManager::createTerrain(){
     sceneManager->getRootSceneNode()->createChildSceneNode()->attachObject(terrainEntity);
     terrainEntity->setCastShadows(false);
     //Defines which texture will be used. 
-    terrainEntity->setMaterialName("Examples/HugeGround");
+    terrainEntity->setMaterialName("Examples/Ground");
+    generateBullets(3);
+    renderBullets();
 }
 
 void TerrainManager::setCollisionTransformation(){
-    //Get datastructure dimensions.
+    //Get data structure dimensions.
     int collisionWidth = collisionHandler->getCollisionMatrixWidth(); 
     int collisionHeigth = collisionHandler->getCollisionMatrixHeight();
     collisionHeigth -= 1;
@@ -96,11 +98,68 @@ std::pair<int, int> TerrainManager::getCollisionCoordinates(Ogre::Vector3 point)
     return coord;
 }
 
-int TerrainManager::getTerrainAt(Ogre::Vector3 coord){
+std::pair<int, bool> TerrainManager::getTerrainAt(Ogre::Vector3 coord){
     std::pair<int,int> collisionCoord = getCollisionCoordinates(coord);
-    if(coord.x> terrainWorldSizeWidth*0.5 || coord.y > terrainWorldSizeHeight*0.5)
-        return 0;
-    return collisionHandler->getPixelEnumeration(collisionCoord.first,collisionCoord.second);
+    //Getting terrain property.
+    std::pair<int,bool> terrainAt = std::make_pair(0,false);
+    //Prevents segfault. In release, the clause must not be true anytime.
+    if(coord.x> terrainWorldSizeWidth*0.5 || coord.y > terrainWorldSizeHeight*0.5){
+        return std::make_pair(-1,false);
+    }
+    terrainAt.first = collisionHandler->getPixelEnumeration(collisionCoord.first,collisionCoord.second);
+    //Discover if a bullet exists in the terrain point.
+    Ogre::Real rad = sceneManager->getSceneNode("bulletSceneNode0")->getAttachedObject("bulletSceneNode0")->getBoundingRadius();
+    std::pair<bool,Ogre::String> isBullet = collisionHandler->isBulletAt(collisionCoord.first,collisionCoord.second,coord,rad);
+    if(isBullet.first){
+        Ogre::LogManager::getSingletonPtr()->logMessage("--> TerrainManager: Exist Bullet Here! <--");
+        terrainAt.second = true;
+        std::cout << terrainAt.second<<std::endl;
+        sceneManager->getSceneNode(isBullet.second)->getAttachedObject(isBullet.second)->setVisible(false);
+    }
+    //std::cout<< "terrainAt" << terrainAt.first << " " <<terrainAt.second<<std::endl;
+    return terrainAt;
+}
+
+void TerrainManager::generateBullets(int numOfBullets){
+    Ogre::LogManager::getSingletonPtr()->logMessage("--> TerrainManager: Generatig Random Values <--");
+    std::default_random_engine randomGenerator;
+    //Defining limits on terrain where bullets will appear.
+    Ogre::Real wlimit = terrainWorldSizeWidth*0.125;
+    Ogre::Real hLimit = terrainWorldSizeHeight*0.125;
+    //Initializing pseudo-random generators.
+    std::uniform_real_distribution<float> randomWidthDistribution (-wlimit,wlimit);
+    std::uniform_real_distribution<float> randomHeightDistribution (-hLimit,hLimit);
+    float randomWidth, randomHeight = 0.0f;
+    //TODO :  Test variable that must be excluded to release.
+    //int test = 0;
+    //std::cout << "Testing Random coordinates." << std::endl;
+    //Generating random values.
+    for(int i= 0;i<numOfBullets;i++){
+        randomWidth = randomWidthDistribution(randomGenerator);
+        randomHeight = randomHeightDistribution(randomGenerator);
+        Ogre::Vector3 coord(randomWidth,0,randomHeight);
+        std::pair<int,int> location = getCollisionCoordinates(coord);
+        //test++;
+        //Inserting random bullets in collision handler.
+        //TODO: Correct bugs in the bullets number.
+        //Adding bullet to the dataStructure in CollisionHandler.
+        collisionHandler->setBulletAt(location.first,location.second,true,coord);
+        //std::cout << "Width = " << randomWidth <<" Height = "<<randomHeight<<" i = "<<i <<std::endl;
+    }
+    //std::cout<<"Testing = " << test <<std::endl;
+    Ogre::LogManager::getSingletonPtr()->logMessage("--> TerrainManager: Rendering Bullets <--");
+}
+
+void TerrainManager::renderBullets(){
+    Ogre::LogManager::getSingletonPtr()->logMessage("--> TerrainManager: Preparing Bullets <--");
+    std::pair<std::vector<Ogre::String> , std::vector<Ogre::Vector3> > renderSettings = collisionHandler-> getSceneNodeNames();
+    for(int i = 0;i < renderSettings.first.size();i++){
+        Ogre::Entity* bulletEntity = sceneManager->createEntity(renderSettings.first[i], "sphere.mesh");
+        Ogre::LogManager::getSingletonPtr()->logMessage("--> TerrainManger: Rendering Bullet <--");
+        //std::cout << "SceneNode name = " << renderSettings.first[i] << std::endl;
+        Ogre::SceneNode* bulletNode = sceneManager->getRootSceneNode()->createChildSceneNode(renderSettings.first[i], renderSettings.second[i]);
+        bulletNode->attachObject(bulletEntity);
+    }
 }
 
 void TerrainManager::sampleCollisionTransformation(){

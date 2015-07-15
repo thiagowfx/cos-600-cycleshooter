@@ -31,8 +31,8 @@ void HUD::update(const Ogre::FrameEvent& evt) {
 
     // update information widgets
     dynamic_cast<OgreBites::Label*>(trayManager->getWidget("polarLabel"))->setCaption("HR: " + Ogre::StringConverter::toString(controller->getPolar()->getHeartRate()));
-    dynamic_cast<OgreBites::Label*>(trayManager->getWidget("speedLabel"))->setCaption("Speed: " + Ogre::StringConverter::toString(controller->getLogicManager()->getSpeed()));
-    dynamic_cast<OgreBites::Label*>(trayManager->getWidget("loadLabel"))->setCaption("Load: TODO");
+    dynamic_cast<OgreBites::Label*>(trayManager->getWidget("speedLabel"))->setCaption("Speed: " + Ogre::StringConverter::toString(controller->getBicycle()->getRpmSpeed()));
+    dynamic_cast<OgreBites::Label*>(trayManager->getWidget("loadLabel"))->setCaption("Load: " + Ogre::StringConverter::toString(controller->getBicycle()->getFriction()));
     dynamic_cast<OgreBites::Label*>(trayManager->getWidget("ammoLabel"))->setCaption("Ammo: " + Ogre::StringConverter::toString(controller->getLogicManager()->getPlayerAmmo()));
     dynamic_cast<OgreBites::Label*>(trayManager->getWidget("monsterLabel"))->setCaption("Monster: " + Ogre::StringConverter::toString(controller->getLogicManager()->getMonsterHealth()));
 
@@ -42,7 +42,8 @@ void HUD::update(const Ogre::FrameEvent& evt) {
         std::pair<int,int> textCoord = controller->getTerrainManager()->getCollisionCoordinates(realCoord);
         //std::cout <<Ogre::StringConverter::toString(realCoord) <<std::endl;
         //std::cout <<realCoord <<std::endl;
-        dynamic_cast<OgreBites::ParamsPanel*>(trayManager->getWidget("debugPanel"))->setParamValue(0, Ogre::StringConverter::toString(controller->getTerrainManager()->getTerrainAt(realCoord)));
+        controller->incrementPlayerAmmo();
+        dynamic_cast<OgreBites::ParamsPanel*>(trayManager->getWidget("debugPanel"))->setParamValue(0, Ogre::StringConverter::toString(controller->getTerrainManager()->getTerrainAt(realCoord).first));
         dynamic_cast<OgreBites::ParamsPanel*>(trayManager->getWidget("debugPanel"))->setParamValue(1, Ogre::StringConverter::toString(realCoord));
         dynamic_cast<OgreBites::ParamsPanel*>(trayManager->getWidget("debugPanel"))->setParamValue(2, Ogre::StringConverter::toString(textCoord.first));
         dynamic_cast<OgreBites::ParamsPanel*>(trayManager->getWidget("debugPanel"))->setParamValue(3, Ogre::StringConverter::toString(textCoord.second));

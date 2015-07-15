@@ -41,15 +41,19 @@ class LogicManager {
      */
 
     /**
-     * Bicycle speed.
-     * Should simulate or acquire a real bike speed.
-     */
-    double speed = 10 * 10.0;
-
-    /**
      * Update the player position according to the passed time.
      */
-    void updatePlayerPosition(const double& time);
+    void updatePlayerPosition(const Ogre::Real& time);
+
+    /**
+     * Update the monster position according to the passed time.
+     */
+    void updateMonsterPosition(const Ogre::Real& time);
+
+    /**
+     * Return true if the monster is near enough in relation to the player.
+     */
+    bool checkPlayerMonsterCollision();
 
     /**
      * Number of bullets available for the player.
@@ -62,9 +66,9 @@ class LogicManager {
     void incrementPlayerAmmo(int quantity = 1);
 
     /**
-     * Remove a bullet from the total ammo of the player.
+     * Remove a bullet from the total ammo of the player. Return false if out of ammo before this operation.
      */
-    void decrementPlayerAmmo(int quantity = 1);
+    bool decrementPlayerAmmo(int quantity = 1);
 
     // go
     void go();
@@ -79,6 +83,8 @@ class LogicManager {
     const double MIRROR_PERCENTAGE_H = 0.675;
     const double MIRROR_PERCENTAGE_V = 0.135;
 
+    //Data structure for difficulty mapping.
+    std::vector<float> difficultyParamenter;
 public:
     LogicManager(Controller* controller);
 
@@ -102,11 +108,17 @@ public:
     void setDebugOn();
     void setDebugOff();
 
+    //Move functions.
+    void translateMonster(int difficulty, Ogre::Vector3 translation);
+    void yawCamera();
+
+
     // getters and setters
     Ogre::SceneNode *getPlayerNode() const;
     int getPlayerAmmo() const;
     int getMonsterHealth() const;
-    double getSpeed() const;
+    void setDifficultyParamenter();
+    void externalIncrement();
 };
 }
 

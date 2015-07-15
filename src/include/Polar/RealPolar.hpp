@@ -39,17 +39,17 @@ class RealPolar : public AbstractPolar {
 
         // open the serial port
         if ((serialDescriptor = open(deviceFilePath, O_RDWR | O_NOCTTY )) == -1) {
-            throw std::runtime_error("Error opening serial port " + std::string(deviceFilePath) + " -- " + std::string(strerror(errno)) + "(" + std::to_string(errno) + ")");
+            throw std::runtime_error("----> RealPolar: Error opening serial port " + std::string(deviceFilePath) + " -- " + std::string(strerror(errno)) + "(" + std::to_string(errno) + ")");
         }
 
         // prevent other processes from opening the serial port
         if (ioctl(serialDescriptor, TIOCEXCL) == -1) {
-            throw std::runtime_error("Error setting TIOCEXCL on " + std::string(deviceFilePath) + " -- " + std::string(strerror(errno)) + "(" + std::to_string(errno) + ")");
+            throw std::runtime_error("----> RealPolar: Error setting TIOCEXCL on " + std::string(deviceFilePath) + " -- " + std::string(strerror(errno)) + "(" + std::to_string(errno) + ")");
         }
 
         // get the current serial port options and save them to restore on exit
         if (tcgetattr(serialDescriptor, &originalTTYAttributes) == -1) {
-            throw std::runtime_error("Error getting tty attributes on " + std::string(deviceFilePath) + " -- " + std::string(strerror(errno)) + "(" + std::to_string(errno) + ")");
+            throw std::runtime_error("----> RealPolar: Error getting tty attributes on " + std::string(deviceFilePath) + " -- " + std::string(strerror(errno)) + "(" + std::to_string(errno) + ")");
         }
 
         // serial port configuration options
@@ -67,7 +67,7 @@ class RealPolar : public AbstractPolar {
 
         // cause new options to take effect immediately
         if (tcsetattr(serialDescriptor, TCSANOW, &options) == -1) {
-            throw std::runtime_error("Error setting tty attributes on " + std::string(deviceFilePath) + " -- " + std::string(strerror(errno)) + "(" + std::to_string(errno) + ")");
+            throw std::runtime_error("----> RealPolar: Error setting tty attributes on " + std::string(deviceFilePath) + " -- " + std::string(strerror(errno)) + "(" + std::to_string(errno) + ")");
         }
     }
 
@@ -79,12 +79,12 @@ class RealPolar : public AbstractPolar {
 
         // block until all written output has been sent from the device
         if (tcdrain(serialDescriptor) == -1) {
-            std::cout << "Error waiting for drain - "<< strerror(errno) << "(" << errno <<")" << std::endl;
+            std::cout << "----> RealPolar: Error waiting for drain - "<< strerror(errno) << "(" << errno <<")" << std::endl;
         }
 
         // reset the serial port back to the state in which we found it
         if (tcsetattr(serialDescriptor, TCSANOW, &originalTTYAttributes) == -1) {
-            std::cout << "Error restoring tty attributes - "<< strerror(errno) << "(" << errno <<")" << std::endl;
+            std::cout << "----> RealPolar: Error restoring tty attributes - "<< strerror(errno) << "(" << errno <<")" << std::endl;
         }
 
         // close the port
@@ -108,7 +108,7 @@ class RealPolar : public AbstractPolar {
 
         // send the command string
         if (write(serialDescriptor, sendCommand, cmdLength) != cmdLength) {
-            throw std::runtime_error("Error sending the command string -- " + std::string(strerror(errno)) + "(" + std::to_string(errno) + ")");
+            throw std::runtime_error("--> RealPolar: Error sending the command string -- " + std::string(strerror(errno)) + "(" + std::to_string(errno) + ")");
         }
     }
 
@@ -124,7 +124,7 @@ class RealPolar : public AbstractPolar {
             int n = read(serialDescriptor, b, 1);
 
             if (n == -1) {
-                throw std::runtime_error("Error getting the response string  -- " + std::string(strerror(errno)) + "(" + std::to_string(errno) + ")");
+                throw std::runtime_error("--> RealPolar: Error getting the response string  -- " + std::string(strerror(errno)) + "(" + std::to_string(errno) + ")");
             }
 
             // no chars available for reading right now
