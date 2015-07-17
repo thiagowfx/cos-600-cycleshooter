@@ -39,10 +39,10 @@ class CrosshairManager {
 
 public:
     CrosshairManager() {
-        realCrosshair = Ogre::OverlayManager::getSingleton().getByName("Cycleshooter/RealCrosshair");
+        realCrosshair = Ogre::OverlayManager::getSingleton().getByName("Cycleshooter/RedCrosshair");
         realCrosshair->setScale(CROSSHAIR_SCALE_SIZE, CROSSHAIR_SCALE_SIZE);
 
-        virtualCrosshair = Ogre::OverlayManager::getSingleton().getByName("Cycleshooter/VirtualCrosshair");
+        virtualCrosshair = Ogre::OverlayManager::getSingleton().getByName("Cycleshooter/GreenCrosshair");
         virtualCrosshair->setScale(CROSSHAIR_SCALE_SIZE, CROSSHAIR_SCALE_SIZE);
     }
 

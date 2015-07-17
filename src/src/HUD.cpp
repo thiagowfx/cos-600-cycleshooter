@@ -14,7 +14,7 @@ void HUD::createTrayWidgets() {
 
     // context widgets
     trayManager->createLabel(CONTEXT_TL, "contextLabel", "", 150);
-    trayManager->createDecorWidget(CONTEXT_TL, "contextLogo", "Cycleshooter/Running_man");
+    trayManager->createDecorWidget(CONTEXT_TL, "contextLogo", "Cycleshooter/RunningModePanel");
 
     // information widgets
     int INFO_SIZE = 140;
@@ -54,14 +54,14 @@ void HUD::setupRunnerMode() {
     // update context mode
     dynamic_cast<OgreBites::Label*>(trayManager->getWidget("contextLabel"))->setCaption("Runner Mode");
     trayManager->destroyWidget("contextLogo");
-    trayManager->createDecorWidget(CONTEXT_TL, "contextLogo", "Cycleshooter/Running_man");
+    trayManager->createDecorWidget(CONTEXT_TL, "contextLogo", "Cycleshooter/RunningModePanel");
 }
 
 void HUD::setupShooterMode() {
     // update context mode
     dynamic_cast<OgreBites::Label*>(trayManager->getWidget("contextLabel"))->setCaption("Shooter Mode");
     trayManager->destroyWidget("contextLogo");
-    trayManager->createDecorWidget(CONTEXT_TL, "contextLogo", "Cycleshooter/Gun");
+    trayManager->createDecorWidget(CONTEXT_TL, "contextLogo", "Cycleshooter/ShooterModePanel");
 }
 
 void HUD::setDebug(bool debug) {

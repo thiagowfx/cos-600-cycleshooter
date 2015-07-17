@@ -1,53 +1,53 @@
-template container Panel(Cycleshooter/Running_man)
+template container Panel(Cycleshooter/ContextModePanel)
 {
 	metrics_mode pixels
-	material Cycleshooter/Running_man
 	horz_align center
 	vert_align center
 	width 64
 	height 64
 }
 
-template container Panel(Cycleshooter/Gun)
+template container Panel(Cycleshooter/RunningModePanel) : Cycleshooter/ContextModePanel
 {
-	metrics_mode pixels
+	material Cycleshooter/RunningMan
+}
+
+template container Panel(Cycleshooter/ShooterModePanel) : Cycleshooter/ContextModePanel
+{
 	material Cycleshooter/Gun
-	horz_align center
-	vert_align center
-	width 64
-	height 64
 }
 
-Cycleshooter/VirtualCrosshair
+template container Panel(Cycleshooter/CrosshairPanel)
+{
+        metrics_mode pixels
+        horz_align center
+        vert_align center
+}
+
+Cycleshooter/GreenCrosshair
 {
     zorder 200
 
-    container Panel(VirtualCrosshairPanel)
+    container Panel(Cycleshooter/GreenCrosshairPanel) : Cycleshooter/CrosshairPanel
     {
-        metrics_mode pixels
-        horz_align center
-        vert_align center
         left -64
         top -64
         width 128
         height 128
-        material Cycleshooter/VirtualCrosshair
+        material Cycleshooter/GreenCrosshair
     }
 }
 
-Cycleshooter/RealCrosshair
+Cycleshooter/RedCrosshair
 {
     zorder 201
 
-    container Panel(RealCrosshairPanel)
+    container Panel(Cycleshooter/RedCrosshairPanel) : Cycleshooter/CrosshairPanel
     {
-        metrics_mode pixels
-        horz_align center
-        vert_align center
-        left -64
-        top -64
-        width 128
-        height 128
-        material Cycleshooter/RealCrosshair
+        left -32
+        top -32
+        width 64
+        height 64
+        material Cycleshooter/RedCrosshair
     }
 }
