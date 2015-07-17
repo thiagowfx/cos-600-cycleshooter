@@ -274,7 +274,7 @@ void Controller::createGameElements() {
     }));
     bicycleUpdater->launch();
 
-    polar = std::unique_ptr<AbstractPolar>(new RandomPolar(HEARTBEAT_MINIMUM_ASSUMED, HEARTBEAT_MAXIMUM_ASSUMED));
+    polar = std::unique_ptr<AbstractPolar>(new ConstantPolar(HEARTBEAT_MINIMUM_ASSUMED));
     polarUpdater = std::unique_ptr<sf::Thread>(new sf::Thread([&](){
         while(!shutdown) {
             try { polar->updateHeartRate(); }

@@ -21,18 +21,33 @@ class CrosshairManager {
     /**
      * Scale of the crosshair size.
      */
-    const double CROSSHAIR_SCALE_SIZE = 1.0/5.0;
+    const double CROSSHAIR_SCALE_SIZE = 1.0 / 5.0;
 
     /**
      * Scale of the crosshair sensibility.
      */
-    const double GREEN_CROSSHAIR_SENSIBILITY = 5e-3;
+    const double GREEN_CROSSHAIR_FRICTION = 25.0;
 
     /**
      * Return a random integer in the [-interval, +interval] range.
      */
-    int getRandomIntegerOnRange(const int& interval) const {
+    inline int getRandomIntegerOnRange(const int& interval) const {
         return (rand() % (2 * interval + 1)) - interval;
+    }
+
+    /**
+     * Function to determine the scroll amount, based on the current heartRate.
+     */
+    inline double fHeartRateSensibility(const double& p, const int& heartRate) const {
+        // map heartRate (60,150) to mappedHeartRate [1,3]
+        const int MINI = 60;
+        const int MAXI = 150;
+        const double MAPPED_MINI = 1.0;
+        const double MAPPED_MAXI = 3.0;
+
+        double mappedHeartRate = (((MAPPED_MAXI - MAPPED_MINI) * (heartRate - MINI)) / (MAXI - MINI)) + MAPPED_MINI;
+
+        return (p / GREEN_CROSSHAIR_FRICTION) * mappedHeartRate;
     }
 
 public:
@@ -47,23 +62,19 @@ public:
     /**
      * Move/scroll the crosshair by the amount specified. Optionally it may wrap around the screen too.
      */
-    void scrollVirtualCrosshair(const int& heartRate, const double& dx, const double& dy, bool wraps = false) {
-        printf("-- HR = %d --- (dx,dy) = (%lf, %lf)\n", heartRate, dx, dy);
+    void scrollVirtualCrosshair(const int& heartRate, const double& dx, const double& dy, bool randomizes = true, bool wraps = false) {
+        double px = greenCrosshair->getScrollX() + fHeartRateSensibility(dx, heartRate);
+        double py = greenCrosshair->getScrollY() + fHeartRateSensibility(dy, heartRate);
 
-        // double px = greenCrosshair.first + GREEN_CROSSHAIR_SENSIBILITY * heartRate * dx;
-        // double py = greenCrosshair.second + GREEN_CROSSHAIR_SENSIBILITY * heartRate * dy;
-
-        double px = greenCrosshair->getScrollX() + dx / 25.0;
-        double py = greenCrosshair->getScrollY() + dy / 25.0;
-
-        px = (px > 1.0) ? (wraps ? -1.0 : +1.0) : px;
-        px = (px < -1.0) ? (wraps ? +1.0 : -1.0) : px;
-
-        py = (py > 1.0) ? (wraps ? -1.0 : +1.0) : py;
-        py = (py < -1.0) ? (wraps ? +1.0 : -1.0) : py;
+        // handle out-of-screen crosshair coordinates appropriately
+        px = (px > 1.0) ? (wraps ? -1.0 : +1.0) : px, px = (px < -1.0) ? (wraps ? +1.0 : -1.0) : px;
+        py = (py > 1.0) ? (wraps ? -1.0 : +1.0) : py, py = (py < -1.0) ? (wraps ? +1.0 : -1.0) : py;
 
         greenCrosshair->setScroll(px, py);
-        randomizeRedCrosshair(heartRate);
+
+        if(randomizes) {
+            randomizeRedCrosshair(heartRate);
+        }
     }
 
     /**
