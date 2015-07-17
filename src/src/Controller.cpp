@@ -113,7 +113,7 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
             int heartRate = polar->getHeartRate();
             next_heartbeat_waiting_time_ms = (60.0 * 1000.0) / double(heartRate);
             AudioManager::instance().playHeartbeat(heartRate, HEARTBEAT_MINIMUM_ASSUMED, HEARTBEAT_MAXIMUM_ASSUMED);
-            crosshairManager->randomizeRealCrosshair(heartRate);
+            crosshairManager->randomizeRedCrosshair(heartRate);
             clockHeartbeat.restart();
         }
     }
