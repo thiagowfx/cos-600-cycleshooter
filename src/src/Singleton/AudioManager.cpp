@@ -129,19 +129,19 @@ void AudioManager::playRandom(const std::vector<Soundname>& sound_list) {
 }
 
 void AudioManager::playRandomShoot() {
-    static std::vector<Soundname> shoot_sound_list = {SOUND_SHOOT01, SOUND_SHOOT02, SOUND_SHOOT03, SOUND_SHOOT04};
-    playRandom(shoot_sound_list);
+    static std::vector<Soundname> shootSoundList = {SOUND_SHOOT01, SOUND_SHOOT02, SOUND_SHOOT03, SOUND_SHOOT04};
+    playRandom(shootSoundList);
 }
 
 Soundname AudioManager::getSoundnameFromHeartbeat(int level, int minimum, int maximum) {
     static std::vector<Soundname> heartbeat_sound_list = {SOUND_HEARTBEAT01, SOUND_HEARTBEAT02, SOUND_HEARTBEAT03, SOUND_HEARTBEAT04, SOUND_HEARTBEAT05};
-    static const int range_size = (maximum - minimum) / heartbeat_sound_list.size();
+    static const int rangeSize = (maximum - minimum) / heartbeat_sound_list.size();
 
     // clamping
     level = std::min(maximum, level);
     level = std::max(minimum, level);
 
-    int sound = (level - minimum) / range_size;
+    int sound = (level - minimum) / rangeSize;
 
     switch(sound) {
     case 0:

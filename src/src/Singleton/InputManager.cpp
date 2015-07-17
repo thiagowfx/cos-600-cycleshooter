@@ -60,7 +60,7 @@ void InputManager::addKeys(const std::vector<sf::Keyboard::Key> &keys, const std
     }
 }
 
-void InputManager::addJoystickButtons(const std::vector<int> &buttons, const std::function<void ()> &action){
+void InputManager::addJoystickButtons(const std::vector<int> &buttons, const std::function<void ()> &action) {
     for(const auto& button: buttons) {
         addJoystickButton(button, action);
     }
@@ -78,7 +78,7 @@ void InputManager::addKeys(const std::vector<sf::Keyboard::Key> &keys, const Con
     }
 }
 
-void InputManager::addJoystickButtons(const std::vector<int> &buttons, const Context &mode, const std::function<void ()> &action){
+void InputManager::addJoystickButtons(const std::vector<int> &buttons, const Context &mode, const std::function<void ()> &action) {
     for(const auto& button: buttons) {
         addJoystickButton(button, mode, action);
     }
@@ -96,7 +96,7 @@ void InputManager::removeKey(const sf::Keyboard::Key &key, const Context &mode) 
     }
 }
 
-void InputManager::removeJoystickButton(int button, const Context &mode){
+void InputManager::removeJoystickButton(int button, const Context &mode) {
     if(hasJoystickButton(button, mode)) {
         joystickButtonMap[mode].erase(button);
     }
@@ -128,7 +128,7 @@ void InputManager::removeAllJoystickButtons() {
     removeAllJoystickButtons(CONTEXT_SHOOTER);
 }
 
-void InputManager::removeAllJoystickButtons(const Context &mode){
+void InputManager::removeAllJoystickButtons(const Context &mode) {
     joystickButtonMap[mode].clear();
 }
 
@@ -156,7 +156,7 @@ void InputManager::executeKeyAction(const sf::Keyboard::Key &key, const Context 
     }
 }
 
-void InputManager::executeJoystickButtonAction(int button, const Context &mode){
+void InputManager::executeJoystickButtonAction(int button, const Context &mode) {
     if(hasJoystickButton(button, mode)) {
         joystickButtonMap[mode][button]();
     }

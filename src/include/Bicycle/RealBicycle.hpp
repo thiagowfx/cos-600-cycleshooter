@@ -36,7 +36,7 @@ class RealBicycle : public AbstractBicycle {
     /**
      * Time between consecutive reads.
      */
-    static const unsigned READING_RETRY_TIME_MS = 10;
+    static const int READING_RETRY_TIME_MS = 10;
 
     /**
      * Maximun number of characters that might be read at a time.
