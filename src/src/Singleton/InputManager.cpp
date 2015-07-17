@@ -200,7 +200,7 @@ void InputManager::detectJoystick() {
         if(sf::Joystick::isConnected(n) &&
            sf::Joystick::hasAxis(n, sf::Joystick::X) &&
            sf::Joystick::hasAxis(n, sf::Joystick::Y) &&
-           sf::Joystick::getButtonCount(n) >= 1) {
+           sf::Joystick::getButtonCount(n) >= 2) {
             LOG("Setting joystick to number %d", n);
             setJoystickNumber(n);
             joystickDetected = true;

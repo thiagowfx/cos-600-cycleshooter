@@ -97,7 +97,7 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
 
     if(shutdown) {
         // sync with other threads for a clean shutdown
-        wait_threads();
+        waitThreads();
 
         return false;
     }
@@ -110,7 +110,7 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         static int next_heartbeat_waiting_time_ms = 0;
 
         if(clockHeartbeat.getElapsedTime().asMilliseconds() >= next_heartbeat_waiting_time_ms) {
-            auto heartRate = polar->getHeartRate();
+            int heartRate = polar->getHeartRate();
             next_heartbeat_waiting_time_ms = (60.0 * 1000.0) / double(heartRate);
             AudioManager::instance().playHeartbeat(heartRate, HEARTBEAT_MINIMUM_ASSUMED, HEARTBEAT_MAXIMUM_ASSUMED);
             crosshairManager->randomizeRealCrosshair(heartRate);
@@ -180,7 +180,7 @@ bool Controller::getDebug() const {
     return debug;
 }
 
-void Controller::wait_threads() const {
+void Controller::waitThreads() const {
     Ogre::LogManager::getSingleton().logMessage("--> Controller: Wait Threads <--");
 
     bicycleUpdater->wait();
@@ -211,7 +211,7 @@ void Controller::go() {
     InputManager::instance().detectJoystick();
     setupRunnerMode();
     setupDebugOn();
-    setupMappings();
+    setupKeyMappings();
 
     // Ogre::FrameListener <-- let's begin calling frameRenderingQueued
     oRoot->addFrameListener(this);
@@ -311,7 +311,7 @@ void Controller::createHud() {
     hud = std::unique_ptr<HUD>(new HUD(this));
 }
 
-void Controller::setupMappings() {
+void Controller::setupKeyMappings() {
     /*
      * Runner mode mappings;
      */
@@ -350,26 +350,22 @@ void Controller::setupMappings() {
      */
     InputManager::instance().addKeysUnbuf({sf::Keyboard::A,
                                            sf::Keyboard::Left}, CONTEXT_SHOOTER, [&]{
-        int heartRate = polar->getHeartRate();
-        crosshairManager->scrollVirtualCrosshair(heartRate, -0.04, 0.00);
+        crosshairManager->scrollVirtualCrosshair(polar->getHeartRate(), -1.0, 0.0);
     });
 
     InputManager::instance().addKeysUnbuf({sf::Keyboard::D,
                                            sf::Keyboard::Right}, CONTEXT_SHOOTER, [&]{
-        int heartRate = polar->getHeartRate();
-        crosshairManager->scrollVirtualCrosshair(heartRate, +0.04, 0.00);
+        crosshairManager->scrollVirtualCrosshair(polar->getHeartRate(), +1.0, 0.0);
     });
 
     InputManager::instance().addKeysUnbuf({sf::Keyboard::W,
                                            sf::Keyboard::Up}, CONTEXT_SHOOTER, [&]{
-        int heartRate = polar->getHeartRate();
-        crosshairManager->scrollVirtualCrosshair(heartRate, 0.00, 0.04);
+        crosshairManager->scrollVirtualCrosshair(polar->getHeartRate(), 0.0, +1.0);
     });
 
     InputManager::instance().addKeysUnbuf({sf::Keyboard::S,
                                            sf::Keyboard::Down}, CONTEXT_SHOOTER, [&]{
-        int heartRate = polar->getHeartRate();
-        crosshairManager->scrollVirtualCrosshair(heartRate, 0.00, -0.04);
+        crosshairManager->scrollVirtualCrosshair(polar->getHeartRate(), 0.0, -1.0);
     });
 
     InputManager::instance().addKey(sf::Keyboard::Space, CONTEXT_SHOOTER, [&]{
@@ -417,17 +413,21 @@ void Controller::setupMappings() {
     /*
      * Joystick mappings.
      */
-    InputManager::instance().addJoystickAxisUnbuf(sf::Joystick::X, CONTEXT_RUNNER, [&](float f){
-        logicManager->getPlayerNode()->yaw(Ogre::Degree(-10 * f / 100.0));
+    InputManager::instance().addJoystickAxisUnbuf(sf::Joystick::X, CONTEXT_SHOOTER, [&](float f) {
+        crosshairManager->scrollVirtualCrosshair(polar->getHeartRate(), +1.0 * (f / 100.0), 0.0);
     });
 
-    InputManager::instance().addJoystickAxisUnbuf(sf::Joystick::Y, CONTEXT_RUNNER, [&](float f){
-        logicManager->getPlayerNode()->translate(Ogre::Vector3(0.0, 0.0, 10.0 * f / 100.0), Ogre::SceneNode::TS_LOCAL);
+    InputManager::instance().addJoystickAxisUnbuf(sf::Joystick::Y, CONTEXT_SHOOTER, [&](float f) {
+        crosshairManager->scrollVirtualCrosshair(polar->getHeartRate(), 0.0, +1.0 * (f / 100.0));
     });
 
-//    InputManager::instance().addJoystickButton(0, [&]{
-//        toggleMode();
-//    });
+    InputManager::instance().addJoystickButtons({0}, CONTEXT_SHOOTER, [&]() {
+        logicManager->shoot();
+    });
+
+    InputManager::instance().addJoystickButtons({1}, [&]() {
+        toggleMode();
+    });
 }
 
 AbstractPolar* Controller::getPolar() const {
@@ -442,11 +442,11 @@ void Controller::gameMainLoop() {
         oRoot->renderOneFrame();
     }
 
-    wait_threads();
-    do_game_end();
+    waitThreads();
+    doGameEnd();
 }
 
-void Controller::do_game_end() {
+void Controller::doGameEnd() {
     std::cout << "--> Controller: Game End <--" << std::endl;
 
     AudioManager::instance().stopMusic();

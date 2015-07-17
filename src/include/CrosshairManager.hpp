@@ -55,8 +55,8 @@ public:
         // double px = virtualCrosshair.first + VIRTUAL_CROSSHAIR_SENSIBILITY * SQUARE(heartRate) * dx;
         // double py = virtualCrosshair.second + VIRTUAL_CROSSHAIR_SENSIBILITY * SQUARE(heartRate) * dy;
 
-        double px = virtualCrosshair->getScrollX() + dx;
-        double py = virtualCrosshair->getScrollY() + dy;
+        double px = virtualCrosshair->getScrollX() + dx / 25.0;
+        double py = virtualCrosshair->getScrollY() + dy / 25.0;
 
         px = (px > 1.0) ? (wraps ? -1.0 : +1.0) : px;
         px = (px < -1.0) ? (wraps ? +1.0 : -1.0) : px;

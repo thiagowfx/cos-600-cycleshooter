@@ -59,7 +59,7 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     /**
      * Wait for other threads to finish. Like 'join' for C++11 threads.
      */
-    void wait_threads() const;
+    void waitThreads() const;
 
     /**
      * @brief oRoot Ogre::Root
@@ -191,7 +191,7 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     /**
      * Setup the games shortcuts/keybindings/keymaps (mouse, joystick and keyboard)
      */
-    void setupMappings();
+    void setupKeyMappings();
 
     /**
      * @brief logicManager Manages the logic of the game.
@@ -252,7 +252,7 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     /**
      * @brief do_game_end The game has ended. What should we do?
      */
-    void do_game_end();
+    void doGameEnd();
 
     /**
      * Setup the context mode to the runner mode.

@@ -112,7 +112,7 @@ public:
 
     /**
      * @brief detectJoystick Tries to detect the correct joystick.
-     * It must have an X and an Y axis, and at least one button.
+     * It must have an X and an Y axis, and at least two buttons.
      */
     void detectJoystick();
 };
