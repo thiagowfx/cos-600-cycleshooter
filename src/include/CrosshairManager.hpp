@@ -24,9 +24,24 @@ class CrosshairManager {
     const double CROSSHAIR_SCALE_SIZE = 1.0 / 5.0;
 
     /**
-     * Scale of the crosshair sensibility.
+     * Crosshair anti-sensibility. More means less sensible.
      */
     const double GREEN_CROSSHAIR_FRICTION = 25.0;
+
+    /**
+     * Probability for the red crosshair to change its direction in a randomization.
+     */
+    const double PROBABILITY_CHANGE_DIRECTION = 0.4;
+
+    /**
+     * Randomization anti-sensibility. Less means a more aggressive randomization.
+     */
+    const double RANDOMIZATION_SENSIBILITY_FRICTION = 2.0 * GREEN_CROSSHAIR_FRICTION;
+
+    /**
+     * Size of the square of randomization of the red crosshair around the green crosshair.
+     */
+    const double RANDOMIZATION_SQUARE_SIDE = 3.5 * (1.0 / RANDOMIZATION_SENSIBILITY_FRICTION);
 
     /**
      * Return a random integer in the [-interval, +interval] range.
@@ -35,15 +50,30 @@ class CrosshairManager {
         return (rand() % (2 * interval + 1)) - interval;
     }
 
+    inline double getRandomDouble() const {
+        return ((double)rand() / (double)RAND_MAX);
+    }
+
+    inline int getRandomSignal() const {
+        return (rand() % 2) ? (+1) : (-1);
+    }
+
+    inline std::pair<double, double> getRandomDirection() const {
+        double a = getRandomSignal() * getRandomDouble();
+        double b = getRandomSignal() * getRandomDouble();
+        double to_norm = sqrt(a * a + b * b);
+        return std::make_pair(a / to_norm, b / to_norm);
+    }
+
     /**
      * Function to determine the scroll amount, based on the current heartRate.
      */
     inline double fHeartRateSensibility(const double& p, const int& heartRate) const {
-        // map heartRate (60,150) to mappedHeartRate [1,3]
+        // map heartRate to mappedHeartRate
         const int MINI = 60;
         const int MAXI = 150;
         const double MAPPED_MINI = 1.0;
-        const double MAPPED_MAXI = 3.0;
+        const double MAPPED_MAXI = 3.5;
 
         double mappedHeartRate = (((MAPPED_MAXI - MAPPED_MINI) * (heartRate - MINI)) / (MAXI - MINI)) + MAPPED_MINI;
 
@@ -72,21 +102,40 @@ public:
 
         greenCrosshair->setScroll(px, py);
 
-        if(randomizes) {
-            randomizeRedCrosshair(heartRate);
-        }
+        randomizes ? randomizeRedCrosshair() : redCrosshair->setScroll(px, py);
     }
 
     /**
-     * Move the crosshair randomly each period of time in a square proportional to the heart beat.
+     * Move the crosshair along a direction in each period of time.
+     * The direction occasionally changes.
      */
-    void randomizeRedCrosshair(const int& heartRate) {
-        int half_interval = 10;
-        double dx = getRandomIntegerOnRange(half_interval) / 250.0;
-        double dy = getRandomIntegerOnRange(half_interval) / 250.0;
+    void randomizeRedCrosshair() {
+        static std::pair<double, double> direction = std::make_pair(1.0, 0.0);
+        // static std::pair<double, double> direction = getRandomDirection();
 
-        double px = greenCrosshair->getScrollX() + (heartRate / 150.0) * dx;
-        double py = greenCrosshair->getScrollX() + (heartRate / 150.0) * dy;
+        double dx = direction.first / RANDOMIZATION_SENSIBILITY_FRICTION;
+        double dy = direction.second / RANDOMIZATION_SENSIBILITY_FRICTION;
+
+        double px = redCrosshair->getScrollX() + dx;
+        double py = redCrosshair->getScrollY() + dy;
+
+        LOG("(%d,%d) --> (%d,%d)", dx, dy, px, py);
+
+        if (fabs(px - greenCrosshair->getScrollX()) > RANDOMIZATION_SQUARE_SIDE) {
+            px -= 2 * dx;
+            direction.first = -direction.first;
+        }
+
+        if (fabs(py - greenCrosshair->getScrollY()) > RANDOMIZATION_SQUARE_SIDE) {
+            py -= 2 * dy;
+            direction.second = -direction.second;
+        }
+
+        // handle change of direction
+//        double P = getRandomDouble();
+//        if (P >= (1 - PROBABILITY_CHANGE_DIRECTION)) {
+//            direction = getRandomDirection();
+//        }
 
         redCrosshair->setScroll(px, py);
     }
