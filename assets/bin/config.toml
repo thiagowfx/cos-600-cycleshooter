@@ -9,14 +9,25 @@ music_shooter = "hiroshi-okubo-arcade-ripping-air.ogg"
 try_detect_joystick = true
 joystick_number = 0
 
-[SerialDevice]
-reading_retry_time_ms = 10
-
 [Bicycle]
 rpm_to_logical_speed = 15.0
 
 [RealBicycle]
 max_string_response = 16
+reading_retry_time_ms = 10
 
 [RealPolar]
 max_string_response = 140
+reading_retry_time_ms = 10
+
+[Controller]
+bicycle_sleep_time_ms = 500
+polar_sleep_time_ms = 500
+randomize_crosshair_time_ms = 100
+threshold_unbuf_keys_ms = 80
+heartbeat_minimum_assumed = 60
+heartbeat_maximum_assumed = 150
+polar_peak_change = 5
+bicycle_friction_change = 25
+bicycle_speed_change = 10.0
+application_name = "Cycleshooter"

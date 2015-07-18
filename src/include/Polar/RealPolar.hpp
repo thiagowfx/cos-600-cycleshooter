@@ -160,7 +160,7 @@ class RealPolar : public AbstractPolar {
     /**
      * Time to wait before trying to read from the serial port again if no chars available.
      */
-    const int READING_RETRY_TIME_MS = ConfigManager::instance().getInt("SerialDevice.reading_retry_time_ms");
+    const int READING_RETRY_TIME_MS = ConfigManager::instance().getInt("RealPolar.reading_retry_time_ms");
 
 public:
     /**

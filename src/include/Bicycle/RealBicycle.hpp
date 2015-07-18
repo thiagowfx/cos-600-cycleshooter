@@ -36,7 +36,7 @@ class RealBicycle : public AbstractBicycle {
     /**
      * Time between consecutive reads.
      */
-    const int READING_RETRY_TIME_MS = ConfigManager::instance().getInt("SerialDevice.reading_retry_time_ms");
+    const int READING_RETRY_TIME_MS = ConfigManager::instance().getInt("RealBicycle.reading_retry_time_ms");
 
     /**
      * Maximun number of characters that might be read at a time.

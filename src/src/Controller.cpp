@@ -21,15 +21,15 @@ Controller::Controller(int argc, char *argv[]) {
     auto usage = [&]() {
         std::cout << "Usage: " << argv[0] << " [options]\n"
                                              "Options\n"
-                                             "    -h:    show this help\n"
-                                             "    -f:    set fullscreen (1 = ON, 0 = OFF, default = ON)\n"
-                                             "    -r:    set resolution (e.g. 1366x768, default = maximum possible)\n";
-        std::cout << "Examples: " << argv[0] << " -r 1366x768\n"
-                                                "          " << argv[0] << " -f 0 -r 800x600" << std::endl;
+                                             "    -h:      show this help\n"
+                                             "    -f:      set fullscreen (1 = ON, 0 = OFF; default = ON)\n"
+                                             "    -r | -s: set resolution/size (e.g. 1366x768, default = maximum possible)\n"
+                     "Examples: " << argv[0] << " -r 1366x768\n"
+                     "          " << argv[0] << " -f 0 -r 800x600" << std::endl;
     };
 
     int opt;
-    while((opt = getopt(argc, argv, "f:r:h")) != EOF) {
+    while((opt = getopt(argc, argv, "f:r:s:h")) != EOF) {
 
         switch(opt) {
         case 'f':
@@ -41,6 +41,7 @@ Controller::Controller(int argc, char *argv[]) {
             fullscreen = atoi(optarg);
             break;
 
+        case 's':
         case 'r':
             if (sscanf(optarg, "%dx%d", &width, &height) != 2) {
                 std::cout << "error: unrecognized resolution format" << std::endl;
@@ -119,7 +120,7 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
 
         // (maybe) randomize the crosshair
         static sf::Clock clockRandomizeCrosshair;
-        if(clockRandomizeCrosshair.getElapsedTime() >= RANDOMIZE_CROSSHAIR_TIME) {
+        if(clockRandomizeCrosshair.getElapsedTime() >= RANDOMIZE_CROSSHAIR_TIME_MS) {
 
             auto movementKeyPressed = []() -> bool {
                 static const std::vector<sf::Keyboard::Key> movementKeys = {
@@ -147,7 +148,7 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
 
     // process unbuffered keys
     static sf::Clock clockUnbuf;
-    if(clockUnbuf.getElapsedTime() >= THRESHOLD_UNBUF_KEYS) {
+    if(clockUnbuf.getElapsedTime() >= THRESHOLD_UNBUF_KEYS_MS) {
         InputManager::instance().executeActionsUnbuf(context);
         clockUnbuf.restart();
     }
@@ -293,7 +294,7 @@ void Controller::createGameElements() {
         while(!shutdown) {
             try { bicycle->updateSpeed(); }
             catch (...) { Ogre::LogManager::getSingleton().logMessage("WARNING: Controller (bicycle thread): exception caught", Ogre::LML_CRITICAL); }
-            sf::sleep(BICYCLE_SLEEP_TIME);
+            sf::sleep(BICYCLE_SLEEP_TIME_MS);
         }
     }));
     bicycleUpdater->launch();
@@ -303,7 +304,7 @@ void Controller::createGameElements() {
         while(!shutdown) {
             try { polar->updateHeartRate(); }
             catch (...) { Ogre::LogManager::getSingleton().logMessage("WARNING: Controller (polar thread): exception caught", Ogre::LML_CRITICAL); }
-            sf::sleep(POLAR_SLEEP_TIME);
+            sf::sleep(POLAR_SLEEP_TIME_MS);
         }
     }));
     polarUpdater->launch();
@@ -525,7 +526,7 @@ void Controller::createRoot() {
     Ogre::NameValuePairList misc = {{"currentGLContext", "true"}};
 
     // create a render window
-    // note: window title and size are not important here, so we use blank values for them
+    // note: window title and size are not important here, so we use blank (dummy) values for them
     oWindow = oRoot->createRenderWindow("", 0, 0, false, &misc);
     oWindow->setVisible(true);
 
@@ -535,7 +536,7 @@ void Controller::createRoot() {
 void Controller::createSceneManager() {
     Ogre::LogManager::getSingleton().logMessage("--> Controller: Creating Scene Manager <--");
 
-    // oSceneManager = oRoot->createSceneManager(Ogre::ST_GENERIC, "sceneManager");
+    // alt: oSceneManager = oRoot->createSceneManager(Ogre::ST_GENERIC, "sceneManager");
     oSceneManager = oRoot->createSceneManager("OctreeSceneManager", "sceneManager");
 }
 

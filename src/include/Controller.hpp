@@ -11,10 +11,12 @@
 #include <OgreOverlaySystem.h>
 
 #include "AudioManager.hpp"
+#include "ConfigManager.hpp"
+#include "InputManager.hpp"
+
 #include "CycleshooterIcon.hpp"
 #include "Context.hpp"
-#include "InputManager.hpp"
-#include "LogicManager.hpp"
+#include "Logging.hpp"
 
 #include "ConstantBicycle.hpp"
 #include "RealBicycle.hpp"
@@ -23,6 +25,7 @@
 #include "RandomPolar.hpp"
 #include "RealPolar.hpp"
 
+#include "LogicManager.hpp"
 #include "CrosshairManager.hpp"
 #include "HUD.hpp"
 #include "CollisionHandler.hpp"
@@ -99,49 +102,49 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     /**
      * @brief APPLICATION_NAME Name of our application
      */
-    const std::string APPLICATION_NAME = "Cycleshooter";
+    const std::string APPLICATION_NAME = ConfigManager::instance().getStr("Controller.application_name");
 
     /**
      * @brief BICYCLE_SLEEP_TIME Period between bicycle updates.
      */
-    const sf::Time BICYCLE_SLEEP_TIME = sf::milliseconds(500);
+    const sf::Time BICYCLE_SLEEP_TIME_MS = sf::milliseconds(ConfigManager::instance().getInt("Controller.bicycle_sleep_time_ms"));
 
     /**
      * @brief BICYCLE_SPEED_CHANGE Variation of the bicycle speed between sucessive increments/decrements.
      */
-    const double BICYCLE_SPEED_CHANGE = 10;
+    const double BICYCLE_SPEED_CHANGE = ConfigManager::instance().getDouble("Controller.bicycle_speed_change");
 
-    const int BICYCLE_FRICTION_CHANGE = 25;
+    const int BICYCLE_FRICTION_CHANGE = ConfigManager::instance().getInt("Controller.bicycle_friction_change");
 
     /**
      * @brief POLAR_SLEEP_TIME Period between polar updates.
      */
-    const sf::Time POLAR_SLEEP_TIME = sf::milliseconds(500);
+    const sf::Time POLAR_SLEEP_TIME_MS = sf::milliseconds(ConfigManager::instance().getInt("Controller.polar_sleep_time_ms"));
 
     /**
      * @brief RANDOMIZE_CROSSHAIR_TIME Period between randomized crosshairs.
      */
-    const sf::Time RANDOMIZE_CROSSHAIR_TIME = sf::milliseconds(100);
+    const sf::Time RANDOMIZE_CROSSHAIR_TIME_MS = sf::milliseconds(ConfigManager::instance().getInt("Controller.randomize_crosshair_time_ms"));
 
     /**
      * @brief POLAR_PEAK_CHANGE Variation of the heart beat between sucessive increments/decrements.
      */
-    const int POLAR_PEAK_CHANGE = 5;
+    const int POLAR_PEAK_CHANGE = ConfigManager::instance().getInt("Controller.polar_peak_change");
 
     /**
      * @brief HEARTBEAT_MINIMUM_ASSUMED The minimumum expected heart beat. Used to choose a sound.
      */
-    const int HEARTBEAT_MINIMUM_ASSUMED = 60;
+    const int HEARTBEAT_MINIMUM_ASSUMED = ConfigManager::instance().getInt("Controller.heartbeat_minimum_assumed");
 
     /**
      * @brief HEARTBEAT_MAXIMUM_ASSUMED The maximum expected heart beat. Used to choose a sound.
      */
-    const int HEARTBEAT_MAXIMUM_ASSUMED = 150;
+    const int HEARTBEAT_MAXIMUM_ASSUMED = ConfigManager::instance().getInt("Controller.heartbeat_maximum_assumed");
 
     /**
      * @brief THRESHOLD_UNBUF_KEYS Threshold between two consecutive unbuffered inputs.
      */
-    const sf::Time THRESHOLD_UNBUF_KEYS = sf::milliseconds(80);
+    const sf::Time THRESHOLD_UNBUF_KEYS_MS = sf::milliseconds(ConfigManager::instance().getInt("Controller.threshold_unbuf_keys_ms"));
 
     /**
      * @brief go Our smart constructor
