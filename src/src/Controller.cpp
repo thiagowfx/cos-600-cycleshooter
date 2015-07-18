@@ -291,7 +291,7 @@ void Controller::createGameElements() {
     }
     else {
         LOG("Using the ConstantBicycle class");
-        bicycle = std::unique_ptr<AbstractBicycler>(new ConstantBicycle(0));
+        bicycle = std::unique_ptr<AbstractBicycle>(new ConstantBicycle(0));
     }
 
     bicycleUpdater = std::unique_ptr<sf::Thread>(new sf::Thread([&](){
