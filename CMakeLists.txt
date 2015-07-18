@@ -134,6 +134,15 @@ if(DEPENDENCIES_READY)
         PATTERN "*.in"
         EXCLUDE
         )
+
+    # udev rules for the serial devices
+    add_custom_target(
+        udev
+        ${CMAKE_COMMAND} -E echo "Trying to copy 51-cycleshooter-udev.rules to /etc/udev/rules.d/..."
+        COMMAND ${CMAKE_COMMAND} -E echo "** If this command fails, please try it again with root permissions. **"
+        COMMAND ${CMAKE_COMMAND} -E copy 51-cycleshooter-udev.rules /etc/udev/rules.d/
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        )
 else()
     message(WARNING "*** DEPENDENCIES_READY variable is set to OFF, project won't build ***")
 endif()
