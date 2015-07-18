@@ -1,0 +1,2 @@
+# bicycle rule
+SUBSYSTEM=="usb", DRIVER=="usbserial", ATTR{idVendor}=="0x067b", ATTR{idProduct}=="0x2303", MODE="0666"
