@@ -34,7 +34,7 @@ Controller::Controller(int argc, char *argv[]) {
         switch(opt) {
         case 'f':
             if(!(!strcmp(optarg, "0") || !strcmp(optarg, "1"))) {
-                std::cout << "error: unrecognized fullscreen parameter" << std::endl;
+                LOG_FATAL("unrecognized fullscreen parameter");
                 usage();
                 exit(EXIT_FAILURE);
             }
@@ -44,7 +44,7 @@ Controller::Controller(int argc, char *argv[]) {
         case 's':
         case 'r':
             if (sscanf(optarg, "%dx%d", &width, &height) != 2) {
-                std::cout << "error: unrecognized resolution format" << std::endl;
+                LOG_FATAL("unrecognized resolution format");
                 usage();
                 exit(EXIT_FAILURE);
             }
@@ -69,7 +69,7 @@ Controller::Controller(int argc, char *argv[]) {
             sVideoMode = sf::VideoMode(width, height);
         }
         else {
-            std::cout << "error: invalid fullscreen resolution specified. Please either set a valid resolution or disable fullscreen." << std::endl;
+            LOG_FATAL("invalid fullscreen resolution specified (%d x %d). Please either set a valid resolution or disable fullscreen", width, height);
             exit(EXIT_FAILURE);
         }
     }
@@ -213,9 +213,6 @@ void Controller::waitThreads() const {
 }
 
 void Controller::go() {
-    // we can't use Ogre::LogManager before creating the Ogre::Root object
-    std::cout << "--> Controller: go <--" << std::endl;
-
     // randomness
     srand(time(NULL));
 
@@ -244,7 +241,7 @@ void Controller::go() {
 }
 
 void Controller::createSFMLWindow() {
-    std::cout << "--> Controller: Creating the SFML Window <--" << std::endl;
+    LOG("Creating the SFML Window");
 
     sWindow = std::unique_ptr<sf::Window>(new sf::Window(sVideoMode, APPLICATION_NAME, sFullScreen, sf::ContextSettings(32, 8, 16)));
     sWindow->setIcon(CYCLESHOOTER_ICON.width, CYCLESHOOTER_ICON.height, CYCLESHOOTER_ICON.pixel_data);
@@ -253,7 +250,7 @@ void Controller::createSFMLWindow() {
 }
 
 void Controller::setupResources(const Ogre::String& config) {
-    Ogre::LogManager::getSingleton().logMessage("--> Controller: Setting up Resources <--");
+    LOG("Setting up Resources");
 
     Ogre::ConfigFile cf;
     cf.load(config);
@@ -278,13 +275,12 @@ void Controller::setupResources(const Ogre::String& config) {
 }
 
 void Controller::setupTextures() {
-    Ogre::LogManager::getSingleton().logMessage("--> Controller: Setting up Textures <--");
-
+    LOG("Setting up Textures");
     Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
 }
 
 void Controller::createGameElements() {
-    Ogre::LogManager::getSingleton().logMessage("--> Controller: Create Game Elements <--");
+    LOG("CreatING Game Elements");
 
     // attention: logic manager should be created before any threads that will update it
     logicManager = std::unique_ptr<LogicManager>(new LogicManager(this));
@@ -325,18 +321,18 @@ void Controller::createGameElements() {
 }
 
 void Controller::createCrosshair() {
-    Ogre::LogManager::getSingletonPtr()->logMessage("--> Controller: Creating Crosshair <--");
-
+    LOG("Creating Crosshair");
     crosshairManager = std::unique_ptr<CrosshairManager>(new CrosshairManager());
 }
 
 void Controller::createHud() {
-    Ogre::LogManager::getSingletonPtr()->logMessage("--> Controller: Creating HUD <--");
-
+    LOG("Creating HUD");
     hud = std::unique_ptr<HUD>(new HUD(this));
 }
 
 void Controller::setupKeyMappings() {
+    LOG("Setting up mappings");
+
     /*
      * Runner mode mappings;
      */
@@ -460,7 +456,7 @@ AbstractPolar* Controller::getPolar() const {
 }
 
 void Controller::gameMainLoop() {
-    Ogre::LogManager::getSingleton().logMessage("--> Controller: Game Main Loop <--");
+    LOG("Entering the Game Main Loop");
 
     while(!shutdown) {
         // update rendering
@@ -472,12 +468,12 @@ void Controller::gameMainLoop() {
 }
 
 void Controller::doGameEnd() {
-    std::cout << "--> Controller: Game End <--" << std::endl;
-
+    LOG("Doing the Game End");
     AudioManager::instance().stopMusic();
     InputManager::instance().reset();
 
     // DESTROY THEM ALL -- then recreate what is actually needed
+    LOG("Recreating OGRE elements");
     hud.reset(nullptr);
     oWindow->removeAllViewports();
     Ogre::Root::getSingleton().destroySceneManager(oSceneManager);
@@ -485,6 +481,7 @@ void Controller::doGameEnd() {
     createOverlaySystem();
 
     // Create the Final Scene
+    LOG("Creating the final scene");
     Ogre::Camera* endCamera = oSceneManager->createCamera("endCamera");
     Ogre::Viewport* endViewport = oWindow->addViewport(endCamera);
 
@@ -492,12 +489,12 @@ void Controller::doGameEnd() {
 
     if(gameWon) {
         endSound = SOUND_GAME_VICTORY;
-        std::cout << "==>GAME VICTORY :: Congratulations!" << std::endl;
+        LOG(" ==> GAME VICTORY :: Congratulations! <==");
         endViewport->setBackgroundColour(Ogre::ColourValue::Green);
     }
     else {
         endSound = SOUND_GAME_LOSS;
-        std::cout << "==> GAME OVER :: Go exercise yourself a little more, you little lazy person!" << std::endl;
+        LOG(" ==> GAME OVER :: Go EXERCISE yourself more, you little LAZY person! <==");
         endViewport->setBackgroundColour(Ogre::ColourValue::Red);
     }
 
@@ -512,17 +509,14 @@ void Controller::doGameEnd() {
 }
 
 void Controller::createRoot() {
-    // we can't use Ogre::LogManager before creating the Ogre::Root object
-    std::cout << "--> Controller: creating Root <--" << std::endl;
-
+    LOG("Creating Ogre Root");
     oRoot = new Ogre::Root();
 
     // create rendering system, but don't initialise it / the main window
     oRoot->setRenderSystem(oRoot->getAvailableRenderers().at(0));
     oRoot->initialise(false);
 
-    Ogre::LogManager::getSingleton().logMessage("--> Controller: Ogre::Root object has been created and initialized with the default Render System (" + oRoot->getAvailableRenderers().at(0)->getName() + ")");
-
+    LOG("Ogre::Root object has been created and initialized with the default Render System (%s)", oRoot->getAvailableRenderers().at(0)->getName().c_str());
     Ogre::NameValuePairList misc = {{"currentGLContext", "true"}};
 
     // create a render window
@@ -530,26 +524,23 @@ void Controller::createRoot() {
     oWindow = oRoot->createRenderWindow("", 0, 0, false, &misc);
     oWindow->setVisible(true);
 
-    Ogre::LogManager::getSingleton().logMessage("--> Controller: Render Window has been (manually) created <--");
+    LOG("Render Window has been (manually) created");
 }
 
 void Controller::createSceneManager() {
-    Ogre::LogManager::getSingleton().logMessage("--> Controller: Creating Scene Manager <--");
-
-    // alt: oSceneManager = oRoot->createSceneManager(Ogre::ST_GENERIC, "sceneManager");
+    LOG("Creating the Scene Manager");
     oSceneManager = oRoot->createSceneManager("OctreeSceneManager", "sceneManager");
+    // alt: oSceneManager = oRoot->createSceneManager(Ogre::ST_GENERIC, "sceneManager");
 }
 
 void Controller::createOverlaySystem() {
-    Ogre::LogManager::getSingleton().logMessage("--> Controller: Creating Overlay System <--");
-
+    LOG("Creating the Overlay System");
     oOverlaySystem = new Ogre::OverlaySystem();
     oSceneManager->addRenderQueueListener(oOverlaySystem);
 }
 
 void Controller::setupRunnerMode() {
-    Ogre::LogManager::getSingleton().logMessage("--> Controller: Setting up Runner Mode <--");
-
+    LOG("Setting up Runner Mode");
     context = CONTEXT_RUNNER;
 
     logicManager->setupRunnerMode();
@@ -559,8 +550,7 @@ void Controller::setupRunnerMode() {
 }
 
 void Controller::setupShooterMode() {
-    Ogre::LogManager::getSingleton().logMessage("--> Controller: Setting up Shooter Mode <--");
-
+    LOG("Setting up Shooter Mode");
     context = CONTEXT_SHOOTER;
 
     logicManager->setupShooterMode();
@@ -581,8 +571,7 @@ void Controller::toggleMode() {
 }
 
 void Controller::setupDebugOn() {
-    Ogre::LogManager::getSingleton().logMessage("--> Controller: Turning Debug Mode On <--");
-
+    LOG("Turning Debug Mode On");
     debug = true;
 
     logicManager->setDebugOn();
@@ -590,8 +579,7 @@ void Controller::setupDebugOn() {
 }
 
 void Controller::setupDebugOff() {
-    Ogre::LogManager::getSingleton().logMessage("--> Controller: Turning Debug Mode Off <--");
-
+    LOG("Turning Debug Mode Off");
     debug = false;
 
     logicManager->setDebugOff();
@@ -599,14 +587,7 @@ void Controller::setupDebugOff() {
 }
 
 void Controller::toggleDebug() {
-    Ogre::LogManager::getSingleton().logMessage("--> Controller: Toggling Debug Mode <--");
-
-    if(debug) {
-        setupDebugOff();
-    }
-    else {
-        setupDebugOn();
-    }
+    debug ? setupDebugOff() : setupDebugOn();
 }
 
 AbstractBicycle* Controller::getBicycle() const {
