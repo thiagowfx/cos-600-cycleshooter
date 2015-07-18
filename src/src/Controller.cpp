@@ -232,7 +232,7 @@ void Controller::go() {
     createHud();
 
     // setups
-    InputManager::instance().detectJoystick();
+    InputManager::instance().updateJoystickNumber();
     setupRunnerMode();
     setupDebugOn();
     setupKeyMappings();

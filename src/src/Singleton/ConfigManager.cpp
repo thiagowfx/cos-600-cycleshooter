@@ -32,4 +32,8 @@ double ConfigManager::getDouble(const std::string& key) const {
     return get<double>(key);
 }
 
+bool ConfigManager::getBool(const std::string &key) const {
+    return get<bool>(key);
+}
+
 }

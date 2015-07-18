@@ -8,6 +8,7 @@
 #include <SFML/Window/Joystick.hpp>
 #include <SFML/Window/Keyboard.hpp>
 
+#include "ConfigManager.hpp"
 #include "Context.hpp"
 #include "Logging.hpp"
 #include "Singleton.hpp"
@@ -24,7 +25,9 @@ class InputManager {
     /**
      * @brief The joystick (number) used for this class.
      */
-    int JOYSTICK_NUMBER = 0;
+    int JOYSTICK_NUMBER;
+
+    const bool DETECT_JOYSTICK = ConfigManager::instance().getBool("InputManager.try_detect_joystick");
 
     /** Buffered keyboard keys. */
     std::map<sf::Keyboard::Key, std::function<void(void)> > keyboardMap[2];
@@ -115,10 +118,11 @@ public:
     void reset();
 
     /**
-     * @brief detectJoystick Tries to detect the correct joystick.
+     * @brief detectJoystick Tries to detect the correct joystick if the appropriate option is set.
      * It must have an X and an Y axis, and at least two buttons.
+     * Otherwise, reads the number from the config file.
      */
-    void detectJoystick();
+    void updateJoystickNumber();
 };
 
 }

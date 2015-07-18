@@ -118,14 +118,14 @@ void AudioManager::populateMusics() {
             error(musicfile);\
     } while(0)
 
-    LOAD_TEMPLATE(MUSIC_RUNNER, "bfmv-hand-of-blood.ogg");
-    LOAD_TEMPLATE(MUSIC_SHOOTER, "hiroshi-okubo-arcade-ripping-air.ogg");
+    LOAD_TEMPLATE(MUSIC_RUNNER, ConfigManager::instance().getStr("AudioManager.music_runner"));
+    LOAD_TEMPLATE(MUSIC_SHOOTER, ConfigManager::instance().getStr("AudioManager.music_shooter"));
 
 #undef LOAD_TEMPLATE
 }
 
-void AudioManager::playRandom(const std::vector<Soundname>& sound_list) {
-    playSound(sound_list[rand() % sound_list.size()]);
+void AudioManager::playRandom(const std::vector<Soundname>& soundList) {
+    playSound(soundList[rand() % soundList.size()]);
 }
 
 void AudioManager::playRandomShoot() {
@@ -134,8 +134,8 @@ void AudioManager::playRandomShoot() {
 }
 
 Soundname AudioManager::getSoundnameFromHeartbeat(int level, int minimum, int maximum) {
-    static std::vector<Soundname> heartbeat_sound_list = {SOUND_HEARTBEAT01, SOUND_HEARTBEAT02, SOUND_HEARTBEAT03, SOUND_HEARTBEAT04, SOUND_HEARTBEAT05};
-    static const int rangeSize = (maximum - minimum) / heartbeat_sound_list.size();
+    static std::vector<Soundname> heartbeatSoundList = {SOUND_HEARTBEAT01, SOUND_HEARTBEAT02, SOUND_HEARTBEAT03, SOUND_HEARTBEAT04, SOUND_HEARTBEAT05};
+    static const int rangeSize = (maximum - minimum) / heartbeatSoundList.size();
 
     // clamping
     level = std::min(maximum, level);

@@ -2,3 +2,9 @@
 soundpath = "../audio/sounds/"
 musicpath = "../audio/music/"
 music_volume_ratio = 0.33
+music_runner = "bfmv-hand-of-blood.ogg"
+music_shooter = "hiroshi-okubo-arcade-ripping-air.ogg"
+
+[InputManager]
+try_detect_joystick = true
+joystick_number = 0

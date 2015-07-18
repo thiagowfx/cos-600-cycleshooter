@@ -205,24 +205,37 @@ void InputManager::reset() {
     removeAllJoystickAxisUnbuf();
 }
 
-void InputManager::detectJoystick() {
-    LOG("Detecting Joystick");
-    bool joystickDetected = false;
+void InputManager::updateJoystickNumber() {
+    if(DETECT_JOYSTICK) {
+        LOG("Trying to detect a Joystick");
+        bool joystickDetected = false;
 
-    for(int n = 0; n < sf::Joystick::Count; ++n) {
-        if(sf::Joystick::isConnected(n) &&
-           sf::Joystick::hasAxis(n, sf::Joystick::X) &&
-           sf::Joystick::hasAxis(n, sf::Joystick::Y) &&
-           sf::Joystick::getButtonCount(n) >= 2) {
-            LOG("Setting joystick to number %d", n);
-            setJoystickNumber(n);
-            joystickDetected = true;
-            break;
+        for(int n = 0; n < sf::Joystick::Count; ++n) {
+            if(sf::Joystick::isConnected(n) &&
+                    sf::Joystick::hasAxis(n, sf::Joystick::X) &&
+                    sf::Joystick::hasAxis(n, sf::Joystick::Y) &&
+                    sf::Joystick::getButtonCount(n) >= 2) {
+                LOG("Detected a Joystick. Setting its number to %d", n);
+                setJoystickNumber(n);
+                joystickDetected = true;
+                break;
+            }
+        }
+
+        if(!joystickDetected) {
+            LOG("No compatible joystick could be detected");
         }
     }
+    else {
+        JOYSTICK_NUMBER = ConfigManager::instance().getInt("InputManager.joystick_number");
+        LOG("Setting the joystick number to %d. It has been obtained from the config file", JOYSTICK_NUMBER);
 
-    if(!joystickDetected) {
-        LOG("No compatible joystick detected");
+        if(sf::Joystick::isConnected(JOYSTICK_NUMBER)) {
+            LOG("The configured joystick IS connected");
+        }
+        else {
+            LOG("The configured joystick is NOT available.");
+        }
     }
 }
 

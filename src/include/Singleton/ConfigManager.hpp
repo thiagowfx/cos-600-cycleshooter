@@ -22,6 +22,8 @@ public:
 
     double getDouble(const std::string& key) const;
 
+    bool getBool(const std::string& key) const;
+
     template<class T>
     T get(const std::string& key) const {
         try {
