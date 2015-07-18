@@ -8,3 +8,12 @@ music_shooter = "hiroshi-okubo-arcade-ripping-air.ogg"
 [InputManager]
 try_detect_joystick = true
 joystick_number = 0
+
+[SerialDevice]
+reading_retry_time_ms = 10
+
+[RealBicycle]
+max_string_response = 16
+
+[RealPolar]
+max_string_response = 140

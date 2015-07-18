@@ -12,6 +12,7 @@
 #include <stdexcept>
 
 #include "AbstractPolar.hpp"
+#include "ConfigManager.hpp"
 #include "Logging.hpp"
 
 namespace Cycleshooter {
@@ -38,17 +39,20 @@ class RealPolar : public AbstractPolar {
 
         // open the serial port
         if ((serialDescriptor = open(deviceFilePath, O_RDWR | O_NOCTTY )) == -1) {
-            throw std::runtime_error("Polar: Error opening serial port " + std::string(deviceFilePath) + " -- " + std::string(strerror(errno)) + "(" + std::to_string(errno) + ")");
+            LOG_FATAL("Polar: Error opening serial port %s -- %s (%d)", deviceFilePath, strerror(errno), errno);
+            exit(EXIT_FAILURE);
         }
 
         // prevent other processes from opening the serial port
         if (ioctl(serialDescriptor, TIOCEXCL) == -1) {
-            throw std::runtime_error("Polar: Error setting TIOCEXCL on " + std::string(deviceFilePath) + " -- " + std::string(strerror(errno)) + "(" + std::to_string(errno) + ")");
+            LOG_FATAL("Polar: Error setting TIOCEXCL on port %s -- %s (%d)", deviceFilePath, strerror(errno), errno);
+            exit(EXIT_FAILURE);
         }
 
         // get the current serial port options and save them to restore on exit
         if (tcgetattr(serialDescriptor, &originalTTYAttributes) == -1) {
-            throw std::runtime_error("Polar: Error getting tty attributes on " + std::string(deviceFilePath) + " -- " + std::string(strerror(errno)) + "(" + std::to_string(errno) + ")");
+            LOG_FATAL("Polar: Error getting tty attributes on port %s -- %s (%d)", deviceFilePath, strerror(errno), errno);
+            exit(EXIT_FAILURE);
         }
 
         // serial port configuration options
@@ -66,7 +70,8 @@ class RealPolar : public AbstractPolar {
 
         // cause new options to take effect immediately
         if (tcsetattr(serialDescriptor, TCSANOW, &options) == -1) {
-            throw std::runtime_error("Polar: Error setting tty attributes on " + std::string(deviceFilePath) + " -- " + std::string(strerror(errno)) + "(" + std::to_string(errno) + ")");
+            LOG_FATAL("Polar: Error setting tty attributes on %s -- %s (%d)", deviceFilePath, strerror(errno), errno);
+            exit(EXIT_FAILURE);
         }
     }
 
@@ -107,7 +112,8 @@ class RealPolar : public AbstractPolar {
 
         // send the command string
         if (write(serialDescriptor, sendCommand, cmdLength) != cmdLength) {
-            throw std::runtime_error("Polar: Error sending the command string -- " + std::string(strerror(errno)) + "(" + std::to_string(errno) + ")");
+            LOG_FATAL("Polar: Error sending the command string %s -- %s (%d)", sendCommand, strerror(errno), errno);
+            exit(EXIT_FAILURE);
         }
     }
 
@@ -123,7 +129,8 @@ class RealPolar : public AbstractPolar {
             int n = read(serialDescriptor, b, 1);
 
             if (n == -1) {
-                throw std::runtime_error("Polar: Error getting the response string  -- " + std::string(strerror(errno)) + "(" + std::to_string(errno) + ")");
+                LOG_FATAL("Polar: Error getting the response string %s -- %s (%d)", responseString, strerror(errno), errno);
+                exit(EXIT_FAILURE);
             }
 
             // no chars available for reading right now
@@ -146,12 +153,12 @@ class RealPolar : public AbstractPolar {
     /**
      * Maximum number of characters that will be read until a '\r' is found.
      */
-    static const int MAX_STRING_RESPONSE = 140;
+    static const int MAX_STRING_RESPONSE = ConfigManager::instance().getInt("RealPolar.max_string_response");
 
     /**
      * Time to wait before trying to read from the serial port again if no chars available.
      */
-    static const int READING_RETRY_TIME_MS = 10;
+    static const int READING_RETRY_TIME_MS = ConfigManager::instance().getInt("SerialDevice.reading_retry_time_ms");
 
 public:
     /**

@@ -40,7 +40,7 @@ protected:
     /**
      * The last obtained heartRate.
      */
-    int heartRate = 0;
+    int heartRate;
 
     /**
      * Update the statistics about the heart rates.

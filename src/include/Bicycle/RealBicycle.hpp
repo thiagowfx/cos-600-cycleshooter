@@ -36,12 +36,12 @@ class RealBicycle : public AbstractBicycle {
     /**
      * Time between consecutive reads.
      */
-    static const int READING_RETRY_TIME_MS = 10;
+    static const int READING_RETRY_TIME_MS = ConfigManager::instance().getInt("SerialDevice.reading_retry_time_ms");
 
     /**
      * Maximun number of characters that might be read at a time.
      */
-    static const int MAX_STRING_RESPONSE = 16;
+    static const int MAX_STRING_RESPONSE = ConfigManager::instance().getInt("RealBicycle.max_string_response");
 
     /**
      * Open the serial port in the specified path.

@@ -3,6 +3,8 @@
 
 #include <limits>
 
+#include "ConfigManager.hpp"
+
 namespace Cycleshooter {
 
 class AbstractBicycle {
