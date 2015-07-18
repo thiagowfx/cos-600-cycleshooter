@@ -5,6 +5,8 @@
 #include <OgreOverlay.h>
 #include <OgreOverlayManager.h>
 
+#include "ConfigManager.hpp"
+
 namespace Cycleshooter {
 
 class CrosshairManager {
@@ -21,27 +23,32 @@ class CrosshairManager {
     /**
      * Scale of the crosshair size.
      */
-    const double CROSSHAIR_SCALE_SIZE = 1.0 / 5.0;
+    const double CROSSHAIR_SCALE_SIZE = ConfigManager::instance().getDouble("CrosshairManager.crosshair_scale_size");
 
     /**
      * Crosshair anti-sensibility. More means less sensible.
      */
-    const double GREEN_CROSSHAIR_FRICTION = 25.0;
+    const double GREEN_CROSSHAIR_FRICTION = ConfigManager::instance().getDouble("CrosshairManager.green_crosshair_friction");
 
     /**
      * Probability for the red crosshair to change its direction in a randomization.
      */
-    const double PROBABILITY_CHANGE_DIRECTION = 0.50;
+    const double PROBABILITY_CHANGE_DIRECTION = ConfigManager::instance().getDouble("CrosshairManager.probability_change_direction");
 
     /**
      * Randomization anti-sensibility. Less means a more aggressive randomization.
      */
-    const double RANDOMIZATION_SENSIBILITY_FRICTION = 5.0 * GREEN_CROSSHAIR_FRICTION;
+    const double RANDOMIZATION_FRICTION = ConfigManager::instance().getDouble("CrosshairManager.randomization_friction_relative") * GREEN_CROSSHAIR_FRICTION;
 
     /**
      * Size of the square of randomization of the red crosshair around the green crosshair.
      */
-    const double RANDOMIZATION_SQUARE_SIDE = 1.1 * (1.0 / GREEN_CROSSHAIR_FRICTION);
+    const double RANDOMIZATION_SQUARE_HALF_SIDE = ConfigManager::instance().getDouble("CrosshairManager.randomization_square_half_side_relative") * (1.0 / GREEN_CROSSHAIR_FRICTION);
+
+    const int HEARTBEAT_MINIMUM_ASSUMED = ConfigManager::instance().getInt("Controller.heartbeat_minimum_assumed");
+    const int HEARTBEAT_MAXIMUM_ASSUMED = ConfigManager::instance().getInt("Controller.heartbeat_maximum_assumed");
+    const double MAPPED_HEARTBEAT_MINIMUM = ConfigManager::instance().getDouble("CrosshairManager.mapped_heartbeat_minimum");
+    const double MAPPED_HEARTBEAT_MAXIMUM = ConfigManager::instance().getDouble("CrosshairManager.mapped_heartbeat_maximum");
 
     /**
      * Return a random integer in the [-interval, +interval] range.
@@ -70,12 +77,7 @@ class CrosshairManager {
      */
     inline double fHeartRateSensibility(const double& p, const int& heartRate) const {
         // map heartRate to mappedHeartRate
-        const int MINI = 60;
-        const int MAXI = 150;
-        const double MAPPED_MAXI = 3.2;
-
-        double mappedHeartRate = (((MAPPED_MAXI - 1.0) * (heartRate - MINI)) / (MAXI - MINI)) + 1.0;
-
+        double mappedHeartRate = (((MAPPED_HEARTBEAT_MAXIMUM - MAPPED_HEARTBEAT_MINIMUM) * (heartRate - HEARTBEAT_MINIMUM_ASSUMED)) / (HEARTBEAT_MAXIMUM_ASSUMED - HEARTBEAT_MINIMUM_ASSUMED)) + MAPPED_HEARTBEAT_MINIMUM;
         return (p / GREEN_CROSSHAIR_FRICTION) * mappedHeartRate;
     }
 
@@ -110,20 +112,20 @@ public:
     void randomizeRedCrosshair() {
         static std::pair<double, double> direction = getRandomDirection();
 
-        double dx = direction.first / RANDOMIZATION_SENSIBILITY_FRICTION;
-        double dy = direction.second / RANDOMIZATION_SENSIBILITY_FRICTION;
+        double dx = direction.first / RANDOMIZATION_FRICTION;
+        double dy = direction.second / RANDOMIZATION_FRICTION;
 
         double px = redCrosshair->getScrollX() + dx;
         double py = redCrosshair->getScrollY() + dy;
 
         // check if px is out-of-square
-        if (fabs(px - greenCrosshair->getScrollX()) > RANDOMIZATION_SQUARE_SIDE) {
+        if (fabs(px - greenCrosshair->getScrollX()) > RANDOMIZATION_SQUARE_HALF_SIDE) {
             px -= 2 * dx;
             direction.first = -direction.first;
         }
 
         // check if py is out-of-square
-        if (fabs(py - greenCrosshair->getScrollY()) > RANDOMIZATION_SQUARE_SIDE) {
+        if (fabs(py - greenCrosshair->getScrollY()) > RANDOMIZATION_SQUARE_HALF_SIDE) {
             py -= 2 * dy;
             direction.second = -direction.second;
         }

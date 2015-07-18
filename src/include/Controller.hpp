@@ -132,12 +132,12 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     const int POLAR_PEAK_CHANGE = ConfigManager::instance().getInt("Controller.polar_peak_change");
 
     /**
-     * @brief HEARTBEAT_MINIMUM_ASSUMED The minimumum expected heart beat. Used to choose a sound.
+     * @brief HEARTBEAT_MINIMUM_ASSUMED The minimumum expected heart beat. Utilized to choose a sound.
      */
     const int HEARTBEAT_MINIMUM_ASSUMED = ConfigManager::instance().getInt("Controller.heartbeat_minimum_assumed");
 
     /**
-     * @brief HEARTBEAT_MAXIMUM_ASSUMED The maximum expected heart beat. Used to choose a sound.
+     * @brief HEARTBEAT_MAXIMUM_ASSUMED The maximum expected heart beat. Utilized to choose a sound.
      */
     const int HEARTBEAT_MAXIMUM_ASSUMED = ConfigManager::instance().getInt("Controller.heartbeat_maximum_assumed");
 
