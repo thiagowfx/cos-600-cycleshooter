@@ -29,7 +29,7 @@ class AbstractBicycle {
     /**
      * Factor to convert from the real speed (RPM) to the logical speed (units of the game).
      */
-    const double RPM_TO_LOGICAL_SPEED = 15.0;
+    const double RPM_TO_LOGICAL_SPEED = ConfigManager::instance().getDouble("Bicycle.rpm_to_logical_speed");
 
 protected:
     /**

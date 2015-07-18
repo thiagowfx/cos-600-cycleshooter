@@ -12,6 +12,9 @@ joystick_number = 0
 [SerialDevice]
 reading_retry_time_ms = 10
 
+[Bicycle]
+rpm_to_logical_speed = 15.0
+
 [RealBicycle]
 max_string_response = 16
 

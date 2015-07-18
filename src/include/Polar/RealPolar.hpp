@@ -84,11 +84,13 @@ class RealPolar : public AbstractPolar {
         // block until all written output has been sent from the device
         if (tcdrain(serialDescriptor) == -1) {
             LOG_FATAL("Polar: Error waiting for drain - %s (%d)", strerror(errno), errno);
+            exit(EXIT_FAILURE);
         }
 
         // reset the serial port back to the state in which we found it
         if (tcsetattr(serialDescriptor, TCSANOW, &originalTTYAttributes) == -1) {
             LOG_FATAL("Polar: Error restoring tty attributes - %s (%d)", strerror(errno), errno);
+            exit(EXIT_FAILURE);
         }
 
         // close the port
@@ -153,12 +155,12 @@ class RealPolar : public AbstractPolar {
     /**
      * Maximum number of characters that will be read until a '\r' is found.
      */
-    static const int MAX_STRING_RESPONSE = ConfigManager::instance().getInt("RealPolar.max_string_response");
+    const int MAX_STRING_RESPONSE = ConfigManager::instance().getInt("RealPolar.max_string_response");
 
     /**
      * Time to wait before trying to read from the serial port again if no chars available.
      */
-    static const int READING_RETRY_TIME_MS = ConfigManager::instance().getInt("SerialDevice.reading_retry_time_ms");
+    const int READING_RETRY_TIME_MS = ConfigManager::instance().getInt("SerialDevice.reading_retry_time_ms");
 
 public:
     /**
