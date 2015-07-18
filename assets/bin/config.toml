@@ -40,3 +40,11 @@ randomization_square_half_side_relative = 1.1
 randomization_friction_relative = 5.0
 mapped_heartbeat_minimum = 1.0
 mapped_heartbeat_maximum = 3.2
+
+[LogicManager]
+initial_player_ammo = 30
+initial_monster_health = 10
+mirror_percentage_h = 0.675
+mirror_percentage_v = 0.135
+camera_near_clip_distance = 5.0
+camera_far_clip_distance = 10000.0
