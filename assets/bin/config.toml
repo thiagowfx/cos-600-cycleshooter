@@ -1,0 +1,4 @@
+[AudioManager]
+soundpath = "../audio/sounds/"
+musicpath = "../audio/music/"
+music_volume_ratio = 0.33

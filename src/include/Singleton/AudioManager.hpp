@@ -7,6 +7,7 @@
 #include <SFML/Audio.hpp>
 #include <SFML/System/Mutex.hpp>
 
+#include "ConfigManager.hpp"
 #include "Logging.hpp"
 #include "Singleton.hpp"
 
@@ -61,18 +62,18 @@ class AudioManager {
     /**
      * @brief Location of the sounds. It must have a trailing slash.
      */
-    const std::string SOUND_PATH = "../audio/sounds/";
+    const std::string SOUND_PATH = ConfigManager::instance().getStr("AudioManager.soundpath");
 
     /**
      * @brief Location of the musics. It must have a trailing slash.
      */
-    const std::string MUSIC_PATH = "../audio/music/";
+    const std::string MUSIC_PATH = ConfigManager::instance().getStr("AudioManager.musicpath");
 
     /**
      * @brief How much is the music volume lower than the sound volume?
      * E.g. 0.5 means the music is 50% lower than the sound.
      */
-    const double MUSIC_VOLUME_RATIO = 0.33;
+    const double MUSIC_VOLUME_RATIO = ConfigManager::instance().getDouble("AudioManager.music_volume_ratio");
 
     /**
      * Maps all soundnames to their respective soundbuffers.

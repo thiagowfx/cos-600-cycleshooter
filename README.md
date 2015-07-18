@@ -36,7 +36,7 @@ By default, this will place binaries under `<project_build_root>/dest/bin` and u
 Additional custom targets:
 
 - `make run` - a shortcut to run the main executable of the project
-- `make udev` - to fix permissions of the serial devices used in the project
+- `make udev` - to fix permissions from the serial devices used in the project
 
 Dependencies
 ============
