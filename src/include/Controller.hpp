@@ -65,6 +65,16 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     const std::string POLAR_PORT = ConfigManager::instance().getStr("Release.polar_port");
 
     /**
+     * If true, use RealBicycle. Otherwise, use ConstantBicycle.
+     */
+    const bool USE_REAL_BICYCLE = ConfigManager::instance().getBool("Release.use_real_bicycle");
+
+    /**
+     * Which bicycle port to use for the RealBicycle device?
+     */
+    const std::string BICYCLE_PORT = ConfigManager::instance().getStr("Release.bicycle_port");
+
+    /**
      * @brief gameWon Determines whether the player won or lost the game should it end.
      */
     bool gameWon = false;

@@ -1,6 +1,8 @@
 [Release]
 use_real_polar = false
 polar_port = "/dev/ttyUSB0"
+use_real_bicycle = false
+bicycle_port = "/dev/ttyUSB1"
 
 [AudioManager]
 sound_path = "../audio/sounds/"

@@ -280,12 +280,20 @@ void Controller::setupTextures() {
 }
 
 void Controller::createGameElements() {
-    LOG("CreatING Game Elements");
+    LOG("Creating Game Elements");
 
     // attention: logic manager should be created before any threads that will update it
     logicManager = std::unique_ptr<LogicManager>(new LogicManager(this));
 
-    bicycle = std::unique_ptr<AbstractBicycle>(new ConstantBicycle(20));
+    if(USE_REAL_BICYCLE) {
+        LOG("Using the REAL BICYCLE class");
+        bicycle = std::unique_ptr<AbstractBicycle>(new RealBicycle(BICYCLE_PORT.c_str()));
+    }
+    else {
+        LOG("Using the ConstantBicycle class");
+        bicycle = std::unique_ptr<AbstractBicycler>(new ConstantBicycle(0));
+    }
+
     bicycleUpdater = std::unique_ptr<sf::Thread>(new sf::Thread([&](){
         while(!shutdown) {
             try { bicycle->updateSpeed(); }
@@ -297,7 +305,7 @@ void Controller::createGameElements() {
 
     if(USE_REAL_POLAR) {
         LOG("Using the REAL POLAR class");
-        polar = std::unique_ptr<AbstractPolar>(new RealPolar(POLAR_PORT));
+        polar = std::unique_ptr<AbstractPolar>(new RealPolar(POLAR_PORT.c_str()));
     }
     else {
         LOG("Using a polar test class");
