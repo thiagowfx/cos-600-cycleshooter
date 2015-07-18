@@ -185,6 +185,19 @@ void InputManager::setJoystickNumber(int number) {
     JOYSTICK_NUMBER = number;
 }
 
+bool InputManager::isJoystickLeftAxisPressed() const {
+    sf::Joystick::update();
+    return (sf::Joystick::getAxisPosition(JOYSTICK_NUMBER, sf::Joystick::X) != 0.0) || (sf::Joystick::getAxisPosition(JOYSTICK_NUMBER, sf::Joystick::Y) != 0.0);
+}
+
+bool InputManager::isKeyPressed(const std::vector<sf::Keyboard::Key> &keys) const {
+    for(sf::Keyboard::Key key: keys) {
+        if(sf::Keyboard::isKeyPressed(key))
+            return true;
+    }
+    return false;
+}
+
 void InputManager::reset() {
     removeAllKeys();
     removeAllKeysUnbuf();

@@ -108,6 +108,10 @@ public:
 
     void setJoystickNumber(int number);
 
+    bool isJoystickLeftAxisPressed() const;
+
+    bool isKeyPressed(const std::vector<sf::Keyboard::Key>& keys) const;
+
     void reset();
 
     /**

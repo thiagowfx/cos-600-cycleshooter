@@ -119,6 +119,11 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     const sf::Time POLAR_SLEEP_TIME = sf::milliseconds(500);
 
     /**
+     * @brief RANDOMIZE_CROSSHAIR_TIME Period between randomized crosshairs.
+     */
+    const sf::Time RANDOMIZE_CROSSHAIR_TIME = sf::milliseconds(100);
+
+    /**
      * @brief POLAR_PEAK_CHANGE Variation of the heart beat between sucessive increments/decrements.
      */
     const int POLAR_PEAK_CHANGE = 5;

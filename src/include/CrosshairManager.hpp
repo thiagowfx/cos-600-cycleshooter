@@ -31,17 +31,17 @@ class CrosshairManager {
     /**
      * Probability for the red crosshair to change its direction in a randomization.
      */
-    const double PROBABILITY_CHANGE_DIRECTION = 0.4;
+    const double PROBABILITY_CHANGE_DIRECTION = 0.50;
 
     /**
      * Randomization anti-sensibility. Less means a more aggressive randomization.
      */
-    const double RANDOMIZATION_SENSIBILITY_FRICTION = 2.0 * GREEN_CROSSHAIR_FRICTION;
+    const double RANDOMIZATION_SENSIBILITY_FRICTION = 5.0 * GREEN_CROSSHAIR_FRICTION;
 
     /**
      * Size of the square of randomization of the red crosshair around the green crosshair.
      */
-    const double RANDOMIZATION_SQUARE_SIDE = 3.5 * (1.0 / RANDOMIZATION_SENSIBILITY_FRICTION);
+    const double RANDOMIZATION_SQUARE_SIDE = 1.1 * (1.0 / GREEN_CROSSHAIR_FRICTION);
 
     /**
      * Return a random integer in the [-interval, +interval] range.
@@ -72,10 +72,9 @@ class CrosshairManager {
         // map heartRate to mappedHeartRate
         const int MINI = 60;
         const int MAXI = 150;
-        const double MAPPED_MINI = 1.0;
-        const double MAPPED_MAXI = 3.5;
+        const double MAPPED_MAXI = 3.2;
 
-        double mappedHeartRate = (((MAPPED_MAXI - MAPPED_MINI) * (heartRate - MINI)) / (MAXI - MINI)) + MAPPED_MINI;
+        double mappedHeartRate = (((MAPPED_MAXI - 1.0) * (heartRate - MINI)) / (MAXI - MINI)) + 1.0;
 
         return (p / GREEN_CROSSHAIR_FRICTION) * mappedHeartRate;
     }
@@ -92,7 +91,7 @@ public:
     /**
      * Move/scroll the crosshair by the amount specified. Optionally it may wrap around the screen too.
      */
-    void scrollVirtualCrosshair(const int& heartRate, const double& dx, const double& dy, bool randomizes = true, bool wraps = false) {
+    void scrollVirtualCrosshair(const int& heartRate, const double& dx, const double& dy, bool wraps = false) {
         double px = greenCrosshair->getScrollX() + fHeartRateSensibility(dx, heartRate);
         double py = greenCrosshair->getScrollY() + fHeartRateSensibility(dy, heartRate);
 
@@ -101,8 +100,7 @@ public:
         py = (py > 1.0) ? (wraps ? -1.0 : +1.0) : py, py = (py < -1.0) ? (wraps ? +1.0 : -1.0) : py;
 
         greenCrosshair->setScroll(px, py);
-
-        randomizes ? randomizeRedCrosshair() : redCrosshair->setScroll(px, py);
+        redCrosshair->setScroll(px, py);
     }
 
     /**
@@ -110,8 +108,7 @@ public:
      * The direction occasionally changes.
      */
     void randomizeRedCrosshair() {
-        static std::pair<double, double> direction = std::make_pair(1.0, 0.0);
-        // static std::pair<double, double> direction = getRandomDirection();
+        static std::pair<double, double> direction = getRandomDirection();
 
         double dx = direction.first / RANDOMIZATION_SENSIBILITY_FRICTION;
         double dy = direction.second / RANDOMIZATION_SENSIBILITY_FRICTION;
@@ -119,23 +116,23 @@ public:
         double px = redCrosshair->getScrollX() + dx;
         double py = redCrosshair->getScrollY() + dy;
 
-        LOG("(%d,%d) --> (%d,%d)", dx, dy, px, py);
-
+        // check if px is out-of-square
         if (fabs(px - greenCrosshair->getScrollX()) > RANDOMIZATION_SQUARE_SIDE) {
             px -= 2 * dx;
             direction.first = -direction.first;
         }
 
+        // check if py is out-of-square
         if (fabs(py - greenCrosshair->getScrollY()) > RANDOMIZATION_SQUARE_SIDE) {
             py -= 2 * dy;
             direction.second = -direction.second;
         }
 
         // handle change of direction
-//        double P = getRandomDouble();
-//        if (P >= (1 - PROBABILITY_CHANGE_DIRECTION)) {
-//            direction = getRandomDirection();
-//        }
+        double P = getRandomDouble();
+        if (P >= (1 - PROBABILITY_CHANGE_DIRECTION)) {
+            direction = getRandomDirection();
+        }
 
         redCrosshair->setScroll(px, py);
     }

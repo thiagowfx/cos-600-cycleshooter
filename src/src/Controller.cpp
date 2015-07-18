@@ -19,13 +19,13 @@ Controller::Controller(int argc, char *argv[]) {
     int width = -1, height = -1;
 
     auto usage = [&]() {
-        std::cout << "Usage: " << argv[0] << " [options]" << std::endl;
-        std::cout << "Options\n"
-                     "    -h:    show this help\n"
-                     "    -f:    set fullscreen (1 = ON, 0 = OFF, default = ON)\n"
-                     "    -r:    set resolution (e.g. 1366x768, default = maximum possible)\n";
-        std::cout << "Examples: " << argv[0] << " -r 1366x768" << std::endl;
-        std::cout << "          " << argv[0] << " -f 0 -r 800x600" << std::endl;
+        std::cout << "Usage: " << argv[0] << " [options]\n"
+                                             "Options\n"
+                                             "    -h:    show this help\n"
+                                             "    -f:    set fullscreen (1 = ON, 0 = OFF, default = ON)\n"
+                                             "    -r:    set resolution (e.g. 1366x768, default = maximum possible)\n";
+        std::cout << "Examples: " << argv[0] << " -r 1366x768\n"
+                                                "          " << argv[0] << " -f 0 -r 800x600" << std::endl;
     };
 
     int opt;
@@ -109,12 +109,36 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         static sf::Clock clockHeartbeat;
         static int next_heartbeat_waiting_time_ms = 0;
 
+        // (maybe) play a heartbeat sound
         if(clockHeartbeat.getElapsedTime().asMilliseconds() >= next_heartbeat_waiting_time_ms) {
             int heartRate = polar->getHeartRate();
             next_heartbeat_waiting_time_ms = (60.0 * 1000.0) / double(heartRate);
             AudioManager::instance().playHeartbeat(heartRate, HEARTBEAT_MINIMUM_ASSUMED, HEARTBEAT_MAXIMUM_ASSUMED);
-            crosshairManager->randomizeRedCrosshair();
             clockHeartbeat.restart();
+        }
+
+        // (maybe) randomize the crosshair
+        static sf::Clock clockRandomizeCrosshair;
+        if(clockRandomizeCrosshair.getElapsedTime() >= RANDOMIZE_CROSSHAIR_TIME) {
+
+            auto movementKeyPressed = []() -> bool {
+                static const std::vector<sf::Keyboard::Key> movementKeys = {
+                    sf::Keyboard::W,
+                    sf::Keyboard::A,
+                    sf::Keyboard::S,
+                    sf::Keyboard::D,
+                    sf::Keyboard::Left,
+                    sf::Keyboard::Right,
+                    sf::Keyboard::Up,
+                    sf::Keyboard::Down
+                };
+                return InputManager::instance().isKeyPressed(movementKeys) || InputManager::instance().isJoystickLeftAxisPressed();
+            };
+
+            if(!movementKeyPressed()) {
+                crosshairManager->randomizeRedCrosshair();
+            }
+            clockRandomizeCrosshair.restart();
         }
     }
 
@@ -139,12 +163,12 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
             sWindow->close();
             break;
 
-        // key pressed
+            // key pressed
         case sf::Event::KeyPressed:
             InputManager::instance().executeKeyAction(event.key.code, context);
             break;
 
-        // joystick button pressed
+            // joystick button pressed
         case sf::Event::JoystickButtonPressed:
             InputManager::instance().executeJoystickButtonAction(event.joystickButton.button, context);
             break;
@@ -350,22 +374,22 @@ void Controller::setupKeyMappings() {
      */
     InputManager::instance().addKeysUnbuf({sf::Keyboard::A,
                                            sf::Keyboard::Left}, CONTEXT_SHOOTER, [&]{
-        crosshairManager->scrollVirtualCrosshair(polar->getHeartRate(), -1.0, 0.0, !(sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)));
+        crosshairManager->scrollVirtualCrosshair(polar->getHeartRate(), -1.0, 0.0);
     });
 
     InputManager::instance().addKeysUnbuf({sf::Keyboard::D,
                                            sf::Keyboard::Right}, CONTEXT_SHOOTER, [&]{
-        crosshairManager->scrollVirtualCrosshair(polar->getHeartRate(), +1.0, 0.0, !(sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)));
+        crosshairManager->scrollVirtualCrosshair(polar->getHeartRate(), +1.0, 0.0);
     });
 
     InputManager::instance().addKeysUnbuf({sf::Keyboard::W,
                                            sf::Keyboard::Up}, CONTEXT_SHOOTER, [&]{
-        crosshairManager->scrollVirtualCrosshair(polar->getHeartRate(), 0.0, +1.0, !(sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)));
+        crosshairManager->scrollVirtualCrosshair(polar->getHeartRate(), 0.0, +1.0);
     });
 
     InputManager::instance().addKeysUnbuf({sf::Keyboard::S,
                                            sf::Keyboard::Down}, CONTEXT_SHOOTER, [&]{
-        crosshairManager->scrollVirtualCrosshair(polar->getHeartRate(), 0.0, -1.0, !(sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)));
+        crosshairManager->scrollVirtualCrosshair(polar->getHeartRate(), 0.0, -1.0);
     });
 
     InputManager::instance().addKey(sf::Keyboard::Space, CONTEXT_SHOOTER, [&]{
@@ -393,11 +417,11 @@ void Controller::setupKeyMappings() {
 
     // refresh all textures
     InputManager::instance().addKey(sf::Keyboard::F5, [&] {
-       Ogre::TextureManager::getSingleton().reloadAll();
+        Ogre::TextureManager::getSingleton().reloadAll();
     });
 
     InputManager::instance().addKey(sf::Keyboard::M, [&] {
-       AudioManager::instance().toggleMute();
+        AudioManager::instance().toggleMute();
     });
 
     // take a screenshot
