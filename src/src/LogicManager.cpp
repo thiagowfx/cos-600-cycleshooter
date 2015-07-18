@@ -31,8 +31,6 @@ void LogicManager::update(const Ogre::FrameEvent &evt) {
 }
 
 void LogicManager::shoot() {
-    std::cout << "--> LogicManager: shoot <--" << std::endl;
-
     if(decrementPlayerAmmo()) {
         AudioManager::instance().playRandomShoot();
 
@@ -59,7 +57,7 @@ void LogicManager::shoot() {
         monsterNode->flipVisibility();
     }
     else {
-        // no more ammo
+        LOG("Tried to shot, but no more ammo");
         AudioManager::instance().playSound(SOUND_DRY_SHOOT);
     }
 }
@@ -73,7 +71,7 @@ int LogicManager::getMonsterHealth() const {
 }
 
 void LogicManager::decrementMonsterHealth(int quantity) {
-    Ogre::LogManager::getSingleton().logMessage("--> LogicManager: Decrement Monster Health <--");
+    LOG("Decrement monster health by %d", quantity);
 
     monsterHealth = std::max(0, monsterHealth - quantity);
 
@@ -98,7 +96,7 @@ void LogicManager::updateMonsterPosition(const Ogre::Real &time) {
     // distance = speed x time (Physics I, yay!)
     double distance = monsterSpeed * time;
 
-    // upstream: http://stackoverflow.com/questions/4727079/getting-object-direction-in-ogre
+    // quaternions! upstream: http://stackoverflow.com/questions/4727079/getting-object-direction-in-ogre
     Ogre::Vector3 monsterOrientation = monsterNode->getOrientation() * Ogre::Vector3::UNIT_Z;
 
     monsterNode->translate(distance * monsterOrientation, Ogre::SceneNode::TS_LOCAL);
@@ -113,14 +111,11 @@ bool LogicManager::checkPlayerMonsterCollision() {
 }
 
 void LogicManager::incrementPlayerAmmo(int quantity) {
-    Ogre::LogManager::getSingleton().logMessage("--> LogicManager: Increment Player Ammo <--");
-
+    LOG("Increment player ammo by %d", quantity);
     playerAmmo += quantity;
 }
 
 bool LogicManager::decrementPlayerAmmo(int quantity) {
-    Ogre::LogManager::getSingleton().logMessage("--> LogicManager: Decrement Player Ammo <--");
-
     if(playerAmmo - quantity >= 0) {
         playerAmmo -= quantity;
         return true;
@@ -131,8 +126,6 @@ bool LogicManager::decrementPlayerAmmo(int quantity) {
 }
 
 void LogicManager::go() {
-    Ogre::LogManager::getSingleton().logMessage("--> LogicManager: go <--");
-
     createCameras();
     createSceneNodes();
     createViewports();
@@ -140,7 +133,7 @@ void LogicManager::go() {
 }
 
 void LogicManager::createCameras() {
-    Ogre::LogManager::getSingleton().logMessage("--> LogicManager: Creating Cameras <--");
+    LOG("Creating cameras");
 
     // create cameras
     frontCamera = controller->getSceneManager()->createCamera("frontCamera");
@@ -154,7 +147,7 @@ void LogicManager::createCameras() {
 }
 
 void LogicManager::createSceneNodes() {
-    Ogre::LogManager::getSingleton().logMessage("--> LogicManager: Creating Scene Nodes <--");
+    LOG("Creating SceneNodes");
 
     // create scene nodes
     parentPlayerNode = controller->getSceneManager()->getRootSceneNode()->createChildSceneNode("parentPlayerNode");
@@ -168,12 +161,14 @@ void LogicManager::createSceneNodes() {
 }
 
 void LogicManager::createViewports() {
-    Ogre::LogManager::getSingleton().logMessage("--> LogicManager: Creating Viewports <--");
+    LOG("Creating Viewports");
 
     viewportFull = controller->getWindow()->addViewport(frontCamera, 0);
 }
 
 void LogicManager::createRtt() {
+    LOG("Creating Rtt");
+
     rttTexture = Ogre::TextureManager::getSingleton().createManual(
                 "rttTexture",
                 Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
