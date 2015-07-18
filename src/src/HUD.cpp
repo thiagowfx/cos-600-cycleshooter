@@ -3,14 +3,14 @@
 namespace Cycleshooter {
 
 void HUD::createTrayManager() {
-    Ogre::LogManager::getSingleton().logMessage("--> HUD: Creating Tray Manager <--");
+    LOG("HUD: Creating Tray Manager");
 
     trayManager = std::unique_ptr<OgreBites::SdkTrayManager>(new OgreBites::SdkTrayManager("trayManager", controller->getWindow()));
     trayManager->hideCursor();
 }
 
 void HUD::createTrayWidgets() {
-    Ogre::LogManager::getSingleton().logMessage("--> HUD: Creating Tray Widgets <--");
+    LOG("HUD: Creating Tray Widgets");
 
     // context widgets
     trayManager->createLabel(CONTEXT_TL, "contextLabel", "", 150);
@@ -40,13 +40,13 @@ void HUD::update(const Ogre::FrameEvent& evt) {
     if(controller->getDebug()) {
         Ogre::Vector3 realCoord = controller->getLogicManager()->getPlayerNode()->getPosition();
         std::pair<int,int> textCoord = controller->getTerrainManager()->getCollisionCoordinates(realCoord);
-        //std::cout <<Ogre::StringConverter::toString(realCoord) <<std::endl;
-        //std::cout <<realCoord <<std::endl;
+        // TODO: wtf? \/
         controller->incrementPlayerAmmo();
-        dynamic_cast<OgreBites::ParamsPanel*>(trayManager->getWidget("debugPanel"))->setParamValue(0, Ogre::StringConverter::toString(controller->getTerrainManager()->getTerrainAt(realCoord).first));
-        dynamic_cast<OgreBites::ParamsPanel*>(trayManager->getWidget("debugPanel"))->setParamValue(1, Ogre::StringConverter::toString(realCoord));
-        dynamic_cast<OgreBites::ParamsPanel*>(trayManager->getWidget("debugPanel"))->setParamValue(2, Ogre::StringConverter::toString(textCoord.first));
-        dynamic_cast<OgreBites::ParamsPanel*>(trayManager->getWidget("debugPanel"))->setParamValue(3, Ogre::StringConverter::toString(textCoord.second));
+        auto debugPanel = dynamic_cast<OgreBites::ParamsPanel*>(trayManager->getWidget("debugPanel"));
+        debugPanel->setParamValue(0, Ogre::StringConverter::toString(controller->getTerrainManager()->getTerrainAt(realCoord).first));
+        debugPanel->setParamValue(1, Ogre::StringConverter::toString(realCoord));
+        debugPanel->setParamValue(2, Ogre::StringConverter::toString(textCoord.first));
+        debugPanel->setParamValue(3, Ogre::StringConverter::toString(textCoord.second));
     }
 }
 

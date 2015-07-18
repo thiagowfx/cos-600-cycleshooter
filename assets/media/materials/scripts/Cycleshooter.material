@@ -7,7 +7,7 @@ material Cycleshooter/Base
             lighting off
             scene_blend alpha_blend
             depth_check off
-            
+
             texture_unit
             {
                 tex_address_mode clamp
