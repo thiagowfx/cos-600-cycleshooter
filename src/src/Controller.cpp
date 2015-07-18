@@ -295,7 +295,15 @@ void Controller::createGameElements() {
     }));
     bicycleUpdater->launch();
 
-    polar = std::unique_ptr<AbstractPolar>(new ConstantPolar(HEARTBEAT_MINIMUM_ASSUMED));
+    if(USE_REAL_POLAR) {
+        LOG("Using the REAL POLAR class");
+        polar = std::unique_ptr<AbstractPolar>(new RealPolar(POLAR_PORT));
+    }
+    else {
+        LOG("Using a polar test class");
+        polar = std::unique_ptr<AbstractPolar>(new ConstantPolar((HEARTBEAT_MINIMUM_ASSUMED + HEARTBEAT_MAXIMUM_ASSUMED) / 2));
+    }
+
     polarUpdater = std::unique_ptr<sf::Thread>(new sf::Thread([&](){
         while(!shutdown) {
             try { polar->updateHeartRate(); }

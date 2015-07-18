@@ -62,12 +62,12 @@ class AudioManager {
     /**
      * @brief Location of the sounds. It must have a trailing slash.
      */
-    const std::string SOUND_PATH = ConfigManager::instance().getStr("AudioManager.soundpath");
+    const std::string SOUND_PATH = ConfigManager::instance().getStr("AudioManager.sound_path");
 
     /**
      * @brief Location of the musics. It must have a trailing slash.
      */
-    const std::string MUSIC_PATH = ConfigManager::instance().getStr("AudioManager.musicpath");
+    const std::string MUSIC_PATH = ConfigManager::instance().getStr("AudioManager.music_path");
 
     /**
      * @brief How much is the music volume lower than the sound volume?

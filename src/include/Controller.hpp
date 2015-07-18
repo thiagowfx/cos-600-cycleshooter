@@ -55,6 +55,16 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     bool shutdown = false;
 
     /**
+     * If true, use RealPolar. Otherwise, use a test Polar (random or constant one).
+     */
+    const bool USE_REAL_POLAR = ConfigManager::instance().getBool("Release.use_real_polar");
+
+    /**
+     * Which polar port to use for the RealPolar device?
+     */
+    const std::string POLAR_PORT = ConfigManager::instance().getStr("Release.polar_port");
+
+    /**
      * @brief gameWon Determines whether the player won or lost the game should it end.
      */
     bool gameWon = false;
