@@ -229,8 +229,6 @@ void Controller::go() {
     createCrosshair();
     createHud();
 
-    TextManager::instance();
-
     // setups
     InputManager::instance().updateJoystickNumber();
     setupRunnerMode();
@@ -520,7 +518,8 @@ void Controller::doGameEnd() {
     endViewport->setBackgroundColour(gameWon ? Ogre::ColourValue::Green : Ogre::ColourValue::Red);
 
     // render final game image
-    Ogre::OverlayManager::getSingleton().getByName(gameWon ? "Cycleshooter/GameVictory" : "Cycleshooter/GameOver")->show();
+    // Ogre::OverlayManager::getSingleton().getByName(gameWon ? "Cycleshooter/GameVictory" : "Cycleshooter/GameOver")->show();
+    TextManager::instance().addTextBox("GameCredits", "ThiagoPerrotta", 0, 0, 100, 100, Ogre::ColourValue::Red);
     oWindow->update();
 
     Soundname endSound = gameWon ? SOUND_GAME_VICTORY : SOUND_GAME_LOSS;

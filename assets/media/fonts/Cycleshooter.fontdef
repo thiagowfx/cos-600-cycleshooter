@@ -1,0 +1,7 @@
+OpenSansRegular
+{
+    type truetype
+    source OpenSansRegular.tff
+    size 16
+    resolution 96
+}
