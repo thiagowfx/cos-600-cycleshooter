@@ -145,7 +145,6 @@ material Cycleshooter/Ground
 {
 	technique
 	{
-		ambient 0.12 0.42 0.53
 		pass
 		{
 			ambient 0.32 0.02 0.53
@@ -170,4 +169,60 @@ material Cycleshooter/RustySteel
 			}
 		}
 	}
+}
+
+material Cycleshooter/Countdown0 : Cycleshooter/Base
+{
+    technique
+    {
+        pass
+        {
+            texture_unit
+            {
+                texture countdown0.png
+            }
+        }
+    }
+}
+
+material Cycleshooter/Countdown1 : Cycleshooter/Base
+{
+    technique
+    {
+        pass
+        {
+            texture_unit
+            {
+                texture countdown1.png
+            }
+        }
+    }
+}
+
+material Cycleshooter/Countdown2 : Cycleshooter/Base
+{
+    technique
+    {
+        pass
+        {
+            texture_unit
+            {
+                texture countdown2.png
+            }
+        }
+    }
+}
+
+material Cycleshooter/Countdown3 : Cycleshooter/Base
+{
+    technique
+    {
+        pass
+        {
+            texture_unit
+            {
+                texture countdown3.png
+            }
+        }
+    }
 }

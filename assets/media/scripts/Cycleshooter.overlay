@@ -71,3 +71,35 @@ Cycleshooter/GameVictory
         material Cycleshooter/GameVictory
     }
 }
+
+Cycleshooter/Countdown0
+{
+    container Panel(Cycleshooter/Countdown0Panel) : Cycleshooter/BackgroundPanel
+    {
+        material Cycleshooter/Countdown0
+    }
+}
+
+Cycleshooter/Countdown1
+{
+    container Panel(Cycleshooter/Countdown1Panel) : Cycleshooter/BackgroundPanel
+    {
+        material Cycleshooter/Countdown1
+    }
+}
+
+Cycleshooter/Countdown2
+{
+    container Panel(Cycleshooter/Countdown2Panel) : Cycleshooter/BackgroundPanel
+    {
+        material Cycleshooter/Countdown2
+    }
+}
+
+Cycleshooter/Countdown3
+{
+    container Panel(Cycleshooter/Countdown3Panel) : Cycleshooter/BackgroundPanel
+    {
+        material Cycleshooter/Countdown3
+    }
+}

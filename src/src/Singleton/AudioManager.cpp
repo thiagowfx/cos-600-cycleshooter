@@ -101,6 +101,8 @@ void AudioManager::populateSounds() {
     LOAD_TEMPLATE(SOUND_HEARTBEAT04, "heartbeat/heartbeat04.wav");
     LOAD_TEMPLATE(SOUND_HEARTBEAT05, "heartbeat/heartbeat05.wav");
 
+    LOAD_TEMPLATE(SOUND_COUNTDOWN, "events/countdown_beep.wav");
+
 #undef LOAD_TEMPLATE
 }
 

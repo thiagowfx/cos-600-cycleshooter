@@ -226,6 +226,10 @@ void Controller::go() {
     setupResources();
     setupTextures();
 
+    if(ConfigManager::instance().getBool("Controller.countdown_enabled")) {
+        startCountdown();
+    }
+
     // initialize our objects and our game overall
     createGameElements();
     createCrosshair();
@@ -618,6 +622,31 @@ void Controller::doGameEnd() {
     ofs << "===== SESSION ENDS: " << std::chrono::system_clock::now() << std::endl << std::endl;
 
     sf::sleep(AudioManager::instance().getSoundDuration(endSound));
+}
+
+void Controller::startCountdown() {
+    LOG("Starting countdown");
+
+    oWindow->addViewport(oSceneManager->createCamera("countdownCamera"), 0);
+    int COUNTDOWN_TIME_MS = ConfigManager::instance().getInt("Controller.countdown_time_ms");
+
+    std::vector<Ogre::String> countdowns = {
+        "Cycleshooter/Countdown3",
+        "Cycleshooter/Countdown2",
+        "Cycleshooter/Countdown1",
+        "Cycleshooter/Countdown0"
+    };
+
+    for (auto countdown : countdowns) {
+        Ogre::OverlayManager::getSingleton().getByName(countdown)->show();
+        oWindow->update();
+        AudioManager::instance().playSound(SOUND_COUNTDOWN);
+        sf::sleep(sf::milliseconds(COUNTDOWN_TIME_MS));
+        Ogre::OverlayManager::getSingleton().getByName(countdown)->hide();
+    }
+
+    oWindow->removeViewport(0);
+    oSceneManager->destroyCamera("countdownCamera");
 }
 
 void Controller::createRoot() {

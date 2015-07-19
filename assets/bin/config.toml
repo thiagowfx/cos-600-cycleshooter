@@ -38,6 +38,8 @@ bicycle_friction_change = 25
 bicycle_speed_change = 5.0
 application_name = "Cycleshooter"
 statistics_file = "stats.txt"
+countdown_time_ms = 1000
+countdown_enabled = true
 
 [CrosshairManager]
 green_crosshair_friction = 25.0

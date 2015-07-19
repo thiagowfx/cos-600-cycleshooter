@@ -37,6 +37,9 @@ enum Soundname {
     SOUND_HEARTBEAT03,
     SOUND_HEARTBEAT04,
     SOUND_HEARTBEAT05,
+
+    /* countdown ("pi") */
+    SOUND_COUNTDOWN,
 };
 
 /**
