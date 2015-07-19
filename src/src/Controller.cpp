@@ -218,9 +218,6 @@ void Controller::waitThreads() const {
 }
 
 void Controller::go() {
-    // randomness
-    srand(time(NULL));
-
     // initialize core OGRE elements
     createSFMLWindow();
     createRoot();

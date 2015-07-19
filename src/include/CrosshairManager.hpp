@@ -5,6 +5,7 @@
 #include <OgreOverlayManager.h>
 
 #include "ConfigManager.hpp"
+#include "Randomness.hpp"
 
 namespace Cycleshooter {
 
@@ -49,24 +50,9 @@ class CrosshairManager {
     const double MAPPED_HEARTBEAT_MINIMUM = ConfigManager::instance().getDouble("CrosshairManager.mapped_heartbeat_minimum");
     const double MAPPED_HEARTBEAT_MAXIMUM = ConfigManager::instance().getDouble("CrosshairManager.mapped_heartbeat_maximum");
 
-    /**
-     * Return a random integer in the [-interval, +interval] range.
-     */
-    inline int getRandomIntegerOnRange(const int& interval) const {
-        return (rand() % (2 * interval + 1)) - interval;
-    }
-
-    inline double getRandomDouble() const {
-        return ((double)rand() / (double)RAND_MAX);
-    }
-
-    inline int getRandomSignal() const {
-        return (rand() % 2) ? (+1) : (-1);
-    }
-
     inline std::pair<double, double> getRandomDirection() const {
-        double a = getRandomSignal() * getRandomDouble();
-        double b = getRandomSignal() * getRandomDouble();
+        double a = Randomness::instance().getRandomSignal() * Randomness::instance().getRandomDouble();
+        double b = Randomness::instance().getRandomSignal() * Randomness::instance().getRandomDouble();
         double to_norm = sqrt(a * a + b * b);
         return std::make_pair(a / to_norm, b / to_norm);
     }
@@ -130,7 +116,7 @@ public:
         }
 
         // handle change of direction
-        double P = getRandomDouble();
+        double P = Randomness::instance().getRandomDouble();
         if (P >= (1 - PROBABILITY_CHANGE_DIRECTION)) {
             direction = getRandomDirection();
         }
