@@ -67,13 +67,10 @@ public:
      * Print the statistics about this session.
      */
     void printStatistics(std::ostream& os = std::cout) const {
-        os << "==========================\n"
-              "|    Bicycle Statistics  |\n"
-              "==========================\n"
+        os << "* Bicycle Statistics\n"
               "- # of records acquired: "<< stats.count << std::endl <<
               "- Greatest speed: " << stats.greatest << std::endl <<
-              "- Mean: " << (static_cast<double>(stats.sum) / stats.count) << std::endl <<
-              "--------------------------" << std::endl;
+              "- Mean: " << (static_cast<double>(stats.sum) / stats.count) << std::endl;
     }
 
     /**

@@ -70,14 +70,11 @@ public:
      * Print statistics of this session.
      */
     void printStatistics(std::ostream& os = std::cout) const {
-        os << "==========================\n"
-              "|  Hearbeats Statistics  |\n"
-              "==========================\n"
+        os << "* Hearbeat Statistics\n"
               "- # of records acquired: " << stats.count << std::endl <<
               "- Lowest Heartbeat: " << stats.lowest << std::endl <<
               "- Greatest Heartbeat: " << stats.greatest << std::endl <<
-              "- Mean: " << static_cast<double>(stats.sum) / stats.count << std::endl <<
-              "--------------------------" << std::endl;
+              "- Mean: " << static_cast<double>(stats.sum) / stats.count << std::endl;
     }
 
     /**

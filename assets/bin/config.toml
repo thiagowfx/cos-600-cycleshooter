@@ -37,6 +37,7 @@ polar_peak_change = 5
 bicycle_friction_change = 25
 bicycle_speed_change = 10.0
 application_name = "Cycleshooter"
+statistics_file = "stats.txt"
 
 [CrosshairManager]
 green_crosshair_friction = 25.0

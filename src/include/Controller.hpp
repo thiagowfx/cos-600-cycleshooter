@@ -32,6 +32,16 @@
 #include "CollisionHandler.hpp"
 #include "TerrainManager.hpp"
 
+template<typename Clock, typename Duration>
+std::ostream &operator<<(std::ostream &stream,
+                         const std::chrono::time_point<Clock, Duration> &time_point) {
+    const time_t time = Clock::to_time_t(time_point);
+    char buffer[26];
+    ctime_r(&time, buffer);
+    buffer[24] = '\0';  // Removes the newline that is added
+    return stream << buffer;
+}
+
 namespace Cycleshooter {
 
 class HUD;

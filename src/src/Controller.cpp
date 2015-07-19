@@ -291,7 +291,7 @@ void Controller::createGameElements() {
     }
     else {
         LOG("Using the ConstantBicycle class");
-        bicycle = std::unique_ptr<AbstractBicycle>(new ConstantBicycle(0));
+        bicycle = std::unique_ptr<AbstractBicycle>(new ConstantBicycle(1));
     }
 
     bicycleUpdater = std::unique_ptr<sf::Thread>(new sf::Thread([&](){
@@ -524,10 +524,17 @@ void Controller::doGameEnd() {
     Soundname endSound = gameWon ? SOUND_GAME_VICTORY : SOUND_GAME_LOSS;
     AudioManager::instance().playSound(endSound);
 
-    // TODO: print this on the screen instead of std::cout
-    polar->printStatistics();
-    bicycle->printStatistics();
-    std::cout << "Total game time: " << totalGameTime << std::endl;
+    std::ofstream ofs(ConfigManager::instance().getStr("Controller.statistics_file"), std::ios_base::app | std::ios_base::out);
+
+    ofs << "===== SESSION STARTS: " << gameStartClock << std::endl;
+
+    polar->printStatistics(ofs);
+    bicycle->printStatistics(ofs);
+
+    ofs << "* Other Statistics\n"
+           "- Total game time: " << totalGameTime << std::endl;
+
+    ofs << "===== SESSION ENDS: " << std::chrono::system_clock::now() << std::endl << std::endl;
 
     sf::sleep(AudioManager::instance().getSoundDuration(endSound));
 }
