@@ -488,6 +488,8 @@ void Controller::gameMainLoop() {
 }
 
 void Controller::doGameEnd() {
+    std::string totalGameTime = getElapsedTimeAsString();
+
     if(gameWon) {
         LOG("GAME VICTORY");
     }
@@ -527,6 +529,7 @@ void Controller::doGameEnd() {
     // TODO: print this on the screen instead of std::cout
     polar->printStatistics();
     bicycle->printStatistics();
+    std::cout << "Total game time: " << totalGameTime << std::endl;
 
     sf::sleep(AudioManager::instance().getSoundDuration(endSound));
 }
