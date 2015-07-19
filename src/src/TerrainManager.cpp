@@ -62,7 +62,7 @@ void TerrainManager::createTerrain(){
     sceneManager->getRootSceneNode()->createChildSceneNode()->attachObject(terrainEntity);
     terrainEntity->setCastShadows(false);
     //Defines which texture will be used. 
-    terrainEntity->setMaterialName("Examples/Ground");
+    terrainEntity->setMaterialName("Cycleshooter/Ground");
     generateBullets(3);
     renderBullets();
 }
