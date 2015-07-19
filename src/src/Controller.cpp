@@ -363,6 +363,27 @@ void Controller::createGameElements() {
     Ogre::SceneNode* monsterNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("monsterNode", Ogre::Vector3(0.0, 0.0, +200.0));
     monsterNode->attachObject(monsterEntity);
 
+    // Setting Trails to the sword animation
+    Ogre::NameValuePairList params;
+    params["numberOfChains"] = "2";
+    params["maxElements"] = "80";
+
+    Ogre::RibbonTrail* mSwordTrail = (Ogre::RibbonTrail*)getSceneManager()->createMovableObject("RibbonTrail", &params);
+    mSwordTrail->setMaterialName("Cycleshooter/LightRibbonTrail");
+    mSwordTrail->setTrailLength(20);
+    mSwordTrail->setVisible(true);
+    getSceneManager()->getRootSceneNode()->attachObject(mSwordTrail);
+
+    for (int i = 0; i < 2; i++){
+        mSwordTrail->setInitialColour(i, 1, 0.8, 0);
+        mSwordTrail->setColourChange(i, 0.75, 1.25, 1.25, 1.25);
+        mSwordTrail->setWidthChange(i, 1);
+        mSwordTrail->setInitialWidth(i, 0.5);
+    }
+
+    mSwordTrail->addNode(sword3->getParentNode());
+    mSwordTrail->addNode(sword4->getParentNode());
+
     getSceneManager()->setAmbientLight(Ogre::ColourValue(0.6, 0.6, 0.6));
     getSceneManager()->createLight("mainLight")->setPosition(20.0, 80.0, 50.0);
     getSceneManager()->createLight("auxLight1")->setPosition(+100.0, +100.0, +100.0);
