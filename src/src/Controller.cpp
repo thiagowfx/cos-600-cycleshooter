@@ -103,6 +103,9 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         return false;
     }
 
+    baseMonsterAnimation->addTime(evt.timeSinceLastFrame);
+    topMonsterAnimation->addTime(evt.timeSinceLastFrame);
+
     // update game logic
     logicManager->update(evt);
 
@@ -326,8 +329,21 @@ void Controller::createGameElements() {
     terrainManager->createTerrain();
     //terrainManager->sampleCollisionTransformation();
 
-    Ogre::Entity* monsterEntity = getSceneManager()->createEntity("monsterEntity", "ogrehead.mesh");
-    Ogre::SceneNode* monsterNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("monsterNode", Ogre::Vector3(0.0, 0.0, +300.0));
+    // upstream documentation: http://www.ogre3d.org/tikiwiki/Sinbad+Model
+    Ogre::Entity* monsterEntity = getSceneManager()->createEntity("monsterEntity", "Sinbad.mesh");
+    monsterEntity->getSkeleton()->setBlendMode(Ogre::ANIMBLEND_CUMULATIVE);
+
+    // Get the two halves of the idle animation.
+    baseMonsterAnimation = monsterEntity->getAnimationState("RunBase");
+    topMonsterAnimation = monsterEntity->getAnimationState("RunTop");
+
+    // Enable both of them and set them to loop.
+    baseMonsterAnimation->setLoop(true);
+    topMonsterAnimation->setLoop(true);
+    baseMonsterAnimation->setEnabled(true);
+    topMonsterAnimation->setEnabled(true);
+
+    Ogre::SceneNode* monsterNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("monsterNode", Ogre::Vector3(0.0, 0.0, +200.0));
     monsterNode->attachObject(monsterEntity);
 
     getSceneManager()->setAmbientLight(Ogre::ColourValue(0.6, 0.6, 0.6));

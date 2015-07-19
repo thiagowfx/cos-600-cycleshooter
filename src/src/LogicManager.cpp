@@ -90,7 +90,7 @@ void LogicManager::updatePlayerPosition(const Ogre::Real &time) {
 }
 
 void LogicManager::updateMonsterPosition(const Ogre::Real &time) {
-    auto monsterSpeed = 200.0;
+    double monsterSpeed = 100.0;
     Ogre::SceneNode* monsterNode = controller->getSceneManager()->getSceneNode("monsterNode");
 
     // distance = speed x time (Physics I, yay!)

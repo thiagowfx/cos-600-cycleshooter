@@ -95,6 +95,9 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
      */
     void waitThreads() const;
 
+    Ogre::AnimationState* baseMonsterAnimation;
+    Ogre::AnimationState* topMonsterAnimation;
+
     /**
      * @brief oRoot Ogre::Root
      */
