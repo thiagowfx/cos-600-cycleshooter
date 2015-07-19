@@ -229,8 +229,6 @@ void Controller::go() {
     createCrosshair();
     createHud();
 
-    TextManager::instance();
-
     // setups
     InputManager::instance().updateJoystickNumber();
     setupRunnerMode();
