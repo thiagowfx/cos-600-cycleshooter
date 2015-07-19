@@ -37,6 +37,7 @@ void LogicManager::shoot() {
         Ogre::SceneNode* monsterNode = controller->getSceneManager()->getSceneNode("monsterNode");
 
         monsterNode->flipVisibility();
+        controller->getSceneManager()->setSkyDomeEnabled(false);
         controller->getSceneManager()->getRootSceneNode()->flipVisibility();
         bool debug = controller->getDebug(), setDebugOff();
 
@@ -54,6 +55,7 @@ void LogicManager::shoot() {
 
         if(debug) setDebugOn();
         controller->getSceneManager()->getRootSceneNode()->flipVisibility();
+        controller->getSceneManager()->setSkyDomeEnabled(true);
         monsterNode->flipVisibility();
     }
     else {
