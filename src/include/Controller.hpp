@@ -1,6 +1,7 @@
 #ifndef _CONTROLLER_HPP_
 #define _CONTROLLER_HPP_
 
+#include <chrono>
 #include <cstdlib>
 #include <getopt.h>
 
@@ -268,6 +269,11 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     std::unique_ptr<HUD> hud;
 
     /**
+     * To mark the time the game started.
+     */
+    std::chrono::high_resolution_clock::time_point gameStartClock = std::chrono::high_resolution_clock::now();
+
+    /**
      * @brief frameRenderingQueued Overriden from Ogre::FrameListener.
      * This should be used for performancing purposes (efficiently use CPU time while GPU is working elsewhere).
      */
@@ -334,6 +340,11 @@ public:
     CrosshairManager* getCrosshairManager() const;
     AbstractBicycle* getBicycle() const;
     AbstractPolar* getPolar() const;
+
+    /**
+     * Return the elapsed time in MM:SS form, as a string.
+     */
+    std::string getElapsedTimeAsString() const;
 };
 
 }

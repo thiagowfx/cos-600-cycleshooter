@@ -476,6 +476,8 @@ AbstractPolar* Controller::getPolar() const {
 void Controller::gameMainLoop() {
     LOG("Entering the Game Main Loop");
 
+    gameStartClock = std::chrono::high_resolution_clock::now();
+
     while(!shutdown) {
         // update rendering
         oRoot->renderOneFrame();
@@ -609,6 +611,17 @@ void Controller::setupDebugOff() {
 
 void Controller::toggleDebug() {
     debug ? setupDebugOff() : setupDebugOn();
+}
+
+std::string Controller::getElapsedTimeAsString() const {
+    auto duration = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::high_resolution_clock::now() - gameStartClock).count();
+
+    int min = static_cast<int>(duration) / 60;
+    int sec = static_cast<int>(duration) % 60;
+
+    std::stringstream ss;
+    ss << std::setfill('0') << std::setw(2) << min << ":" << std::setfill('0') << std::setw(2) << sec;
+    return ss.str();
 }
 
 AbstractBicycle* Controller::getBicycle() const {

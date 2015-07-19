@@ -18,11 +18,12 @@ void HUD::createTrayWidgets() {
 
     // information widgets
     int INFO_SIZE = 140;
-    trayManager->createLabel(INFO_WIDGETS_TL, "polarLabel", "HR: ", INFO_SIZE );
-    trayManager->createLabel(INFO_WIDGETS_TL, "speedLabel", "Speed: ", INFO_SIZE );
-    trayManager->createLabel(INFO_WIDGETS_TL, "loadLabel", "Speed: ", INFO_SIZE );
-    trayManager->createLabel(INFO_WIDGETS_TL, "ammoLabel", "Ammo: ", INFO_SIZE );
-    trayManager->createLabel(INFO_WIDGETS_TL, "monsterLabel", "Monster: ", INFO_SIZE );
+    trayManager->createLabel(INFO_WIDGETS_TL, "polarLabel", "HR: ", INFO_SIZE);
+    trayManager->createLabel(INFO_WIDGETS_TL, "speedLabel", "Speed: ", INFO_SIZE);
+    trayManager->createLabel(INFO_WIDGETS_TL, "loadLabel", "Speed: ", INFO_SIZE);
+    trayManager->createLabel(INFO_WIDGETS_TL, "ammoLabel", "Ammo: ", INFO_SIZE);
+    trayManager->createLabel(INFO_WIDGETS_TL, "monsterLabel", "Monster: ", INFO_SIZE);
+    trayManager->createLabel(CLOCK_TL, "clockLabel", "Clock: ", INFO_SIZE);
 }
 
 void HUD::update(const Ogre::FrameEvent& evt) {
@@ -35,6 +36,7 @@ void HUD::update(const Ogre::FrameEvent& evt) {
     dynamic_cast<OgreBites::Label*>(trayManager->getWidget("loadLabel"))->setCaption("Load: " + Ogre::StringConverter::toString(controller->getBicycle()->getFriction()));
     dynamic_cast<OgreBites::Label*>(trayManager->getWidget("ammoLabel"))->setCaption("Ammo: " + Ogre::StringConverter::toString(controller->getLogicManager()->getPlayerAmmo()));
     dynamic_cast<OgreBites::Label*>(trayManager->getWidget("monsterLabel"))->setCaption("Monster: " + Ogre::StringConverter::toString(controller->getLogicManager()->getMonsterHealth()));
+    dynamic_cast<OgreBites::Label*>(trayManager->getWidget("clockLabel"))->setCaption("Clock: " + controller->getElapsedTimeAsString());
 
     // widgets update on debug mode only
     if(controller->getDebug()) {
