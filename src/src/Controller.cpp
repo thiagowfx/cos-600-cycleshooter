@@ -103,8 +103,10 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         return false;
     }
 
+    // monster animations
     baseMonsterAnimation->addTime(evt.timeSinceLastFrame);
     topMonsterAnimation->addTime(evt.timeSinceLastFrame);
+    swordsMonsterAnimation->addTime(evt.timeSinceLastFrame / 12.0);
 
     // update game logic
     logicManager->update(evt);
@@ -336,20 +338,27 @@ void Controller::createGameElements() {
     // get the two halves of the run animation.
     baseMonsterAnimation = monsterEntity->getAnimationState("RunBase");
     topMonsterAnimation = monsterEntity->getAnimationState("RunTop");
+    swordsMonsterAnimation = monsterEntity->getAnimationState("DrawSwords");
 
     // enable both of them and set them to loop.
     baseMonsterAnimation->setLoop(true);
     topMonsterAnimation->setLoop(true);
+    swordsMonsterAnimation->setLoop(true);
+
     baseMonsterAnimation->setEnabled(true);
     topMonsterAnimation->setEnabled(true);
+    swordsMonsterAnimation->setEnabled(true);
 
     // attach the two swords to sheath
-    // upstream documentation: http://3dlearn.googlecode.com/svn/trunk/Samples/Ogre/sinbad/Character/src/SinbadCharacterController.cpp
-    // https://bitbucket.org/sinbad/ogre/src/78cf231243e2/Samples/Character/include/SinbadCharacterController.h
+    // upstream documentation: https://bitbucket.org/sinbad/ogre/src/78cf231243e2/Samples/Character/?at=default
     Ogre::Entity* sword1 = getSceneManager()->createEntity("SinbadSword1", "Sword.mesh");
     Ogre::Entity* sword2 = getSceneManager()->createEntity("SinbadSword2", "Sword.mesh");
+    Ogre::Entity* sword3 = getSceneManager()->createEntity("SinbadSword3", "Sword.mesh");
+    Ogre::Entity* sword4 = getSceneManager()->createEntity("SinbadSword4", "Sword.mesh");
     monsterEntity->attachObjectToBone("Sheath.L", sword1);
     monsterEntity->attachObjectToBone("Sheath.R", sword2);
+    monsterEntity->attachObjectToBone("Handle.L", sword3);
+    monsterEntity->attachObjectToBone("Handle.R", sword4);
 
     Ogre::SceneNode* monsterNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("monsterNode", Ogre::Vector3(0.0, 0.0, +200.0));
     monsterNode->attachObject(monsterEntity);
