@@ -34,8 +34,6 @@ void LogicManager::shoot() {
     if(decrementPlayerAmmo()) {
         AudioManager::instance().playRandomShoot();
 
-        Ogre::SceneNode* monsterNode = controller->getSceneManager()->getSceneNode("monsterNode");
-
         monsterNode->flipVisibility();
         controller->getSceneManager()->setSkyDomeEnabled(false);
         controller->getSceneManager()->getRootSceneNode()->flipVisibility();
@@ -93,7 +91,6 @@ void LogicManager::updatePlayerPosition(const Ogre::Real &time) {
 
 void LogicManager::updateMonsterPosition(const Ogre::Real &time) {
     double monsterSpeed = 50.0;
-    Ogre::SceneNode* monsterNode = controller->getSceneManager()->getSceneNode("monsterNode");
 
     // distance = speed x time (Physics I, yay!)
     double distance = monsterSpeed * time;
@@ -105,8 +102,6 @@ void LogicManager::updateMonsterPosition(const Ogre::Real &time) {
 }
 
 bool LogicManager::checkPlayerMonsterCollision() {
-    Ogre::SceneNode* monsterNode = controller->getSceneManager()->getSceneNode("monsterNode");
-
     Ogre::Real thresholdDistance = controller->getSceneManager()->getEntity("monsterEntity")->getBoundingRadius();
 
     return monsterNode->getPosition().squaredDistance(parentPlayerNode->getPosition()) < thresholdDistance * thresholdDistance;
@@ -168,6 +163,7 @@ void LogicManager::createViewports() {
     LOG("Creating Viewports");
 
     viewportFull = controller->getWindow()->addViewport(frontCamera, 0);
+
     Ogre::ColourValue fadeColor = Ogre::ColourValue(0.66, 0.66, 0.66);
     viewportFull->setBackgroundColour(fadeColor);
     controller->getSceneManager()->setFog(Ogre::FOG_EXP, fadeColor, 0.00008);

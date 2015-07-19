@@ -56,4 +56,4 @@ initial_monster_health = 10
 mirror_percentage_h = 0.675
 mirror_percentage_v = 0.135
 camera_near_clip_distance = 5.0
-camera_far_clip_distance = 10000.0
+camera_far_clip_distance = 1000.0

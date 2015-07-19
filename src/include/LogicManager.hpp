@@ -21,6 +21,7 @@ class LogicManager {
     Ogre::SceneNode* parentPlayerNode = NULL;
     Ogre::SceneNode* frontPlayerNode = NULL;
     Ogre::SceneNode* rearPlayerNode = NULL;
+    Ogre::SceneNode* monsterNode = NULL;
 
     Ogre::Camera *frontCamera = NULL;
     Ogre::Camera *rearCamera = NULL;

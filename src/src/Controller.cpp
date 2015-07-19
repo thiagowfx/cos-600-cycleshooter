@@ -288,6 +288,13 @@ void Controller::setupTextures() {
 void Controller::createGameElements() {
     LOG("Creating Game Elements");
 
+    // upstream documentation: http://www.ogre3d.org/tikiwiki/Sinbad+Model
+    Ogre::Entity* monsterEntity = getSceneManager()->createEntity("monsterEntity", "Sinbad.mesh");
+    Ogre::SceneNode* monsterNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("monsterNode", Ogre::Vector3(0.0, 0.0, +200.0));
+    double monsterScale = 3.0;
+    monsterNode->scale(monsterScale, monsterScale, monsterScale);
+    monsterNode->attachObject(monsterEntity);
+
     // attention: logic manager should be created before any threads that will update it
     logicManager = std::unique_ptr<LogicManager>(new LogicManager(this));
 
@@ -335,18 +342,11 @@ void Controller::createGameElements() {
     // create a skybox
     getSceneManager()->setSkyDome(true, "Cycleshooter/CloudySky");
 
-    // upstream documentation: http://www.ogre3d.org/tikiwiki/Sinbad+Model
-    Ogre::Entity* monsterEntity = getSceneManager()->createEntity("monsterEntity", "Sinbad.mesh");
-
     createAnimations();
     createSwords();
 
-    Ogre::SceneNode* monsterNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("monsterNode", Ogre::Vector3(0.0, 0.0, +200.0));
-    double monsterScale = 3.0;
-    monsterNode->scale(monsterScale, monsterScale, monsterScale);
-    monsterNode->attachObject(monsterEntity);
-
     getSceneManager()->setAmbientLight(Ogre::ColourValue(0.6, 0.6, 0.6));
+
     getSceneManager()->createLight("mainLight")->setPosition(20.0, 80.0, 50.0);
     getSceneManager()->createLight("auxLight1")->setPosition(+100.0, +100.0, +100.0);
     getSceneManager()->createLight("auxLight2")->setPosition(-100.0, +50.0, -100.0);
