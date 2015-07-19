@@ -333,56 +333,12 @@ void Controller::createGameElements() {
 
     // upstream documentation: http://www.ogre3d.org/tikiwiki/Sinbad+Model
     Ogre::Entity* monsterEntity = getSceneManager()->createEntity("monsterEntity", "Sinbad.mesh");
-    monsterEntity->getSkeleton()->setBlendMode(Ogre::ANIMBLEND_CUMULATIVE);
 
-    // get the two halves of the run animation.
-    baseMonsterAnimation = monsterEntity->getAnimationState("RunBase");
-    topMonsterAnimation = monsterEntity->getAnimationState("RunTop");
-    swordsMonsterAnimation = monsterEntity->getAnimationState("DrawSwords");
-
-    // enable both of them and set them to loop.
-    baseMonsterAnimation->setLoop(true);
-    topMonsterAnimation->setLoop(true);
-    swordsMonsterAnimation->setLoop(true);
-
-    baseMonsterAnimation->setEnabled(true);
-    topMonsterAnimation->setEnabled(true);
-    swordsMonsterAnimation->setEnabled(true);
-
-    // attach the two swords to sheath
-    // upstream documentation: https://bitbucket.org/sinbad/ogre/src/78cf231243e2/Samples/Character/?at=default
-    Ogre::Entity* sword1 = getSceneManager()->createEntity("SinbadSword1", "Sword.mesh");
-    Ogre::Entity* sword2 = getSceneManager()->createEntity("SinbadSword2", "Sword.mesh");
-    Ogre::Entity* sword3 = getSceneManager()->createEntity("SinbadSword3", "Sword.mesh");
-    Ogre::Entity* sword4 = getSceneManager()->createEntity("SinbadSword4", "Sword.mesh");
-    monsterEntity->attachObjectToBone("Sheath.L", sword1);
-    monsterEntity->attachObjectToBone("Sheath.R", sword2);
-    monsterEntity->attachObjectToBone("Handle.L", sword3);
-    monsterEntity->attachObjectToBone("Handle.R", sword4);
+    createAnimations();
+    createSwords();
 
     Ogre::SceneNode* monsterNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("monsterNode", Ogre::Vector3(0.0, 0.0, +200.0));
     monsterNode->attachObject(monsterEntity);
-
-    // Setting Trails to the sword animation
-    Ogre::NameValuePairList params;
-    params["numberOfChains"] = "2";
-    params["maxElements"] = "80";
-
-    Ogre::RibbonTrail* mSwordTrail = (Ogre::RibbonTrail*)getSceneManager()->createMovableObject("RibbonTrail", &params);
-    mSwordTrail->setMaterialName("Cycleshooter/LightRibbonTrail");
-    mSwordTrail->setTrailLength(20);
-    mSwordTrail->setVisible(true);
-    getSceneManager()->getRootSceneNode()->attachObject(mSwordTrail);
-
-    for (int i = 0; i < 2; i++){
-        mSwordTrail->setInitialColour(i, 1, 0.8, 0);
-        mSwordTrail->setColourChange(i, 0.75, 1.25, 1.25, 1.25);
-        mSwordTrail->setWidthChange(i, 1);
-        mSwordTrail->setInitialWidth(i, 0.5);
-    }
-
-    mSwordTrail->addNode(sword3->getParentNode());
-    mSwordTrail->addNode(sword4->getParentNode());
 
     getSceneManager()->setAmbientLight(Ogre::ColourValue(0.6, 0.6, 0.6));
     getSceneManager()->createLight("mainLight")->setPosition(20.0, 80.0, 50.0);
@@ -398,6 +354,75 @@ void Controller::createCrosshair() {
 void Controller::createHud() {
     LOG("Creating HUD");
     hud = std::unique_ptr<HUD>(new HUD(this));
+}
+
+void Controller::createAnimations() {
+    Ogre::Entity* monsterEntity = getSceneManager()->getEntity("monsterEntity");
+
+    monsterEntity->getSkeleton()->setBlendMode(Ogre::ANIMBLEND_CUMULATIVE);
+
+    baseMonsterAnimation = monsterEntity->getAnimationState("RunBase");
+    topMonsterAnimation = monsterEntity->getAnimationState("RunTop");
+    swordsMonsterAnimation = monsterEntity->getAnimationState("DrawSwords");
+
+    std::vector<Ogre::AnimationState*> animations = {
+        baseMonsterAnimation,
+        topMonsterAnimation,
+        swordsMonsterAnimation
+    };
+
+    // enable both of them and set them to loop
+    for (int i = 0; i < (int) animations.size(); ++i) {
+        animations[i]->setLoop(true);
+        animations[i]->setEnabled(true);
+    }
+}
+
+void Controller::createSwords() {
+    Ogre::Entity* monsterEntity = getSceneManager()->getEntity("monsterEntity");
+
+    // attach the two swords to sheath
+    // upstream documentation: https://bitbucket.org/sinbad/ogre/src/78cf231243e2/Samples/Character/?at=default
+    Ogre::Entity* swords[] = {
+        getSceneManager()->createEntity("SinbadSword1", "Sword.mesh"),
+        getSceneManager()->createEntity("SinbadSword2", "Sword.mesh"),
+        getSceneManager()->createEntity("SinbadSword3", "Sword.mesh"),
+        getSceneManager()->createEntity("SinbadSword4", "Sword.mesh")
+    };
+
+    Ogre::String swordsPosition[] = {
+        "Sheath.L",
+        "Sheath.R",
+        "Handle.L",
+        "Handle.R"
+    };
+
+    int swordsLength = sizeof(swords) / sizeof(Ogre::Entity*);
+
+    for (int i = 0; i < swordsLength; ++i) {
+        monsterEntity->attachObjectToBone(swordsPosition[i], swords[i]);
+    }
+
+    // setting Trails to the sword animation
+    Ogre::NameValuePairList params;
+    params["numberOfChains"] = "2";
+    params["maxElements"] = "80";
+
+    Ogre::RibbonTrail* swordTrail = static_cast<Ogre::RibbonTrail*>(getSceneManager()->createMovableObject("RibbonTrail", &params));
+    swordTrail->setMaterialName("Cycleshooter/LightRibbonTrail");
+    swordTrail->setTrailLength(20);
+    swordTrail->setVisible(true);
+    getSceneManager()->getRootSceneNode()->attachObject(swordTrail);
+
+    for (int i = 0; i < 2; ++i) {
+        swordTrail->setInitialColour(i, 1, 0.8, 0);
+        swordTrail->setColourChange(i, 0.75, 1.25, 1.25, 1.25);
+        swordTrail->setWidthChange(i, 1);
+        swordTrail->setInitialWidth(i, 0.5);
+    }
+
+    swordTrail->addNode(swords[2]->getParentNode());
+    swordTrail->addNode(swords[3]->getParentNode());
 }
 
 void Controller::setupKeyMappings() {
