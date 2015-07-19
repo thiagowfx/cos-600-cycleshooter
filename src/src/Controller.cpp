@@ -229,6 +229,8 @@ void Controller::go() {
     createCrosshair();
     createHud();
 
+    TextManager::instance();
+
     // setups
     InputManager::instance().updateJoystickNumber();
     setupRunnerMode();
@@ -484,43 +486,46 @@ void Controller::gameMainLoop() {
 }
 
 void Controller::doGameEnd() {
-    LOG("Doing the Game End");
-    AudioManager::instance().stopMusic();
-    InputManager::instance().reset();
-
-    // DESTROY THEM ALL -- then recreate what is actually needed
-    LOG("Recreating OGRE elements");
-    hud.reset(nullptr);
-    oWindow->removeAllViewports();
-    Ogre::Root::getSingleton().destroySceneManager(oSceneManager);
-    createSceneManager();
-    createOverlaySystem();
-
-    // Create the Final Scene
-    LOG("Creating the final scene");
-    Ogre::Camera* endCamera = oSceneManager->createCamera("endCamera");
-    Ogre::Viewport* endViewport = oWindow->addViewport(endCamera);
-
-    Soundname endSound;
-
     if(gameWon) {
-        endSound = SOUND_GAME_VICTORY;
-        LOG(" ==> GAME VICTORY :: Congratulations! <==");
-        endViewport->setBackgroundColour(Ogre::ColourValue::Green);
+        LOG("GAME VICTORY");
     }
     else {
-        endSound = SOUND_GAME_LOSS;
-        LOG(" ==> GAME OVER :: Go EXERCISE yourself more, you little LAZY person! <==");
-        endViewport->setBackgroundColour(Ogre::ColourValue::Red);
+        LOG("GAME OVER");
     }
 
+    LOG("Stopping game music");
+    AudioManager::instance().stopMusic();
+
+    LOG("Unmapping all keys");
+    InputManager::instance().reset();
+
+    LOG("Removing HUD");
+    hud.reset(nullptr);
+
+    LOG("Clearing the scene");
+    oSceneManager->clearScene();
+
+    LOG("Removing all viewports");
+    oWindow->removeAllViewports();
+
+    LOG("Creating the final scene");
+
+    // create a background, for cleaning purposes
+    Ogre::Camera* endCamera = oSceneManager->createCamera("endCamera");
+    Ogre::Viewport* endViewport = oWindow->addViewport(endCamera);
+    endViewport->setBackgroundColour(gameWon ? Ogre::ColourValue::Green : Ogre::ColourValue::Red);
+
+    // render final game image
+    Ogre::OverlayManager::getSingleton().getByName(gameWon ? "Cycleshooter/GameVictory" : "Cycleshooter/GameOver")->show();
+    oWindow->update();
+
+    Soundname endSound = gameWon ? SOUND_GAME_VICTORY : SOUND_GAME_LOSS;
     AudioManager::instance().playSound(endSound);
 
     // TODO: print this on the screen instead of std::cout
     polar->printStatistics();
     bicycle->printStatistics();
 
-    oWindow->update();
     sf::sleep(AudioManager::instance().getSoundDuration(endSound));
 }
 

@@ -72,3 +72,31 @@ material Cycleshooter/RedCrosshair : Cycleshooter/Base
         }
     }
 }
+
+material Cycleshooter/GameOver : Cycleshooter/Base
+{
+    technique
+    {
+        pass
+        {
+            texture_unit 
+            {
+                texture GameOver.jpg
+            }
+        }
+    }
+}
+
+material Cycleshooter/GameVictory : Cycleshooter/Base
+{
+    technique
+    {
+        pass
+        {
+            texture_unit 
+            {
+                texture GameVictory.png
+            }
+        }
+    }
+}

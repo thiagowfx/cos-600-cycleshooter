@@ -2,7 +2,6 @@
 #define _CROSSHAIRMANAGER_HPP_
 
 #include <OgreImage.h>
-#include <OgreOverlay.h>
 #include <OgreOverlayManager.h>
 
 #include "ConfigManager.hpp"

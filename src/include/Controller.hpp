@@ -13,6 +13,7 @@
 #include "AudioManager.hpp"
 #include "ConfigManager.hpp"
 #include "InputManager.hpp"
+#include "TextManager.hpp"
 
 #include "CycleshooterIcon.hpp"
 #include "Context.hpp"

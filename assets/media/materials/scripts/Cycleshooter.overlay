@@ -3,8 +3,8 @@ template container Panel(Cycleshooter/ContextModePanel)
 	metrics_mode pixels
 	horz_align center
 	vert_align center
-	width 64
-	height 64
+	width 48
+	height 48
 }
 
 template container Panel(Cycleshooter/RunningModePanel) : Cycleshooter/ContextModePanel
@@ -17,19 +17,13 @@ template container Panel(Cycleshooter/ShooterModePanel) : Cycleshooter/ContextMo
 	material Cycleshooter/Gun
 }
 
-template container Panel(Cycleshooter/CrosshairPanel)
+Cycleshooter/GreenCrosshair
 {
+    container Panel(Cycleshooter/GreenCrosshairPanel)
+    {
         metrics_mode pixels
         horz_align center
         vert_align center
-}
-
-Cycleshooter/GreenCrosshair
-{
-    zorder 200
-
-    container Panel(Cycleshooter/GreenCrosshairPanel) : Cycleshooter/CrosshairPanel
-    {
         left -64
         top -64
         width 128
@@ -40,14 +34,40 @@ Cycleshooter/GreenCrosshair
 
 Cycleshooter/RedCrosshair
 {
-    zorder 201
-
-    container Panel(Cycleshooter/RedCrosshairPanel) : Cycleshooter/CrosshairPanel
+    container Panel(Cycleshooter/RedCrosshairPanel)
     {
+        metrics_mode pixels
+        horz_align center
+        vert_align center
         left -32
         top -32
         width 64
         height 64
         material Cycleshooter/RedCrosshair
+    }
+}
+
+template container Panel(Cycleshooter/BackgroundPanel)
+{
+        metrics_mode relative
+        left 0.0
+        top 0.0
+        width 1.0
+        height 1.0
+}
+
+Cycleshooter/GameOver
+{
+    container Panel(Cycleshooter/GameOverPanel) : Cycleshooter/BackgroundPanel
+    {
+        material Cycleshooter/GameOver
+    }
+}
+
+Cycleshooter/GameVictory
+{
+    container Panel(Cycleshooter/GameVictoryPanel) : Cycleshooter/BackgroundPanel
+    {
+        material Cycleshooter/GameVictory
     }
 }
