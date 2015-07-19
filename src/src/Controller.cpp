@@ -338,7 +338,7 @@ void Controller::createGameElements() {
     createSwords();
 
     Ogre::SceneNode* monsterNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("monsterNode", Ogre::Vector3(0.0, 0.0, +200.0));
-    double monsterScale = 2.0;
+    double monsterScale = 3.0;
     monsterNode->scale(monsterScale, monsterScale, monsterScale);
     monsterNode->attachObject(monsterEntity);
 
