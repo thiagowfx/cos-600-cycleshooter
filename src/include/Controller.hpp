@@ -233,6 +233,16 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     void createHud();
 
     /**
+     * Create the monster animations.
+     */
+    void createAnimations();
+
+    /**
+     * Create the swords trail effect.
+     */
+    void createSwords();
+
+    /**
      * Setup the games shortcuts/keybindings/keymaps (mouse, joystick and keyboard)
      */
     void setupKeyMappings();

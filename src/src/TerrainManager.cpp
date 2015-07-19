@@ -62,7 +62,7 @@ void TerrainManager::createTerrain(){
     sceneManager->getRootSceneNode()->createChildSceneNode()->attachObject(terrainEntity);
     terrainEntity->setCastShadows(false);
     //Defines which texture will be used. 
-    terrainEntity->setMaterialName("Examples/Ground");
+    terrainEntity->setMaterialName("Cycleshooter/Ground");
     generateBullets(3);
     renderBullets();
 }
@@ -155,6 +155,7 @@ void TerrainManager::renderBullets(){
     std::pair<std::vector<Ogre::String> , std::vector<Ogre::Vector3> > renderSettings = collisionHandler-> getSceneNodeNames();
     for(int i = 0;i < renderSettings.first.size();i++){
         Ogre::Entity* bulletEntity = sceneManager->createEntity(renderSettings.first[i], "sphere.mesh");
+        bulletEntity->setMaterialName("Cycleshooter/RustySteel");
         Ogre::LogManager::getSingletonPtr()->logMessage("--> TerrainManger: Rendering Bullet <--");
         //std::cout << "SceneNode name = " << renderSettings.first[i] << std::endl;
         Ogre::SceneNode* bulletNode = sceneManager->getRootSceneNode()->createChildSceneNode(renderSettings.first[i], renderSettings.second[i]);
