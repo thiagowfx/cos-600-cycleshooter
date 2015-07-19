@@ -328,6 +328,9 @@ void Controller::createGameElements() {
     terrainManager->createTerrain();
     //terrainManager->sampleCollisionTransformation();
 
+    // create a skybox
+    getSceneManager()->setSkyDome(true, "Cycleshooter/CloudySky");
+
     // upstream documentation: http://www.ogre3d.org/tikiwiki/Sinbad+Model
     Ogre::Entity* monsterEntity = getSceneManager()->createEntity("monsterEntity", "Sinbad.mesh");
     monsterEntity->getSkeleton()->setBlendMode(Ogre::ANIMBLEND_CUMULATIVE);
