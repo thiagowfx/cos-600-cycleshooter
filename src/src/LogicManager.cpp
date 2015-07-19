@@ -160,12 +160,17 @@ void LogicManager::createSceneNodes() {
     // attach scene nodes
     frontPlayerNode->attachObject(frontCamera);
     rearPlayerNode->attachObject(rearCamera);
+
+    monsterNode = controller->getSceneManager()->getSceneNode("monsterNode");
 }
 
 void LogicManager::createViewports() {
     LOG("Creating Viewports");
 
     viewportFull = controller->getWindow()->addViewport(frontCamera, 0);
+    Ogre::ColourValue fadeColor = Ogre::ColourValue(0.66, 0.66, 0.66);
+    viewportFull->setBackgroundColour(fadeColor);
+    controller->getSceneManager()->setFog(Ogre::FOG_EXP, fadeColor, 0.00008);
 }
 
 void LogicManager::createRtt() {
