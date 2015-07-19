@@ -114,6 +114,7 @@ material Cycleshooter/CloudySky
 			{
 				texture clouds.jpg
 				scroll_anim 0.055 0.015
+				rotate_anim 0.005
 			}
 		}
 	}
