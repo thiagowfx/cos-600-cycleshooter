@@ -333,15 +333,23 @@ void Controller::createGameElements() {
     Ogre::Entity* monsterEntity = getSceneManager()->createEntity("monsterEntity", "Sinbad.mesh");
     monsterEntity->getSkeleton()->setBlendMode(Ogre::ANIMBLEND_CUMULATIVE);
 
-    // Get the two halves of the idle animation.
+    // get the two halves of the run animation.
     baseMonsterAnimation = monsterEntity->getAnimationState("RunBase");
     topMonsterAnimation = monsterEntity->getAnimationState("RunTop");
 
-    // Enable both of them and set them to loop.
+    // enable both of them and set them to loop.
     baseMonsterAnimation->setLoop(true);
     topMonsterAnimation->setLoop(true);
     baseMonsterAnimation->setEnabled(true);
     topMonsterAnimation->setEnabled(true);
+
+    // attach the two swords to sheath
+    // upstream documentation: http://3dlearn.googlecode.com/svn/trunk/Samples/Ogre/sinbad/Character/src/SinbadCharacterController.cpp
+    // https://bitbucket.org/sinbad/ogre/src/78cf231243e2/Samples/Character/include/SinbadCharacterController.h
+    Ogre::Entity* sword1 = getSceneManager()->createEntity("SinbadSword1", "Sword.mesh");
+    Ogre::Entity* sword2 = getSceneManager()->createEntity("SinbadSword2", "Sword.mesh");
+    monsterEntity->attachObjectToBone("Sheath.L", sword1);
+    monsterEntity->attachObjectToBone("Sheath.R", sword2);
 
     Ogre::SceneNode* monsterNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("monsterNode", Ogre::Vector3(0.0, 0.0, +200.0));
     monsterNode->attachObject(monsterEntity);
