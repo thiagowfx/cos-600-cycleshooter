@@ -156,3 +156,18 @@ material Cycleshooter/Ground
 		}
 	}
 }
+
+material Cycleshooter/RustySteel
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture RustySteel.jpg
+				env_map spherical
+			}
+		}
+	}
+}
