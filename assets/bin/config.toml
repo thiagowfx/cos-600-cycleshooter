@@ -1,0 +1,59 @@
+[Release]
+use_real_polar = false
+polar_port = "/dev/ttyUSB0"
+use_real_bicycle = false
+bicycle_port = "/dev/ttyUSB1"
+
+[AudioManager]
+sound_path = "../audio/sounds/"
+music_path = "../audio/music/"
+music_volume_ratio = 0.33
+music_runner = "bfmv-hand-of-blood.ogg"
+music_shooter = "hiroshi-okubo-arcade-ripping-air.ogg"
+
+[InputManager]
+try_detect_joystick = true
+joystick_number = 0
+
+[Bicycle]
+rpm_to_logical_speed = 10.0
+
+[RealBicycle]
+max_string_response = 16
+reading_retry_time_ms = 10
+
+[RealPolar]
+max_string_response = 140
+reading_retry_time_ms = 10
+
+[Controller]
+bicycle_sleep_time_ms = 500
+polar_sleep_time_ms = 500
+randomize_crosshair_time_ms = 100
+threshold_unbuf_keys_ms = 80
+heartbeat_minimum_assumed = 60
+heartbeat_maximum_assumed = 150
+polar_peak_change = 5
+bicycle_friction_change = 25
+bicycle_speed_change = 5.0
+application_name = "Cycleshooter"
+statistics_file = "stats.txt"
+countdown_time_ms = 1000
+countdown_enabled = true
+
+[CrosshairManager]
+green_crosshair_friction = 25.0
+probability_change_direction = 0.50
+crosshair_scale_size = 0.20
+randomization_square_half_side_relative = 1.1
+randomization_friction_relative = 5.0
+mapped_heartbeat_minimum = 1.0
+mapped_heartbeat_maximum = 3.2
+
+[LogicManager]
+initial_player_ammo = 30
+initial_monster_health = 10
+mirror_percentage_h = 0.675
+mirror_percentage_v = 0.135
+camera_near_clip_distance = 5.0
+camera_far_clip_distance = 10000.0

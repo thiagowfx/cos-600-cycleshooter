@@ -1,0 +1,105 @@
+template container Panel(Cycleshooter/ContextModePanel)
+{
+	metrics_mode pixels
+	horz_align center
+	vert_align center
+	width 48
+	height 48
+}
+
+template container Panel(Cycleshooter/RunningModePanel) : Cycleshooter/ContextModePanel
+{
+	material Cycleshooter/RunningMan
+}
+
+template container Panel(Cycleshooter/ShooterModePanel) : Cycleshooter/ContextModePanel
+{
+	material Cycleshooter/Gun
+}
+
+Cycleshooter/GreenCrosshair
+{
+    container Panel(Cycleshooter/GreenCrosshairPanel)
+    {
+        metrics_mode pixels
+        horz_align center
+        vert_align center
+        left -64
+        top -64
+        width 128
+        height 128
+        material Cycleshooter/GreenCrosshair
+    }
+}
+
+Cycleshooter/RedCrosshair
+{
+    container Panel(Cycleshooter/RedCrosshairPanel)
+    {
+        metrics_mode pixels
+        horz_align center
+        vert_align center
+        left -32
+        top -32
+        width 64
+        height 64
+        material Cycleshooter/RedCrosshair
+    }
+}
+
+template container Panel(Cycleshooter/BackgroundPanel)
+{
+        metrics_mode relative
+        left 0.0
+        top 0.0
+        width 1.0
+        height 1.0
+}
+
+Cycleshooter/GameOver
+{
+    container Panel(Cycleshooter/GameOverPanel) : Cycleshooter/BackgroundPanel
+    {
+        material Cycleshooter/GameOver
+    }
+}
+
+Cycleshooter/GameVictory
+{
+    container Panel(Cycleshooter/GameVictoryPanel) : Cycleshooter/BackgroundPanel
+    {
+        material Cycleshooter/GameVictory
+    }
+}
+
+Cycleshooter/Countdown0
+{
+    container Panel(Cycleshooter/Countdown0Panel) : Cycleshooter/BackgroundPanel
+    {
+        material Cycleshooter/Countdown0
+    }
+}
+
+Cycleshooter/Countdown1
+{
+    container Panel(Cycleshooter/Countdown1Panel) : Cycleshooter/BackgroundPanel
+    {
+        material Cycleshooter/Countdown1
+    }
+}
+
+Cycleshooter/Countdown2
+{
+    container Panel(Cycleshooter/Countdown2Panel) : Cycleshooter/BackgroundPanel
+    {
+        material Cycleshooter/Countdown2
+    }
+}
+
+Cycleshooter/Countdown3
+{
+    container Panel(Cycleshooter/Countdown3Panel) : Cycleshooter/BackgroundPanel
+    {
+        material Cycleshooter/Countdown3
+    }
+}

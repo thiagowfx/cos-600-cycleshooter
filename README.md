@@ -23,11 +23,11 @@ After setting up the dependencies, set the `DEPENDENCIES_READY` variable to `TRU
 
 - `cmake -DDEPENDENCIES_READY=TRUE ..`
 
-Or, alternatively:
+Or, graphically:
 
 - `[ccmake|cmake-gui] .`
 
-Finally, just build your project:
+Finally, just build your project (it takes a while) -- `ccache` might speed up successive compilations:
 
 - `make -j$(nproc) -l$(nproc)`
 

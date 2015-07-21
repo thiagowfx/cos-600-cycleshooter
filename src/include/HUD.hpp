@@ -1,9 +1,8 @@
 #ifndef _HUD_HPP_
 #define _HUD_HPP_
 
-#include <Ogre.h>
-
 #include "Controller.hpp"
+#include "Logging.hpp"
 #include "SdkTrays.hpp"
 
 namespace Cycleshooter {
@@ -30,11 +29,11 @@ class HUD {
     const OgreBites::TrayLocation INFO_WIDGETS_TL = OgreBites::TL_BOTTOMRIGHT;
     const OgreBites::TrayLocation FPS_TL = OgreBites::TL_BOTTOMLEFT;
     const OgreBites::TrayLocation DEBUG_PANEL_TL = OgreBites::TL_LEFT;
+    const OgreBites::TrayLocation CLOCK_TL = OgreBites::TL_TOPRIGHT;
 
 public:
     HUD(Controller* controller) :
         controller(controller) {
-        Ogre::LogManager::getSingleton().logMessage("--> HUD: Constructor <--");
         createTrayManager();
         createTrayWidgets();
     }

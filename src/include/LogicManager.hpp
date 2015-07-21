@@ -4,6 +4,8 @@
 #include <Ogre.h>
 
 #include "Controller.hpp"
+#include "ConfigManager.hpp"
+#include "Logging.hpp"
 
 namespace Cycleshooter {
 class Controller;
@@ -19,6 +21,7 @@ class LogicManager {
     Ogre::SceneNode* parentPlayerNode = NULL;
     Ogre::SceneNode* frontPlayerNode = NULL;
     Ogre::SceneNode* rearPlayerNode = NULL;
+    Ogre::SceneNode* monsterNode = NULL;
 
     Ogre::Camera *frontCamera = NULL;
     Ogre::Camera *rearCamera = NULL;
@@ -32,7 +35,7 @@ class LogicManager {
     /*
      *  Monster section.
      */
-    int monsterHealth = 10;
+    int monsterHealth = ConfigManager::instance().getInt("LogicManager.initial_monster_health");
 
     void decrementMonsterHealth(int quantity = 1);
 
@@ -58,7 +61,7 @@ class LogicManager {
     /**
      * Number of bullets available for the player.
      */
-    int playerAmmo = 10;
+    int playerAmmo = ConfigManager::instance().getInt("LogicManager.initial_player_ammo");
 
     /**
      * Add a bullet to the total ammo of the player.
@@ -78,10 +81,10 @@ class LogicManager {
     void createRtt();
 
     // customizable settings
-    const double CAMERA_NEAR_CLIP_DISTANCE = 5.0;
-    const double CAMERA_FAR_CLIP_DISTANCE = 10000.0;
-    const double MIRROR_PERCENTAGE_H = 0.675;
-    const double MIRROR_PERCENTAGE_V = 0.135;
+    const double CAMERA_NEAR_CLIP_DISTANCE = ConfigManager::instance().getDouble("LogicManager.camera_near_clip_distance");
+    const double CAMERA_FAR_CLIP_DISTANCE = ConfigManager::instance().getDouble("LogicManager.camera_far_clip_distance");
+    const double MIRROR_PERCENTAGE_H = ConfigManager::instance().getDouble("LogicManager.mirror_percentage_h");
+    const double MIRROR_PERCENTAGE_V = ConfigManager::instance().getDouble("LogicManager.mirror_percentage_v");
 
     //Data structure for difficulty mapping.
     std::vector<float> difficultyParamenter;

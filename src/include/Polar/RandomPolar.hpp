@@ -5,7 +5,7 @@
 
 namespace Cycleshooter {
 /**
- * @brief The RandomPolar class generates a random heart rate value in [minPeak, maxPeak] range.
+ * @brief Generates a random heart rate value in [minPeak, maxPeak] range.
  */
 class RandomPolar : public AbstractPolar {
     int minPeak, maxPeak;
@@ -22,7 +22,7 @@ public:
      */
     virtual void updateHeartRate() {
         auto heartRate = minPeak + (rand() % (maxPeak - minPeak + 1));
-        update_statistics(heartRate);
+        updateStatistics(heartRate);
     }
 
     /**
