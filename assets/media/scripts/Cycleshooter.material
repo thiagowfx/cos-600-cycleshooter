@@ -156,7 +156,7 @@ material Cycleshooter/Ground
 	}
 }
 
-material Cycleshooter/RustySteel
+material Cycleshooter/BulletShell
 {
 	technique
 	{
@@ -164,7 +164,7 @@ material Cycleshooter/RustySteel
 		{
 			texture_unit
 			{
-				texture RustySteel.jpg
+				texture BulletShell.jpg
 				env_map spherical
 			}
 		}
