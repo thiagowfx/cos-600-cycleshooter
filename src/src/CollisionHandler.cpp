@@ -155,7 +155,9 @@ std::pair<bool,Ogre::String> CollisionHandler::isBulletAt(int pixelWidth, int pi
     //Comparing sphere discriminant with radius
     bool belongsToSphere = sum <= r;
     //Logically removing bullet from the scene.
+    std::cout << "Testing if bullets exists." << std:: endl;
     if(belongsToSphere){
+        std::cout<<r << " " << sum << " ";
         bulletMatrix[pixelWidth][pixelHeight].first = false;
         return std::make_pair(true,e.getScenenodeName());
     }
@@ -176,12 +178,13 @@ void CollisionHandler::removeBullet(int pixelWidth, int pixelHeight){
 void CollisionHandler::setBulletAt(int width, int height,bool exist, Ogre::Vector3 coord){
     //if(bulletMatrix[width][height].first) std::cout << "There is a bullet here!" << std::endl;
     //Setting the new bullet.
-    bulletMatrix[width][height].first = true;
+    bulletMatrix[width][height].first = exist;
     bulletMatrix[width][height].second.setNewBullet(coord,bulletCount);
     BulletElement test = bulletMatrix[width][height].second;
     std::cout << "Testing name " << test.getScenenodeName()<<std::endl;
     //Increasing bullet identifiers.
     bulletCount++;
+    std::cout << "Number of Bullets = " <<bulletCount << std::endl;
 }
 
 std::pair<std::vector<Ogre::String> , std::vector<Ogre::Vector3> > CollisionHandler::getSceneNodeNames(){

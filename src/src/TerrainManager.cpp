@@ -63,7 +63,7 @@ void TerrainManager::createTerrain(){
     terrainEntity->setCastShadows(false);
     //Defines which texture will be used. 
     terrainEntity->setMaterialName("Cycleshooter/Ground");
-    generateBullets(3);
+    generateBullets(13);
     renderBullets();
 }
 
@@ -157,9 +157,35 @@ void TerrainManager::renderBullets(){
         Ogre::Entity* bulletEntity = sceneManager->createEntity(renderSettings.first[i], "sphere.mesh");
         bulletEntity->setMaterialName("Cycleshooter/RustySteel");
         Ogre::LogManager::getSingletonPtr()->logMessage("--> TerrainManger: Rendering Bullet <--");
-        //std::cout << "SceneNode name = " << renderSettings.first[i] << std::endl;
         Ogre::SceneNode* bulletNode = sceneManager->getRootSceneNode()->createChildSceneNode(renderSettings.first[i], renderSettings.second[i]);
         bulletNode->attachObject(bulletEntity);
+        //bulletNode->scale(0.5,0.5,0.5);
+        //Finding bullet entities bounding limits.
+        Ogre::Real bulletRadius = bulletEntity->getBoundingRadius();
+        Ogre::Vector3 upLeft(renderSettings.second[i].x,renderSettings.second[i].y,renderSettings.second[i].z);
+        Ogre::Vector3 upRight(renderSettings.second[i].x,renderSettings.second[i].y,renderSettings.second[i].z);
+        Ogre::Vector3 downLeft (renderSettings.second[i].x,renderSettings.second[i].y,renderSettings.second[i].z);
+        Ogre::Vector3 downRight (renderSettings.second[i].x,renderSettings.second[i].y,renderSettings.second[i].z);
+        //Upper left bounding corner.
+        upLeft.x -= bulletRadius;
+        upLeft.z += bulletRadius;
+        //Upper Rigth bounding corner.
+        upRight.x += bulletRadius;
+        upRight.z += bulletRadius;
+        //Lower left bounding corner.
+        downLeft.x -= bulletRadius;
+        downLeft.z -= bulletRadius;
+        //Lower right bounding corner.
+        downRight.x += bulletRadius;
+        downRight.z -= bulletRadius;
+        std::pair<int,int> coord1 = getCollisionCoordinates(upLeft);
+        std::pair<int,int> coord2 = getCollisionCoordinates(upRight);
+        std::pair<int,int> coord3 = getCollisionCoordinates(downLeft);
+        std::pair<int,int> coord4 = getCollisionCoordinates(downRight);
+        collisionHandler->setBulletAt(coord1.first,coord1.second,true,renderSettings.second[i]);
+        collisionHandler->setBulletAt(coord2.first,coord2.second,true,renderSettings.second[i]);
+        collisionHandler->setBulletAt(coord3.first,coord3.second,true,renderSettings.second[i]);
+        collisionHandler->setBulletAt(coord4.first,coord4.second,true,renderSettings.second[i]);
     }
 }
 
