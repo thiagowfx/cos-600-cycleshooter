@@ -143,7 +143,7 @@ void TerrainManager::generateBullets(int numOfBullets){
         //Inserting random bullets in collision handler.
         //TODO: Correct bugs in the bullets number.
         //Adding bullet to the dataStructure in CollisionHandler.
-        collisionHandler->setBulletAt(location.first,location.second,true,coord);
+        collisionHandler->insertBulletAt(location.first,location.second,true,coord);
         //std::cout << "Width = " << randomWidth <<" Height = "<<randomHeight<<" i = "<<i <<std::endl;
     }
     //std::cout<<"Testing = " << test <<std::endl;
@@ -152,14 +152,14 @@ void TerrainManager::generateBullets(int numOfBullets){
 
 void TerrainManager::renderBullets(){
     Ogre::LogManager::getSingletonPtr()->logMessage("--> TerrainManager: Preparing Bullets <--");
-    std::pair<std::vector<Ogre::String> , std::vector<Ogre::Vector3> > renderSettings = collisionHandler-> getSceneNodeNames();
+    std::pair<std::vector<Ogre::String> , std::vector<Ogre::Vector3> > renderSettings = collisionHandler-> getBulletsForRender();
     for(int i = 0;i < renderSettings.first.size();i++){
         Ogre::Entity* bulletEntity = sceneManager->createEntity(renderSettings.first[i], "sphere.mesh");
         bulletEntity->setMaterialName("Cycleshooter/RustySteel");
         Ogre::LogManager::getSingletonPtr()->logMessage("--> TerrainManger: Rendering Bullet <--");
         Ogre::SceneNode* bulletNode = sceneManager->getRootSceneNode()->createChildSceneNode(renderSettings.first[i], renderSettings.second[i]);
         bulletNode->attachObject(bulletEntity);
-        //bulletNode->scale(0.5,0.5,0.5);
+        //bulletNode->scale(0.05,0.05,0.05);
         //Finding bullet entities bounding limits.
         Ogre::Real bulletRadius = bulletEntity->getBoundingRadius();
         Ogre::Vector3 upLeft(renderSettings.second[i].x,renderSettings.second[i].y,renderSettings.second[i].z);
@@ -178,14 +178,17 @@ void TerrainManager::renderBullets(){
         //Lower right bounding corner.
         downRight.x += bulletRadius;
         downRight.z -= bulletRadius;
+        //Calculating transfomations to be passed to collision handler.
+        std::pair<int,int> coord0 = getCollisionCoordinates(renderSettings.second[i]);
         std::pair<int,int> coord1 = getCollisionCoordinates(upLeft);
         std::pair<int,int> coord2 = getCollisionCoordinates(upRight);
         std::pair<int,int> coord3 = getCollisionCoordinates(downLeft);
         std::pair<int,int> coord4 = getCollisionCoordinates(downRight);
-        collisionHandler->setBulletAt(coord1.first,coord1.second,true,renderSettings.second[i]);
-        collisionHandler->setBulletAt(coord2.first,coord2.second,true,renderSettings.second[i]);
-        collisionHandler->setBulletAt(coord3.first,coord3.second,true,renderSettings.second[i]);
-        collisionHandler->setBulletAt(coord4.first,coord4.second,true,renderSettings.second[i]);
+        std::vector<std::pair<int,int> > coords;
+        //Adding center at first position.
+        coords.push_back(coord0);
+        coords.push_back(coord1);coords.push_back(coord2);coords.push_back(coord3);coords.push_back(coord4);
+        collisionHandler->compensateBulletRender(coords);
     }
 }
 

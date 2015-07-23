@@ -8,11 +8,8 @@ CollisionHandler::CollisionHandler(Ogre::String collisionTexturePath):
     collisionTexturePath(collisionTexturePath),
     collisionMatrixWidth(0),
     collisionMatrixHeight(0),
-    bulletCount(0)
-{
-//    collisionMap = {{WATER_COLOR,WATER_PIXEL},{BULLET_COLOR,BULLET_PIXEL},
-//                    {ROCK_COLOR,ROCK_PIXEL},{GUAGMIRE_COLOR,GUAGMIRE_PIXEL},
-//                    {ROAD_COLOR,ROAD_PIXEL}};
+    bulletCount(0){
+
 }
 
 CollisionHandler::~CollisionHandler() {
@@ -156,8 +153,10 @@ std::pair<bool,Ogre::String> CollisionHandler::isBulletAt(int pixelWidth, int pi
     bool belongsToSphere = sum <= r;
     //Logically removing bullet from the scene.
     std::cout << "Testing if bullets exists." << std:: endl;
+    std::cout<<r << " " << sum << " " << std::endl;
     if(belongsToSphere){
-        std::cout<<r << " " << sum << " ";
+        std::cout<<"A bullet had been found"<<std::endl;
+        std::cout<<r << " " << sum << " "<< std::endl;
         bulletMatrix[pixelWidth][pixelHeight].first = false;
         return std::make_pair(true,e.getScenenodeName());
     }
@@ -165,20 +164,9 @@ std::pair<bool,Ogre::String> CollisionHandler::isBulletAt(int pixelWidth, int pi
         return std::make_pair(false,e.getScenenodeName());
 }
 
-//TODO: change this to be called by isBullet().
-//This responsability lay upon CollisionHanlder, not TerrainManager.
-void CollisionHandler::removeBullet(int pixelWidth, int pixelHeight){
-    Ogre::LogManager::getSingletonPtr()->logMessage("--> CollisioHandler: Removing Bullet State! <--");
-    //int sizeW = bulletMatrix.size();
-    //int sizeH = bulletMatrix[0].size();
-    //std::cout<<"Total w = "<< sizeW << std::endl;
-    //bulletMatrix[pixelWidth][pixelHeight].first = false;
-}
-
-void CollisionHandler::setBulletAt(int width, int height,bool exist, Ogre::Vector3 coord){
-    //if(bulletMatrix[width][height].first) std::cout << "There is a bullet here!" << std::endl;
+void CollisionHandler::insertBulletAt(int width, int height,bool exist, Ogre::Vector3 coord){
     //Setting the new bullet.
-    bulletMatrix[width][height].first = exist;
+    bulletMatrix[width][height].first = true;
     bulletMatrix[width][height].second.setNewBullet(coord,bulletCount);
     BulletElement test = bulletMatrix[width][height].second;
     std::cout << "Testing name " << test.getScenenodeName()<<std::endl;
@@ -187,7 +175,12 @@ void CollisionHandler::setBulletAt(int width, int height,bool exist, Ogre::Vecto
     std::cout << "Number of Bullets = " <<bulletCount << std::endl;
 }
 
-std::pair<std::vector<Ogre::String> , std::vector<Ogre::Vector3> > CollisionHandler::getSceneNodeNames(){
+void CollisionHandler::toogleBulletState(int width, int height){
+    bool state = bulletMatrix[width][height].first;
+    bulletMatrix[width][height].first = !state;
+}
+
+std::pair<std::vector<Ogre::String> , std::vector<Ogre::Vector3> > CollisionHandler::getBulletsForRender(){
     std::vector<Ogre::String> names;
     std::vector<Ogre::Vector3> coords;
     int matrixColNumber, matrixRowNumber;
@@ -208,6 +201,19 @@ std::pair<std::vector<Ogre::String> , std::vector<Ogre::Vector3> > CollisionHand
         }
     }
     return std::make_pair(names, coords);
+}
+
+void CollisionHandler::compensateBulletRender(std::vector<std::pair<int, int> > coords){
+    int cWidth = coords[0].first;
+    int cHeight = coords[1].second;
+    int width, height;
+    Ogre::LogManager::getSingletonPtr()->logMessage("--> CollisionHandler: Compensating Bullet Render <--");
+    for(int i = 1;i < coords.size();i++){
+        width = coords[i].first;
+        height = coords[i].second;
+        bulletMatrix[width][height].first = true;
+        bulletMatrix[width][height].second = bulletMatrix[cWidth][cHeight].second;
+    }
 }
 
 }
