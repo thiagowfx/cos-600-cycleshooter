@@ -51,10 +51,14 @@ public:
 
     //Function that discover if a bullet exists and also the scene node name related to it.
     std::pair<bool,Ogre::String>  isBulletAt(int pixelWidth, int pixelHeight, Ogre::Vector3 coord, Ogre::Real radius);
-    void removeBullet(int pixelWidth, int pixelHeight);//Deprecated
-    //Functions to add and remove bullets.
-    void setBulletAt(int width, int height, bool exist, Ogre::Vector3 coord);
-    std::pair<std::vector<Ogre::String> , std::vector<Ogre::Vector3> > getSceneNodeNames();
+    //Functions to add bullets in bullet's structure.
+    void insertBulletAt(int width, int height, bool exist, Ogre::Vector3 coord);
+    //Function to dis/activate bullets.
+    void toogleBulletState(int width, int height);
+    //Return bullets scenenode names and centers.
+    std::pair<std::vector<Ogre::String> , std::vector<Ogre::Vector3> > getBulletsForRender();
+    //Function to adapt bullet structure based on bullet rendering dimensions.
+    void compensateBulletRender(std::vector<std::pair<int,int> > coords);
 
     //Testing functions
     void printMatrix(); //Testing funcition for collisionMatrix.

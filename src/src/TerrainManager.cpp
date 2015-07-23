@@ -63,7 +63,7 @@ void TerrainManager::createTerrain(){
     terrainEntity->setCastShadows(false);
     //Defines which texture will be used. 
     terrainEntity->setMaterialName("Cycleshooter/Ground");
-    generateBullets(3);
+    generateBullets(13);
     renderBullets();
 }
 
@@ -143,7 +143,7 @@ void TerrainManager::generateBullets(int numOfBullets){
         //Inserting random bullets in collision handler.
         //TODO: Correct bugs in the bullets number.
         //Adding bullet to the dataStructure in CollisionHandler.
-        collisionHandler->setBulletAt(location.first,location.second,true,coord);
+        collisionHandler->insertBulletAt(location.first,location.second,true,coord);
         //std::cout << "Width = " << randomWidth <<" Height = "<<randomHeight<<" i = "<<i <<std::endl;
     }
     //std::cout<<"Testing = " << test <<std::endl;
@@ -152,14 +152,43 @@ void TerrainManager::generateBullets(int numOfBullets){
 
 void TerrainManager::renderBullets(){
     Ogre::LogManager::getSingletonPtr()->logMessage("--> TerrainManager: Preparing Bullets <--");
-    std::pair<std::vector<Ogre::String> , std::vector<Ogre::Vector3> > renderSettings = collisionHandler-> getSceneNodeNames();
+    std::pair<std::vector<Ogre::String> , std::vector<Ogre::Vector3> > renderSettings = collisionHandler-> getBulletsForRender();
     for(int i = 0;i < renderSettings.first.size();i++){
         Ogre::Entity* bulletEntity = sceneManager->createEntity(renderSettings.first[i], "sphere.mesh");
         bulletEntity->setMaterialName("Cycleshooter/BulletShell");
         Ogre::LogManager::getSingletonPtr()->logMessage("--> TerrainManger: Rendering Bullet <--");
-        //std::cout << "SceneNode name = " << renderSettings.first[i] << std::endl;
         Ogre::SceneNode* bulletNode = sceneManager->getRootSceneNode()->createChildSceneNode(renderSettings.first[i], renderSettings.second[i]);
         bulletNode->attachObject(bulletEntity);
+        //bulletNode->scale(0.05,0.05,0.05);
+        //Finding bullet entities bounding limits.
+        Ogre::Real bulletRadius = bulletEntity->getBoundingRadius();
+        Ogre::Vector3 upLeft(renderSettings.second[i].x,renderSettings.second[i].y,renderSettings.second[i].z);
+        Ogre::Vector3 upRight(renderSettings.second[i].x,renderSettings.second[i].y,renderSettings.second[i].z);
+        Ogre::Vector3 downLeft (renderSettings.second[i].x,renderSettings.second[i].y,renderSettings.second[i].z);
+        Ogre::Vector3 downRight (renderSettings.second[i].x,renderSettings.second[i].y,renderSettings.second[i].z);
+        //Upper left bounding corner.
+        upLeft.x -= bulletRadius;
+        upLeft.z += bulletRadius;
+        //Upper Rigth bounding corner.
+        upRight.x += bulletRadius;
+        upRight.z += bulletRadius;
+        //Lower left bounding corner.
+        downLeft.x -= bulletRadius;
+        downLeft.z -= bulletRadius;
+        //Lower right bounding corner.
+        downRight.x += bulletRadius;
+        downRight.z -= bulletRadius;
+        //Calculating transfomations to be passed to collision handler.
+        std::pair<int,int> coord0 = getCollisionCoordinates(renderSettings.second[i]);
+        std::pair<int,int> coord1 = getCollisionCoordinates(upLeft);
+        std::pair<int,int> coord2 = getCollisionCoordinates(upRight);
+        std::pair<int,int> coord3 = getCollisionCoordinates(downLeft);
+        std::pair<int,int> coord4 = getCollisionCoordinates(downRight);
+        std::vector<std::pair<int,int> > coords;
+        //Adding center at first position.
+        coords.push_back(coord0);
+        coords.push_back(coord1);coords.push_back(coord2);coords.push_back(coord3);coords.push_back(coord4);
+        collisionHandler->compensateBulletRender(coords);
     }
 }
 
