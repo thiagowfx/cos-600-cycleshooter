@@ -88,7 +88,7 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     /**
      * @brief gameWon Determines whether the player won or lost the game should it end.
      */
-    bool gameWon = false;
+    EndGameType endGameType;
 
     /**
      * Wait for other threads to finish. Like 'join' for C++11 threads.
@@ -354,7 +354,7 @@ public:
     /**
      * Finish/shutdown the game cleanly.
      */
-    void shutdownNow(bool gameWon);
+    void shutdownNow(const EndGameType& endGameType);
 
     void incrementPlayerAmmo();
 

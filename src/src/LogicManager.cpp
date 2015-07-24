@@ -26,7 +26,7 @@ void LogicManager::update(const Ogre::FrameEvent &evt) {
 
     if(checkPlayerMonsterCollision()) {
         // TODO: maybe pass an enum to this function so we know exactly why the game ended. Define it on the Simple/ directory.
-        controller->shutdownNow(false);
+        controller->shutdownNow(GAME_END_CAUGHT_BY_MONSTER);
     }
 }
 
@@ -76,7 +76,7 @@ void LogicManager::decrementMonsterHealth(int quantity) {
     monsterHealth = std::max(0, monsterHealth - quantity);
 
     if(monsterHealth <= 0) {
-        controller->shutdownNow(true);
+        controller->shutdownNow(GAME_END_MONSTER_KILLED);
     }
 }
 

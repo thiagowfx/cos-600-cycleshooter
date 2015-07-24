@@ -77,6 +77,11 @@ Controller::Controller(int argc, char *argv[]) {
     go();
 }
 
+void Controller::shutdownNow(const EndGameType &endGameType) {
+    shutdown = true;
+    this->endGameType = endGameType;
+}
+
 LogicManager *Controller::getLogicManager() const {
     return logicManager.get();
 }
@@ -94,7 +99,7 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     Ogre::WindowEventUtilities::messagePump();
 
     if(oWindow->isClosed())
-        shutdownNow(false);
+        shutdownNow(GAME_END_MANUAL_SHUTDOWN);
 
     if(shutdown) {
         // sync with other threads for a clean shutdown
@@ -165,7 +170,7 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
 
         // window closed
         case sf::Event::Closed:
-            shutdownNow(false);
+            shutdownNow(GAME_END_MANUAL_SHUTDOWN);
             sWindow->close();
             break;
 
@@ -186,11 +191,6 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
 
 bool Controller::getShutdown() const {
     return shutdown;
-}
-
-void Controller::shutdownNow(bool gameWon) {
-    shutdown = true;
-    this->gameWon = gameWon;
 }
 
 void Controller::incrementPlayerAmmo(){
@@ -529,7 +529,7 @@ void Controller::setupKeyMappings() {
 
     // quit from the application
     InputManager::instance().addKeyUnbuf(sf::Keyboard::Escape, [&]{
-        shutdownNow(false);
+        shutdownNow(GAME_END_MANUAL_SHUTDOWN);
     });
 
     /*
@@ -573,12 +573,7 @@ void Controller::gameMainLoop() {
 void Controller::doGameEnd() {
     std::string totalGameTime = getElapsedTimeAsString();
 
-    if(gameWon) {
-        LOG("GAME VICTORY");
-    }
-    else {
-        LOG("GAME OVER");
-    }
+    bool gameVictory = isGameVictory(endGameType);
 
     LOG("Stopping game music");
     AudioManager::instance().stopMusic();
@@ -600,13 +595,13 @@ void Controller::doGameEnd() {
     // create a background, for cleaning purposes
     Ogre::Camera* endCamera = oSceneManager->createCamera("endCamera");
     Ogre::Viewport* endViewport = oWindow->addViewport(endCamera);
-    endViewport->setBackgroundColour(gameWon ? Ogre::ColourValue::Green : Ogre::ColourValue::Red);
+    endViewport->setBackgroundColour(gameVictory ? Ogre::ColourValue::Green : Ogre::ColourValue::Red);
 
     // render final game image
-    Ogre::OverlayManager::getSingleton().getByName(gameWon ? "Cycleshooter/GameVictory" : "Cycleshooter/GameOver")->show();
+    Ogre::OverlayManager::getSingleton().getByName(gameVictory ? "Cycleshooter/GameVictory" : "Cycleshooter/GameOver")->show();
     oWindow->update();
 
-    Soundname endSound = gameWon ? SOUND_GAME_VICTORY : SOUND_GAME_LOSS;
+    Soundname endSound = gameVictory ? SOUND_GAME_VICTORY : SOUND_GAME_LOSS;
     AudioManager::instance().playSound(endSound);
 
     std::ofstream ofs(ConfigManager::instance().getStr("Controller.statistics_file"), std::ios_base::app | std::ios_base::out);
@@ -617,7 +612,8 @@ void Controller::doGameEnd() {
     bicycle->printStatistics(ofs);
 
     ofs << "* Other Statistics\n"
-           "- Total game time: " << totalGameTime << std::endl;
+           "- Total game time: " << totalGameTime << std::endl <<
+           "- End Game type: " << endGameTypeToString(endGameType) << std::endl;
 
     ofs << "===== SESSION ENDS: " << std::chrono::system_clock::now() << std::endl << std::endl;
 
