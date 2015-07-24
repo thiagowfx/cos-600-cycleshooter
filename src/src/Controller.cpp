@@ -211,7 +211,7 @@ bool Controller::getDebug() const {
 }
 
 void Controller::waitThreads() const {
-    Ogre::LogManager::getSingleton().logMessage("--> Controller: Wait Threads <--");
+    LOG("Wait Threads");
 
     bicycleUpdater->wait();
     polarUpdater->wait();
