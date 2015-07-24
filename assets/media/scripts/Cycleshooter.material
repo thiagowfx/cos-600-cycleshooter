@@ -165,8 +165,6 @@ material Cycleshooter/BulletShell
 			texture_unit
 			{
 				texture BulletShell.jpg
-				env_map spherical
-                scroll_anim 0.004 0.004
 				rotate_anim 0.05
 			}
 		}
