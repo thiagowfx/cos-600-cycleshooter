@@ -114,6 +114,7 @@ void AudioManager::populateSounds() {
     LOAD_TEMPLATE(SOUND_MONSTER_DEATH, "events/monster_death.wav");
     LOAD_TEMPLATE(SOUND_MONSTER_DEATH_DOTA, "events/monster_death_dota.wav");
     LOAD_TEMPLATE(SOUND_PLAYER_DEATH, "events/playerdeath.wav");
+    LOAD_TEMPLATE(SOUND_WALL_CRASH, "events/wall_crash.wav");
 
     LOAD_TEMPLATE(SOUND_HEARTBEAT01, "heartbeat/heartbeat01.wav");
     LOAD_TEMPLATE(SOUND_HEARTBEAT02, "heartbeat/heartbeat02.wav");

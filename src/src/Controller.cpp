@@ -593,9 +593,13 @@ void Controller::doGameEnd() {
     else if(endGameType == GAME_END_MONSTER_KILLED){
         AudioManager::instance().playSound(SOUND_MONSTER_DEATH);
         AudioManager::instance().playSound(SOUND_MONSTER_DEATH_DOTA);
-        sf::Time soundDurationA = AudioManager::instance().getSoundDuration(SOUND_PLAYER_DEATH);
-        sf::Time soundDurationB = AudioManager::instance().getSoundDuration(SOUND_PLAYER_DEATH);
-        sf::sleep((soundDurationA > soundDurationB) ? soundDurationA : soundDurationB);
+        sf::Time soundDurationA = AudioManager::instance().getSoundDuration(SOUND_MONSTER_DEATH);
+        sf::Time soundDurationB = AudioManager::instance().getSoundDuration(SOUND_MONSTER_DEATH_DOTA);
+        sf::sleep(std::max(soundDurationA,soundDurationB));
+    }
+    else if(endGameType == GAME_END_WALL_CRASH){
+        AudioManager::instance().playSound(SOUND_WALL_CRASH);
+        sf::sleep(AudioManager::instance().getSoundDuration(SOUND_WALL_CRASH));
     }
 
     LOG("Clearing the scene");
