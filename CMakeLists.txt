@@ -23,6 +23,7 @@ add_subdirectory(${VENDOR_DIR})
 
 
 if(DEPENDENCIES_READY)
+    # SFML
     find_package(SFML REQUIRED EXACT 2.2 COMPONENTS audio system window)
 
     if(NOT SFML_FOUND)
@@ -32,6 +33,7 @@ if(DEPENDENCIES_READY)
     include_directories(${SFML_INCLUDE_DIR})
 
 
+    # Ogre
     find_package(OGRE REQUIRED EXACT 1.9)
 
     if(NOT OGRE_FOUND)
@@ -67,6 +69,18 @@ if(DEPENDENCIES_READY)
         ${OGRE_Overlay_LIBRARIES}
         )
 
+
+    # OgreProcedural
+    find_package(OgreProcedural REQUIRED)
+
+    if(NOT OgreProcedural_FOUND)
+        message(SEND_ERROR "Failed to find OgreProcedural.")
+    endif()
+
+    include_directories(${OgreProcedural_INCLUDE_DIR})
+
+
+    # Project
     file(
         GLOB_RECURSE PROJECT_HEADERS
         "${SRC_DIR}/include/*.h"
@@ -97,6 +111,7 @@ if(DEPENDENCIES_READY)
         ${PROJECT_NAME}
         ${SFML_LIBRARIES}
         ${OGRE_LIBRARIES}
+        ${OgreProcedural_LIBRARIES}
         )
 
     add_custom_command(

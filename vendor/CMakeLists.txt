@@ -1,4 +1,5 @@
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
 
 add_subdirectory(ogre)
+add_subdirectory(ogre-procedural)
 add_subdirectory(sfml)
