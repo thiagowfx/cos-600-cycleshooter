@@ -2,10 +2,10 @@
 #define _CROSSHAIRMANAGER_HPP_
 
 #include <OgreImage.h>
+#include <OgreMath.h>
 #include <OgreOverlayManager.h>
 
 #include "ConfigManager.hpp"
-#include "Randomness.hpp"
 
 namespace Cycleshooter {
 
@@ -50,9 +50,16 @@ class CrosshairManager {
     const double MAPPED_HEARTBEAT_MINIMUM = ConfigManager::instance().getDouble("CrosshairManager.mapped_heartbeat_minimum");
     const double MAPPED_HEARTBEAT_MAXIMUM = ConfigManager::instance().getDouble("CrosshairManager.mapped_heartbeat_maximum");
 
+    /**
+    * Return either (+1) or (-1).
+    */
+    inline int getRandomSignal() const {
+        return (rand() % 2) ? (+1) : (-1);
+    }
+
     inline std::pair<double, double> getRandomDirection() const {
-        double a = Randomness::instance().getRandomSignal() * Randomness::instance().getRandomDouble();
-        double b = Randomness::instance().getRandomSignal() * Randomness::instance().getRandomDouble();
+        double a = getRandomSignal() * Ogre::Math::UnitRandom();
+        double b = getRandomSignal() * Ogre::Math::UnitRandom();
         double to_norm = sqrt(a * a + b * b);
         return std::make_pair(a / to_norm, b / to_norm);
     }
@@ -116,7 +123,7 @@ public:
         }
 
         // handle change of direction
-        double P = Randomness::instance().getRandomDouble();
+        double P = Ogre::Math::UnitRandom();
         if (P >= (1 - PROBABILITY_CHANGE_DIRECTION)) {
             direction = getRandomDirection();
         }
