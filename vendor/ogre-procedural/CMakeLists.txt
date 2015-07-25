@@ -10,7 +10,7 @@ if(NOT OgreProcedural_FOUND)
     ExternalProject_Add(
         OgreProcedural
         PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
-        HG_REPOSITORY "https://bitbucket.org/transporter/ogre-procedural"
+        URL "https://bitbucket.org/transporter/ogre-procedural/get/ca6eb3363a53.zip"
         UPDATE_COMMAND ""
         CMAKE_CACHE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${OgreProcedural_HOME} -DCMAKE_BUILD_TYPE:STRING=Release -DOgreProcedural_BUILD_DOCS:BOOL=FALSE -DOgreProcedural_BUILD_SAMPLES:BOOL=FALSE
         INSTALL_COMMAND ${CMAKE_COMMAND} --build . --target install
