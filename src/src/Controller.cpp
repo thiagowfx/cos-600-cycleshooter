@@ -595,6 +595,10 @@ void Controller::doGameEnd() {
         sf::Time soundDurationB = AudioManager::instance().getSoundDuration(SOUND_PLAYER_DEATH);
         sf::sleep((soundDurationA > soundDurationB) ? soundDurationA : soundDurationB);
     }
+    else if(endGameType == GAME_END_WALL_CRASH){
+        AudioManager::instance().playSound(SOUND_WALL_CRASH);
+        sf::sleep(AudioManager::instance().getSoundDuration(SOUND_WALL_CRASH));
+    }
 
     LOG("Clearing the scene");
     oSceneManager->clearScene();
