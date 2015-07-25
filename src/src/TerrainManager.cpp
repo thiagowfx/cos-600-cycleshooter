@@ -111,13 +111,19 @@ std::pair<int, bool> TerrainManager::getTerrainAt(Ogre::Vector3 coord){
     //Ogre::Real rad = sceneManager->getSceneNode("bulletSceneNode0")->getAttachedObject("bulletSceneNode0")->getBoundingRadius();
     std::pair<bool ,Ogre::String> bulletProperties = collisionHandler->getBulletNameAt(collisionCoord.first,collisionCoord.second);
     //terrainAt.second = sceneManager->getSceneNode(bulletName)->getAttachedObject(bulletName)->getBoundingBox().contains(coord);
-    terrainAt.second = false;
     if(bulletProperties.first){
         Ogre::LogManager::getSingletonPtr()->logMessage("--> TerrainManager: Exist Bullet Here! <--");
-        terrainAt.second = sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->getBoundingBox().contains(coord);
-        std::cout << terrainAt.second<<std::endl;
-        sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->setVisible(false);
+        Ogre::AxisAlignedBox bulletBox = sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->getWorldBoundingBox();
+        std::cout << bulletBox.volume() << std::endl;
+        std::cout << bulletBox.getCenter().x<<" "<<bulletBox.getCenter().y<<" "<<bulletBox.getCenter().z<<std::endl;
+        std::cout << coord.x<<" "<<coord.y<<" "<<coord.z<<std::endl;
+        terrainAt.second = sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->getWorldBoundingBox().intersects(coord);
+        std::cout << sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->getBoundingBox().intersects(coord)<<std::endl;
+        if(terrainAt.second){
+            sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->setVisible(false);
+        }
     }
+
     //std::cout<< "terrainAt" << terrainAt.first << " " <<terrainAt.second<<std::endl;
     return terrainAt;
 }
