@@ -13,7 +13,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${DEST_DIR}/bin")
 option(DEPENDENCIES_READY "Are the dependencies ready?" OFF)
 
 
-add_definitions("-std=c++11 -g -DLOGGING_ENABLED -Wno-deprecated-declarations")
+add_definitions("-std=c++11 -g -DLOGGING_ENABLED
+                -Wno-deprecated-declarations
+                -Wno-deprecated-register
+                ")
 
 
 add_subdirectory(${VENDOR_DIR})
@@ -37,7 +40,6 @@ if(DEPENDENCIES_READY)
 
     include_directories(
         ${OGRE_INCLUDE_DIRS}
-        ${OGRE_SAMPLES_INCLUDEPATH}
         ${OGRE_Terrain_INCLUDE_DIRS}
         ${OGRE_Overlay_INCLUDE_DIRS}
         )

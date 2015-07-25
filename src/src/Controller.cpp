@@ -183,6 +183,9 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         case sf::Event::JoystickButtonPressed:
             InputManager::instance().executeJoystickButtonAction(event.joystickButton.button, context);
             break;
+	
+	default:
+	    break;
         }
     }
 
