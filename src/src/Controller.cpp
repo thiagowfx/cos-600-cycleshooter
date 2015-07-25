@@ -237,6 +237,7 @@ void Controller::go() {
 
     // setups
     InputManager::instance().updateJoystickNumber();
+    AudioManager::instance().specialAddSound(SOUND_MONSTER_CHASING, true);
     setupRunnerMode();
     setupDebugOn();
     setupKeyMappings();
@@ -576,6 +577,7 @@ void Controller::doGameEnd() {
     bool gameVictory = isGameVictory(endGameType);
 
     LOG("Stopping game music");
+    AudioManager::instance().specialRemoveSound(SOUND_MONSTER_CHASING);
     AudioManager::instance().stopMusic();
 
     LOG("Unmapping all keys");
@@ -700,6 +702,7 @@ void Controller::setupRunnerMode() {
     crosshairManager->setupRunnerMode();
     hud->setupRunnerMode();
     AudioManager::instance().playMusic(MUSIC_RUNNER);
+    AudioManager::instance().specialGetSound(SOUND_MONSTER_CHASING)->play();
 }
 
 void Controller::setupShooterMode() {
@@ -710,6 +713,7 @@ void Controller::setupShooterMode() {
     crosshairManager->setupShooterMode();
     hud->setupShooterMode();
     AudioManager::instance().playMusic(MUSIC_SHOOTER);
+    AudioManager::instance().specialGetSound(SOUND_MONSTER_CHASING)->pause();
 }
 
 void Controller::toggleMode() {

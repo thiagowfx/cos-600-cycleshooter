@@ -35,6 +35,22 @@ void AudioManager::playSound(const Soundname& soundname) {
     }
 }
 
+void AudioManager::specialAddSound(const Soundname &soundname, bool loops) {
+    sf::Sound sound;
+    sound.setBuffer(soundMap[soundname]);
+    sound.setLoop(loops);
+    specialSounds[soundname] = sound;
+}
+
+void AudioManager::specialRemoveSound(const Soundname &soundname) {
+    specialSounds[soundname].stop();
+    specialSounds.erase(soundname);
+}
+
+sf::Sound* AudioManager::specialGetSound(const Soundname &soundname) {
+    return &specialSounds[soundname];
+}
+
 void AudioManager::playMusic(const Musicname &musicname, bool restart) {
     sf::Lock lock(currentPlayingMusicMutex);
     LOG("Playing Music");
@@ -93,6 +109,7 @@ void AudioManager::populateSounds() {
 
     LOAD_TEMPLATE(SOUND_GAME_LOSS, "events/game_loss.wav");
     LOAD_TEMPLATE(SOUND_GAME_VICTORY, "events/game_victory.wav");
+    LOAD_TEMPLATE(SOUND_MONSTER_CHASING, "events/monster_chasing.wav");
     LOAD_TEMPLATE(SOUND_MONSTER_HIT, "events/monster_hit.wav");
     LOAD_TEMPLATE(SOUND_MONSTER_DEATH, "events/monster_death.wav");
     LOAD_TEMPLATE(SOUND_MONSTER_DEATH_DOTA, "events/monster_death_dota.wav");
