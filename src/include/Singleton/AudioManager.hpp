@@ -29,6 +29,7 @@ enum Soundname {
     /* game events */
     SOUND_GAME_LOSS,
     SOUND_GAME_VICTORY,
+    SOUND_MONSTER_CHASING,
     SOUND_MONSTER_HIT,
     SOUND_PLAYER_DEATH,
 
@@ -85,6 +86,11 @@ class AudioManager {
     std::map<Soundname, sf::SoundBuffer> soundMap;
 
     /**
+     * Maps all soundnames to their respective special sf::Sound.
+     */
+    std::map<Soundname, sf::Sound> specialSounds;
+
+    /**
      * Maps all musicnames to their respective Music variables.
      */
     std::map<Musicname, sf::Music> musicMap;
@@ -109,6 +115,9 @@ class AudioManager {
      */
     sf::Music* currentPlayingMusic = NULL;
 
+    /**
+     * Mutex for the current playing music.
+     */
     sf::Mutex currentPlayingMusicMutex;
 
     /**
@@ -141,6 +150,21 @@ public:
      * Play the specified sound.
      */
     void playSound(const Soundname& soundname);
+
+    /**
+     * Stores the specified sound for later retrieval / manipulation, treating it as special.
+     */
+    void specialAddSound(const Soundname& soundname, bool loops = true);
+
+    /**
+     * Remove the specified sound as special.
+     */
+    void specialRemoveSound(const Soundname& soundname);
+
+    /**
+     * Get the specified special sound.
+     */
+    sf::Sound* specialGetSound(const Soundname& soundname);
 
     /**
      * Play the music specified as argument, stopping the current one·
