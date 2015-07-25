@@ -23,6 +23,7 @@ void LogicManager::update(const Ogre::FrameEvent &evt) {
     }
 
     updateMonsterPosition(elapsedTime);
+    //Dealing with terrain Collision;
 
     if(checkPlayerMonsterCollision()) {
         controller->shutdownNow(GAME_END_CAUGHT_BY_MONSTER);

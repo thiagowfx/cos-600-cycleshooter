@@ -159,6 +159,7 @@ void TerrainManager::renderBullets(){
         bulletEntity->setMaterialName("Cycleshooter/BulletShell");
         Ogre::LogManager::getSingletonPtr()->logMessage("--> TerrainManger: Rendering Bullet <--");
         Ogre::SceneNode* bulletNode = sceneManager->getRootSceneNode()->createChildSceneNode(renderSettings.first[i], renderSettings.second[i]);
+        Ogre::LogManager::getSingletonPtr()->logMessage(renderSettings.first[i]);
         bulletNode->attachObject(bulletEntity);
         //bulletNode->scale(0.05,0.05,0.05);
         //Finding bullet entities bounding limits.
