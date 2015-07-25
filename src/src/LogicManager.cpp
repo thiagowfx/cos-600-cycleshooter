@@ -25,7 +25,6 @@ void LogicManager::update(const Ogre::FrameEvent &evt) {
     updateMonsterPosition(elapsedTime);
 
     if(checkPlayerMonsterCollision()) {
-        // TODO: maybe pass an enum to this function so we know exactly why the game ended. Define it on the Simple/ directory.
         controller->shutdownNow(GAME_END_CAUGHT_BY_MONSTER);
     }
 }

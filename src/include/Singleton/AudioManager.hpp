@@ -30,6 +30,7 @@ enum Soundname {
     SOUND_GAME_LOSS,
     SOUND_GAME_VICTORY,
     SOUND_MONSTER_HIT,
+    SOUND_PLAYER_DEATH,
 
     /* heartbeat sounds */
     SOUND_HEARTBEAT01,

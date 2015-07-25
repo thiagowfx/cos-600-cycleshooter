@@ -94,6 +94,7 @@ void AudioManager::populateSounds() {
     LOAD_TEMPLATE(SOUND_GAME_LOSS, "events/game_loss.wav");
     LOAD_TEMPLATE(SOUND_GAME_VICTORY, "events/game_victory.wav");
     LOAD_TEMPLATE(SOUND_MONSTER_HIT, "events/monster_hit.wav");
+    LOAD_TEMPLATE(SOUND_PLAYER_DEATH, "events/playerdeath.wav");
 
     LOAD_TEMPLATE(SOUND_HEARTBEAT01, "heartbeat/heartbeat01.wav");
     LOAD_TEMPLATE(SOUND_HEARTBEAT02, "heartbeat/heartbeat02.wav");
