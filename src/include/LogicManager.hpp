@@ -86,8 +86,14 @@ class LogicManager {
     const double MIRROR_PERCENTAGE_H = ConfigManager::instance().getDouble("LogicManager.mirror_percentage_h");
     const double MIRROR_PERCENTAGE_V = ConfigManager::instance().getDouble("LogicManager.mirror_percentage_v");
 
-    //Data structure for difficulty mapping.
+    // Data structure for difficulty mapping.
     std::vector<float> difficultyParamenter;
+
+    // Rotation variables
+    double angularVelocity;
+	// TODO: create a config out of this hard-coded constant
+    Ogre::Degree MAX_ANGLE = Ogre::Degree(45);
+
 public:
     LogicManager(Controller* controller);
 
@@ -114,6 +120,7 @@ public:
     //Move functions.
     void translateMonster(int difficulty, Ogre::Vector3 translation);
     void yawCamera();
+    void rotateCamera(const Ogre::Degree& angle, const Ogre::Vector3& pathDirection);
 
 
     // getters and setters
@@ -122,6 +129,8 @@ public:
     int getMonsterHealth() const;
     void setDifficultyParamenter();
     void externalIncrement();
+    double getAngularVelocity() const;
+    void setAngularVelocity(double value);
 };
 }
 

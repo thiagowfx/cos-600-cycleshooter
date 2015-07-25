@@ -12,6 +12,8 @@ LogicManager::LogicManager(Controller* controller) :
     int numOfTerrainTypes = 7;
     difficultyParamenter = std::vector<float> (numOfTerrainTypes,0);
     setDifficultyParamenter();
+	// TODO: remove this later on
+    //parentPlayerNode->setDirection(0,0,-1);
     go();
 }
 
@@ -184,6 +186,14 @@ void LogicManager::createRtt() {
     rttRenderTarget->getViewport(0)->setBackgroundColour(Ogre::ColourValue::Black);
 }
 
+double LogicManager::getAngularVelocity() const {
+    return angularVelocity;
+}
+
+void LogicManager::setAngularVelocity(double value) {
+    angularVelocity = value;
+}
+
 void LogicManager::setDifficultyParamenter() {
     difficultyParamenter[0] = 1.0f;
     difficultyParamenter[1] = 1.0f;
@@ -228,6 +238,18 @@ void LogicManager::setDebugOff() {
 void LogicManager::translateMonster(int difficulty, Ogre::Vector3 translation){
     float parameter = 1/difficultyParamenter[difficulty];
     parentPlayerNode->translate(translation*parameter);
+}
+
+void LogicManager::rotateCamera(const Ogre::Degree& angle, const Ogre::Vector3& pathDirection){
+    Ogre::Vector3 cameraDirection = frontCamera->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_Z;
+    Ogre::Degree angleBetween = - cameraDirection.angleBetween(pathDirection);
+    Ogre::Degree absAngle = Ogre::Math::Abs(angle + angleBetween);
+    if(absAngle < MAX_ANGLE) {
+        frontCamera->yaw(angle);
+    }
+    else {
+        return;
+    }
 }
 
 }
