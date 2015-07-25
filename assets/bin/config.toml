@@ -40,7 +40,7 @@ application_name = "Cycleshooter"
 statistics_file = "stats.txt"
 countdown_time_ms = 1000
 countdown_enabled = true
-camera_angle_rotation_step = 0.05
+camera_angle_rotation_step = 0.025
 
 [CrosshairManager]
 crosshair_friction = 25.0
