@@ -50,7 +50,7 @@ public:
     int getCollisionMatrixHeight() const;
 
     //Function that discover if a bullet exists and also the scene node name related to it.
-    std::pair<bool,Ogre::String>  isBulletAt(int pixelWidth, int pixelHeight, Ogre::Vector3 coord, Ogre::Real radius);
+    Ogre::String getBulletNameAt(int pixelWidth, int pixelHeight);
     //Functions to add bullets in bullet's structure.
     void insertBulletAt(int width, int height, bool exist, Ogre::Vector3 coord);
     //Function to dis/activate bullets.
