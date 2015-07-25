@@ -109,7 +109,8 @@ void AudioManager::populateSounds() {
 
     LOAD_TEMPLATE(SOUND_GAME_LOSS, "events/game_loss.wav");
     LOAD_TEMPLATE(SOUND_GAME_VICTORY, "events/game_victory.wav");
-    LOAD_TEMPLATE(SOUND_GAME_START_DOTA, "events/game_start_dota.wav");
+    LOAD_TEMPLATE(SOUND_GAME_BATTLE_PREPARE_DOTA, "events/game_start_battle_prepare_dota.wav");
+    LOAD_TEMPLATE(SOUND_GAME_BATTLE_BEGINS_DOTA, "events/game_start_battle_begins_dota.wav");
     LOAD_TEMPLATE(SOUND_MONSTER_CHASING, "events/monster_chasing.wav");
     LOAD_TEMPLATE(SOUND_MONSTER_HIT, "events/monster_hit.wav");
     LOAD_TEMPLATE(SOUND_MONSTER_DEATH, "events/monster_death.wav");
