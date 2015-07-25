@@ -16,3 +16,7 @@ if(NOT OgreProcedural_FOUND)
         INSTALL_COMMAND ${CMAKE_COMMAND} --build . --target install
 )
 endif()
+
+set(CMAKE_MODULE_PATH "${OgreProcedural_HOME}/lib/OgreProcedural/cmake;${CMAKE_MODULE_PATH}")
+list(REMOVE_DUPLICATES CMAKE_MODULE_PATH)
+set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" CACHE INTERNAL "" FORCE)
