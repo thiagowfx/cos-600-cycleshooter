@@ -233,6 +233,7 @@ void Controller::go() {
         sf::sleep(AudioManager::instance().getSoundDuration(SOUND_GAME_BATTLE_PREPARE_DOTA));
         startCountdown();
         AudioManager::instance().playSound(SOUND_GAME_BATTLE_BEGINS_DOTA);
+        sf::sleep(AudioManager::instance().getSoundDuration(SOUND_GAME_BATTLE_PREPARE_DOTA));
     }
 
     // initialize our objects and our game overall
