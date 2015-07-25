@@ -91,9 +91,9 @@ class LogicManager {
 
     // Rotation variables
     double angularVelocity;
-	// TODO: create a config out of this hard-coded constant
+    // TODO: create a config out of this hard-coded constant
     Ogre::Degree MAX_ANGLE = Ogre::Degree(45);
-
+    Ogre::Degree Offset = Ogre::Degree(0.5);
 public:
     LogicManager(Controller* controller);
 
