@@ -70,6 +70,7 @@ public:
     CrosshairManager() {
         redCrosshair = Ogre::OverlayManager::getSingleton().getByName("Cycleshooter/RedCrosshair");
         redCrosshair->setScale(CROSSHAIR_SCALE_SIZE, CROSSHAIR_SCALE_SIZE);
+        redCrosshair->hide();
 
         greenCrosshair = Ogre::OverlayManager::getSingleton().getByName("Cycleshooter/GreenCrosshair");
         greenCrosshair->setScale(CROSSHAIR_SCALE_SIZE, CROSSHAIR_SCALE_SIZE);
@@ -127,15 +128,15 @@ public:
     /**
      * Return the x \in [-1.0, +1.0] coordinate of the red crosshair.
      */
-    double getRedCrosshairX() const {
-        return redCrosshair->getScrollX();
+    double getGreenCrosshairX() const {
+        return greenCrosshair->getScrollX();
     }
 
     /**
      * Return the y \in [-1.0, +1.0] coordinate of the red crosshair.
      */
-    double getRedCrosshairY() const {
-        return redCrosshair->getScrollY();
+    double getGreenCrosshairY() const {
+        return greenCrosshair->getScrollY();
     }
 
     /**
@@ -146,11 +147,11 @@ public:
         auto height = image.getHeight();
 
         // map [-1.0, +1.0] to [0, width)
-        int retx = ((getRedCrosshairX() + 1.0) * width) / 2.0;
+        int retx = ((getGreenCrosshairX() + 1.0) * width) / 2.0;
 
         // map [-1.0, +1.0] to [0, height)
         // inverted in the vertical
-        int rety = height - int(((getRedCrosshairY() + 1.0) * height) / 2.0);
+        int rety = height - int(((getGreenCrosshairY() + 1.0) * height) / 2.0);
 
         if(retx == image.getWidth())
             --retx;
@@ -162,12 +163,10 @@ public:
     }
 
     void setupRunnerMode() {
-        redCrosshair->hide();
         greenCrosshair->hide();
     }
 
     void setupShooterMode() {
-        redCrosshair->show();
         greenCrosshair->show();
     }
 
