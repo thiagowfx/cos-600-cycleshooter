@@ -218,6 +218,8 @@ void Controller::waitThreads() const {
 }
 
 void Controller::go() {
+    srand(time(NULL));
+
     // initialize core OGRE elements
     createSFMLWindow();
     createRoot();
