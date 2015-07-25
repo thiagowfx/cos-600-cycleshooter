@@ -132,9 +132,8 @@ int CollisionHandler::getCollisionMatrixHeight() const{
     return collisionMatrixHeight;
 }
 
-Ogre::String CollisionHandler::getBulletNameAt(int pixelWidth, int pixelHeight){
+std::pair<bool,Ogre::String> CollisionHandler::getBulletNameAt(int pixelWidth, int pixelHeight){
     //Grabbing correspondent datastructure position.
-//    BulletElement e = bulletMatrix[pixelWidth][pixelHeight].second;
 //    bool test = bulletMatrix[pixelWidth][pixelHeight].first;
 //    if(!test)
 //        return std::make_pair(false,e.getScenenodeName());
@@ -162,7 +161,9 @@ Ogre::String CollisionHandler::getBulletNameAt(int pixelWidth, int pixelHeight){
 //    }
 //    else
 //        return std::make_pair(false,e.getScenenodeName());
-    return bulletMatrix[pixelWidth][pixelHeight].second.getScenenodeName();
+    Ogre::LogManager::getSingletonPtr()->logMessage("--> CollisionHandler: getBulletNameAt <--");
+    Ogre::LogManager::getSingletonPtr()->logMessage(bulletMatrix[pixelWidth][pixelHeight].second.getScenenodeName());
+    return std::make_pair(bulletMatrix[pixelWidth][pixelHeight].first,bulletMatrix[pixelWidth][pixelHeight].second.getScenenodeName());
 }
 
 void CollisionHandler::insertBulletAt(int width, int height,bool exist, Ogre::Vector3 coord){
@@ -206,14 +207,16 @@ std::pair<std::vector<Ogre::String> , std::vector<Ogre::Vector3> > CollisionHand
 
 void CollisionHandler::compensateBulletRender(std::vector<std::pair<int, int> > coords){
     int cWidth = coords[0].first;
-    int cHeight = coords[1].second;
+    int cHeight = coords[0].second;
     int width, height;
     Ogre::LogManager::getSingletonPtr()->logMessage("--> CollisionHandler: Compensating Bullet Render <--");
+    Ogre::LogManager::getSingletonPtr()->logMessage(bulletMatrix[cWidth][cHeight].second.getScenenodeName());
     for(int i = 1;i < coords.size();i++){
         width = coords[i].first;
         height = coords[i].second;
         bulletMatrix[width][height].first = true;
         bulletMatrix[width][height].second = bulletMatrix[cWidth][cHeight].second;
+        Ogre::LogManager::getSingletonPtr()->logMessage(bulletMatrix[cWidth][cHeight].second.getScenenodeName());
     }
 }
 

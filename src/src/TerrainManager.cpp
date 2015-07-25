@@ -109,14 +109,15 @@ std::pair<int, bool> TerrainManager::getTerrainAt(Ogre::Vector3 coord){
     terrainAt.first = collisionHandler->getPixelEnumeration(collisionCoord.first,collisionCoord.second);
     //Discover if a bullet exists in the terrain point.
     //Ogre::Real rad = sceneManager->getSceneNode("bulletSceneNode0")->getAttachedObject("bulletSceneNode0")->getBoundingRadius();
-    Ogre::String bulletName = collisionHandler->getBulletNameAt(collisionCoord.first,collisionCoord.second);
-    terrainAt.second = sceneManager->getSceneNode(bulletName)->getAttachedObject(bulletName)->getBoundingBox().contains(coord);
-//    if(isBullet.first){
-//        Ogre::LogManager::getSingletonPtr()->logMessage("--> TerrainManager: Exist Bullet Here! <--");
-//        terrainAt.second = true;
-//        std::cout << terrainAt.second<<std::endl;
-//        sceneManager->getSceneNode(isBullet.second)->getAttachedObject(isBullet.second)->setVisible(false);
-//    }
+    std::pair<bool ,Ogre::String> bulletProperties = collisionHandler->getBulletNameAt(collisionCoord.first,collisionCoord.second);
+    //terrainAt.second = sceneManager->getSceneNode(bulletName)->getAttachedObject(bulletName)->getBoundingBox().contains(coord);
+    terrainAt.second = false;
+    if(bulletProperties.first){
+        Ogre::LogManager::getSingletonPtr()->logMessage("--> TerrainManager: Exist Bullet Here! <--");
+        terrainAt.second = sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->getBoundingBox().contains(coord);
+        std::cout << terrainAt.second<<std::endl;
+        sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->setVisible(false);
+    }
     //std::cout<< "terrainAt" << terrainAt.first << " " <<terrainAt.second<<std::endl;
     return terrainAt;
 }
