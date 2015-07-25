@@ -594,6 +594,7 @@ void Controller::doGameEnd() {
 
     if(endGameType == GAME_END_CAUGHT_BY_MONSTER) {
         AudioManager::instance().playSound(SOUND_PLAYER_DEATH);
+        AudioManager::instance().playSound(SOUND_MONSTER_LAUGH);
         sf::sleep(AudioManager::instance().getSoundDuration(SOUND_PLAYER_DEATH));
     }
     else if(endGameType == GAME_END_MONSTER_KILLED){
