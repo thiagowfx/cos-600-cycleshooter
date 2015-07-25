@@ -42,7 +42,7 @@ countdown_time_ms = 1000
 countdown_enabled = true
 
 [CrosshairManager]
-green_crosshair_friction = 25.0
+crosshair_friction = 25.0
 probability_change_direction = 0.50
 crosshair_scale_size = 0.20
 randomization_square_half_side_relative = 1.1

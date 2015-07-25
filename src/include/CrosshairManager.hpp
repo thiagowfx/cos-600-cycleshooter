@@ -28,7 +28,7 @@ class CrosshairManager {
     /**
      * Crosshair anti-sensibility. More means less sensible.
      */
-    const double GREEN_CROSSHAIR_FRICTION = ConfigManager::instance().getDouble("CrosshairManager.green_crosshair_friction");
+    const double CROSSHAIR_FRICTION = ConfigManager::instance().getDouble("CrosshairManager.crosshair_friction");
 
     /**
      * Probability for the red crosshair to change its direction in a randomization.
@@ -38,12 +38,12 @@ class CrosshairManager {
     /**
      * Randomization anti-sensibility. Less means a more aggressive randomization.
      */
-    const double RANDOMIZATION_FRICTION = ConfigManager::instance().getDouble("CrosshairManager.randomization_friction_relative") * GREEN_CROSSHAIR_FRICTION;
+    const double RANDOMIZATION_FRICTION = ConfigManager::instance().getDouble("CrosshairManager.randomization_friction_relative") * CROSSHAIR_FRICTION;
 
     /**
      * Size of the square of randomization of the red crosshair around the green crosshair.
      */
-    const double RANDOMIZATION_SQUARE_HALF_SIDE = ConfigManager::instance().getDouble("CrosshairManager.randomization_square_half_side_relative") * (1.0 / GREEN_CROSSHAIR_FRICTION);
+    const double RANDOMIZATION_SQUARE_HALF_SIDE = ConfigManager::instance().getDouble("CrosshairManager.randomization_square_half_side_relative") * (1.0 / CROSSHAIR_FRICTION);
 
     const int HEARTBEAT_MINIMUM_ASSUMED = ConfigManager::instance().getInt("Controller.heartbeat_minimum_assumed");
     const int HEARTBEAT_MAXIMUM_ASSUMED = ConfigManager::instance().getInt("Controller.heartbeat_maximum_assumed");
@@ -63,14 +63,13 @@ class CrosshairManager {
     inline double fHeartRateSensibility(const double& p, const int& heartRate) const {
         // map heartRate to mappedHeartRate
         double mappedHeartRate = (((MAPPED_HEARTBEAT_MAXIMUM - MAPPED_HEARTBEAT_MINIMUM) * (heartRate - HEARTBEAT_MINIMUM_ASSUMED)) / (HEARTBEAT_MAXIMUM_ASSUMED - HEARTBEAT_MINIMUM_ASSUMED)) + MAPPED_HEARTBEAT_MINIMUM;
-        return (p / GREEN_CROSSHAIR_FRICTION) * mappedHeartRate;
+        return (p / CROSSHAIR_FRICTION) * mappedHeartRate;
     }
 
 public:
     CrosshairManager() {
         redCrosshair = Ogre::OverlayManager::getSingleton().getByName("Cycleshooter/RedCrosshair");
         redCrosshair->setScale(CROSSHAIR_SCALE_SIZE, CROSSHAIR_SCALE_SIZE);
-        redCrosshair->hide();
 
         greenCrosshair = Ogre::OverlayManager::getSingleton().getByName("Cycleshooter/GreenCrosshair");
         greenCrosshair->setScale(CROSSHAIR_SCALE_SIZE, CROSSHAIR_SCALE_SIZE);
@@ -80,8 +79,8 @@ public:
      * Move/scroll the crosshair by the amount specified. Optionally it may wrap around the screen too.
      */
     void scrollVirtualCrosshair(const int& heartRate, const double& dx, const double& dy, bool wraps = false) {
-        double px = greenCrosshair->getScrollX() + fHeartRateSensibility(dx, heartRate);
-        double py = greenCrosshair->getScrollY() + fHeartRateSensibility(dy, heartRate);
+        double px = redCrosshair->getScrollX() + fHeartRateSensibility(dx, heartRate);
+        double py = redCrosshair->getScrollY() + fHeartRateSensibility(dy, heartRate);
 
         // handle out-of-screen crosshair coordinates appropriately
         px = (px > 1.0) ? (wraps ? -1.0 : +1.0) : px, px = (px < -1.0) ? (wraps ? +1.0 : -1.0) : px;
@@ -101,17 +100,17 @@ public:
         double dx = direction.first / RANDOMIZATION_FRICTION;
         double dy = direction.second / RANDOMIZATION_FRICTION;
 
-        double px = redCrosshair->getScrollX() + dx;
-        double py = redCrosshair->getScrollY() + dy;
+        double px = greenCrosshair->getScrollX() + dx;
+        double py = greenCrosshair->getScrollY() + dy;
 
         // check if px is out-of-square
-        if (fabs(px - greenCrosshair->getScrollX()) > RANDOMIZATION_SQUARE_HALF_SIDE) {
+        if (fabs(px - redCrosshair->getScrollX()) > RANDOMIZATION_SQUARE_HALF_SIDE) {
             px -= 2 * dx;
             direction.first = -direction.first;
         }
 
         // check if py is out-of-square
-        if (fabs(py - greenCrosshair->getScrollY()) > RANDOMIZATION_SQUARE_HALF_SIDE) {
+        if (fabs(py - redCrosshair->getScrollY()) > RANDOMIZATION_SQUARE_HALF_SIDE) {
             py -= 2 * dy;
             direction.second = -direction.second;
         }
@@ -122,7 +121,7 @@ public:
             direction = getRandomDirection();
         }
 
-        redCrosshair->setScroll(px, py);
+        greenCrosshair->setScroll(px, py);
     }
 
     /**
