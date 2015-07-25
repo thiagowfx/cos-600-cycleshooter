@@ -19,8 +19,9 @@ class LogicManager {
     Ogre::Viewport *viewportMirror = NULL;
 
     Ogre::SceneNode* parentPlayerNode = NULL;
-    Ogre::SceneNode* frontPlayerNode = NULL;
-    Ogre::SceneNode* rearPlayerNode = NULL;
+    Ogre::SceneNode* playerNode = NULL;
+    Ogre::SceneNode* frontCameraNode = NULL;
+    Ogre::SceneNode* rearCameraNode = NULL;
     Ogre::SceneNode* monsterNode = NULL;
 
     Ogre::Camera *frontCamera = NULL;

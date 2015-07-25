@@ -83,7 +83,7 @@ void LogicManager::updatePlayerPosition(const Ogre::Real &time) {
     // distance = speed x time (Physics I, yay!)
     double distance = controller->getBicycle()->getGameSpeed() * time;
 
-    Ogre::Vector3 playerOrientation = frontCamera->getDirection();
+    Ogre::Vector3 playerOrientation = playerNode->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_Z;
 
     getPlayerNode()->translate(distance * playerOrientation, Ogre::SceneNode::TS_LOCAL);
 }
@@ -147,13 +147,14 @@ void LogicManager::createSceneNodes() {
 
     // create scene nodes
     parentPlayerNode = controller->getSceneManager()->getRootSceneNode()->createChildSceneNode("parentPlayerNode");
-    frontPlayerNode = parentPlayerNode->createChildSceneNode("frontPlayerNode");
-    rearPlayerNode = parentPlayerNode->createChildSceneNode("rearPlayerNode");
-    rearPlayerNode->yaw(Ogre::Radian(Ogre::Degree(180.0)));
+    frontCameraNode = parentPlayerNode->createChildSceneNode("frontCameraNode");
+    rearCameraNode = parentPlayerNode->createChildSceneNode("rearCameraNode");
+    playerNode = parentPlayerNode->createChildSceneNode("playerNode");
+    rearCameraNode->yaw(Ogre::Radian(Ogre::Degree(180.0)));
 
     // attach scene nodes
-    frontPlayerNode->attachObject(frontCamera);
-    rearPlayerNode->attachObject(rearCamera);
+    frontCameraNode->attachObject(frontCamera);
+    rearCameraNode->attachObject(rearCamera);
 
     monsterNode = controller->getSceneManager()->getSceneNode("monsterNode");
 }
@@ -248,6 +249,7 @@ void LogicManager::rotateCamera(const Ogre::Degree& angle, const Ogre::Vector3& 
     // should we rotate the camera or not, after all? Check it here.
     if(absAngle < MAX_ANGLE) {
         frontCamera->yaw(angle);
+        playerNode->yaw(angle/2);
     }
 }
 
