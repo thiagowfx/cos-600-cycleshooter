@@ -249,7 +249,7 @@ void LogicManager::rotateCamera(const Ogre::Degree& angle, const Ogre::Vector3& 
     // should we rotate the camera or not, after all? Check it here.
     if(absAngle < MAX_ANGLE) {
         frontCamera->yaw(angle);
-        playerNode->yaw(angle/2);
+        playerNode->yaw(ROTATION_FACTOR * angle);
     }
 }
 
