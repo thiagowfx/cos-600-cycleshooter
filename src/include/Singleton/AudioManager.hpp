@@ -39,6 +39,7 @@ enum Soundname {
     SOUND_PLAYER_DEATH,
     SOUND_WALL_CRASH,
     SOUND_RELOAD,
+    SOUND_MONSTER_PROXIMITY,
 
     /* heartbeat sounds */
     SOUND_HEARTBEAT01,
