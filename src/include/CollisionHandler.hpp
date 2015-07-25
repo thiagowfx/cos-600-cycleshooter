@@ -129,11 +129,7 @@ public:
     int getCollisionMatrixHeight() const;
 
     //Function that discover if a bullet exists and also the scene node name related to it.
-    /**
-     *
-     */
-    Ogre::String getBulletNameAt(int pixelWidth, int pixelHeight);
-
+    std::pair<bool, Ogre::String> getBulletNameAt(int pixelWidth, int pixelHeight);
     //Functions to add bullets in bullet's structure.
     /**
      *
@@ -174,6 +170,7 @@ public:
      */
     bool testMatrixDimension(); //Testing function to allocated matrix dimensions.
 };
+
 }
 
 #endif
