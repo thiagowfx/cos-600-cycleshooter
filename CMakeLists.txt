@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 2.8.7)
 project(Cycleshooter C CXX)
 
 
@@ -78,7 +78,7 @@ if(DEPENDENCIES_READY)
 
     set(PROJECT_INCLUDE_DIRS "")
     foreach(_HEADERFILE ${PROJECT_HEADERS})
-        get_filename_component(_DIR ${_HEADERFILE} DIRECTORY)
+        get_filename_component(_DIR ${_HEADERFILE} PATH)
         list(APPEND PROJECT_INCLUDE_DIRS ${_DIR})
     endforeach()
     list(REMOVE_DUPLICATES PROJECT_INCLUDE_DIRS)
