@@ -228,6 +228,8 @@ void Controller::go() {
 
     if(ConfigManager::instance().getBool("Controller.countdown_enabled")) {
         startCountdown();
+        AudioManager::instance().playSound(SOUND_GAME_START_DOTA);
+        sf::sleep(AudioManager::instance().getSoundDuration(SOUND_GAME_START_DOTA));
     }
 
     // initialize our objects and our game overall

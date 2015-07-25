@@ -29,6 +29,7 @@ enum Soundname {
     /* game events */
     SOUND_GAME_LOSS,
     SOUND_GAME_VICTORY,
+    SOUND_GAME_START_DOTA,
     SOUND_MONSTER_CHASING,
     SOUND_MONSTER_HIT,
     SOUND_MONSTER_DEATH,
