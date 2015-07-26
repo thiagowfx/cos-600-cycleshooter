@@ -180,7 +180,6 @@ public:
      */
 
     void compensateBulletRender(std::vector<std::pair<int,int> > coords);
-     
       /////////////////////
      // Debug functions //
     /////////////////////

@@ -63,10 +63,17 @@ public:
     virtual ~TerrainManager();
     
     /**
-     * 
+     * Returns the data structure coordinates to
+     * a given world point.
      */
     std::pair<int,int> getCollisionCoordinates(Ogre::Vector3 point);//Transfors Ogre 3d point in data structure indexes.
     
+    /**
+     * Returns the WorldCoordinates of
+     * a given Collision Coordinate.
+     */
+    Ogre::Vector3 getWorldCoordinates(std::pair<int,int> collisionCoord);
+
     /**
      * 
      */
@@ -78,6 +85,8 @@ public:
      */
 
     std::vector<std::pair<int,int> > calculateBulletSurroundings(Ogre::Vector3 center,Ogre::AxisAlignedBox boundingBox);
+
+    std::vector<std::pair<int,int> > calculateBulletSurroundings(Ogre::Vector3 center);
 
     /**
      *

@@ -92,6 +92,14 @@ std::pair<int, int> TerrainManager::getCollisionCoordinates(Ogre::Vector3 point)
     return std::pair<int,int>(coordX,coordY);
 }
 
+Ogre::Vector3 TerrainManager::getWorldCoordinates(std::pair<int, int> collisionCoord){
+    Ogre::Real coordX = collisionCoord.first/widthScale;
+    Ogre::Real coordZ = collisionCoord.second/heightScale;
+    coordX += terrainTranslation.x;
+    coordZ += terrainTranslation.z;
+    return Ogre::Vector3(coordX,0,coordZ);
+}
+
 std::pair<int, bool> TerrainManager::getTerrainAt(Ogre::Vector3 coord){
     std::pair<int,int> collisionCoord = getCollisionCoordinates(coord);
     //Getting terrain property.
@@ -120,7 +128,7 @@ std::pair<int, bool> TerrainManager::getTerrainAt(Ogre::Vector3 coord){
         std::cout << sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->getBoundingBox().intersects(coord)<<std::endl;
         if(terrainAt.second){
             sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->setVisible(false);
-            std::vector<std::pair<int,int> > coords = calculateBulletSurroundings(bulletProperties.first,bulletBox);
+            std::vector<std::pair<int,int> > coords = calculateBulletSurroundings(bulletProperties.first);
             for(int i = 0; i < coords.size();i++){
                 collisionHandler->setBulletState(coords[i].first,coords[i].second,false);
             }
@@ -149,6 +157,18 @@ std::vector<std::pair<int, int> > TerrainManager::calculateBulletSurroundings(Og
     return coords;
 }
 
+std::vector<std::pair<int, int> > TerrainManager::calculateBulletSurroundings(Ogre::Vector3 center){
+    std::pair<int,int> coord0 = getCollisionCoordinates(center);
+    std::vector<std::pair<int,int> > coords;
+    coords.push_back(coord0);
+    for(int i = -5;i<6;i++){
+        for(int j = -5;j<6;j++){
+            coords.push_back(std::pair<int,int> (coord0.first+i,coord0.second+j));
+        }
+    }
+    return coords;
+}
+
 void TerrainManager::generateBullets(int numOfBullets){
     Ogre::LogManager::getSingletonPtr()->logMessage("--> TerrainManager: Generatig Random Values <--");
     std::default_random_engine randomGenerator;
@@ -171,6 +191,8 @@ void TerrainManager::generateBullets(int numOfBullets){
         
         //Adding bullet to the dataStructure in CollisionHandler.
         collisionHandler->insertBulletAt(location.first,location.second,true,coord);
+        std::cout<<"Testing inverse Transformation for terrain Coordinates." << std::endl;
+        std::cout<< getWorldCoordinates(location).x<< ","<< getWorldCoordinates(location).y<<","<< getWorldCoordinates(location).z<< std::endl;
     }
     
     Ogre::LogManager::getSingletonPtr()->logMessage("--> TerrainManager: Rendering Bullets <--");
@@ -187,7 +209,7 @@ void TerrainManager::renderBullets(){
         Ogre::LogManager::getSingletonPtr()->logMessage(renderSettings.first[i]);
         bulletNode->attachObject(bulletEntity);
         //Compensates sizes defined by bulletBoundingBox.
-        collisionHandler->compensateBulletRender(calculateBulletSurroundings(renderSettings.second[i],bulletNode->getAttachedObject(renderSettings.first[i])->getWorldBoundingBox(true)));
+        collisionHandler->compensateBulletRender(calculateBulletSurroundings(renderSettings.second[i]));
     }
 }
 }
