@@ -33,7 +33,7 @@ class CollisionHandler {
     /**
      * RGB value associated with the Rocks on the road.
      */
-    const Ogre::ColourValue ROCK_COLOR = Ogre::ColourValue(0.5f,0.5f,0.5f);
+    const Ogre::ColourValue ROCK_COLOR = Ogre::ColourValue(0.0f,1.0f,0.0f);
 
     /**
      * RGB value associated with the Sand on the road.
