@@ -177,9 +177,8 @@ void CollisionHandler::insertBulletAt(int width, int height,bool exist, Ogre::Ve
     std::cout << "Number of Bullets = " <<bulletCount << std::endl;
 }
 
-void CollisionHandler::toogleBulletState(int width, int height){
-    bool state = bulletMatrix[width][height].first;
-    bulletMatrix[width][height].first = !state;
+void CollisionHandler::setBulletState(int width, int height, bool state){
+    bulletMatrix[width][height].first = state;
 }
 
 std::pair<std::vector<Ogre::String> , std::vector<Ogre::Vector3> > CollisionHandler::getBulletsForRender(){
