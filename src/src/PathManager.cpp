@@ -17,6 +17,7 @@ PathManager::PathManager() {
     this->addPoint(Ogre::Vector3(0,0,0));
     this->addPoint(Ogre::Vector3(0,0,-10000));
     this->addPoint(Ogre::Vector3(10000,0,-10000));
+    this->addPoint(Ogre::Vector3(10000,0,0));
     this->addPoint(Ogre::Vector3(0,0,0));
 }
 
