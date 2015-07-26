@@ -45,12 +45,6 @@ private:
     /**
      *
      */
-    void createTerrainLight();
-
-    /**
-     * 
-     * 
-     */
     void defineTerrainProperties();
     
     /**

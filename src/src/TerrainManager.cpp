@@ -24,19 +24,6 @@ TerrainManager::~TerrainManager() {
     delete collisionHandler;
 }
 
-void TerrainManager::createTerrainLight(){
-    sceneManager->setAmbientLight(Ogre::ColourValue(0.2, 0.2, 0.2));
-    //Defines light direction.
-    Ogre::Vector3 lightdir(0.55, -0.3, 0.75);
-    lightdir.normalise();
-    //Creates the light pointing to terrain.
-    Ogre::Light* light = sceneManager->createLight("TerrainLight");
-    light->setType(Ogre::Light::LT_DIRECTIONAL);
-    light->setDirection(lightdir);
-    light->setDiffuseColour(Ogre::ColourValue::White);
-    light->setSpecularColour(Ogre::ColourValue(0.4, 0.4, 0.4));
-}
-
 void TerrainManager::defineTerrainProperties(){
     //Defining quadrangular terrain.
     terrainWorldSizeHeight = 15000;
