@@ -10,41 +10,98 @@
 namespace Cycleshooter {
 
 class TerrainManager {
+private:
     Ogre::SceneManager* const sceneManager;
 
-    // customizable settings
-    Ogre::Light* terrainLight;//Specific Ligth to terrain.
-
-    //Terrain Variables.
+    /**
+     * Terrain properties
+     *  #Ligth of terrain (Not be confused with the sun light)
+     *  
+     */
+    Ogre::Light* terrainLight = NULL;
     Ogre::String terrainType = "Plane";
     Ogre::Real terrainWorldSizeHeight,terrainWorldSizeWidth;
-    //Transformation properties.
+    
+    /**
+     * 
+     */
     Ogre::Real widthScale, heightScale;
+    
+    /**
+     * 
+     */
     Ogre::Vector3 terrainTranslation;
-    //Plane vertex dimensions.
+    
+    /**
+     * 
+     */
     int terrainWidth, terrainHeight;
-    CollisionHandler* collisionHandler;
+    
+    /**
+     * 
+     */
+    CollisionHandler* collisionHandler = NULL;
+
+    /**
+     *
+     */
+    void createTerrainLight();
+
+    /**
+     * 
+     * 
+     */
+    void defineTerrainProperties();
+    
+    /**
+     * 
+     */
+    void createTerrain();
+    
+    /**
+     * 
+     */
+    //Defines translation and scale to collision coordinates(maps continous rectangles in  discrete rectangles).
+    void setCollisionTransformation();
 
 public:
     TerrainManager(Ogre::SceneManager* sceneManager, std::string collisionTexturePath);
     virtual ~TerrainManager();
-    void createTerrainLight();
-    void defineTerrainProperties();
-    void createTerrain();
-    //Defines translation and scale to collision coordinates(maps continous rectangles in  discrete rectangles).
-    void setCollisionTransformation();
+    
+    /**
+     * 
+     */
     std::pair<int,int> getCollisionCoordinates(Ogre::Vector3 point);//Transfors Ogre 3d point in data structure indexes.
+    
+    /**
+     * 
+     */
     std::pair<int,bool> getTerrainAt(Ogre::Vector3 coord); //Method to discover terrain property and bullet existence.
-
-
+    
+    /**
+     * 
+     */
     void generateBullets(int numOfBullets);//Random bullets Generator.
+    
+    /**
+     * 
+     */
     void renderBullets();
 
-    //Test Functions.
+      /////////////////////
+     // Debug functions //
+    /////////////////////
+    
+    /**
+     * 
+     */
     void printCollisionTransformation();
+    
+    /**
+     * 
+     */
     void sampleCollisionTransformation();
 };
-
 }
 
 #endif
