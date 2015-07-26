@@ -1,7 +1,6 @@
 #ifndef _COLLISIONHANDLER_HPP_
 #define _COLLISIONHANDLER_HPP_
 
-//Class to deal with collisions and image loading.
 #include <Ogre.h>
 #include <fstream>
 #include <iostream>
@@ -20,6 +19,12 @@ class CollisionHandler {
      * RGB value associated with the lake on the game.
      */
     const Ogre::ColourValue WATER_COLOR = Ogre::ColourValue(0.247f,0.843f,0.898f);
+
+    /**
+     * RGB value associated with the lake on the game.
+     */
+    const Ogre::ColourValue GRASS_COLOR = Ogre::ColourValue(0.0f,0.0f,0.0f);
+    
     /**
      * RGB value associated with the default road on the game.
      */
@@ -55,6 +60,9 @@ class CollisionHandler {
      */
     Ogre::String collisionTexturePath;
 
+    /**
+     * 
+     */
     int bulletCount;
 
     /**
@@ -63,6 +71,7 @@ class CollisionHandler {
     enum Colors{
         NONE_PIXEL,
         START_PIXEL,
+        GRASS_PIXEL,
         BULLET_PIXEL,
         ROAD_PIXEL,
         ROCK_PIXEL,
@@ -72,17 +81,17 @@ class CollisionHandler {
     };
 
     /**
-     *
+     * Width and Height of the collision Matrix.
      */
     int collisionMatrixWidth, collisionMatrixHeight;
 
     /**
-     *
+     * Assigne a region to each pixel of the image.
      */
     std::vector<std::vector<Colors> > collisionMatrix;
 
     /**
-     *
+     * Matrix with the bullets information.
      */
     std::vector<std::vector<std::pair<bool, BulletElement> > > bulletMatrix;
 
@@ -92,83 +101,87 @@ public:
     virtual ~CollisionHandler();
 
     /**
-     *
+     * Read an image file to an internal structure.
      */
-    void loadImages(); //Load images from files.
+    void loadImages();
 
     /**
-     *
+     *  Function to get the information about each pixel of the image and load
+     * in the data structure.
      */
-    void loadTensor(); //Function to load the data structure from images.
+    void loadTensor();
 
     /**
-     *
+     * 
      */
     Colors getPixelEnumeration(int pixelWidth, int pixelHeight); //
 
     /**
-      *
+      * Function to find the race starting point in the structure.
       */
-    //Function to find the race starting point in the texture.
     std::pair<int,int> getStartPixel();
 
     /**
-     *
+     * Return the Collision Matrix (vector of vectors)
      */
     std::vector<std::vector<Colors> > getCollisionMatrix();
 
     /**
-     *
-     *
+     * Returns the Collision Matrix Width.  
      */
     int getCollisionMatrixWidth() const;
 
     /**
-     *
+     * Returns the Collision Matrix Height.
      */
     int getCollisionMatrixHeight() const;
 
-    //Function that discover if a bullet exists and also the scene node name related to it.
-    std::pair<bool, Ogre::String> getBulletNameAt(int pixelWidth, int pixelHeight);
-    //Functions to add bullets in bullet's structure.
     /**
-     *
+     *  Function that discover if a bullet exists and also 
+     * the scene node name related to it.
+     */
+    std::pair<bool, Ogre::String> getBulletNameAt(int pixelWidth, int pixelHeight);
+    
+    /**
+     * Functions to add bullets in bullet's Matrix.
      */
     void insertBulletAt(int width, int height, bool exist, Ogre::Vector3 coord);
 
-    //Function to dis/activate bullets.
+    
     /**
-     *
+     * Function to dis/activate bullets (Useful to not pick infinite bullets).
      */
     void toogleBulletState(int width, int height);
 
-    //Return bullets scenenode names and centers.
+    
     /**
-     *
+     * Return bullets scenenode names and centers.
      */
-    std::pair<std::vector<Ogre::String> , std::vector<Ogre::Vector3> > getBulletsForRender();
+    std::pair<std::vector<Ogre::String> ,std::vector<Ogre::Vector3> > getBulletsForRender();
 
-    //Function to adapt bullet structure based on bullet rendering dimensions.
     /**
-     *
+     * Function to adapt bullet structure based on bullet rendering dimensions.
      */
     void compensateBulletRender(std::vector<std::pair<int,int> > coords);
-
-    //Testing functions
+     
+      /////////////////////
+     // Debug functions //
+    /////////////////////
+    
     /**
-     *
+     * Check if the Collision Matrix is loaded correctly.
      */
-    void printMatrix(); //Testing funcition for collisionMatrix.
-
-    /**
-     *
-     */
-    void printBullets(); //Testing function for bulletMatrix.
+    void printMatrix(); 
 
     /**
-     *
+     * Check if the Bullet Matrix is correct.
      */
-    bool testMatrixDimension(); //Testing function to allocated matrix dimensions.
+    void printBullets();
+
+    /**
+     * Testing function to allocated matrix dimensions.
+     */
+    bool testMatrixDimension();
 };
 
 }
