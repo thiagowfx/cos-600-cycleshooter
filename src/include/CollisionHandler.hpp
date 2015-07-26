@@ -13,42 +13,47 @@ class CollisionHandler {
     /**
      * RGB value associated with the position of the bullet.
      */
-    const Ogre::ColourValue BULLET_COLOR = Ogre::ColourValue(0.0f,1.0f,1.0f);
+    const Ogre::ColourValue BULLET_COLOR = Ogre::ColourValue(1.0f,0.5f,0.5f);
 
     /**
      * RGB value associated with the lake on the game.
      */
-    const Ogre::ColourValue WATER_COLOR = Ogre::ColourValue(1.0f,0.0f,0.0f);
+    const Ogre::ColourValue WATER_COLOR = Ogre::ColourValue(setOgreScale(255), setOgreScale(0), setOgreScale(0));
 
     /**
      * RGB value associated with the lake on the game.
      */
-    const Ogre::ColourValue GRASS_COLOR = Ogre::ColourValue(0.0f,0.0f,0.0f);
+    Ogre::ColourValue GRASS_COLOR = Ogre::ColourValue(setOgreScale(0), setOgreScale(0), setOgreScale(0));
     
     /**
      * RGB value associated with the default road on the game.
      */
-    const Ogre::ColourValue ROAD_COLOR = Ogre::ColourValue(1.0f,0.0f,1.0f);
+    const Ogre::ColourValue ROAD_COLOR = Ogre::ColourValue(setOgreScale(255), setOgreScale(0), setOgreScale(255));
 
     /**
      * RGB value associated with the Rocks on the road.
      */
-    const Ogre::ColourValue ROCK_COLOR = Ogre::ColourValue(0.0f,1.0f,0.0f);
+    const Ogre::ColourValue ROCK_COLOR = Ogre::ColourValue(setOgreScale(0), setOgreScale(255), setOgreScale(0));
 
     /**
      * RGB value associated with the Sand on the road.
      */
-    const Ogre::ColourValue SAND_COLOR = Ogre::ColourValue(1.0f,1.0f,0.0f);
+    const Ogre::ColourValue SAND_COLOR = Ogre::ColourValue(setOgreScale(255), setOgreScale(255), setOgreScale(0));
 
     /**
      * RGB value associated with the Ice on the road.
      */
-    const Ogre::ColourValue ICE_COLOR = Ogre::ColourValue(0.0f,0.0f,1.0f);
+    const Ogre::ColourValue ICE_COLOR = Ogre::ColourValue(setOgreScale(0), setOgreScale(0), setOgreScale(255));
 
     /**
      * RGB value associated with the Start Point of the player.
      */
-    const Ogre::ColourValue START_COLOR = Ogre::ColourValue(1.0f,1.0f,1.0f);
+    const Ogre::ColourValue START_COLOR = Ogre::ColourValue(setOgreScale(255), setOgreScale(255), setOgreScale(255));
+
+    /**
+     * 
+     */
+     const Ogre::ColourValue PATH_COLOR = Ogre::ColourValue(setOgreScale(127), setOgreScale(127), setOgreScale(127));
 
     /**
      * @brief collisionTexture
@@ -77,6 +82,7 @@ class CollisionHandler {
         ROCK_PIXEL,
         SAND_PIXEL,
         ICE_PIXEL,
+        PATH_PIXEL,
         WATER_PIXEL
     };
 
@@ -94,6 +100,12 @@ class CollisionHandler {
      * Matrix with the bullets information.
      */
     std::vector<std::vector<std::pair<bool, BulletElement> > > bulletMatrix;
+
+    /**
+     *
+     */
+    double setOgreScale(int x);
+
 
 public:
 

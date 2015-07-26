@@ -26,10 +26,10 @@ TerrainManager::~TerrainManager() {
 
 void TerrainManager::defineTerrainProperties(){
     //Defining quadrangular terrain.
-    terrainWorldSizeHeight  = 20000;
-    terrainWorldSizeWidth   = 20000;
-    terrainWidth = 1;
-    terrainHeight = 1;
+    terrainWorldSizeHeight  = 25000;
+    terrainWorldSizeWidth   = 25000;
+    terrainWidth    = 1;
+    terrainHeight   = 1;
 }
 
 void TerrainManager::createTerrain(){
