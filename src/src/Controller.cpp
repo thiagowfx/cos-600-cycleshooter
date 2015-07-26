@@ -108,9 +108,16 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         return false;
     }
 
-    //pathManager updates
-    pathManager->updateT();
-    pathManager->updateTangents();
+
+    if (context == CONTEXT_RUNNER){
+        //pathManager updates
+        pathManager->updateT();
+        pathManager->updateTangents();
+
+        //rotate player
+        logicManager->rotateAlongPath(pathManager->getLastTangent(),pathManager->getCurrentTangent());
+    }
+
 
     // monster animations
     baseMonsterAnimation->addTime(evt.timeSinceLastFrame);
@@ -119,7 +126,6 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
 
     // update game logic
     logicManager->update(evt);
-    logicManager->rotateAlongPath(pathManager->getLastTangent(),pathManager->getCurrentTangent());
 
     if(context == CONTEXT_SHOOTER) {
         static sf::Clock clockHeartbeat;

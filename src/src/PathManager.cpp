@@ -11,7 +11,7 @@ Ogre::Vector3 PathManager::getLastTangent() const {
     return lastTangent;
 }
 PathManager::PathManager() {
-    t = 3 * increment;
+    t = 3 * increment + startPlayerPosition;
 
     //Circular curve for debugging
     this->addPoint(Ogre::Vector3(0,0,0));
@@ -19,6 +19,15 @@ PathManager::PathManager() {
     this->addPoint(Ogre::Vector3(10000,0,-10000));
     this->addPoint(Ogre::Vector3(10000,0,0));
     this->addPoint(Ogre::Vector3(0,0,0));
+}
+
+PathManager::PathManager(std::vector<Ogre::Vector3> controlPoints){
+    t = 3 * increment + startPlayerPosition;
+
+    for(int i = 0; i < controlPoints.size(); i++){
+        this->addPoint(controlPoints[i]);
+    }
+
 }
 
 void PathManager::updateTangents() {
