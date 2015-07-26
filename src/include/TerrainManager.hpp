@@ -6,7 +6,7 @@
 #include <OgreTerrainGroup.h>
 #include <CollisionHandler.hpp>
 #include <OgreSceneManager.h>
-
+#include <Logging.hpp>
 namespace Cycleshooter {
 
 class TerrainManager {
@@ -35,7 +35,7 @@ public:
     void setCollisionTransformation();
     std::pair<int,int> getCollisionCoordinates(Ogre::Vector3 point);//Transfors Ogre 3d point in data structure indexes.
     std::pair<int,bool> getTerrainAt(Ogre::Vector3 coord); //Method to discover terrain property and bullet existence.
-    std::vector<std::pair<int,int> > calculateBulletSurroundings(Ogre::Vector3 center, Ogre::Real radius);
+    std::vector<std::pair<int,int> > calculateBulletSurroundings(Ogre::AxisAlignedBox boundingBox);
 
     void generateBullets(int numOfBullets);//Random bullets Generator.
     void renderBullets();
