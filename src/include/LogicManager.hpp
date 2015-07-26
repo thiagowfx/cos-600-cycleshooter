@@ -122,6 +122,7 @@ public:
     void translateMonster(int difficulty, Ogre::Vector3 translation);
     void yawCamera();
     void rotateCamera(const Ogre::Degree& angle, const Ogre::Vector3& pathDirection);
+    void rotateAlongPath(Ogre::Vector3 lastPathDirection, Ogre::Vector3 currentPathDirection);
 
 
     // getters and setters

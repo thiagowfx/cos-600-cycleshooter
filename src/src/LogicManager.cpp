@@ -253,4 +253,11 @@ void LogicManager::rotateCamera(const Ogre::Degree& angle, const Ogre::Vector3& 
     }
 }
 
+void LogicManager::rotateAlongPath(Ogre::Vector3 lastPathDirection, Ogre::Vector3 currentPathDirection){
+    Ogre::Vector3 crossProduct = currentPathDirection.crossProduct(lastPathDirection);
+    Ogre::Real signalAngleBetween = (crossProduct.y < 0) ? (+1) : (-1);
+    Ogre::Degree angleBetween = signalAngleBetween * currentPathDirection.angleBetween(lastPathDirection);
+    parentPlayerNode->yaw(angleBetween);
+}
+
 }

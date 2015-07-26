@@ -13,9 +13,11 @@ Ogre::Vector3 PathManager::getLastTangent() const {
 PathManager::PathManager() {
     t = 3 * increment;
 
-    //for debugging proposes, the spline curve is going to be a straight line
+    //Circular curve for debugging
     this->addPoint(Ogre::Vector3(0,0,0));
     this->addPoint(Ogre::Vector3(0,0,-10000));
+    this->addPoint(Ogre::Vector3(10000,0,-10000));
+    this->addPoint(Ogre::Vector3(0,0,0));
 }
 
 void PathManager::updateTangents() {

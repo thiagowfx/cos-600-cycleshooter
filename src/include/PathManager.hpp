@@ -13,7 +13,7 @@ class PathManager: public Ogre::SimpleSpline {
     Ogre::Vector3 currentTangent;
     Ogre::Vector3 lastTangent;
     Ogre::Real t; //parametric portion of the whole Spline curve starts on 0.003 and goes to 1
-    Ogre::Real increment = 0.001;
+    Ogre::Real increment = 0.0001;
 
 public:
     PathManager();

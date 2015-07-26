@@ -119,6 +119,7 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
 
     // update game logic
     logicManager->update(evt);
+    logicManager->rotateAlongPath(pathManager->getLastTangent(),pathManager->getCurrentTangent());
 
     if(context == CONTEXT_SHOOTER) {
         static sf::Clock clockHeartbeat;
