@@ -158,13 +158,6 @@ public:
      * Functions to add bullets in bullet's Matrix.
      */
     void insertBulletAt(int width, int height, bool exist, Ogre::Vector3 coord);
-
-    
-    /**
-     * Function to dis/activate bullets (Useful to not pick infinite bullets).
-     */
-    void toogleBulletState(int width, int height);
-
     
     /**
      * Return bullets scenenode names and centers.
@@ -172,8 +165,14 @@ public:
     std::pair<std::vector<Ogre::String> ,std::vector<Ogre::Vector3> > getBulletsForRender();
 
     /**
+     * Function to dis/activate bullets.
+     */
+    void setBulletState(int width, int height,bool state);
+
+    /**
      * Function to adapt bullet structure based on bullet rendering dimensions.
      */
+
     void compensateBulletRender(std::vector<std::pair<int,int> > coords);
      
       /////////////////////

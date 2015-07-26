@@ -6,7 +6,7 @@
 #include <OgreTerrainGroup.h>
 #include <CollisionHandler.hpp>
 #include <OgreSceneManager.h>
-
+#include <Logging.hpp>
 namespace Cycleshooter {
 
 class TerrainManager {
@@ -71,9 +71,16 @@ public:
      * 
      */
     std::pair<int,bool> getTerrainAt(Ogre::Vector3 coord); //Method to discover terrain property and bullet existence.
+
     
     /**
      * 
+     */
+
+    std::vector<std::pair<int,int> > calculateBulletSurroundings(Ogre::AxisAlignedBox boundingBox);
+
+    /**
+     *
      */
     void generateBullets(int numOfBullets);//Random bullets Generator.
     

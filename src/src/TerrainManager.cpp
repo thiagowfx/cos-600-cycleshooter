@@ -85,14 +85,11 @@ void TerrainManager::printCollisionTransformation(){
 }
 
 std::pair<int, int> TerrainManager::getCollisionCoordinates(Ogre::Vector3 point){
-    std::pair<int, int> coord (0,0);
     Ogre::Real coordX = terrainTranslation.x - point.x;
     coordX = coordX*widthScale;
     Ogre::Real coordY = terrainTranslation.z - point.z;
     coordY = coordY*heightScale;
-    coord.first = static_cast<int>(coordX);
-    coord.second = static_cast<int>(coordY);
-    return coord;
+    return std::pair<int,int>(coordX,coordY);
 }
 
 std::pair<int, bool> TerrainManager::getTerrainAt(Ogre::Vector3 coord){
@@ -114,7 +111,8 @@ std::pair<int, bool> TerrainManager::getTerrainAt(Ogre::Vector3 coord){
     //terrainAt.second = sceneManager->getSceneNode(bulletName)->getAttachedObject(bulletName)->getBoundingBox().contains(coord);
     if(bulletProperties.first){
         Ogre::LogManager::getSingletonPtr()->logMessage("--> TerrainManager: Exist Bullet Here! <--");
-        Ogre::AxisAlignedBox bulletBox = sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->getWorldBoundingBox();
+        Ogre::AxisAlignedBox bulletBox = sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->getWorldBoundingBox(true);
+        LOG("Bounding Box have been obtained.");
         std::cout << bulletBox.volume() << std::endl;
         std::cout << bulletBox.getCenter().x<<" "<<bulletBox.getCenter().y<<" "<<bulletBox.getCenter().z<<std::endl;
         std::cout << coord.x<<" "<<coord.y<<" "<<coord.z<<std::endl;
@@ -122,10 +120,33 @@ std::pair<int, bool> TerrainManager::getTerrainAt(Ogre::Vector3 coord){
         std::cout << sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->getBoundingBox().intersects(coord)<<std::endl;
         if(terrainAt.second){
             sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->setVisible(false);
+            std::vector<std::pair<int,int> > coords = calculateBulletSurroundings(bulletBox);
+            for(int i = 0; i < coords.size();i++){
+                collisionHandler->setBulletState(coords[i].first,coords[i].second,false);
+            }
         }
     }
 
     return terrainAt;
+}
+
+std::vector<std::pair<int, int> > TerrainManager::calculateBulletSurroundings(Ogre::AxisAlignedBox boundingBox){
+    //Finding bullet entities bounding limits.
+    //And Calculates transfomations to be passed to collision handler.
+    std::pair<int,int> coord0 = getCollisionCoordinates(boundingBox.getCenter());
+    std::pair<int,int> coord1 = getCollisionCoordinates(boundingBox.getCorner(Ogre::AxisAlignedBox::NEAR_LEFT_BOTTOM));
+    std::pair<int,int> coord2 = getCollisionCoordinates(boundingBox.getCorner(Ogre::AxisAlignedBox::NEAR_RIGHT_BOTTOM));
+    std::pair<int,int> coord3 = getCollisionCoordinates(boundingBox.getCorner(Ogre::AxisAlignedBox::FAR_LEFT_BOTTOM));
+    std::pair<int,int> coord4 = getCollisionCoordinates(boundingBox.getCorner(Ogre::AxisAlignedBox::FAR_RIGHT_BOTTOM));
+    std::vector<std::pair<int,int> > coords;
+    //Adding center at first position.
+    coords.push_back(coord0);
+    coords.push_back(coord1);coords.push_back(coord2);coords.push_back(coord3);coords.push_back(coord4);
+    std::cout << "Center at "<<coords[0].first << ","<< coords[0].second<< std::endl;
+    for(int i = 1; i< coords.size();i++){
+        std::cout << "Compensation at "<<coords[i].first << ","<< coords[i].second<< std::endl;
+    }
+    return coords;
 }
 
 void TerrainManager::generateBullets(int numOfBullets){
@@ -165,45 +186,8 @@ void TerrainManager::renderBullets(){
         Ogre::SceneNode* bulletNode = sceneManager->getRootSceneNode()->createChildSceneNode(renderSettings.first[i], renderSettings.second[i]);
         Ogre::LogManager::getSingletonPtr()->logMessage(renderSettings.first[i]);
         bulletNode->attachObject(bulletEntity);
-        
-        //Finding bullet entities bounding limits.
-        Ogre::Real bulletRadius = bulletEntity->getBoundingRadius();
-        Ogre::Vector3 upLeft(renderSettings.second[i].x,renderSettings.second[i].y,renderSettings.second[i].z);
-        Ogre::Vector3 upRight(renderSettings.second[i].x,renderSettings.second[i].y,renderSettings.second[i].z);
-        Ogre::Vector3 downLeft (renderSettings.second[i].x,renderSettings.second[i].y,renderSettings.second[i].z);
-        Ogre::Vector3 downRight (renderSettings.second[i].x,renderSettings.second[i].y,renderSettings.second[i].z);
-        
-        //Upper left bounding corner.
-        upLeft.x -= bulletRadius;
-        upLeft.z += bulletRadius;
-        
-        //Upper Rigth bounding corner.
-        upRight.x += bulletRadius;
-        upRight.z += bulletRadius;
-        
-        //Lower left bounding corner.
-        downLeft.x -= bulletRadius;
-        downLeft.z -= bulletRadius;
-        
-        //Lower right bounding corner.
-        downRight.x += bulletRadius;
-        downRight.z -= bulletRadius;
-        
-        //Calculating transfomations to be passed to collision handler.
-        std::pair<int,int> coord0 = getCollisionCoordinates(renderSettings.second[i]);
-        std::pair<int,int> coord1 = getCollisionCoordinates(upLeft);
-        std::pair<int,int> coord2 = getCollisionCoordinates(upRight);
-        std::pair<int,int> coord3 = getCollisionCoordinates(downLeft);
-        std::pair<int,int> coord4 = getCollisionCoordinates(downRight);
-        std::vector<std::pair<int,int> > coords;
-        
-        //Adding center at first position.
-        coords.push_back(coord0);
-        coords.push_back(coord1);
-        coords.push_back(coord2);
-        coords.push_back(coord3);
-        coords.push_back(coord4);
-        collisionHandler->compensateBulletRender(coords);
+        //Compensates sizes defined by bulletBoundingBox.
+        collisionHandler->compensateBulletRender(calculateBulletSurroundings(bulletNode->getAttachedObject(renderSettings.first[i])->getWorldBoundingBox(true)));
     }
 }
 }
