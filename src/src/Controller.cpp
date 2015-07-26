@@ -111,10 +111,13 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
 
     if (context == CONTEXT_RUNNER){
         //pathManager updates
-        pathManager->updateT();
+        pathManager->updateParametricPosition();
         pathManager->updateTangents();
 
-        //rotate player
+        //update increment of spline curve
+        pathManager->updateSplineStep(getBicycle()->getGameSpeed());
+
+        //rotate player along path
         logicManager->rotateAlongPath(pathManager->getLastTangent(),pathManager->getCurrentTangent());
     }
 

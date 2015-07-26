@@ -85,7 +85,7 @@ void LogicManager::updatePlayerPosition(const Ogre::Real &time) {
 
     Ogre::Vector3 playerOrientation = playerNode->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_Z;
 
-    getPlayerNode()->translate(distance * playerOrientation, Ogre::SceneNode::TS_LOCAL);
+    //getPlayerNode()->translate(distance * playerOrientation, Ogre::SceneNode::TS_LOCAL);
 }
 
 void LogicManager::updateMonsterPosition(const Ogre::Real &time) {

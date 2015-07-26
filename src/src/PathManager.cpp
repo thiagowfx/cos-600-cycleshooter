@@ -11,7 +11,7 @@ Ogre::Vector3 PathManager::getLastTangent() const {
     return lastTangent;
 }
 PathManager::PathManager() {
-    t = 3 * increment + startPlayerPosition;
+    parametricPosition = 3 * epsilon + startPlayerPosition;
 
     //Circular curve for debugging
     this->addPoint(Ogre::Vector3(0,0,0));
@@ -22,7 +22,7 @@ PathManager::PathManager() {
 }
 
 PathManager::PathManager(std::vector<Ogre::Vector3> controlPoints){
-    t = 3 * increment + startPlayerPosition;
+    parametricPosition = 3 * epsilon + startPlayerPosition;
 
     for(int i = 0; i < controlPoints.size(); i++){
         this->addPoint(controlPoints[i]);
@@ -31,21 +31,25 @@ PathManager::PathManager(std::vector<Ogre::Vector3> controlPoints){
 }
 
 void PathManager::updateTangents() {
-    Ogre::Vector3 lTangent_firstPoint = this->interpolate(t - 3 * increment);
-    Ogre::Vector3 lTangent_secondPoint = this->interpolate(t - 2 * increment);
+    Ogre::Vector3 lTangent_firstPoint = this->interpolate(parametricPosition - 3 * epsilon);
+    Ogre::Vector3 lTangent_secondPoint = this->interpolate(parametricPosition - 2 * epsilon);
     lastTangent = lTangent_secondPoint - lTangent_firstPoint;
-    Ogre::Vector3 cTangent_firstPoint = this->interpolate(t - increment);
-    Ogre::Vector3 cTangent_secondPoint = this->interpolate(t);
+    Ogre::Vector3 cTangent_firstPoint = this->interpolate(parametricPosition - epsilon);
+    Ogre::Vector3 cTangent_secondPoint = this->interpolate(parametricPosition);
     currentTangent = cTangent_secondPoint - cTangent_firstPoint;
 }
 
-void PathManager::updateT(){
-    if (t + increment < 1){
-        t += increment;
+void PathManager::updateParametricPosition(){
+    if (parametricPosition + splineStep < 1){
+        parametricPosition += splineStep;
     }
     else {
-        t = 3 * increment;
+        parametricPosition = 3 * splineStep;
     }
+}
+
+void PathManager::updateSplineStep(double playerVelocity){
+    splineStep = VELOCITY_FACTOR * playerVelocity;
 }
 
 }

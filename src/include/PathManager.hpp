@@ -15,8 +15,10 @@ class PathManager: public Ogre::SimpleSpline {
     Ogre::Vector3 lastTangent;
 
     Ogre::Real startPlayerPosition = Ogre::Real(0);
-    Ogre::Real t; //parametric portion of the whole Spline curve starts on 0.003 and goes to 1
-    Ogre::Real increment = 0.0001;
+    Ogre::Real parametricPosition; //parametric portion of the whole Spline curve starts on 0.003 and goes to 1
+    Ogre::Real epsilon = 0.0001;
+    Ogre::Real VELOCITY_FACTOR = 0.00000001;
+    Ogre::Real splineStep = 0.0001;
 
     //for debugging
     //Procedural::CatmullRomSpline3 ProceduralSplineCurve;
@@ -27,7 +29,8 @@ public:
     PathManager(std::vector<Ogre::Vector3> controlPoints);
 
     void updateTangents();
-    void updateT();
+    void updateParametricPosition();
+    void updateSplineStep(double playerVelocity);
 
     Ogre::Vector3 getCurrentTangent() const;
     Ogre::Vector3 getLastTangent() const;
