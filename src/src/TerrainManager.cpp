@@ -67,9 +67,12 @@ void TerrainManager::setCollisionTransformation(){
     int collisionHeigth = collisionHandler->getCollisionMatrixHeight();
     collisionHeigth -= 1;
     collisionWidth -= 1;
-    std::cout << "Collision Lengths "<<collisionWidth << "," << collisionHeigth << std::endl;
+    
+    std::cout << "Collision Lengths " << collisionWidth << "," << collisionHeigth << std::endl;
+    
     heightScale = collisionHeigth/terrainWorldSizeHeight;
     widthScale = collisionWidth/terrainWorldSizeWidth;
+    
     terrainTranslation.x = terrainWorldSizeWidth*0.5;
     terrainTranslation.y = 0;
     terrainTranslation.z = terrainWorldSizeHeight*0.5;
@@ -196,7 +199,10 @@ void TerrainManager::renderBullets(){
         
         //Adding center at first position.
         coords.push_back(coord0);
-        coords.push_back(coord1);coords.push_back(coord2);coords.push_back(coord3);coords.push_back(coord4);
+        coords.push_back(coord1);
+        coords.push_back(coord2);
+        coords.push_back(coord3);
+        coords.push_back(coord4);
         collisionHandler->compensateBulletRender(coords);
     }
 }
