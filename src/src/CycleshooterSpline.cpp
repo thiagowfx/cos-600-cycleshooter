@@ -23,6 +23,31 @@ CycleshooterSpline::CycleshooterSpline(const char *file) {
     go(points);
 }
 
+Ogre::Vector3 CycleshooterSpline::getTangent(Ogre::Real coord) const {
+    if((coord - EPSILON) < 0.0 || (coord + EPSILON) > path.getTotalLength()) {
+        return path.getAvgDirection(0).normalisedCopy();
+    }
+    else {
+        return (path.getPosition(coord + EPSILON) - path.getPosition(coord - EPSILON)).normalisedCopy();
+    }
+}
+
+Ogre::Vector3 CycleshooterSpline::getTangent(unsigned int i, Ogre::Real coord) const {
+    if((coord - EPSILON_TRACK) < 0.0) {
+        return path.getAvgDirection(i).normalisedCopy();
+    }
+    else if((coord + EPSILON_TRACK) > 1.0) {
+        return (path.getAvgDirection((i + 1) % path.getSegCount())).normalisedCopy();
+    }
+    else {
+        return (path.getPosition(i, coord + EPSILON_TRACK) - path.getPosition(i, coord - EPSILON_TRACK)).normalisedCopy();
+    }
+}
+
+Procedural::Path CycleshooterSpline::getPath() const {
+    return path;
+}
+
 void CycleshooterSpline::go(std::vector<Ogre::Vector3> &points) {
     Procedural::RoundedCornerSpline3 spline;
 
