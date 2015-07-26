@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 2.8.7)
 project(Cycleshooter C CXX)
 
 
@@ -13,13 +13,17 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${DEST_DIR}/bin")
 option(DEPENDENCIES_READY "Are the dependencies ready?" OFF)
 
 
-add_definitions("-std=c++11 -g -DLOGGING_ENABLED -Wno-deprecated-declarations")
+add_definitions("-std=c++11 -g -DLOGGING_ENABLED
+                -Wno-deprecated-declarations
+                -Wno-deprecated-register
+                ")
 
 
 add_subdirectory(${VENDOR_DIR})
 
 
 if(DEPENDENCIES_READY)
+    # SFML
     find_package(SFML REQUIRED EXACT 2.2 COMPONENTS audio system window)
 
     if(NOT SFML_FOUND)
@@ -29,6 +33,7 @@ if(DEPENDENCIES_READY)
     include_directories(${SFML_INCLUDE_DIR})
 
 
+    # Ogre
     find_package(OGRE REQUIRED EXACT 1.9)
 
     if(NOT OGRE_FOUND)
@@ -37,7 +42,6 @@ if(DEPENDENCIES_READY)
 
     include_directories(
         ${OGRE_INCLUDE_DIRS}
-        ${OGRE_SAMPLES_INCLUDEPATH}
         ${OGRE_Terrain_INCLUDE_DIRS}
         ${OGRE_Overlay_INCLUDE_DIRS}
         )
@@ -65,6 +69,18 @@ if(DEPENDENCIES_READY)
         ${OGRE_Overlay_LIBRARIES}
         )
 
+
+    # OgreProcedural
+    find_package(OgreProcedural REQUIRED)
+
+    if(NOT OgreProcedural_FOUND)
+        message(SEND_ERROR "Failed to find OgreProcedural.")
+    endif()
+
+    include_directories(${OgreProcedural_INCLUDE_DIR})
+
+
+    # Project
     file(
         GLOB_RECURSE PROJECT_HEADERS
         "${SRC_DIR}/include/*.h"
@@ -78,7 +94,7 @@ if(DEPENDENCIES_READY)
 
     set(PROJECT_INCLUDE_DIRS "")
     foreach(_HEADERFILE ${PROJECT_HEADERS})
-        get_filename_component(_DIR ${_HEADERFILE} DIRECTORY)
+        get_filename_component(_DIR ${_HEADERFILE} PATH)
         list(APPEND PROJECT_INCLUDE_DIRS ${_DIR})
     endforeach()
     list(REMOVE_DUPLICATES PROJECT_INCLUDE_DIRS)
@@ -95,6 +111,7 @@ if(DEPENDENCIES_READY)
         ${PROJECT_NAME}
         ${SFML_LIBRARIES}
         ${OGRE_LIBRARIES}
+        ${OgreProcedural_LIBRARIES}
         )
 
     add_custom_command(

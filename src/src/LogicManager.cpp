@@ -37,7 +37,8 @@ void LogicManager::shoot() {
         monsterNode->flipVisibility();
         controller->getSceneManager()->setSkyDomeEnabled(false);
         controller->getSceneManager()->getRootSceneNode()->flipVisibility();
-        bool debug = controller->getDebug(), setDebugOff();
+        bool debug = controller->getDebug();
+	setDebugOff();
 
         rttRenderTarget->update();
 
