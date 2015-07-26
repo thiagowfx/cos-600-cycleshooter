@@ -118,7 +118,6 @@ std::pair<int, bool> TerrainManager::getTerrainAt(Ogre::Vector3 coord){
         terrainAt.second = sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->getWorldBoundingBox().intersects(coord);
         std::cout << sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->getBoundingBox().intersects(coord)<<std::endl;
         if(terrainAt.second){
-            Ogre::Real rad = sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->getBoundingRadius();
             sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->setVisible(false);
             std::vector<std::pair<int,int> > coords = calculateBulletSurroundings(bulletBox);
             for(int i = 0; i < coords.size();i++){
