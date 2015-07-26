@@ -4,18 +4,25 @@
 #include <vector>
 
 #include <OgreVector3.h>
+#include <OgreSimpleSpline.h>
 
 namespace Cycleshooter {
 
-class PathManager {
+class PathManager: public Ogre::SimpleSpline {
 
-    std::vector<Ogre::Vector3> points;
+    Ogre::Vector3 currentTangent;
+    Ogre::Vector3 lastTangent;
+    Ogre::Real t; //parametric portion of the whole Spline curve starts on 0.003 and goes to 1
+    Ogre::Real increment = 0.001;
 
 public:
     PathManager();
 
-    PathManager(const std::vector<Ogre::Vector3>& points);
-    std::vector<Ogre::Vector3> getPoints() const;
+    void updateTangents();
+    void updateT();
+
+    Ogre::Vector3 getCurrentTangent() const;
+    Ogre::Vector3 getLastTangent() const;
 };
 
 }

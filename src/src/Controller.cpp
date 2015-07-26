@@ -108,6 +108,10 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         return false;
     }
 
+    //pathManager updates
+    pathManager->updateT();
+    pathManager->updateTangents();
+
     // monster animations
     baseMonsterAnimation->addTime(evt.timeSinceLastFrame);
     topMonsterAnimation->addTime(evt.timeSinceLastFrame);
@@ -299,6 +303,9 @@ void Controller::setupTextures() {
 void Controller::createGameElements() {
     LOG("Creating Game Elements");
 
+    //Creating the path manager
+    pathManager = std::unique_ptr<PathManager>(new PathManager());
+
     // upstream documentation: http://www.ogre3d.org/tikiwiki/Sinbad+Model
     Ogre::Entity* monsterEntity = getSceneManager()->createEntity("monsterEntity", "Sinbad.mesh");
     Ogre::SceneNode* monsterNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("monsterNode", Ogre::Vector3(0.0, 0.0, +200.0));
@@ -463,14 +470,18 @@ void Controller::setupKeyMappings() {
     InputManager::instance().addKeysRotationUnbuf({sf::Keyboard::A,
                                                    sf::Keyboard::Left}, CONTEXT_RUNNER, [&]{
         Ogre::Degree angle = Ogre::Degree(logicManager->getAngularVelocity());
-        Ogre::Vector3 currentPathDirection = Ogre::Vector3(0, 0, -1);
+        //Ogre::Vector3 currentPathDirection = Ogre::Vector3(0, 0, -1);
+        Ogre::Vector3 lastPathDirection = pathManager->getLastTangent();
+        Ogre::Vector3 currentPathDirection = pathManager->getCurrentTangent();
         logicManager->rotateCamera(+angle, currentPathDirection);
     });
 
     InputManager::instance().addKeysRotationUnbuf({sf::Keyboard::D,
                                                    sf::Keyboard::Right}, CONTEXT_RUNNER, [&]{
         Ogre::Degree angle = Ogre::Degree(logicManager->getAngularVelocity());
-        Ogre::Vector3 currentPathDirection = Ogre::Vector3(0, 0, -1);
+        //Ogre::Vector3 currentPathDirection = Ogre::Vector3(0, 0, -1);
+        Ogre::Vector3 lastPathDirection = pathManager->getLastTangent();
+        Ogre::Vector3 currentPathDirection = pathManager->getCurrentTangent();
         logicManager->rotateCamera(-angle, currentPathDirection);
     });
 

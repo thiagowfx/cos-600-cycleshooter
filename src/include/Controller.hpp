@@ -29,6 +29,8 @@
 #include "LogicManager.hpp"
 #include "CrosshairManager.hpp"
 #include "HUD.hpp"
+#include "PathManager.hpp"
+
 #include "CollisionHandler.hpp"
 #include "TerrainManager.hpp"
 
@@ -286,6 +288,11 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
      * Crosshair Manager.
      */
     std::unique_ptr<CrosshairManager> crosshairManager;
+
+    /**
+     * Path Manager.
+     */
+    std::unique_ptr<PathManager> pathManager;
 
     /**
      * @brief hud responsible for rendering overlay elements with useful information for the player
