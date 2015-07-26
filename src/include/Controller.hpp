@@ -101,6 +101,11 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     Ogre::AnimationState* swordsMonsterAnimation;
 
     /**
+     * Represents the monster animation state.
+     */
+    Ogre::AnimationState* monsterAnimationState;
+
+    /**
      * @brief oRoot Ogre::Root
      */
     Ogre::Root *oRoot = NULL;

@@ -113,6 +113,9 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     topMonsterAnimation->addTime(evt.timeSinceLastFrame);
     swordsMonsterAnimation->addTime(evt.timeSinceLastFrame / 12.0);
 
+    // monster movement
+    monsterAnimationState->addTime(evt.timeSinceLastFrame / 5.0);
+
     // update game logic
     logicManager->update(evt);
 
@@ -354,6 +357,43 @@ void Controller::createGameElements() {
 
     createAnimations();
     createSwords();
+
+    // in seconds
+    double monsterAnimationDuration = 10.0;
+
+    // use spline, for nice curves
+    Ogre::Animation* monsterAnimation = getSceneManager()->createAnimation("monsterAnimationState", monsterAnimationDuration);
+    monsterAnimation->setInterpolationMode(Ogre::Animation::IM_SPLINE);
+
+    // create a track to animate the monster node
+    Ogre::NodeAnimationTrack* monsterAnimationTrack = monsterAnimation->createNodeTrack(0, monsterNode);
+    monsterAnimationTrack->setUseShortestRotationPath(true);
+
+    struct MonsterFrame {
+        Ogre::Real time;
+        Ogre::Vector3 position;
+        Ogre::Quaternion rotation;
+    };
+
+    double QQ = 50.0;
+    MonsterFrame monsterFrames[] = {
+        {0.0, Ogre::Vector3(+QQ, 0.0, 0), Ogre::Quaternion(Ogre::Degree(180.0), Ogre::Vector3::UNIT_Y)},
+        {2.5, Ogre::Vector3(-QQ, 0.0, 0), Ogre::Quaternion(Ogre::Degree(0.0), Ogre::Vector3::UNIT_Y)},
+        {5.0, Ogre::Vector3(+QQ, 0.0, 0), Ogre::Quaternion(Ogre::Degree(180.0), Ogre::Vector3::UNIT_Y)},
+        {7.5, Ogre::Vector3(-QQ, 0.0, 0), Ogre::Quaternion(Ogre::Degree(0.0), Ogre::Vector3::UNIT_Y)},
+        {10.0, Ogre::Vector3(+QQ, 0.0, 0), Ogre::Quaternion(Ogre::Degree(180.0), Ogre::Vector3::UNIT_Y)} // close the loop
+    };
+
+    // create keyframes for our track
+    for(const auto& frame : monsterFrames) {
+        Ogre::TransformKeyFrame* f = monsterAnimationTrack->createNodeKeyFrame(frame.time);
+        f->setTranslate(frame.position);
+        f->setRotation(frame.rotation);
+    }
+
+    monsterAnimationState = getSceneManager()->createAnimationState("monsterAnimationState");
+    monsterAnimationState->setEnabled(true);
+    monsterAnimationState->setLoop(true);
 
     getSceneManager()->setAmbientLight(Ogre::ColourValue(0.6, 0.6, 0.6));
 
