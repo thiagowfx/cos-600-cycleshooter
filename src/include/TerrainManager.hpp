@@ -35,7 +35,7 @@ public:
     void setCollisionTransformation();
     std::pair<int,int> getCollisionCoordinates(Ogre::Vector3 point);//Transfors Ogre 3d point in data structure indexes.
     std::pair<int,bool> getTerrainAt(Ogre::Vector3 coord); //Method to discover terrain property and bullet existence.
-
+    std::vector<std::pair<int,int> > calculateBulletSurroundings(Ogre::Vector3 center, Ogre::Real radius);
 
     void generateBullets(int numOfBullets);//Random bullets Generator.
     void renderBullets();

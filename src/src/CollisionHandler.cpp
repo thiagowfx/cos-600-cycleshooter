@@ -132,36 +132,38 @@ int CollisionHandler::getCollisionMatrixHeight() const{
     return collisionMatrixHeight;
 }
 
-std::pair<bool,Ogre::String> CollisionHandler::isBulletAt(int pixelWidth, int pixelHeight,Ogre::Vector3 coord,Ogre::Real radius){
+std::pair<bool,Ogre::String> CollisionHandler::getBulletNameAt(int pixelWidth, int pixelHeight){
     //Grabbing correspondent datastructure position.
-    BulletElement e = bulletMatrix[pixelWidth][pixelHeight].second;
-    bool test = bulletMatrix[pixelWidth][pixelHeight].first;
-    if(!test)
-        return std::make_pair(false,e.getScenenodeName());
-    //Defining collision equation(bullets are spheres).
-    Ogre::Vector3 center = e.getCoordinate();
-    //Defining sphere partial definitions.
-    Ogre::Real tx = coord.x-center.x;
-    Ogre::Real ty = coord.y-center.y;
-    Ogre::Real tz = coord.z-center.z;
-    tx = tx * tx;
-    ty = ty * ty;
-    tz = tz * tz;
-    Ogre::Real sum = tx + ty + tz;
-    Ogre::Real r = radius * radius;
-    //Comparing sphere discriminant with radius
-    bool belongsToSphere = sum <= r;
-    //Logically removing bullet from the scene.
-    std::cout << "Testing if bullets exists." << std:: endl;
-    std::cout<<r << " " << sum << " " << std::endl;
-    if(belongsToSphere){
-        std::cout<<"A bullet had been found"<<std::endl;
-        std::cout<<r << " " << sum << " "<< std::endl;
-        bulletMatrix[pixelWidth][pixelHeight].first = false;
-        return std::make_pair(true,e.getScenenodeName());
-    }
-    else
-        return std::make_pair(false,e.getScenenodeName());
+//    bool test = bulletMatrix[pixelWidth][pixelHeight].first;
+//    if(!test)
+//        return std::make_pair(false,e.getScenenodeName());
+//    //Defining collision equation(bullets are spheres).
+//    Ogre::Vector3 center = e.getCoordinate();
+//    //Defining sphere partial definitions.
+//    Ogre::Real tx = coord.x-center.x;
+//    Ogre::Real ty = coord.y-center.y;
+//    Ogre::Real tz = coord.z-center.z;
+//    tx = tx * tx;
+//    ty = ty * ty;
+//    tz = tz * tz;
+//    Ogre::Real sum = tx + ty + tz;
+//    Ogre::Real r = radius * radius;
+//    //Comparing sphere discriminant with radius
+//    bool belongsToSphere = sum <= r;
+//    //Logically removing bullet from the scene.
+//    std::cout << "Testing if bullets exists." << std:: endl;
+//    std::cout<<r << " " << sum << " " << std::endl;
+//    if(belongsToSphere){
+//        std::cout<<"A bullet had been found"<<std::endl;
+//        std::cout<<r << " " << sum << " "<< std::endl;
+//        bulletMatrix[pixelWidth][pixelHeight].first = false;
+//        return std::make_pair(true,e.getScenenodeName());
+//    }
+//    else
+//        return std::make_pair(false,e.getScenenodeName());
+    Ogre::LogManager::getSingletonPtr()->logMessage("--> CollisionHandler: getBulletNameAt <--");
+    Ogre::LogManager::getSingletonPtr()->logMessage(bulletMatrix[pixelWidth][pixelHeight].second.getScenenodeName());
+    return std::make_pair(bulletMatrix[pixelWidth][pixelHeight].first,bulletMatrix[pixelWidth][pixelHeight].second.getScenenodeName());
 }
 
 void CollisionHandler::insertBulletAt(int width, int height,bool exist, Ogre::Vector3 coord){
@@ -175,9 +177,8 @@ void CollisionHandler::insertBulletAt(int width, int height,bool exist, Ogre::Ve
     std::cout << "Number of Bullets = " <<bulletCount << std::endl;
 }
 
-void CollisionHandler::toogleBulletState(int width, int height){
-    bool state = bulletMatrix[width][height].first;
-    bulletMatrix[width][height].first = !state;
+void CollisionHandler::setBulletState(int width, int height, bool state){
+    bulletMatrix[width][height].first = state;
 }
 
 std::pair<std::vector<Ogre::String> , std::vector<Ogre::Vector3> > CollisionHandler::getBulletsForRender(){
@@ -205,14 +206,16 @@ std::pair<std::vector<Ogre::String> , std::vector<Ogre::Vector3> > CollisionHand
 
 void CollisionHandler::compensateBulletRender(std::vector<std::pair<int, int> > coords){
     int cWidth = coords[0].first;
-    int cHeight = coords[1].second;
+    int cHeight = coords[0].second;
     int width, height;
     Ogre::LogManager::getSingletonPtr()->logMessage("--> CollisionHandler: Compensating Bullet Render <--");
+    Ogre::LogManager::getSingletonPtr()->logMessage(bulletMatrix[cWidth][cHeight].second.getScenenodeName());
     for(int i = 1;i < coords.size();i++){
         width = coords[i].first;
         height = coords[i].second;
         bulletMatrix[width][height].first = true;
         bulletMatrix[width][height].second = bulletMatrix[cWidth][cHeight].second;
+        Ogre::LogManager::getSingletonPtr()->logMessage(bulletMatrix[cWidth][cHeight].second.getScenenodeName());
     }
 }
 
