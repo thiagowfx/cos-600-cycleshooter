@@ -77,7 +77,7 @@ public:
      * 
      */
 
-    std::vector<std::pair<int,int> > calculateBulletSurroundings(Ogre::AxisAlignedBox boundingBox);
+    std::vector<std::pair<int,int> > calculateBulletSurroundings(Ogre::Vector3 center,Ogre::AxisAlignedBox boundingBox);
 
     /**
      *

@@ -106,10 +106,10 @@ std::pair<int, bool> TerrainManager::getTerrainAt(Ogre::Vector3 coord){
     
     //Discover if a bullet exists in the terrain point.
     //Ogre::Real rad = sceneManager->getSceneNode("bulletSceneNode0")->getAttachedObject("bulletSceneNode0")->getBoundingRadius();
-    std::pair<bool ,Ogre::String> bulletProperties = collisionHandler->getBulletNameAt(collisionCoord.first,collisionCoord.second);
-    
+
     //terrainAt.second = sceneManager->getSceneNode(bulletName)->getAttachedObject(bulletName)->getBoundingBox().contains(coord);
-    if(bulletProperties.first){
+    if(collisionHandler->existBulletAt(collisionCoord.first,collisionCoord.second)){
+        std::pair<Ogre::Vector3 ,Ogre::String> bulletProperties = collisionHandler->getBulletPropertiesAt(collisionCoord.first,collisionCoord.second);
         Ogre::LogManager::getSingletonPtr()->logMessage("--> TerrainManager: Exist Bullet Here! <--");
         Ogre::AxisAlignedBox bulletBox = sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->getWorldBoundingBox(true);
         LOG("Bounding Box have been obtained.");
@@ -120,7 +120,7 @@ std::pair<int, bool> TerrainManager::getTerrainAt(Ogre::Vector3 coord){
         std::cout << sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->getBoundingBox().intersects(coord)<<std::endl;
         if(terrainAt.second){
             sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->setVisible(false);
-            std::vector<std::pair<int,int> > coords = calculateBulletSurroundings(bulletBox);
+            std::vector<std::pair<int,int> > coords = calculateBulletSurroundings(bulletProperties.first,bulletBox);
             for(int i = 0; i < coords.size();i++){
                 collisionHandler->setBulletState(coords[i].first,coords[i].second,false);
             }
@@ -130,10 +130,10 @@ std::pair<int, bool> TerrainManager::getTerrainAt(Ogre::Vector3 coord){
     return terrainAt;
 }
 
-std::vector<std::pair<int, int> > TerrainManager::calculateBulletSurroundings(Ogre::AxisAlignedBox boundingBox){
+std::vector<std::pair<int, int> > TerrainManager::calculateBulletSurroundings(Ogre::Vector3 center,Ogre::AxisAlignedBox boundingBox){
     //Finding bullet entities bounding limits.
     //And Calculates transfomations to be passed to collision handler.
-    std::pair<int,int> coord0 = getCollisionCoordinates(boundingBox.getCenter());
+    std::pair<int,int> coord0 = getCollisionCoordinates(center);
     std::pair<int,int> coord1 = getCollisionCoordinates(boundingBox.getCorner(Ogre::AxisAlignedBox::NEAR_LEFT_BOTTOM));
     std::pair<int,int> coord2 = getCollisionCoordinates(boundingBox.getCorner(Ogre::AxisAlignedBox::NEAR_RIGHT_BOTTOM));
     std::pair<int,int> coord3 = getCollisionCoordinates(boundingBox.getCorner(Ogre::AxisAlignedBox::FAR_LEFT_BOTTOM));
@@ -187,7 +187,7 @@ void TerrainManager::renderBullets(){
         Ogre::LogManager::getSingletonPtr()->logMessage(renderSettings.first[i]);
         bulletNode->attachObject(bulletEntity);
         //Compensates sizes defined by bulletBoundingBox.
-        collisionHandler->compensateBulletRender(calculateBulletSurroundings(bulletNode->getAttachedObject(renderSettings.first[i])->getWorldBoundingBox(true)));
+        collisionHandler->compensateBulletRender(calculateBulletSurroundings(renderSettings.second[i],bulletNode->getAttachedObject(renderSettings.first[i])->getWorldBoundingBox(true)));
     }
 }
 }

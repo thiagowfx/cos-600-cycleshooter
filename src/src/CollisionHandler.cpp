@@ -138,10 +138,15 @@ int CollisionHandler::getCollisionMatrixHeight() const{
     return collisionMatrixHeight;
 }
 
-std::pair<bool,Ogre::String> CollisionHandler::getBulletNameAt(int pixelWidth, int pixelHeight){
+bool CollisionHandler::existBulletAt(int pixelWidth, int pixelHeight){
+    return bulletMatrix[pixelWidth][pixelHeight].first;
+}
+
+std::pair<Ogre::Vector3,Ogre::String> CollisionHandler::getBulletPropertiesAt(int pixelWidth, int pixelHeight){
     Ogre::LogManager::getSingletonPtr()->logMessage("--> CollisionHandler: getBulletNameAt <--");
     Ogre::LogManager::getSingletonPtr()->logMessage(bulletMatrix[pixelWidth][pixelHeight].second.getScenenodeName());
-    return std::make_pair(bulletMatrix[pixelWidth][pixelHeight].first,bulletMatrix[pixelWidth][pixelHeight].second.getScenenodeName());
+
+    return std::make_pair(bulletMatrix[pixelWidth][pixelHeight].second.getCoordinate(),bulletMatrix[pixelWidth][pixelHeight].second.getScenenodeName());
 }
 
 void CollisionHandler::insertBulletAt(int width, int height,bool exist, Ogre::Vector3 coord){
@@ -150,7 +155,7 @@ void CollisionHandler::insertBulletAt(int width, int height,bool exist, Ogre::Ve
     bulletMatrix[width][height].second.setNewBullet(coord,bulletCount);
     BulletElement test = bulletMatrix[width][height].second;
     std::cout << "Testing name " << test.getScenenodeName()<<std::endl;
-
+    std::cout << "Position " << width << "," << height<<std::endl;
     //Increasing bullet identifiers.
     bulletCount++;
     std::cout << "Number of Bullets = " <<bulletCount << std::endl;

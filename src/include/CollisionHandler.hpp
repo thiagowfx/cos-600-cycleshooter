@@ -149,10 +149,16 @@ public:
     int getCollisionMatrixHeight() const;
 
     /**
-     *  Function that discover if a bullet exists and also 
-     * the scene node name related to it.
+     *  Function that discover if a bullet exists
+     * in a data structure's element.
      */
-    std::pair<bool, Ogre::String> getBulletNameAt(int pixelWidth, int pixelHeight);
+    bool existBulletAt(int pixelWidth, int pixelHeight);
+
+    /**
+     *  Function that discover bullet's scene node name
+     * and center.
+     */
+    std::pair<Ogre::Vector3,Ogre::String> getBulletPropertiesAt(int pixelWidth, int pixelHeight);
     
     /**
      * Functions to add bullets in bullet's Matrix.
