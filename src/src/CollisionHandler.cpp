@@ -172,6 +172,7 @@ void CollisionHandler::insertBulletAt(int width, int height,bool exist, Ogre::Ve
     bulletMatrix[width][height].second.setNewBullet(coord,bulletCount);
     BulletElement test = bulletMatrix[width][height].second;
     std::cout << "Testing name " << test.getScenenodeName()<<std::endl;
+    std::cout << "Position " << width << "," << height<<std::endl;
     //Increasing bullet identifiers.
     bulletCount++;
     std::cout << "Number of Bullets = " <<bulletCount << std::endl;
