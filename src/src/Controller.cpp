@@ -118,12 +118,12 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
 
     if(context == CONTEXT_SHOOTER) {
         static sf::Clock clockHeartbeat;
-        static int next_heartbeat_waiting_time_ms = 0;
+        static int NEXT_HEARTBEAT_WAITING_TIME_MS = 0;
 
         // (maybe) play a heartbeat sound
-        if(clockHeartbeat.getElapsedTime().asMilliseconds() >= next_heartbeat_waiting_time_ms) {
+        if(clockHeartbeat.getElapsedTime().asMilliseconds() >= NEXT_HEARTBEAT_WAITING_TIME_MS) {
             int heartRate = polar->getHeartRate();
-            next_heartbeat_waiting_time_ms = (60.0 * 1000.0) / double(heartRate);
+            NEXT_HEARTBEAT_WAITING_TIME_MS = (60.0 * 1000.0) / double(heartRate);
             AudioManager::instance().playHeartbeat(heartRate, HEARTBEAT_MINIMUM_ASSUMED, HEARTBEAT_MAXIMUM_ASSUMED);
             clockHeartbeat.restart();
         }
@@ -184,8 +184,8 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
             InputManager::instance().executeJoystickButtonAction(event.joystickButton.button, context);
             break;
 	
-	default:
-	    break;
+        default:
+            break;
         }
     }
 
