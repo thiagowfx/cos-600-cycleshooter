@@ -42,8 +42,6 @@ void HUD::update(const Ogre::FrameEvent& evt) {
     if(controller->getDebug()) {
         Ogre::Vector3 realCoord = controller->getLogicManager()->getPlayerNode()->getPosition();
         std::pair<int,int> textCoord = controller->getTerrainManager()->getCollisionCoordinates(realCoord);
-        // TODO: wtf? \/
-        controller->incrementPlayerAmmo();
         auto debugPanel = dynamic_cast<OgreBites::ParamsPanel*>(trayManager->getWidget("debugPanel"));
         debugPanel->setParamValue(0, Ogre::StringConverter::toString(controller->getTerrainManager()->getTerrainAt(realCoord).first));
         debugPanel->setParamValue(1, Ogre::StringConverter::toString(realCoord));

@@ -95,8 +95,8 @@ std::pair<int, int> TerrainManager::getCollisionCoordinates(Ogre::Vector3 point)
 Ogre::Vector3 TerrainManager::getWorldCoordinates(std::pair<int, int> collisionCoord){
     Ogre::Real coordX = collisionCoord.first/widthScale;
     Ogre::Real coordZ = collisionCoord.second/heightScale;
-    coordX += terrainTranslation.x;
-    coordZ += terrainTranslation.z;
+    coordX =  terrainTranslation.x - coordX;
+    coordZ = terrainTranslation.z -coordZ;
     return Ogre::Vector3(coordX,0,coordZ);
 }
 
