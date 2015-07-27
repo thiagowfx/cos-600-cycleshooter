@@ -107,4 +107,8 @@ void PathManager::updateSplineStep(double playerVelocity){
     splineStep = VELOCITY_FACTOR * playerVelocity;
 }
 
+void PathManager::setDebug(bool debug) {
+
+}
+
 }

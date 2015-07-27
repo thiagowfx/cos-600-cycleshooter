@@ -276,7 +276,7 @@ void Controller::go() {
     InputManager::instance().updateJoystickNumber();
     AudioManager::instance().specialAddSound(SOUND_MONSTER_CHASING, true);
     setupRunnerMode();
-    setupDebugOn();
+    setupDebug(true);
     setupKeyMappings();
 
     // Ogre::FrameListener <-- let's begin calling frameRenderingQueued
@@ -759,24 +759,23 @@ void Controller::toggleMode() {
     }
 }
 
-void Controller::setupDebugOn() {
-    LOG("Turning Debug Mode On");
-    debug = true;
+void Controller::setupDebug(bool debug) {
+    if(debug) {
+        LOG("Turning Debug Mode ON");
+    }
+    else {
+        LOG("Turning Debug Mode OFF");
+    }
 
-    logicManager->setDebugOn();
-    hud->setDebug(true);
-}
+    this->debug = debug;
 
-void Controller::setupDebugOff() {
-    LOG("Turning Debug Mode Off");
-    debug = false;
-
-    logicManager->setDebugOff();
-    hud->setDebug(false);
+    logicManager->setDebug(debug);
+    hud->setDebug(debug);
+    pathManager->setDebug(debug);
 }
 
 void Controller::toggleDebug() {
-    debug ? setupDebugOff() : setupDebugOn();
+    setupDebug(!debug);
 }
 
 std::string Controller::getElapsedTimeAsString() const {

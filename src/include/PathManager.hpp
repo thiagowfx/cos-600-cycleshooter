@@ -43,6 +43,8 @@ public:
     void updateParametricPosition();
     void updateSplineStep(double playerVelocity);
 
+    void setDebug(bool debug);
+
     Ogre::Vector3 getCurrentTangent() const;
     Ogre::Vector3 getLastTangent() const;
     Ogre::Vector3 getMonsterCurrentTangent() const;

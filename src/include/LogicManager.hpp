@@ -114,10 +114,7 @@ public:
     // setups
     void setupRunnerMode();
     void setupShooterMode();
-
-    // debug
-    void setDebugOn();
-    void setDebugOff();
+    void setDebug(bool debug);
 
     //Move functions.
     void translateMonster(int difficulty, Ogre::Vector3 translation);

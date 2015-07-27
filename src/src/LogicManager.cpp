@@ -42,7 +42,7 @@ void LogicManager::shoot() {
         controller->getSceneManager()->setSkyDomeEnabled(false);
         controller->getSceneManager()->getRootSceneNode()->flipVisibility();
         bool debug = controller->getDebug();
-	setDebugOff();
+        setDebug(false);
 
         rttRenderTarget->update();
 
@@ -56,7 +56,9 @@ void LogicManager::shoot() {
             decrementMonsterHealth();
         }
 
-        if(debug) setDebugOn();
+        if(debug) {
+            setDebug(true);
+        }
         controller->getSceneManager()->getRootSceneNode()->flipVisibility();
         controller->getSceneManager()->setSkyDomeEnabled(true);
         monsterNode->flipVisibility();
@@ -230,14 +232,9 @@ void LogicManager::setupShooterMode() {
     controller->getWindow()->removeViewport(1);
 }
 
-void LogicManager::setDebugOn() {
-    controller->getSceneManager()->setDisplaySceneNodes(true);
-    controller->getSceneManager()->showBoundingBoxes(true);
-}
-
-void LogicManager::setDebugOff() {
-    controller->getSceneManager()->setDisplaySceneNodes(false);
-    controller->getSceneManager()->showBoundingBoxes(false);
+void LogicManager::setDebug(bool debug) {
+    controller->getSceneManager()->setDisplaySceneNodes(debug);
+    controller->getSceneManager()->showBoundingBoxes(debug);
 }
 
 void LogicManager::translateMonster(int difficulty, Ogre::Vector3 translation){
