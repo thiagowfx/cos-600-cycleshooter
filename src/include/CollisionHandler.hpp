@@ -7,6 +7,7 @@
 #include <utility>
 #include <random>
 #include <BulletElement.hpp>
+#include "Logging.hpp"
 
 namespace Cycleshooter {
 class CollisionHandler {
@@ -53,7 +54,7 @@ class CollisionHandler {
     /**
      * 
      */
-     const Ogre::ColourValue PATH_COLOR = Ogre::ColourValue(setOgreScale(127), setOgreScale(127), setOgreScale(127));
+     const Ogre::ColourValue PATH_COLOR = Ogre::ColourValue(setOgreScale(127), setOgreScale(127), setOgreScale(0));
 
     /**
      * @brief collisionTexture
@@ -159,6 +160,12 @@ public:
      * and center.
      */
     std::pair<Ogre::Vector3,Ogre::String> getBulletPropertiesAt(int pixelWidth, int pixelHeight);
+
+    /**
+     *  Function that obtains all path control points
+     * in the CollisionMatrix.
+     */
+    std::vector<std::pair<int,int> > getPathControllPoints();
     
     /**
      * Functions to add bullets in bullet's Matrix.

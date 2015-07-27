@@ -59,6 +59,7 @@ void TerrainManager::createTerrain(){
     terrainEntity->setMaterialName("Cycleshooter/Ground");
     generateBullets(13);
     renderBullets();
+    obtainCircuitControllPoints();
 }
 
 void TerrainManager::setCollisionTransformation(){
@@ -93,10 +94,10 @@ std::pair<int, int> TerrainManager::getCollisionCoordinates(Ogre::Vector3 point)
 }
 
 Ogre::Vector3 TerrainManager::getWorldCoordinates(std::pair<int, int> collisionCoord){
-    Ogre::Real coordX = collisionCoord.first/widthScale;
-    Ogre::Real coordZ = collisionCoord.second/heightScale;
-    coordX =  terrainTranslation.x - coordX;
-    coordZ = terrainTranslation.z -coordZ;
+    Ogre::Real coordX = collisionCoord.first*1.0 + 0.5;
+    Ogre::Real coordZ = collisionCoord.second*1.0 + 0.5;
+    coordX =  coordX * terrainWorldSizeWidth/collisionHandler->getCollisionMatrixWidth();
+    coordZ = coordZ * terrainWorldSizeHeight/collisionHandler->getCollisionMatrixHeight();
     return Ogre::Vector3(coordX,0,coordZ);
 }
 
@@ -136,6 +137,19 @@ std::pair<int, bool> TerrainManager::getTerrainAt(Ogre::Vector3 coord){
     }
 
     return terrainAt;
+}
+
+std::vector<Ogre::Vector3> TerrainManager::obtainCircuitControllPoints(){
+    std::vector<std::pair<int,int> > locations = collisionHandler->getPathControllPoints();
+    std::vector<Ogre::Vector3> points;
+    for(int i = 0; i< locations.size();i++){
+        points.push_back(getWorldCoordinates(locations[i]));
+    }
+    LOG("Controll Points.");
+    for(int i= 0; i < points.size();i++){
+        std::cout<<points[i].x<<","<<points[i].y<<","<<points[i].z<<std::endl;
+    }
+    return points;
 }
 
 std::vector<std::pair<int, int> > TerrainManager::calculateBulletSurroundings(Ogre::Vector3 center,Ogre::AxisAlignedBox boundingBox){

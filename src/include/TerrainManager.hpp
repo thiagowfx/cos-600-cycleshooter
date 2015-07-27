@@ -79,7 +79,10 @@ public:
      */
     std::pair<int,bool> getTerrainAt(Ogre::Vector3 coord); //Method to discover terrain property and bullet existence.
 
-    
+    /**
+     * Obtain circuits controll points in world coordinates.
+     */
+    std::vector<Ogre::Vector3> obtainCircuitControllPoints();
     /**
      * 
      */
