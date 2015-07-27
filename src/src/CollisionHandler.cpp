@@ -162,14 +162,9 @@ std::vector<std::pair<int, int> > CollisionHandler::getPathControllPoints(){
         for(int pixelHeight = 0; pixelHeight < matrixRowNumber;pixelHeight++){
             if(collisionMatrix[pixelHeight][pixelWidth] == PATH_PIXEL){
                 pointsLocation.push_back(std::pair<int,int> (pixelWidth,pixelHeight));
-                return pointsLocation;
             }
         }
     }
-
-    //Error return state.
-    pointsLocation.push_back(std::pair<int,int> (-1,-1));
-    LOG("ERROR STATE AT getPathControllPoints!");
     return pointsLocation;
 
 }
