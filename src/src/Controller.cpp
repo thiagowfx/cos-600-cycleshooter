@@ -108,6 +108,20 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         return false;
     }
 
+
+    if (context == CONTEXT_RUNNER){
+        //pathManager updates
+        pathManager->updateParametricPosition();
+        pathManager->updateTangents();
+
+        //update increment of spline curve
+        pathManager->updateSplineStep(getBicycle()->getGameSpeed());
+
+        //rotate player along path
+        logicManager->rotateAlongPath(pathManager->getLastTangent(),pathManager->getCurrentTangent());
+    }
+
+
     // monster animations
     baseMonsterAnimation->addTime(evt.timeSinceLastFrame);
     topMonsterAnimation->addTime(evt.timeSinceLastFrame);
@@ -162,6 +176,10 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         InputManager::instance().executeActionsUnbuf(context);
         clockUnbuf.restart();
     }
+
+    // camera rotation stuff
+    logicManager->setAngularVelocity(ConfigManager::instance().getDouble("Controller.camera_angle_rotation_step") / evt.timeSinceLastFrame);
+    InputManager::instance().executeActionsRotationUnbuf(context);
 
     // process events (in particular, buffered keys)
     sf::Event event;
@@ -292,6 +310,9 @@ void Controller::setupTextures() {
 
 void Controller::createGameElements() {
     LOG("Creating Game Elements");
+
+    //Creating the path manager
+    pathManager = std::unique_ptr<PathManager>(new PathManager());
 
     // upstream documentation: http://www.ogre3d.org/tikiwiki/Sinbad+Model
     Ogre::Entity* monsterEntity = getSceneManager()->createEntity("monsterEntity", "Sinbad.mesh");
@@ -453,14 +474,22 @@ void Controller::setupKeyMappings() {
         bicycle->changeSpeed(-BICYCLE_SPEED_CHANGE);
     });
 
-    InputManager::instance().addKeysUnbuf({sf::Keyboard::A,
-                                           sf::Keyboard::Left}, CONTEXT_RUNNER, [&]{
-        logicManager->getPlayerNode()->yaw(Ogre::Degree(+10.0));
+    InputManager::instance().addKeysRotationUnbuf({sf::Keyboard::A,
+                                                   sf::Keyboard::Left}, CONTEXT_RUNNER, [&]{
+        Ogre::Degree angle = Ogre::Degree(logicManager->getAngularVelocity());
+        //Ogre::Vector3 currentPathDirection = Ogre::Vector3(0, 0, -1);
+        Ogre::Vector3 lastPathDirection = pathManager->getLastTangent();
+        Ogre::Vector3 currentPathDirection = pathManager->getCurrentTangent();
+        logicManager->rotateCamera(+angle, currentPathDirection);
     });
 
-    InputManager::instance().addKeysUnbuf({sf::Keyboard::D,
-                                           sf::Keyboard::Right}, CONTEXT_RUNNER, [&]{
-        logicManager->getPlayerNode()->yaw(Ogre::Degree(-10.0));
+    InputManager::instance().addKeysRotationUnbuf({sf::Keyboard::D,
+                                                   sf::Keyboard::Right}, CONTEXT_RUNNER, [&]{
+        Ogre::Degree angle = Ogre::Degree(logicManager->getAngularVelocity());
+        //Ogre::Vector3 currentPathDirection = Ogre::Vector3(0, 0, -1);
+        Ogre::Vector3 lastPathDirection = pathManager->getLastTangent();
+        Ogre::Vector3 currentPathDirection = pathManager->getCurrentTangent();
+        logicManager->rotateCamera(-angle, currentPathDirection);
     });
 
     InputManager::instance().addKey(sf::Keyboard::Q, CONTEXT_RUNNER, [&]{

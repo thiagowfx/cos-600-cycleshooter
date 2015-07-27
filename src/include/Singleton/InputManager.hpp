@@ -38,6 +38,9 @@ class InputManager {
     /** Unbuffered keyboard keys. */
     std::map<sf::Keyboard::Key, std::function<void(void)> > uKeyboardMap[2];
 
+    /** Unbuffered Rotation keyboard keys. */
+    std::map<sf::Keyboard::Key, std::function<void(void)> > urKeyboardMap[2];
+
     /** Unbuffered joystick axis. */
     std::map<sf::Joystick::Axis, std::function<void(float)> > uJoystickAxisMap[2];
 
@@ -46,6 +49,8 @@ class InputManager {
     bool hasJoystickButton(int button, const Context& mode) const;
 
     bool hasKeyUnbuf(const sf::Keyboard::Key& key, const Context& mode) const;
+
+    bool hasKeyRotationUnbuf(const sf::Keyboard::Key& key, const Context& mode) const;
 
     bool hasJoystickAxisUnbuf(const sf::Joystick::Axis& axis, const Context& mode) const;
 
@@ -57,6 +62,8 @@ public:
 
     void addKeyUnbuf(const sf::Keyboard::Key& key, const std::function<void(void)> &action);
 
+    void addKeyRotationUnbuf(const sf::Keyboard::Key& key, const std::function<void(void)> &action);
+
     void addJoystickAxisUnbuf(const sf::Joystick::Axis& axis, const std::function<void(float)> &action);
 
     void addJoystickButton(int button, const Context& mode, const std::function<void(void)> &action);
@@ -64,6 +71,8 @@ public:
     void addKey(const sf::Keyboard::Key& key, const Context& mode, const std::function<void(void)> &action);
 
     void addKeyUnbuf(const sf::Keyboard::Key& key, const Context& mode, const std::function<void(void)> &action);
+
+    void addKeyRotationUnbuf(const sf::Keyboard::Key& key, const Context& mode, const std::function<void(void)> &action);
 
     void addJoystickAxisUnbuf(const sf::Joystick::Axis& axis, const Context& mode, const std::function<void(float)> &action);
 
@@ -73,17 +82,23 @@ public:
 
     void addKeysUnbuf(const std::vector<sf::Keyboard::Key>& keys, const std::function<void(void)> &action);
 
+    void addKeysRotationUnbuf(const std::vector<sf::Keyboard::Key>& keys, const std::function<void(void)> &action);
+
     void addKeys(const std::vector<sf::Keyboard::Key>& keys, const Context& mode, const std::function<void(void)> &action);
 
     void addJoystickButtons(const std::vector<int>& buttons, const Context& mode, const std::function<void(void)> &action);
 
     void addKeysUnbuf(const std::vector<sf::Keyboard::Key>& keys, const Context& mode, const std::function<void(void)> &action);
 
+    void addKeysRotationUnbuf(const std::vector<sf::Keyboard::Key>& keys, const Context& mode, const std::function<void(void)> &action);
+
     void removeKey(const sf::Keyboard::Key& key, const Context& mode);
 
     void removeJoystickButton(int button, const Context& mode);
 
     void removeKeyUnbuf(const sf::Keyboard::Key& key, const Context& mode);
+
+    void removeKeyRotationUnbuf(const sf::Keyboard::Key& key, const Context& mode);
 
     void removeJoystickAxisUnbuf(const sf::Joystick::Axis& axis, const Context& mode);
 
@@ -97,7 +112,11 @@ public:
 
     void removeAllKeysUnbuf();
 
+    void removeAllKeysRotationUnbuf();
+
     void removeAllKeysUnbuf(const Context& mode);
+
+    void removeAllKeysRotationUnbuf(const Context& mode);
 
     void removeAllJoystickAxisUnbuf();
 
@@ -108,6 +127,8 @@ public:
     void executeJoystickButtonAction(int button, const Context& mode);
 
     void executeActionsUnbuf(const Context& mode);
+
+    void executeActionsRotationUnbuf(const Context &mode);
 
     void setJoystickNumber(int number);
 

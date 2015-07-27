@@ -89,9 +89,9 @@ void LogicManager::updatePlayerPosition(const Ogre::Real &time) {
     // distance = speed x time (Physics I, yay!)
     double distance = controller->getBicycle()->getGameSpeed() * time;
 
-    Ogre::Vector3 playerOrientation = frontCamera->getDirection();
+    Ogre::Vector3 playerOrientation = playerNode->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_Z;
 
-    getPlayerNode()->translate(distance * playerOrientation, Ogre::SceneNode::TS_LOCAL);
+    //getPlayerNode()->translate(distance * playerOrientation, Ogre::SceneNode::TS_LOCAL);
 }
 
 void LogicManager::updateMonsterPosition(const Ogre::Real &time) {
@@ -153,13 +153,14 @@ void LogicManager::createSceneNodes() {
 
     // create scene nodes
     parentPlayerNode = controller->getSceneManager()->getRootSceneNode()->createChildSceneNode("parentPlayerNode");
-    frontPlayerNode = parentPlayerNode->createChildSceneNode("frontPlayerNode");
-    rearPlayerNode = parentPlayerNode->createChildSceneNode("rearPlayerNode");
-    rearPlayerNode->yaw(Ogre::Radian(Ogre::Degree(180.0)));
+    frontCameraNode = parentPlayerNode->createChildSceneNode("frontCameraNode");
+    rearCameraNode = parentPlayerNode->createChildSceneNode("rearCameraNode");
+    playerNode = parentPlayerNode->createChildSceneNode("playerNode");
+    rearCameraNode->yaw(Ogre::Radian(Ogre::Degree(180.0)));
 
     // attach scene nodes
-    frontPlayerNode->attachObject(frontCamera);
-    rearPlayerNode->attachObject(rearCamera);
+    frontCameraNode->attachObject(frontCamera);
+    rearCameraNode->attachObject(rearCamera);
 
     monsterNode = controller->getSceneManager()->getSceneNode("monsterNode");
 }
@@ -188,6 +189,14 @@ void LogicManager::createRtt() {
     rttRenderTarget->getViewport(0)->setClearEveryFrame(true);
     rttRenderTarget->getViewport(0)->setOverlaysEnabled(false);
     rttRenderTarget->getViewport(0)->setBackgroundColour(Ogre::ColourValue::Black);
+}
+
+double LogicManager::getAngularVelocity() const {
+    return angularVelocity;
+}
+
+void LogicManager::setAngularVelocity(double value) {
+    angularVelocity = value;
 }
 
 void LogicManager::setDifficultyParamenter() {
@@ -234,6 +243,35 @@ void LogicManager::setDebugOff() {
 void LogicManager::translateMonster(int difficulty, Ogre::Vector3 translation){
     float parameter = 1/difficultyParamenter[difficulty];
     parentPlayerNode->translate(translation*parameter);
+}
+
+void LogicManager::rotateCamera(const Ogre::Degree& angle, const Ogre::Vector3& pathDirection){
+    Ogre::Vector3 cameraDirection = frontCamera->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_Z;
+    Ogre::Vector3 crossProduct = cameraDirection.crossProduct(pathDirection);
+    Ogre::Real signalAngleBetween = (crossProduct.y < 0) ? (+1) : (-1);
+    Ogre::Degree angleBetween = signalAngleBetween * cameraDirection.angleBetween(pathDirection);
+    Ogre::Degree absAngle = Ogre::Math::Abs(angle + angleBetween);
+
+    // should we rotate the camera or not, after all? Check it here.
+    if(absAngle < MAX_ANGLE) {
+        frontCamera->yaw(angle);
+        playerNode->yaw(ROTATION_FACTOR * angle);
+    }
+}
+
+void LogicManager::rotateAlongPath(Ogre::Vector3 lastPathDirection, Ogre::Vector3 currentPathDirection){
+    Ogre::Vector3 crossProduct = currentPathDirection.crossProduct(lastPathDirection);
+    Ogre::Real signalAngleBetween = (crossProduct.y < 0) ? (+1) : (-1);
+    Ogre::Degree angleBetween = signalAngleBetween * currentPathDirection.angleBetween(lastPathDirection);
+
+    Ogre::Vector3 cameraDirection = frontCamera->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_Z;
+    Ogre::Vector3 crossProductCamera = cameraDirection.crossProduct(lastPathDirection);
+    Ogre::Real signalAngleBetweenCamera = (crossProductCamera.y < 0) ? (+1) : (-1);
+    Ogre::Degree angleBetweenCamera = signalAngleBetweenCamera * cameraDirection.angleBetween(lastPathDirection);
+    Ogre::Degree absAngle = Ogre::Math::Abs(angleBetween + angleBetweenCamera);
+    if(absAngle < MAX_ANGLE) {
+        parentPlayerNode->yaw(angleBetween);
+    }
 }
 
 }

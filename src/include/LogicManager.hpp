@@ -19,8 +19,9 @@ class LogicManager {
     Ogre::Viewport *viewportMirror = NULL;
 
     Ogre::SceneNode* parentPlayerNode = NULL;
-    Ogre::SceneNode* frontPlayerNode = NULL;
-    Ogre::SceneNode* rearPlayerNode = NULL;
+    Ogre::SceneNode* playerNode = NULL;
+    Ogre::SceneNode* frontCameraNode = NULL;
+    Ogre::SceneNode* rearCameraNode = NULL;
     Ogre::SceneNode* monsterNode = NULL;
 
     Ogre::Camera *frontCamera = NULL;
@@ -86,8 +87,14 @@ class LogicManager {
     const double MIRROR_PERCENTAGE_H = ConfigManager::instance().getDouble("LogicManager.mirror_percentage_h");
     const double MIRROR_PERCENTAGE_V = ConfigManager::instance().getDouble("LogicManager.mirror_percentage_v");
 
-    //Data structure for difficulty mapping.
+    // Data structure for difficulty mapping.
     std::vector<float> difficultyParamenter;
+
+    // Rotation variables
+    double angularVelocity;
+    // TODO: create a config out of this hard-coded constant
+    Ogre::Degree MAX_ANGLE = Ogre::Degree(45);
+    double ROTATION_FACTOR = 0.5f;
 public:
     LogicManager(Controller* controller);
 
@@ -114,6 +121,8 @@ public:
     //Move functions.
     void translateMonster(int difficulty, Ogre::Vector3 translation);
     void yawCamera();
+    void rotateCamera(const Ogre::Degree& angle, const Ogre::Vector3& pathDirection);
+    void rotateAlongPath(Ogre::Vector3 lastPathDirection, Ogre::Vector3 currentPathDirection);
 
 
     // getters and setters
@@ -122,6 +131,8 @@ public:
     int getMonsterHealth() const;
     void setDifficultyParamenter();
     void externalIncrement();
+    double getAngularVelocity() const;
+    void setAngularVelocity(double value);
 };
 }
 
