@@ -149,6 +149,31 @@ std::pair<Ogre::Vector3,Ogre::String> CollisionHandler::getBulletPropertiesAt(in
     return std::make_pair(bulletMatrix[pixelWidth][pixelHeight].second.getCoordinate(),bulletMatrix[pixelWidth][pixelHeight].second.getScenenodeName());
 }
 
+std::vector<std::pair<int, int> > CollisionHandler::getPathControllPoints(){
+    int matrixColNumber, matrixRowNumber;
+
+    //Grabing matrix dimensions.
+    matrixColNumber = collisionMatrix[0].size();
+    matrixRowNumber = collisionMatrix.size();
+    std::vector<std::pair<int,int> > pointsLocation;
+
+    //Serching the matrix.
+    for(int pixelWidth = 0;pixelWidth<matrixColNumber;pixelWidth++){
+        for(int pixelHeight = 0; pixelHeight < matrixRowNumber;pixelHeight++){
+            if(collisionMatrix[pixelHeight][pixelWidth] == PATH_PIXEL){
+                pointsLocation.push_back(std::pair<int,int> (pixelWidth,pixelHeight));
+                return pointsLocation;
+            }
+        }
+    }
+
+    //Error return state.
+    pointsLocation.push_back(std::pair<int,int> (-1,-1));
+    LOG("ERROR STATE AT getPathControllPoints!");
+    return pointsLocation;
+
+}
+
 void CollisionHandler::insertBulletAt(int width, int height,bool exist, Ogre::Vector3 coord){
     //Setting the new bullet.
     bulletMatrix[width][height].first = true;
