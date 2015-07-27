@@ -115,7 +115,7 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         pathManager->updateTangents();
 
         //update increment of spline curve
-        pathManager->updateSplineStep(getBicycle()->getGameSpeed());
+        //pathManager->updateSplineStep(getBicycle()->getGameSpeed());
 
         //rotate player along path
         logicManager->rotateAlongPath(pathManager->getLastTangent(),pathManager->getCurrentTangent());

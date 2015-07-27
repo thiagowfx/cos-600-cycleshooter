@@ -91,7 +91,7 @@ void LogicManager::updatePlayerPosition(const Ogre::Real &time) {
 
     Ogre::Vector3 playerOrientation = playerNode->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_Z;
 
-    //getPlayerNode()->translate(distance * playerOrientation, Ogre::SceneNode::TS_LOCAL);
+    getPlayerNode()->translate(distance * playerOrientation, Ogre::SceneNode::TS_LOCAL);
 }
 
 void LogicManager::updateMonsterPosition(const Ogre::Real &time) {
@@ -270,7 +270,8 @@ void LogicManager::rotateAlongPath(Ogre::Vector3 lastPathDirection, Ogre::Vector
     Ogre::Degree angleBetweenCamera = signalAngleBetweenCamera * cameraDirection.angleBetween(lastPathDirection);
     Ogre::Degree absAngle = Ogre::Math::Abs(angleBetween + angleBetweenCamera);
     if(absAngle < MAX_ANGLE) {
-        parentPlayerNode->yaw(angleBetween);
+        frontCamera->yaw(angleBetween);
+        playerNode->yaw(angleBetween);
     }
 }
 
