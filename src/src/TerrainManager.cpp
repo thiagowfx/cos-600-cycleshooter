@@ -140,7 +140,7 @@ std::pair<int, bool> TerrainManager::getTerrainAt(Ogre::Vector3 coord){
 }
 
 std::vector<Ogre::Vector3> TerrainManager::obtainCircuitControllPoints(){
-    std::vector<std::pair<int,int> > locations = collisionHandler->getPathControlPoints();
+    std::vector<std::pair<int,int> > locations = collisionHandler->getPathControllPoints();
     std::vector<Ogre::Vector3> points;
     for(int i = 0; i< locations.size();i++){
         points.push_back(getWorldCoordinates(locations[i]));

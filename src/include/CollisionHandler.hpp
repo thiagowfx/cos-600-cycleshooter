@@ -165,7 +165,7 @@ public:
      *  Function that obtains all path control points
      * in the CollisionMatrix.
      */
-    std::vector<std::pair<int,int> > getPathControlPoints();
+    std::vector<std::pair<int,int> > getPathControllPoints();
     
     /**
      * Functions to add bullets in bullet's Matrix.
