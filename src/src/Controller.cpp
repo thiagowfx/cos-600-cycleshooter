@@ -134,7 +134,11 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         if(!isKeyRightDown && !isKeyLeftDown){
             logicManager->rotateCamera(Ogre::Degree(0),pathManager->getCurrentTangent(),pathManager->getLastTangent());
         }
+
+        //monster update
+        //logicManager->updateMonster(pathManager->getMonsterCurrentTangent(),pathManager->getMonsterLastTangent());
     }
+    logicManager->updateMonster(pathManager->getMonsterCurrentTangent(),pathManager->getMonsterLastTangent());
 
 
     // monster animations

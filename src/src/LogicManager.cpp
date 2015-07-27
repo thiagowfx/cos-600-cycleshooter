@@ -103,7 +103,7 @@ void LogicManager::updateMonsterPosition(const Ogre::Real &time) {
     // quaternions! upstream: http://stackoverflow.com/questions/4727079/getting-object-direction-in-ogre
     Ogre::Vector3 monsterOrientation = monsterNode->getOrientation() * Ogre::Vector3::UNIT_Z;
 
-    monsterNode->translate(distance * monsterOrientation, Ogre::SceneNode::TS_LOCAL);
+    //monsterNode->translate(distance * monsterOrientation, Ogre::SceneNode::TS_LOCAL);
 }
 
 bool LogicManager::checkPlayerMonsterCollision() {
@@ -264,6 +264,16 @@ void LogicManager::rotateCamera(const Ogre::Degree& angle, const Ogre::Vector3& 
         frontCamera->yaw(angle);
         playerNode->yaw(ROTATION_FACTOR * angle);
     }
+}
+
+void LogicManager::updateMonster(const Ogre::Vector3 &tangent, const Ogre::Vector3 &lastTangent){
+    Ogre::Vector3 crossProductTangents = tangent.crossProduct(lastTangent);
+    Ogre::Real signalAngleBetweenTangents = (crossProductTangents.y < 0) ? (+1) : (-1);
+    Ogre::Degree angleBetweenTangents = signalAngleBetweenTangents * tangent.angleBetween(lastTangent);
+    monsterNode->yaw(angleBetweenTangents);
+    Ogre::Vector3 direction = monsterNode->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_Z;
+    direction.normalise();
+    monsterNode->translate(MONSTER_STEP * direction);
 }
 
 }

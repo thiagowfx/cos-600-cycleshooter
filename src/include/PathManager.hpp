@@ -26,7 +26,7 @@ class PathManager: public Ogre::SimpleSpline {
     Ogre::Vector3 monsterLastTangent;
     Ogre::Real startMonsterPosition = Ogre::Real(0);
     Ogre::Real monsterParametricPosition;
-    Ogre::Real monsterSplineStep = 0.0001;
+    Ogre::Real monsterSplineStep = 0.0005;
 
     //for debugging
     Procedural::Path proceduralPath;
