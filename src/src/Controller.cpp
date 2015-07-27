@@ -327,7 +327,7 @@ void Controller::createGameElements() {
     LOG("Creating Game Elements");
 
     //Creating the path manager
-    pathManager = std::unique_ptr<PathManager>(new PathManager());
+    pathManager = std::unique_ptr<PathManager>(new PathManager("track1.txt"));
 
     // upstream documentation: http://www.ogre3d.org/tikiwiki/Sinbad+Model
     Ogre::Entity* monsterEntity = getSceneManager()->createEntity("monsterEntity", "Sinbad.mesh");

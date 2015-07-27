@@ -29,11 +29,11 @@ PathManager::PathManager() {
     monsterLastTangent = Ogre::Vector3(0,0,-1);
 
     //Circular curve for debugging
-    this->addPoint(Ogre::Vector3(0,0,0));
+    /*this->addPoint(Ogre::Vector3(0,0,0));
     this->addPoint(Ogre::Vector3(0,0,-10000));
     this->addPoint(Ogre::Vector3(10000,0,-10000));
     this->addPoint(Ogre::Vector3(10000,0,0));
-    this->addPoint(Ogre::Vector3(0,0,0));
+    this->addPoint(Ogre::Vector3(0,0,0));*/
 
     /*Ogre::SimpleSpline simpleSpline = this->SimpleSpline;
     Procedural::CatmullRomSpline3 catmullSpline = Procedural::CatmullRomSpline3(simpleSpline);
@@ -65,6 +65,12 @@ PathManager::PathManager(const std::vector<Ogre::Vector3>& controlPoints){
 
 void PathManager::go(const std::vector<Ogre::Vector3>& controlPoints) {
     parametricPosition = startPlayerPosition + epsilon;
+    currentTangent = Ogre::Vector3(0,0,-1);
+    lastTangent = Ogre::Vector3(0,0,-1);
+
+    monsterParametricPosition = startMonsterPosition + epsilon;
+    monsterCurrentTangent = Ogre::Vector3(0,0,-1);
+    monsterLastTangent = Ogre::Vector3(0,0,-1);
 
     for(int i = 0; i < controlPoints.size(); i++){
         this->addPoint(controlPoints[i]);
