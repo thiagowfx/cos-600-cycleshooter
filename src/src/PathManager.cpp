@@ -108,7 +108,25 @@ void PathManager::updateSplineStep(double playerVelocity){
 }
 
 void PathManager::setDebug(bool debug) {
+    Ogre::SceneManager* sceneManager = Ogre::Root::getSingleton().getSceneManager("sceneManager");
+    static bool firstTimeInit = true;
 
+    if(firstTimeInit) {
+        firstTimeInit = !firstTimeInit;
+        Ogre::SceneNode* debugPathManagerSceneNode = sceneManager->getRootSceneNode()->createChildSceneNode("debugPathManagerSceneNode");
+
+        for(const auto& point: mPoints) {
+            const double DEBUG_NODE_SCALE = 0.25;
+            Ogre::Entity* entity = sceneManager->createEntity("sphere.mesh");
+            entity->setMaterialName("Cycleshooter/Matheus");
+            Ogre::SceneNode* sceneNode = debugPathManagerSceneNode->createChildSceneNode();
+            sceneNode->translate(point);
+            sceneNode->scale(Ogre::Vector3(DEBUG_NODE_SCALE, DEBUG_NODE_SCALE, DEBUG_NODE_SCALE));
+            sceneNode->attachObject(entity);
+        }
+    }
+
+    sceneManager->getSceneNode("debugPathManagerSceneNode")->setVisible(debug);
 }
 
 }
