@@ -98,6 +98,8 @@ Ogre::Vector3 TerrainManager::getWorldCoordinates(std::pair<int, int> collisionC
     Ogre::Real coordZ = collisionCoord.second*1.0 + 0.5;
     coordX =  coordX * terrainWorldSizeWidth/collisionHandler->getCollisionMatrixWidth();
     coordZ = coordZ * terrainWorldSizeHeight/collisionHandler->getCollisionMatrixHeight();
+    coordX = terrainWorldSizeWidth*0.5 - coordX;
+    coordZ = terrainWorldSizeHeight*0.5 - coordZ;
     return Ogre::Vector3(coordX,0,coordZ);
 }
 
