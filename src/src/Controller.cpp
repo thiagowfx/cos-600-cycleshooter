@@ -117,8 +117,21 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         //update increment of spline curve
         //pathManager->updateSplineStep(getBicycle()->getGameSpeed());
 
-        //rotate player along path
-        logicManager->rotateAlongPath(pathManager->getLastTangent(),pathManager->getCurrentTangent());
+        //Player rotation
+        const std::vector<sf::Keyboard::Key> rightKeys = {sf::Keyboard::Right, sf::Keyboard::D};
+        const std::vector<sf::Keyboard::Key> leftKeys = {sf::Keyboard::Left, sf::Keyboard::A};
+        bool isKeyRightDown = InputManager::instance().isKeyPressed(rightKeys);
+        bool isKeyLeftDown = InputManager::instance().isKeyPressed(leftKeys);
+        Ogre::Degree angle = Ogre::Degree(logicManager->getAngularVelocity());
+        if(isKeyRightDown){
+            logicManager->rotateCamera(-angle,pathManager->getCurrentTangent(),pathManager->getLastTangent());
+        }
+        if(isKeyLeftDown){
+            logicManager->rotateCamera(angle,pathManager->getCurrentTangent(),pathManager->getLastTangent());
+        }
+        if(!isKeyRightDown && !isKeyLeftDown){
+            logicManager->rotateCamera(Ogre::Degree(0),pathManager->getCurrentTangent(),pathManager->getLastTangent());
+        }
     }
 
 
@@ -472,24 +485,6 @@ void Controller::setupKeyMappings() {
                                            sf::Keyboard::Down}, CONTEXT_RUNNER, [&]{
         // logicManager->getPlayerNode()->translate(Ogre::Vector3(0.0, 0.0, +10.0), Ogre::SceneNode::TS_LOCAL);
         bicycle->changeSpeed(-BICYCLE_SPEED_CHANGE);
-    });
-
-    InputManager::instance().addKeysRotationUnbuf({sf::Keyboard::A,
-                                                   sf::Keyboard::Left}, CONTEXT_RUNNER, [&]{
-        Ogre::Degree angle = Ogre::Degree(logicManager->getAngularVelocity());
-        //Ogre::Vector3 currentPathDirection = Ogre::Vector3(0, 0, -1);
-        Ogre::Vector3 lastPathDirection = pathManager->getLastTangent();
-        Ogre::Vector3 currentPathDirection = pathManager->getCurrentTangent();
-        logicManager->rotateCamera(+angle, currentPathDirection);
-    });
-
-    InputManager::instance().addKeysRotationUnbuf({sf::Keyboard::D,
-                                                   sf::Keyboard::Right}, CONTEXT_RUNNER, [&]{
-        Ogre::Degree angle = Ogre::Degree(logicManager->getAngularVelocity());
-        //Ogre::Vector3 currentPathDirection = Ogre::Vector3(0, 0, -1);
-        Ogre::Vector3 lastPathDirection = pathManager->getLastTangent();
-        Ogre::Vector3 currentPathDirection = pathManager->getCurrentTangent();
-        logicManager->rotateCamera(-angle, currentPathDirection);
     });
 
     InputManager::instance().addKey(sf::Keyboard::Q, CONTEXT_RUNNER, [&]{

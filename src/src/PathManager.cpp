@@ -13,6 +13,9 @@ Ogre::Vector3 PathManager::getLastTangent() const {
 PathManager::PathManager() {
     parametricPosition = 3 * epsilon + startPlayerPosition;
 
+    currentTangent = Ogre::Vector3(0,0,-1);
+    lastTangent = Ogre::Vector3(0,0,-1);
+
     //Circular curve for debugging
     this->addPoint(Ogre::Vector3(0,0,0));
     this->addPoint(Ogre::Vector3(0,0,-10000));
@@ -31,9 +34,9 @@ PathManager::PathManager(std::vector<Ogre::Vector3> controlPoints){
 }
 
 void PathManager::updateTangents() {
-    Ogre::Vector3 lTangent_firstPoint = this->interpolate(parametricPosition - 3 * epsilon);
-    Ogre::Vector3 lTangent_secondPoint = this->interpolate(parametricPosition - 2 * epsilon);
-    lastTangent = lTangent_secondPoint - lTangent_firstPoint;
+    //Ogre::Vector3 lTangent_firstPoint = this->interpolate(parametricPosition - 3 * epsilon);
+    //Ogre::Vector3 lTangent_secondPoint = this->interpolate(parametricPosition - 2 * epsilon);
+    lastTangent = currentTangent;
     Ogre::Vector3 cTangent_firstPoint = this->interpolate(parametricPosition - epsilon);
     Ogre::Vector3 cTangent_secondPoint = this->interpolate(parametricPosition);
     currentTangent = cTangent_secondPoint - cTangent_firstPoint;

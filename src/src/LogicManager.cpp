@@ -245,33 +245,24 @@ void LogicManager::translateMonster(int difficulty, Ogre::Vector3 translation){
     parentPlayerNode->translate(translation*parameter);
 }
 
-void LogicManager::rotateCamera(const Ogre::Degree& angle, const Ogre::Vector3& pathDirection){
+void LogicManager::rotateCamera(const Ogre::Degree& angle, const Ogre::Vector3& pathDirection, const Ogre::Vector3& lastPathDirection){
+    //path rotation
+    Ogre::Vector3 crossProductTangents = pathDirection.crossProduct(lastPathDirection);
+    Ogre::Real signalAngleBetweenTangents = (crossProductTangents.y < 0) ? (+1) : (-1);
+    Ogre::Degree angleBetweenTangents = signalAngleBetweenTangents * pathDirection.angleBetween(lastPathDirection);
+    frontCamera->yaw(angleBetweenTangents);
+    playerNode->yaw(angleBetweenTangents);
+
     Ogre::Vector3 cameraDirection = frontCamera->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_Z;
     Ogre::Vector3 crossProduct = cameraDirection.crossProduct(pathDirection);
     Ogre::Real signalAngleBetween = (crossProduct.y < 0) ? (+1) : (-1);
     Ogre::Degree angleBetween = signalAngleBetween * cameraDirection.angleBetween(pathDirection);
     Ogre::Degree absAngle = Ogre::Math::Abs(angle + angleBetween);
 
-    // should we rotate the camera or not, after all? Check it here.
+    // key rotation
     if(absAngle < MAX_ANGLE) {
         frontCamera->yaw(angle);
         playerNode->yaw(ROTATION_FACTOR * angle);
-    }
-}
-
-void LogicManager::rotateAlongPath(Ogre::Vector3 lastPathDirection, Ogre::Vector3 currentPathDirection){
-    Ogre::Vector3 crossProduct = currentPathDirection.crossProduct(lastPathDirection);
-    Ogre::Real signalAngleBetween = (crossProduct.y < 0) ? (+1) : (-1);
-    Ogre::Degree angleBetween = signalAngleBetween * currentPathDirection.angleBetween(lastPathDirection);
-
-    Ogre::Vector3 cameraDirection = frontCamera->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_Z;
-    Ogre::Vector3 crossProductCamera = cameraDirection.crossProduct(lastPathDirection);
-    Ogre::Real signalAngleBetweenCamera = (crossProductCamera.y < 0) ? (+1) : (-1);
-    Ogre::Degree angleBetweenCamera = signalAngleBetweenCamera * cameraDirection.angleBetween(lastPathDirection);
-    Ogre::Degree absAngle = Ogre::Math::Abs(angleBetween + angleBetweenCamera);
-    if(absAngle < MAX_ANGLE) {
-        frontCamera->yaw(angleBetween);
-        playerNode->yaw(angleBetween);
     }
 }
 
