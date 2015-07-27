@@ -10,11 +10,23 @@ Ogre::Vector3 PathManager::getCurrentTangent() const {
 Ogre::Vector3 PathManager::getLastTangent() const {
     return lastTangent;
 }
-PathManager::PathManager() {
-    parametricPosition = 3 * epsilon + startPlayerPosition;
 
+Ogre::Vector3 PathManager::getMonsterCurrentTangent() const {
+    return monsterCurrentTangent;
+}
+
+Ogre::Vector3 PathManager::getMonsterLastTangent() const {
+    return monsterLastTangent;
+}
+
+PathManager::PathManager() {
+    parametricPosition = startPlayerPosition + epsilon;
     currentTangent = Ogre::Vector3(0,0,-1);
     lastTangent = Ogre::Vector3(0,0,-1);
+
+    monsterParametricPosition = startMonsterPosition + epsilon;
+    monsterCurrentTangent = Ogre::Vector3(0,0,-1);
+    monsterLastTangent = Ogre::Vector3(0,0,-1);
 
     //Circular curve for debugging
     this->addPoint(Ogre::Vector3(0,0,0));
@@ -23,14 +35,15 @@ PathManager::PathManager() {
     this->addPoint(Ogre::Vector3(10000,0,0));
     this->addPoint(Ogre::Vector3(0,0,0));
 
-    Procedural::CatmullRomSpline3 catmullSpline = new Procedural::CatmullRomSpline3(this);
+    /*Ogre::SimpleSpline simpleSpline = this->SimpleSpline;
+    Procedural::CatmullRomSpline3 catmullSpline = Procedural::CatmullRomSpline3(simpleSpline);
     catmullSpline.close();
     proceduralPath = catmullSpline.realizePath();
-    splineMesh = proceduralPath.realizeMesh("splineMesh");
+    splineMesh = proceduralPath.realizeMesh("splineMesh");*/
 }
 
 PathManager::PathManager(std::vector<Ogre::Vector3> controlPoints){
-    parametricPosition = 3 * epsilon + startPlayerPosition;
+    parametricPosition = startPlayerPosition + epsilon;
 
     for(int i = 0; i < controlPoints.size(); i++){
         this->addPoint(controlPoints[i]);
@@ -40,17 +53,27 @@ PathManager::PathManager(std::vector<Ogre::Vector3> controlPoints){
 
 void PathManager::updateTangents() {
     lastTangent = currentTangent;
-    Ogre::Vector3 cTangent_firstPoint = this->interpolate(parametricPosition - epsilon);
-    Ogre::Vector3 cTangent_secondPoint = this->interpolate(parametricPosition);
-    currentTangent = cTangent_secondPoint - cTangent_firstPoint;
+    Ogre::Vector3 tangentFirstPoint = this->interpolate(parametricPosition - epsilon);
+    Ogre::Vector3 tangentSecondPoint = this->interpolate(parametricPosition);
+    currentTangent = tangentSecondPoint - tangentFirstPoint;
+
+    monsterLastTangent = monsterCurrentTangent;
+    Ogre::Vector3 monsterTangentFirstPoint = this->interpolate(monsterParametricPosition - epsilon);
+    Ogre::Vector3 monsterTangentSecondPoint = this->interpolate(monsterParametricPosition);
+    monsterCurrentTangent = monsterTangentSecondPoint - monsterTangentFirstPoint;
 }
 
 void PathManager::updateParametricPosition(){
     if (parametricPosition + splineStep < 1){
         parametricPosition += splineStep;
+    } else {
+        parametricPosition = startPlayerPosition + epsilon;
     }
-    else {
-        parametricPosition = 3 * splineStep;
+
+    if (monsterParametricPosition + monsterSplineStep < 1){
+        monsterParametricPosition += monsterSplineStep;
+    } else {
+        monsterParametricPosition = startMonsterPosition + epsilon;
     }
 }
 
