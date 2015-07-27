@@ -192,7 +192,6 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
 
     // camera rotation stuff
     logicManager->setAngularVelocity(ConfigManager::instance().getDouble("Controller.camera_angle_rotation_step") / evt.timeSinceLastFrame);
-    InputManager::instance().executeActionsRotationUnbuf(context);
 
     // process events (in particular, buffered keys)
     sf::Event event;

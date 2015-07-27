@@ -34,8 +34,6 @@ PathManager::PathManager(std::vector<Ogre::Vector3> controlPoints){
 }
 
 void PathManager::updateTangents() {
-    //Ogre::Vector3 lTangent_firstPoint = this->interpolate(parametricPosition - 3 * epsilon);
-    //Ogre::Vector3 lTangent_secondPoint = this->interpolate(parametricPosition - 2 * epsilon);
     lastTangent = currentTangent;
     Ogre::Vector3 cTangent_firstPoint = this->interpolate(parametricPosition - epsilon);
     Ogre::Vector3 cTangent_secondPoint = this->interpolate(parametricPosition);
