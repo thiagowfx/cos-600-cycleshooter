@@ -1,3 +1,0 @@
-repository='external project URL'
-module='https://bitbucket.org/transporter/ogre-procedural/get/ca6eb3363a53.zip'
-tag=''
