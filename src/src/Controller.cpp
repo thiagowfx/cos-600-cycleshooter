@@ -108,6 +108,8 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         return false;
     }
 
+    // camera rotation stuff
+    logicManager->setAngularVelocity(ConfigManager::instance().getDouble("Controller.camera_angle_rotation_step") / evt.timeSinceLastFrame);
 
     if (context == CONTEXT_RUNNER){
         //pathManager updates
@@ -189,9 +191,6 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         InputManager::instance().executeActionsUnbuf(context);
         clockUnbuf.restart();
     }
-
-    // camera rotation stuff
-    logicManager->setAngularVelocity(ConfigManager::instance().getDouble("Controller.camera_angle_rotation_step") / evt.timeSinceLastFrame);
 
     // process events (in particular, buffered keys)
     sf::Event event;

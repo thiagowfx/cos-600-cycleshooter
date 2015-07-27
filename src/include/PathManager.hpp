@@ -5,7 +5,7 @@
 
 #include <OgreVector3.h>
 #include <OgreSimpleSpline.h>
-//#include <ProceduralPathGenerators.h>
+#include <ProceduralPathGenerators.h>
 
 namespace Cycleshooter {
 
@@ -21,8 +21,8 @@ class PathManager: public Ogre::SimpleSpline {
     Ogre::Real splineStep = 0.0001;
 
     //for debugging
-    //Procedural::CatmullRomSpline3 ProceduralSplineCurve;
-    //Procedural::Path proceduralPath;
+    Procedural::Path proceduralPath;
+    Ogre::MeshPtr splineMesh;
 
 public:
     PathManager();

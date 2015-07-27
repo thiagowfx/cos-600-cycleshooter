@@ -22,6 +22,11 @@ PathManager::PathManager() {
     this->addPoint(Ogre::Vector3(10000,0,-10000));
     this->addPoint(Ogre::Vector3(10000,0,0));
     this->addPoint(Ogre::Vector3(0,0,0));
+
+    Procedural::CatmullRomSpline3 catmullSpline = new Procedural::CatmullRomSpline3(this);
+    catmullSpline.close();
+    proceduralPath = catmullSpline.realizePath();
+    splineMesh = proceduralPath.realizeMesh("splineMesh");
 }
 
 PathManager::PathManager(std::vector<Ogre::Vector3> controlPoints){
