@@ -115,7 +115,7 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         pathManager->updateTangents();
 
         //update increment of spline curve
-        //pathManager->updateSplineStep(getBicycle()->getGameSpeed());
+        pathManager->updateSplineStep(getBicycle()->getGameSpeed());
 
         //Player rotation
         const std::vector<sf::Keyboard::Key> rightKeys = {sf::Keyboard::Right, sf::Keyboard::D};
