@@ -42,13 +42,33 @@ PathManager::PathManager() {
     splineMesh = proceduralPath.realizeMesh("splineMesh");*/
 }
 
-PathManager::PathManager(std::vector<Ogre::Vector3> controlPoints){
+PathManager::PathManager(const char *file) {
+    std::ifstream ifs(file);
+    std::string line;
+    std::vector<Ogre::Vector3> controlPoints;
+
+    while(std::getline(ifs, line)) {
+        std::stringstream ss;
+        ss << line;
+        double x, y, z;
+        ss >> x >> y >> z;
+        controlPoints.push_back(Ogre::Vector3(x, y, z));
+    }
+
+    ifs.close();
+    go(controlPoints);
+}
+
+PathManager::PathManager(const std::vector<Ogre::Vector3>& controlPoints){
+    go(controlPoints);
+}
+
+void PathManager::go(const std::vector<Ogre::Vector3>& controlPoints) {
     parametricPosition = startPlayerPosition + epsilon;
 
     for(int i = 0; i < controlPoints.size(); i++){
         this->addPoint(controlPoints[i]);
     }
-
 }
 
 void PathManager::updateTangents() {

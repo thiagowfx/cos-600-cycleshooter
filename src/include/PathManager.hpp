@@ -32,9 +32,12 @@ class PathManager: public Ogre::SimpleSpline {
     Procedural::Path proceduralPath;
     Ogre::MeshPtr splineMesh;
 
+    void go(const std::vector<Ogre::Vector3>& controlPoints);
+
 public:
     PathManager();
-    PathManager(std::vector<Ogre::Vector3> controlPoints);
+    PathManager(const char* file);
+    PathManager(const std::vector<Ogre::Vector3>& controlPoints);
 
     void updateTangents();
     void updateParametricPosition();
