@@ -26,11 +26,12 @@ void LogicManager::update(const Ogre::FrameEvent &evt) {
     //Dealing with terrain Collision;
     std::pair<int,bool> terrainAt = controller->getTerrainManager()->getTerrainAt(getPlayerNode()->getPosition());
     if(terrainAt.first == 2){
-        controller->shutdownNow(GAME_END_WALL_CRASH);
+        //controller->shutdownNow(GAME_END_WALL_CRASH);
     }
     controller->getBicycle()->changeFriction(calculateFriction(terrainAt.first));
     if(terrainAt.second){
         incrementPlayerAmmo();
+        AudioManager::instance().playSound(SOUND_RELOAD);
     }
     if(checkPlayerMonsterCollision()) {
         controller->shutdownNow(GAME_END_CAUGHT_BY_MONSTER);
@@ -118,7 +119,7 @@ int LogicManager::calculateFriction(int terrainAt){
         return 75;
     else if(terrainAt == SAND_PIXEL)
         return 50;
-    else if(terrainAt == ICE_PIXEL)
+    else
         return 0;
 }
 
