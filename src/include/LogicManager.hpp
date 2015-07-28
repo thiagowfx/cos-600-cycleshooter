@@ -55,6 +55,11 @@ class LogicManager {
     void updateMonsterPosition(const Ogre::Real& time);
 
     /**
+     * Calculate Bicycle Friction based on terrain properties.
+     */
+    int calculateFriction(int terrainAt);
+
+    /**
      * Return true if the monster is near enough in relation to the player.
      */
     bool checkPlayerMonsterCollision();

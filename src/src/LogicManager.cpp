@@ -24,7 +24,12 @@ void LogicManager::update(const Ogre::FrameEvent &evt) {
 
     updateMonsterPosition(elapsedTime);
     //Dealing with terrain Collision;
-    if(controller->getTerrainManager()->getTerrainAt(getPlayerNode()->getPosition()).second){
+    std::pair<int,bool> terrainAt = controller->getTerrainManager()->getTerrainAt(getPlayerNode()->getPosition());
+    if(terrainAt.first == 2){
+        controller->shutdownNow(GAME_END_WALL_CRASH);
+    }
+    controller->getBicycle()->changeFriction(calculateFriction(terrainAt.first));
+    if(terrainAt.second){
         incrementPlayerAmmo();
     }
     if(checkPlayerMonsterCollision()) {
@@ -104,6 +109,17 @@ void LogicManager::updateMonsterPosition(const Ogre::Real &time) {
     Ogre::Vector3 monsterOrientation = monsterNode->getOrientation() * Ogre::Vector3::UNIT_Z;
 
     monsterNode->translate(distance * monsterOrientation, Ogre::SceneNode::TS_LOCAL);
+}
+
+int LogicManager::calculateFriction(int terrainAt){
+    if(terrainAt == 4)
+        return 25;
+    else if(terrainAt == 5)
+        return 75;
+    else if(terrainAt == 6)
+        return 50;
+    else if(terrainAt == 7)
+        return 0;
 }
 
 bool LogicManager::checkPlayerMonsterCollision() {
