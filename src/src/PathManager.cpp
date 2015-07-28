@@ -80,13 +80,14 @@ void PathManager::updateTangents() {
     //currentTangent = tangentSecondPoint - tangentFirstPoint;
     monsterLastTangent = monsterCurrentTangent;
     //Ogre::Real t = parametricValue(monsterPosition,monsterIndex)[1];
-    t += 0.001;
+    t += 0.0005;
     Ogre::Vector3 monsterTangentFirstPoint = this->interpolate(monsterIndex, t);
     Ogre::Vector3 monsterTangentSecondPoint = this->interpolate(monsterIndex, t + epsilon);
-    setMonsterNextPosition(monsterTangentSecondPoint);
-    //monsterCurrentTangent = this->mPoints[monsterNextIndex] - this->mPoints[monsterIndex];
-    monsterCurrentTangent = monsterTangentSecondPoint - monsterTangentFirstPoint;
+    //setMonsterNextPosition(monsterTangentFirstPoint);
+    monsterCurrentTangent = this->mPoints[monsterNextIndex] - this->mPoints[monsterIndex];
+    //monsterCurrentTangent = monsterTangentSecondPoint - monsterTangentFirstPoint;
     monsterCurrentTangent.normalise();
+    //std::cout << "Monster next position = " << monsterTangentSecondPoint << std::endl;
 }
 
 
@@ -100,6 +101,7 @@ void PathManager::updateIndex(const Ogre::Vector3& monsterPosition){
             monsterNextIndex += 1;
         }
     }
+    std::cout << "Monster index change to = " << monsterNextIndex << std::endl;
 }
 
 void PathManager::updateSplineStep(double playerVelocity){

@@ -271,11 +271,11 @@ void LogicManager::updateMonster(const Ogre::Vector3 &tangent, const Ogre::Vecto
     monsterNode->yaw(angleBetweenTangents);
     //Ogre::Vector3 direction = monsterNode->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_Z;
     //direction.normalise();
-    //monsterNode->translate(MONSTER_STEP * tangent);
+    monsterNode->translate(MONSTER_STEP * tangent);
 }
 
 void LogicManager::translateMonster(const Ogre::Vector3& monsterNextPosition){
-    monsterNode->setPosition(monsterNextPosition);
+    //monsterNode->setPosition(monsterNextPosition);
 }
 
 }

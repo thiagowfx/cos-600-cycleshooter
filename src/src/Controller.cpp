@@ -365,7 +365,6 @@ void Controller::createGameElements() {
     double monsterScale = 5.0;
     monsterNode->scale(monsterScale, monsterScale, monsterScale);
     monsterNode->attachObject(monsterEntity);
-    monsterNode->yaw(Ogre::Radian(Ogre::Degree(270)));
 
     //Spheres for poligonal path class
     /*Ogre::SceneNode* debugPoligonalPathManagerSceneNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("debugPoligonalPathManagerSceneNode");
