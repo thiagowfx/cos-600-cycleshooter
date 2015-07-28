@@ -150,7 +150,7 @@ material Cycleshooter/Ground
 			ambient 0.32 0.02 0.53
 			texture_unit
 			{
-				texture racecircuit.png
+				texture grass_1024.jpg
 			}
 		}
 	}
