@@ -145,6 +145,7 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         //poligonalPathManager updates
         poligonalPathManager->updatePlayerPoint(logicManager->getPlayerNode()->getPosition());
         poligonalPathManager->updateMonsterPoint(getSceneManager()->getSceneNode("monsterNode")->getPosition());
+        std::cout << "Monster Node position = " << getSceneManager()->getSceneNode("monsterNode")->getPosition() << std::endl;
         poligonalPathManager->updateTangents();
 
         //Player rotation

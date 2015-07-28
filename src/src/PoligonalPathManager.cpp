@@ -83,6 +83,8 @@ void PoligonalPathManager::updateMonsterPoint(Ogre::Vector3 monsterPosition){
         }
     }
     //std::cout << "Monster point = " << controlPoints[monsterPointIndex] << std::endl;
+    std::cout << "monster actual index = " << monsterPointIndex << std:: endl;
+    std::cout << "monster next index = " << monsterNextPointIndex << std:: endl;
 }
 
 void PoligonalPathManager::updateTangents(){
