@@ -147,7 +147,6 @@ material Cycleshooter/Ground
 	{
 		pass
 		{
-			ambient 0.32 0.02 0.53
 			texture_unit
 			{
 				texture grass_1024.jpg
