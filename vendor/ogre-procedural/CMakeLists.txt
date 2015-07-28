@@ -9,6 +9,7 @@ if(NOT OgreProcedural_FOUND)
     include(ExternalProject)
     ExternalProject_Add(
         OgreProcedural
+        DEPENDS ogre
         PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
         URL "https://bitbucket.org/transporter/ogre-procedural/get/ca6eb3363a53.zip"
         UPDATE_COMMAND ""
