@@ -95,7 +95,7 @@ class LogicManager {
     // TODO: create a config out of this hard-coded constant
     Ogre::Degree MAX_ANGLE = Ogre::Degree(45);
     double ROTATION_FACTOR = 1.0f;
-    double MONSTER_STEP = - 0.3;
+    double MONSTER_STEP = 0.1f;
 public:
     LogicManager(Controller* controller);
 

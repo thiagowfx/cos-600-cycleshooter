@@ -154,7 +154,7 @@ void LogicManager::createSceneNodes() {
     LOG("Creating SceneNodes");
 
     // create scene nodes
-    parentPlayerNode = controller->getSceneManager()->getRootSceneNode()->createChildSceneNode("parentPlayerNode");
+    parentPlayerNode = controller->getSceneManager()->getRootSceneNode()->createChildSceneNode("parentPlayerNode",Ogre::Vector3(11096.2, 0, 4577.64));
     frontCameraNode = parentPlayerNode->createChildSceneNode("frontCameraNode");
     rearCameraNode = parentPlayerNode->createChildSceneNode("rearCameraNode");
     playerNode = parentPlayerNode->createChildSceneNode("playerNode");
@@ -247,8 +247,8 @@ void LogicManager::rotateCamera(const Ogre::Degree& angle, const Ogre::Vector3& 
     Ogre::Vector3 crossProductTangents = pathDirection.crossProduct(lastPathDirection);
     Ogre::Real signalAngleBetweenTangents = (crossProductTangents.y < 0) ? (+1) : (-1);
     Ogre::Degree angleBetweenTangents = signalAngleBetweenTangents * pathDirection.angleBetween(lastPathDirection);
-    //frontCamera->yaw(angleBetweenTangents);
-    //playerNode->yaw(angleBetweenTangents);
+    frontCamera->yaw(angleBetweenTangents);
+    playerNode->yaw(angleBetweenTangents);
 
     Ogre::Vector3 cameraDirection = frontCamera->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_Z;
     Ogre::Vector3 crossProduct = cameraDirection.crossProduct(pathDirection);
@@ -268,9 +268,9 @@ void LogicManager::updateMonster(const Ogre::Vector3 &tangent, const Ogre::Vecto
     Ogre::Real signalAngleBetweenTangents = (crossProductTangents.y < 0) ? (+1) : (-1);
     Ogre::Degree angleBetweenTangents = signalAngleBetweenTangents * tangent.angleBetween(lastTangent);
     monsterNode->yaw(angleBetweenTangents);
-    Ogre::Vector3 direction = monsterNode->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_Z;
-    direction.normalise();
-    monsterNode->translate(MONSTER_STEP * direction);
+    //Ogre::Vector3 direction = monsterNode->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_Z;
+    //direction.normalise();
+    monsterNode->translate(MONSTER_STEP * tangent);
 }
 
 }

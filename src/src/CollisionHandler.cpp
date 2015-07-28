@@ -56,7 +56,7 @@ void CollisionHandler::loadTensor(){
             else if(collisionPixel == START_COLOR)
                 collisionMatrix[row][col] = START_PIXEL;
             else if (collisionPixel == PATH_COLOR){
-                std::cout <<-row*(25000.0/2048) + 12500 << " 0.0 " << -col*(25000.0/2048) + 12500 << std::endl;
+                //std::cout <<-row*(25000.0/2048) + 12500 << " 0.0 " << -col*(25000.0/2048) + 12500 << std::endl;
                 collisionMatrix[row][col] = PATH_PIXEL;
             }
             else if(collisionPixel == GRASS_COLOR)
