@@ -10,6 +10,21 @@
 #include "Logging.hpp"
 
 namespace Cycleshooter {
+/**
+ * List of colors present in the game scene.
+ */
+enum Colors{
+    NONE_PIXEL,
+    START_PIXEL,
+    GRASS_PIXEL,
+    BULLET_PIXEL,
+    ROAD_PIXEL,
+    ROCK_PIXEL,
+    SAND_PIXEL,
+    ICE_PIXEL,
+    PATH_PIXEL,
+    WATER_PIXEL
+};
 class CollisionHandler {
     /**
      * RGB value associated with the position of the bullet.
@@ -71,21 +86,7 @@ class CollisionHandler {
      */
     int bulletCount;
 
-    /**
-     * List of colors present in the game scene.
-     */
-    enum Colors{
-        NONE_PIXEL,
-        START_PIXEL,
-        GRASS_PIXEL,
-        BULLET_PIXEL,
-        ROAD_PIXEL,
-        ROCK_PIXEL,
-        SAND_PIXEL,
-        ICE_PIXEL,
-        PATH_PIXEL,
-        WATER_PIXEL
-    };
+
 
     /**
      * Width and Height of the collision Matrix.

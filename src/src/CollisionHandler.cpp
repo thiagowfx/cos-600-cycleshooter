@@ -99,7 +99,7 @@ bool CollisionHandler::testMatrixDimension() {
     return false;
 }
 
-CollisionHandler::Colors CollisionHandler::getPixelEnumeration(int pixelWidth, int pixelHeight){
+Colors CollisionHandler::getPixelEnumeration(int pixelWidth, int pixelHeight){
     return collisionMatrix[pixelWidth][pixelHeight];
 }
 
@@ -126,7 +126,7 @@ std::pair<int,int> CollisionHandler::getStartPixel(){
     return pixelLocation;
 }
 
-std::vector<std::vector<CollisionHandler::Colors> > CollisionHandler::getCollisionMatrix(){
+std::vector<std::vector<Colors> > CollisionHandler::getCollisionMatrix(){
     return collisionMatrix;
 }
 

@@ -112,13 +112,13 @@ void LogicManager::updateMonsterPosition(const Ogre::Real &time) {
 }
 
 int LogicManager::calculateFriction(int terrainAt){
-    if(terrainAt == 4)
+    if(terrainAt == ROAD_PIXEL)
         return 25;
-    else if(terrainAt == 5)
+    else if(terrainAt == ROCK_PIXEL)
         return 75;
-    else if(terrainAt == 6)
+    else if(terrainAt == SAND_PIXEL)
         return 50;
-    else if(terrainAt == 7)
+    else if(terrainAt == ICE_PIXEL)
         return 0;
 }
 
