@@ -111,10 +111,10 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     // camera rotation stuff
     logicManager->setAngularVelocity(ConfigManager::instance().getDouble("Controller.camera_angle_rotation_step") / evt.timeSinceLastFrame);
 
-    //if (context == CONTEXT_RUNNER){
+    if (context == CONTEXT_RUNNER){
         //pathManager updates
-        /*pathManager->updateParametricPosition();
-        pathManager->updateTangents();
+        pathManager->updateTangents(getSceneManager()->getSceneNode("monsterNode")->getPosition());
+        pathManager->updateMonsterIndex(getSceneManager()->getSceneNode("monsterNode")->getPosition());
 
         //update increment of spline curve
         pathManager->updateSplineStep(getBicycle()->getGameSpeed());
@@ -139,9 +139,9 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         //logicManager->updateMonster(pathManager->getMonsterCurrentTangent(),pathManager->getMonsterLastTangent());
     }
     logicManager->updateMonster(pathManager->getMonsterCurrentTangent(),pathManager->getMonsterLastTangent());
-    */
 
-    if (context == CONTEXT_RUNNER){
+
+    /*if (context == CONTEXT_RUNNER){
         //poligonalPathManager updates
         poligonalPathManager->updatePlayerPoint(logicManager->getPlayerNode()->getPosition());
         poligonalPathManager->updateMonsterPoint(getSceneManager()->getSceneNode("monsterNode")->getPosition());
@@ -168,7 +168,7 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         //logicManager->updateMonster(poligonalPathManager->getMonsterCurrentTangent(),poligonalPathManager->getMonsterLastTangent());
     }
     logicManager->updateMonster(poligonalPathManager->getMonsterCurrentTangent(),poligonalPathManager->getMonsterLastTangent());
-
+    */
 
     // monster animations
     baseMonsterAnimation->addTime(evt.timeSinceLastFrame);
@@ -356,8 +356,8 @@ void Controller::createGameElements() {
     LOG("Creating Game Elements");
 
     //Creating the path manager
-    //pathManager = std::unique_ptr<PathManager>(new PathManager("track1.txt"));
-    poligonalPathManager = std::unique_ptr<PoligonalPathManager>(new PoligonalPathManager("track1.txt"));
+    pathManager = std::unique_ptr<PathManager>(new PathManager("track1.txt"));
+    //poligonalPathManager = std::unique_ptr<PoligonalPathManager>(new PoligonalPathManager("track1.txt"));
 
     // upstream documentation: http://www.ogre3d.org/tikiwiki/Sinbad+Model
     Ogre::Entity* monsterEntity = getSceneManager()->createEntity("monsterEntity", "Sinbad.mesh");
@@ -368,7 +368,7 @@ void Controller::createGameElements() {
     monsterNode->yaw(Ogre::Radian(Ogre::Degree(270)));
 
     //Spheres for poligonal path class
-    Ogre::SceneNode* debugPoligonalPathManagerSceneNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("debugPoligonalPathManagerSceneNode");
+    /*Ogre::SceneNode* debugPoligonalPathManagerSceneNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("debugPoligonalPathManagerSceneNode");
     for(const auto& point: poligonalPathManager->controlPoints) {
         const double DEBUG_NODE_SCALE = 0.25;
         Ogre::Entity* entity = getSceneManager()->createEntity("sphere.mesh");
@@ -377,7 +377,7 @@ void Controller::createGameElements() {
         sceneNode->translate(point);
         sceneNode->scale(Ogre::Vector3(DEBUG_NODE_SCALE, DEBUG_NODE_SCALE, DEBUG_NODE_SCALE));
         sceneNode->attachObject(entity);
-    }
+    }*/
 
 
     // attention: logic manager should be created before any threads that will update it
@@ -815,8 +815,8 @@ void Controller::setupDebug(bool debug) {
 
     logicManager->setDebug(debug);
     hud->setDebug(debug);
-    //pathManager->setDebug(debug);
-    poligonalPathManager->setDebug(debug);
+    pathManager->setDebug(debug);
+    //poligonalPathManager->setDebug(debug);
 }
 
 void Controller::toggleDebug() {

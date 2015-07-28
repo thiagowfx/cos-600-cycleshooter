@@ -17,16 +17,17 @@ class PathManager: public Ogre::SimpleSpline {
     Ogre::Vector3 currentTangent;
     Ogre::Vector3 lastTangent;
     Ogre::Real startPlayerPosition = Ogre::Real(0.001);
-    Ogre::Real parametricPosition; //parametric portion of the whole Spline curve starts on 0.003 and goes to 1
     Ogre::Real VELOCITY_FACTOR = 0.00000001;
     Ogre::Real splineStep = 0.0001;
 
     //Monster
     Ogre::Vector3 monsterCurrentTangent;
     Ogre::Vector3 monsterLastTangent;
+    Ogre::Real t = 0;
+    unsigned int monsterIndex = 0;
+    unsigned int monsterNextIndex = 1;
     Ogre::Real startMonsterPosition = Ogre::Real(0);
-    Ogre::Real monsterParametricPosition;
-    Ogre::Real monsterSplineStep = 0.00001;
+    Ogre::Real monsterSplineStep = 0.001;
 
     //for debugging
     Procedural::Path proceduralPath;
@@ -39,8 +40,9 @@ public:
     PathManager(const char* file);
     PathManager(const std::vector<Ogre::Vector3>& controlPoints);
 
-    void updateTangents();
-    void updateParametricPosition();
+    void updateTangents(Ogre::Vector3 monsterPosition);
+
+    void updateMonsterIndex(Ogre::Vector3 monsterPosition);
     void updateSplineStep(double playerVelocity);
     std::vector<Ogre::Real> parametricValue(Ogre::Vector3 splinePoint, unsigned int fromIndex);
 
