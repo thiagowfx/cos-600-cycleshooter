@@ -114,7 +114,7 @@ std::pair<int,int> CollisionHandler::getStartPixel(){
     //Serching the matrix.
     for(int pixelWidth = 0;pixelWidth<matrixColNumber;pixelWidth++){
         for(int pixelHeight = 0; pixelHeight < matrixRowNumber;pixelHeight++){
-            if(collisionMatrix[pixelHeight][pixelWidth] == START_PIXEL){
+            if(collisionMatrix[pixelWidth][pixelHeight] == START_PIXEL){
                 pixelLocation = std::make_pair (pixelWidth,pixelHeight);
                 return pixelLocation;
             }
@@ -160,7 +160,7 @@ std::vector<std::pair<int, int> > CollisionHandler::getPathControllPoints(){
     //Serching the matrix.
     for(int pixelWidth = 0;pixelWidth<matrixColNumber;pixelWidth++){
         for(int pixelHeight = 0; pixelHeight < matrixRowNumber;pixelHeight++){
-            if(collisionMatrix[pixelHeight][pixelWidth] == PATH_PIXEL){
+            if(collisionMatrix[pixelWidth][pixelHeight] == PATH_PIXEL){
                 pointsLocation.push_back(std::pair<int,int> (pixelWidth,pixelHeight));
             }
         }

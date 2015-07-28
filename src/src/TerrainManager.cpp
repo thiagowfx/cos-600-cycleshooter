@@ -94,8 +94,8 @@ std::pair<int, int> TerrainManager::getCollisionCoordinates(Ogre::Vector3 point)
 }
 
 Ogre::Vector3 TerrainManager::getWorldCoordinates(std::pair<int, int> collisionCoord){
-    Ogre::Real coordX = collisionCoord.first*1.0 + 0.5;
-    Ogre::Real coordZ = collisionCoord.second*1.0 + 0.5;
+    Ogre::Real coordX = collisionCoord.first*1.0;
+    Ogre::Real coordZ = collisionCoord.second*1.0;
     coordX =  coordX * terrainWorldSizeWidth/collisionHandler->getCollisionMatrixWidth();
     coordZ = coordZ * terrainWorldSizeHeight/collisionHandler->getCollisionMatrixHeight();
     coordX = terrainWorldSizeWidth*0.5 - coordX;
@@ -149,7 +149,7 @@ std::vector<Ogre::Vector3> TerrainManager::obtainCircuitControllPoints(){
     }
     LOG("Controll Points.");
     for(int i= 0; i < points.size();i++){
-        std::cout<<points[i].x<<","<<points[i].y<<","<<points[i].z<<std::endl;
+        std::cout<<points[i].x<<" "<<points[i].y<<" "<<points[i].z<<std::endl;
     }
     return points;
 }
