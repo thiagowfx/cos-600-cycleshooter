@@ -145,7 +145,7 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         //poligonalPathManager updates
         poligonalPathManager->updatePlayerPoint(logicManager->getPlayerNode()->getPosition());
         poligonalPathManager->updateMonsterPoint(getSceneManager()->getSceneNode("monsterNode")->getPosition());
-        std::cout << "Monster Node position = " << getSceneManager()->getSceneNode("monsterNode")->getPosition() << std::endl;
+        //std::cout << "Monster Node position = " << getSceneManager()->getSceneNode("monsterNode")->getPosition() << std::endl;
         poligonalPathManager->updateTangents();
 
         //Player rotation
@@ -361,10 +361,24 @@ void Controller::createGameElements() {
 
     // upstream documentation: http://www.ogre3d.org/tikiwiki/Sinbad+Model
     Ogre::Entity* monsterEntity = getSceneManager()->createEntity("monsterEntity", "Sinbad.mesh");
-    Ogre::SceneNode* monsterNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("monsterNode", Ogre::Vector3(11157.2, 0, 4956.05));
+    Ogre::SceneNode* monsterNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("monsterNode", Ogre::Vector3(0, 0, 0));
     double monsterScale = 5.0;
     monsterNode->scale(monsterScale, monsterScale, monsterScale);
     monsterNode->attachObject(monsterEntity);
+    monsterNode->yaw(Ogre::Radian(Ogre::Degree(270)));
+
+    //Spheres for poligonal path class
+    Ogre::SceneNode* debugPoligonalPathManagerSceneNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("debugPoligonalPathManagerSceneNode");
+    for(const auto& point: poligonalPathManager->controlPoints) {
+        const double DEBUG_NODE_SCALE = 0.25;
+        Ogre::Entity* entity = getSceneManager()->createEntity("sphere.mesh");
+        entity->setMaterialName("Cycleshooter/Matheus");
+        Ogre::SceneNode* sceneNode = debugPoligonalPathManagerSceneNode->createChildSceneNode();
+        sceneNode->translate(point);
+        sceneNode->scale(Ogre::Vector3(DEBUG_NODE_SCALE, DEBUG_NODE_SCALE, DEBUG_NODE_SCALE));
+        sceneNode->attachObject(entity);
+    }
+
 
     // attention: logic manager should be created before any threads that will update it
     logicManager = std::unique_ptr<LogicManager>(new LogicManager(this));
@@ -802,6 +816,7 @@ void Controller::setupDebug(bool debug) {
     logicManager->setDebug(debug);
     hud->setDebug(debug);
     //pathManager->setDebug(debug);
+    poligonalPathManager->setDebug(debug);
 }
 
 void Controller::toggleDebug() {

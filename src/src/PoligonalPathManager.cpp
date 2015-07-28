@@ -3,23 +3,19 @@
 namespace Cycleshooter {
 
 
-Ogre::Vector3 PoligonalPathManager::getPlayerCurrentTangent() const
-{
+Ogre::Vector3 PoligonalPathManager::getPlayerCurrentTangent() const {
     return playerCurrentTangent;
 }
 
-Ogre::Vector3 PoligonalPathManager::getPlayerLastTangent() const
-{
+Ogre::Vector3 PoligonalPathManager::getPlayerLastTangent() const {
     return playerLastTangent;
 }
 
-Ogre::Vector3 PoligonalPathManager::getMonsterCurrentTangent() const
-{
+Ogre::Vector3 PoligonalPathManager::getMonsterCurrentTangent() const {
     return monsterCurrentTangent;
 }
 
-Ogre::Vector3 PoligonalPathManager::getMonsterLastTangent() const
-{
+Ogre::Vector3 PoligonalPathManager::getMonsterLastTangent() const {
     return monsterLastTangent;
 }
 PoligonalPathManager::PoligonalPathManager() {
@@ -47,10 +43,6 @@ void PoligonalPathManager::go(const std::vector<Ogre::Vector3>& controlPoints){
     monsterNextPointIndex = 1;
     playerPointIndex = 1;
     playerNextPointIndex = 2;
-    monsterCurrentTangent = Ogre::Vector3(-61, 0, -378.41);
-    monsterLastTangent = Ogre::Vector3(-61, 0, -378.41);
-    playerCurrentTangent = Ogre::Vector3(-12.2002, 0, 683.59);
-    playerLastTangent = Ogre::Vector3(-12.2002, 0, 683.59);
     for(int i = 0; i < controlPoints.size(); i++){
         this->controlPoints.push_back(controlPoints[i]);
     }
@@ -83,20 +75,42 @@ void PoligonalPathManager::updateMonsterPoint(Ogre::Vector3 monsterPosition){
         }
     }
     //std::cout << "Monster point = " << controlPoints[monsterPointIndex] << std::endl;
-    std::cout << "monster actual index = " << monsterPointIndex << std:: endl;
-    std::cout << "monster next index = " << monsterNextPointIndex << std:: endl;
+    //std::cout << "monster actual index = " << monsterPointIndex << std:: endl;
+    //std::cout << "monster next index = " << monsterNextPointIndex << std:: endl;
 }
 
 void PoligonalPathManager::updateTangents(){
     playerLastTangent = playerCurrentTangent;
     playerCurrentTangent = controlPoints[playerNextPointIndex] - controlPoints[playerPointIndex];
-    //playerCurrentTangent.normalise();
+    playerCurrentTangent.normalise();
     monsterLastTangent = monsterCurrentTangent;
     monsterCurrentTangent = controlPoints[monsterNextPointIndex] - controlPoints[monsterPointIndex];
     monsterCurrentTangent.normalise();
     //std::cout << "playerCurrentTangent = " << playerCurrentTangent << std::endl;
     //std::cout << "monsterCurrentTangent = " << monsterCurrentTangent << std::endl;
     //std::cout << "monsterLastTangent = " << monsterLastTangent << std::endl;
+}
+
+void PoligonalPathManager::setDebug(bool debug) {
+    /*Ogre::SceneManager* sceneManager = Ogre::Root::getSingleton().getSceneManager("sceneManager");
+       static bool firstTimeInit = true;
+
+        if(firstTimeInit) {
+            firstTimeInit = !firstTimeInit;
+            Ogre::SceneNode* debugPoligonalPathManagerSceneNode = sceneManager->getRootSceneNode()->createChildSceneNode("debugPoligonalPathManagerSceneNode");
+
+            for(const auto& point: controlPoints) {
+                const double DEBUG_NODE_SCALE = 0.25;
+                Ogre::Entity* entity = sceneManager->createEntity("sphere.mesh");
+                entity->setMaterialName("Cycleshooter/Matheus");
+                Ogre::SceneNode* sceneNode = debugPoligonalPathManagerSceneNode->createChildSceneNode();
+                sceneNode->translate(point);
+                sceneNode->scale(Ogre::Vector3(DEBUG_NODE_SCALE, DEBUG_NODE_SCALE, DEBUG_NODE_SCALE));
+                sceneNode->attachObject(entity);
+            }
+        }
+
+        sceneManager->getSceneNode("debugPathManagerSceneNode")->setVisible(debug);*/
 }
 
 PoligonalPathManager::~PoligonalPathManager() {

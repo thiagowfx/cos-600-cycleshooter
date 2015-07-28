@@ -6,7 +6,7 @@
 namespace Cycleshooter {
 class PoligonalPathManager {
 
-    std::vector<Ogre::Vector3> controlPoints;
+
     int playerPointIndex;
     int playerNextPointIndex;
     Ogre::Vector3 playerCurrentTangent;
@@ -17,8 +17,14 @@ class PoligonalPathManager {
     Ogre::Vector3 monsterCurrentTangent;
     Ogre::Vector3 monsterLastTangent;
 public:
+
+    std::vector<Ogre::Vector3> controlPoints;
+
     PoligonalPathManager();
     PoligonalPathManager(const char* file);
+
+    void setDebug(bool debug);
+
     virtual ~PoligonalPathManager();
 
     void go(const std::vector<Ogre::Vector3>& controlPoints);

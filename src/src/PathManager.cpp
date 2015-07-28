@@ -75,7 +75,7 @@ void PathManager::go(const std::vector<Ogre::Vector3>& controlPoints) {
     for(int i = 0; i < controlPoints.size(); i++){
         this->addPoint(controlPoints[i]);
     }
-    std::cout << "=================initial monster: " << this->mPoints[0] << std::endl;
+    //std::cout << "=================initial monster: " << this->mPoints[0] << std::endl;
 }
 
 void PathManager::updateTangents() {
