@@ -49,14 +49,14 @@ void TerrainManager::createTerrain(){
       Ogre::Vector3::UNIT_Z);
 
     //Transforming planar mesh to treatable entity.
-    Ogre::Entity* terrainEntity = sceneManager->createEntity("groundTerrain");
+    Ogre::Entity* terrainEntity = sceneManager->createEntity("Ground","groundTerrain");
+    terrainEntity->setMaterialName("Cycleshooter/Ground");
 
     //Adding entity to the scene.
-    sceneManager->getRootSceneNode()->createChildSceneNode()->attachObject(terrainEntity);
     terrainEntity->setCastShadows(false);
+    sceneManager->getRootSceneNode()->createChildSceneNode()->attachObject(terrainEntity);
 
-    //Defines which texture will be used. 
-    terrainEntity->setMaterialName("Cycleshooter/Ground");
+    //Defines which texture will be used.
     generateBullets(13);
     renderBullets();
     obtainCircuitControllPoints();
@@ -68,11 +68,9 @@ void TerrainManager::setCollisionTransformation(){
     int collisionHeigth = collisionHandler->getCollisionMatrixHeight();
     collisionHeigth -= 1;
     collisionWidth -= 1;
-    
-    std::cout << "Collision Lengths " << collisionWidth << "," << collisionHeigth << std::endl;
-    
-    heightScale = collisionHeigth/terrainWorldSizeHeight;
-    widthScale = collisionWidth/terrainWorldSizeWidth;
+
+    heightScale = collisionHeigth / terrainWorldSizeHeight;
+    widthScale = collisionWidth /terrainWorldSizeWidth;
     
     terrainTranslation.x = terrainWorldSizeWidth*0.5;
     terrainTranslation.y = 0;
