@@ -13,7 +13,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${DEST_DIR}/bin")
 option(DEPENDENCIES_READY "Are the dependencies ready?" OFF)
 
 
-add_definitions("-std=c++11 -g -DLOGGING_ENABLED
+add_definitions("-std=c++11
+                -g
+                -DLOGGING_ENABLED
                 -Wno-deprecated-declarations
                 -Wno-deprecated-register
                 ")
@@ -46,25 +48,9 @@ if(DEPENDENCIES_READY)
         ${OGRE_Overlay_INCLUDE_DIRS}
         )
 
-    # Components that need linking (NB does not include header-only components like bind)
-    set(OGRE_BOOST_COMPONENTS date_time thread)
-
-    # Statically linking boost to a dynamic Ogre build doesn't work on Linux 64-bit
-    set(Boost_USE_STATIC_LIBS ${OGRE_STATIC})
-    find_package(Boost COMPONENTS ${OGRE_BOOST_COMPONENTS} QUIET)
-    if (NOT Boost_FOUND)
-        set(Boost_USE_STATIC_LIBS NOT ${Boost_USE_STATIC_LIBS})
-        find_package(Boost COMPONENTS ${OGRE_BOOST_COMPONENTS} QUIET)
-    endif()
-    find_package(Boost QUIET)
-
-    include_directories(${Boost_INCLUDE_DIR})
-    add_definitions(-DBOOST_ALL_NO_LIB)
-
     set(
         OGRE_LIBRARIES
         ${OGRE_LIBRARIES}
-        ${Boost_LIBRARIES}
         ${OGRE_Terrain_LIBRARIES}
         ${OGRE_Overlay_LIBRARIES}
         )
