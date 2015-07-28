@@ -41,7 +41,7 @@ public:
 
     void updateTangents();
 
-    void updateIndex(const Ogre::Vector3& monsterNextPosition);
+    void updateIndex();
     void updateSplineStep(double playerVelocity);
     std::vector<Ogre::Real> parametricValue(Ogre::Vector3 splinePoint, unsigned int fromIndex);
 

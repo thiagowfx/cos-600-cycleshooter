@@ -114,7 +114,7 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     if (context == CONTEXT_RUNNER){
         //pathManager updates
         pathManager->updateTangents();
-        pathManager->updateIndex(getSceneManager()->getSceneNode("monsterNode")->getPosition());
+        //pathManager->updateIndex(getSceneManager()->getSceneNode("monsterNode")->getPosition());
 
         //update increment of spline curve
         pathManager->updateSplineStep(getBicycle()->getGameSpeed());
