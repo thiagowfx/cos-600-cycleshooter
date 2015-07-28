@@ -31,6 +31,10 @@ private:
     Ogre::Vector3 terrainTranslation;
     
     /**
+     *
+     */
+    Ogre::Real GRASS_WIDTH, GRASS_HEIGHT;
+    /**
      * Terrain size
      */
     int terrainWidth, terrainHeight;
@@ -59,6 +63,11 @@ private:
     /**
      *
      */
+    struct GrassVertex{
+        float x, y, z;
+        float nx, ny, nz;
+        float u, v;
+    };
     void createTerrainGrass();
 
     /**
