@@ -21,22 +21,23 @@ private:
     Ogre::Real terrainWorldSizeHeight,terrainWorldSizeWidth;
     
     /**
-     * 
+     * Scale between image and terrain size.
      */
     Ogre::Real widthScale, heightScale;
     
     /**
-     * 
+     * Vector to help with the system coordinator in Ogre3D
      */
     Ogre::Vector3 terrainTranslation;
     
     /**
-     * 
+     * Terrain size
      */
     int terrainWidth, terrainHeight;
     
     /**
-     * 
+     * Matrix to check position of elements in terrain
+     * and check for collisions.
      */
     CollisionHandler* collisionHandler = NULL;
 
@@ -46,9 +47,29 @@ private:
     void defineTerrainProperties();
     
     /**
-     * 
+     * Method to create and populate the terrain.
      */
     void createTerrain();
+
+    /**
+     *
+     */
+    void createTerrainWall();
+
+    /**
+     *
+     */
+    void createTerrainGrass();
+
+    /**
+     *
+     */
+    void createTerrainLake();
+
+    /**
+     *
+     */
+    void createCircuit();
     
     /**
      * Defines translation and scale to collision coordinates
