@@ -40,9 +40,9 @@ public:
     PathManager(const char* file);
     PathManager(const std::vector<Ogre::Vector3>& controlPoints);
 
-    void updateTangents(Ogre::Vector3 monsterPosition);
+    void updateTangents();
 
-    void updateMonsterIndex(Ogre::Vector3 monsterPosition);
+    void updateIndex(const Ogre::Vector3& monsterPosition);
     void updateSplineStep(double playerVelocity);
     std::vector<Ogre::Real> parametricValue(Ogre::Vector3 splinePoint, unsigned int fromIndex);
 

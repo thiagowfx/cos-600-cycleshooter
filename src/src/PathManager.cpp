@@ -64,12 +64,11 @@ void PathManager::go(const std::vector<Ogre::Vector3>& controlPoints) {
     //std::cout << "=================initial monster: " << this->mPoints[0] << std::endl;
 }
 
-void PathManager::updateTangents(Ogre::Vector3 monsterPosition) {
+void PathManager::updateTangents() {
     lastTangent = currentTangent;
     //Ogre::Vector3 tangentFirstPoint = this->interpolate(parametricPosition - epsilon);
     //Ogre::Vector3 tangentSecondPoint = this->interpolate(parametricPosition);
     //currentTangent = tangentSecondPoint - tangentFirstPoint;
-    std::cout << "Monster position = " << monsterPosition << std::endl;
     monsterLastTangent = monsterCurrentTangent;
     //Ogre::Real t = parametricValue(monsterPosition,monsterIndex)[1];
     t += 0.0001;
@@ -81,7 +80,7 @@ void PathManager::updateTangents(Ogre::Vector3 monsterPosition) {
 }
 
 
-void PathManager::updateMonsterIndex(Ogre::Vector3 monsterPosition){
+void PathManager::updateIndex(const Ogre::Vector3& monsterPosition){
     if(monsterPosition == this->mPoints[monsterNextIndex]){
         monsterIndex = monsterNextIndex;
         if(monsterNextIndex == this->mPoints.size() - 1){
