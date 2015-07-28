@@ -118,7 +118,7 @@ int LogicManager::calculateFriction(int terrainAt){
         return 75;
     else if(terrainAt == SAND_PIXEL)
         return 50;
-    else if(terrainAt == ICE_PIXEL)
+    else // if(terrainAt == ICE_PIXEL)
         return 0;
 }
 
