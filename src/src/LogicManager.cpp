@@ -237,10 +237,10 @@ void LogicManager::setDebug(bool debug) {
     controller->getSceneManager()->showBoundingBoxes(debug);
 }
 
-void LogicManager::translateMonster(int difficulty, Ogre::Vector3 translation){
+/*void LogicManager::translateMonster(int difficulty, Ogre::Vector3 translation){
     float parameter = 1/difficultyParamenter[difficulty];
     parentPlayerNode->translate(translation*parameter);
-}
+}*/
 
 void LogicManager::rotateCamera(const Ogre::Degree& angle, const Ogre::Vector3& pathDirection, const Ogre::Vector3& lastPathDirection){
     //path rotation
@@ -271,7 +271,11 @@ void LogicManager::updateMonster(const Ogre::Vector3 &tangent, const Ogre::Vecto
     monsterNode->yaw(angleBetweenTangents);
     //Ogre::Vector3 direction = monsterNode->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_Z;
     //direction.normalise();
-    monsterNode->translate(MONSTER_STEP * tangent);
+    //monsterNode->translate(MONSTER_STEP * tangent);
+}
+
+void LogicManager::translateMonster(const Ogre::Vector3& monsterNextPosition){
+    monsterNode->setPosition(monsterNextPosition);
 }
 
 }

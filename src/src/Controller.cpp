@@ -139,7 +139,7 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         //logicManager->updateMonster(pathManager->getMonsterCurrentTangent(),pathManager->getMonsterLastTangent());
     }
     logicManager->updateMonster(pathManager->getMonsterCurrentTangent(),pathManager->getMonsterLastTangent());
-
+    logicManager->translateMonster(pathManager->getMonsterNextPosition());
 
     /*if (context == CONTEXT_RUNNER){
         //poligonalPathManager updates

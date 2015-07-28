@@ -26,8 +26,7 @@ class PathManager: public Ogre::SimpleSpline {
     Ogre::Real t = 0;
     unsigned int monsterIndex = 0;
     unsigned int monsterNextIndex = 1;
-    Ogre::Real startMonsterPosition = Ogre::Real(0);
-    Ogre::Real monsterSplineStep = 0.001;
+    Ogre::Vector3 monsterNextPosition;
 
     //for debugging
     Procedural::Path proceduralPath;
@@ -42,7 +41,7 @@ public:
 
     void updateTangents();
 
-    void updateIndex(const Ogre::Vector3& monsterPosition);
+    void updateIndex(const Ogre::Vector3& monsterNextPosition);
     void updateSplineStep(double playerVelocity);
     std::vector<Ogre::Real> parametricValue(Ogre::Vector3 splinePoint, unsigned int fromIndex);
 
@@ -54,6 +53,8 @@ public:
     Ogre::Vector3 getMonsterCurrentTangent() const;
     Ogre::Vector3 getMonsterLastTangent() const;
 
+    Ogre::Vector3 getMonsterNextPosition() const;
+    void setMonsterNextPosition(const Ogre::Vector3 &value);
 };
 
 }

@@ -56,6 +56,15 @@ PathManager::PathManager(const std::vector<Ogre::Vector3>& controlPoints){
     go(controlPoints);
 }
 
+
+Ogre::Vector3 PathManager::getMonsterNextPosition() const{
+    return monsterNextPosition;
+}
+
+
+void PathManager::setMonsterNextPosition(const Ogre::Vector3 &value) {
+    monsterNextPosition = value;
+}
 void PathManager::go(const std::vector<Ogre::Vector3>& controlPoints) {
 
     for(int i = 0; i < controlPoints.size(); i++){
@@ -71,11 +80,12 @@ void PathManager::updateTangents() {
     //currentTangent = tangentSecondPoint - tangentFirstPoint;
     monsterLastTangent = monsterCurrentTangent;
     //Ogre::Real t = parametricValue(monsterPosition,monsterIndex)[1];
-    t += 0.0001;
+    t += 0.001;
     Ogre::Vector3 monsterTangentFirstPoint = this->interpolate(monsterIndex, t);
     Ogre::Vector3 monsterTangentSecondPoint = this->interpolate(monsterIndex, t + epsilon);
-    monsterCurrentTangent = this->mPoints[monsterNextIndex] - this->mPoints[monsterIndex];
-    //monsterCurrentTangent = monsterTangentSecondPoint - monsterTangentFirstPoint;
+    setMonsterNextPosition(monsterTangentSecondPoint);
+    //monsterCurrentTangent = this->mPoints[monsterNextIndex] - this->mPoints[monsterIndex];
+    monsterCurrentTangent = monsterTangentSecondPoint - monsterTangentFirstPoint;
     monsterCurrentTangent.normalise();
 }
 
