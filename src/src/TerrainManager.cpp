@@ -149,7 +149,7 @@ std::vector<Ogre::Vector3> TerrainManager::obtainCircuitControllPoints(){
     }
     LOG("Controll Points.");
     for(int i= 0; i < points.size();i++){
-        std::cout<<points[i].x<<","<<points[i].y<<","<<points[i].z<<std::endl;
+        std::cout<<points[i].x<<" "<<points[i].y<<" "<<points[i].z<<std::endl;
     }
     return points;
 }
