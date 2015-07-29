@@ -159,8 +159,8 @@ std::pair<int, bool> TerrainManager::getTerrainAt(Ogre::Vector3 coord, Ogre::Vec
 //        std::cout << bulletBox.volume() << std::endl;
 //        std::cout << bulletBox.getCenter().x<<" "<<bulletBox.getCenter().y<<" "<<bulletBox.getCenter().z<<std::endl;
 //        std::cout << coord.x<<" "<<coord.y<<" "<<coord.z<<std::endl;
-
-        terrainAt.second = sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->getWorldBoundingBox().intersects(coord);
+        Ogre::AxisAlignedBox bulletBox = sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->getWorldBoundingBox();
+        terrainAt.second = calculateSLBIntersection(coord,lastCoord,bulletBox);
         //std::cout << sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->getBoundingBox().intersects(coord)<<std::endl;
         if(terrainAt.second){
             sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->setVisible(false);
