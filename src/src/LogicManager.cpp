@@ -281,16 +281,10 @@ void LogicManager::rotateCamera(const Ogre::Degree& angle, const Ogre::Vector3& 
     //}
 }
 
-void LogicManager::updateMonster(const Ogre::Vector3 &tangent, const Ogre::Vector3 &lastTangent){
-    Ogre::Vector3 crossProductTangents = tangent.crossProduct(lastTangent);
-    Ogre::Real signalAngleBetweenTangents = (crossProductTangents.y < 0) ? (+1) : (-1);
-    Ogre::Degree angleBetweenTangents = signalAngleBetweenTangents * tangent.angleBetween(lastTangent);
-    monsterNode->yaw(angleBetweenTangents);
-
-}
-
-void LogicManager::translateMonster(const Ogre::Vector3& monsterNextPosition){
-    Ogre::Vector3 monsterPosition = monsterNode->getPosition();
+void LogicManager::updateMonster(const Ogre::Vector3 &tangent, const Ogre::Vector3& monsterNextPosition){
+    Ogre::Vector3 currentFacing = monsterNode->getOrientation() * Ogre::Vector3::UNIT_Z;
+    Ogre::Quaternion quat = currentFacing.getRotationTo(tangent);
+    monsterNode->rotate(quat);
     monsterNode->setPosition(monsterNextPosition);
 }
 

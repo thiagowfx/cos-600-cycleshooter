@@ -23,8 +23,7 @@ class PathManager: public Ogre::SimpleSpline {
     Ogre::Real splineStep = 0.0001;
 
     //Monster
-    Ogre::Vector3 monsterCurrentTangent;
-    Ogre::Vector3 monsterLastTangent;
+    Ogre::Vector3 monsterTangent;
     Ogre::Real monsterSplineStep = 0;
     unsigned int monsterIndex = 0;
     unsigned int monsterNextIndex = 1;
@@ -52,8 +51,7 @@ public:
 
     Ogre::Vector3 getCurrentTangent() const;
     Ogre::Vector3 getLastTangent() const;
-    Ogre::Vector3 getMonsterCurrentTangent() const;
-    Ogre::Vector3 getMonsterLastTangent() const;
+    Ogre::Vector3 getMonsterTangent() const;
 
     Ogre::Vector3 getMonsterNextPosition() const;
     void setMonsterNextPosition(const Ogre::Vector3 &value);

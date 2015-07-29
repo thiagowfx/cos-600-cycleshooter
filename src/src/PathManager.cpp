@@ -11,12 +11,8 @@ Ogre::Vector3 PathManager::getLastTangent() const {
     return lastTangent;
 }
 
-Ogre::Vector3 PathManager::getMonsterCurrentTangent() const {
-    return monsterCurrentTangent;
-}
-
-Ogre::Vector3 PathManager::getMonsterLastTangent() const {
-    return monsterLastTangent;
+Ogre::Vector3 PathManager::getMonsterTangent() const {
+    return monsterTangent;
 }
 
 PathManager::PathManager() {
@@ -75,9 +71,6 @@ void PathManager::go(const std::vector<Ogre::Vector3>& controlPoints) {
 }
 
 void PathManager::monsterPathUpdate() {
-    //monster
-    monsterLastTangent = monsterCurrentTangent;
-    //std::cout << "t = " << monsterSplineStep << std::endl;
     if(monsterSplineStep + 0.001 < 1){
         monsterSplineStep += 0.001;
     }
@@ -90,9 +83,9 @@ void PathManager::monsterPathUpdate() {
     setMonsterNextPosition(monsterTangentFirstPoint);
     //LOG("index = %d, nextIndex = %d",monsterIndex,monsterNextIndex);
 
-    monsterCurrentTangent = this->mPoints[monsterNextIndex] - this->mPoints[monsterIndex];
+    monsterTangent = this->mPoints[monsterNextIndex] - this->mPoints[monsterIndex];
     //monsterCurrentTangent = monsterTangentSecondPoint - monsterTangentFirstPoint;
-    monsterCurrentTangent.normalise();
+    monsterTangent.normalise();
 }
 
 

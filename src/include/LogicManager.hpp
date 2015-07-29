@@ -125,8 +125,7 @@ public:
     //void translateMonster(int difficulty, Ogre::Vector3 translation);
     void yawCamera();
     void rotateCamera(const Ogre::Degree& angle, const Ogre::Vector3& pathDirection, const Ogre::Vector3& lastPathDirection);
-    void updateMonster(const Ogre::Vector3& tangent,const Ogre::Vector3& lastTangent);
-    void translateMonster(const Ogre::Vector3& monsterNextPosition);
+    void updateMonster(const Ogre::Vector3& tangent,const Ogre::Vector3& monsterNextPosition);
 
     // getters and setters
     Ogre::SceneNode *getPlayerNode() const;

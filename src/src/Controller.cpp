@@ -139,10 +139,9 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         }*/
 
         //monster update
-        //logicManager->updateMonster(pathManager->getMonsterCurrentTangent(),pathManager->getMonsterLastTangent());
+        //logicManager->updateMonster(pathManager->getMonsterTangent(),pathManager->getMonsterNextPosition());
     }
-    logicManager->updateMonster(pathManager->getMonsterCurrentTangent(),pathManager->getMonsterLastTangent());
-    logicManager->translateMonster(pathManager->getMonsterNextPosition());
+    logicManager->updateMonster(pathManager->getMonsterTangent(),pathManager->getMonsterNextPosition());
 
     // monster animations
     baseMonsterAnimation->addTime(evt.timeSinceLastFrame);
