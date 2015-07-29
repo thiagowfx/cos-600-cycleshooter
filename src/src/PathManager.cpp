@@ -76,7 +76,7 @@ void PathManager::go(const std::vector<Ogre::Vector3>& controlPoints) {
 void PathManager::monsterPathUpdate() {
     //monster
     monsterLastTangent = monsterCurrentTangent;
-    std::cout << "t = " << monsterSplineStep << std::endl;
+    //std::cout << "t = " << monsterSplineStep << std::endl;
     if(monsterSplineStep + 0.001 < 1){
         monsterSplineStep += 0.001;
     }
