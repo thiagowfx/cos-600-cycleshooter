@@ -116,9 +116,6 @@ std::pair<int, bool> TerrainManager::getTerrainAt(Ogre::Vector3 coord){
     terrainAt.first = collisionHandler->getPixelEnumeration(collisionCoord.first,collisionCoord.second);
     
     //Discover if a bullet exists in the terrain point.
-    //Ogre::Real rad = sceneManager->getSceneNode("bulletSceneNode0")->getAttachedObject("bulletSceneNode0")->getBoundingRadius();
-
-    //terrainAt.second = sceneManager->getSceneNode(bulletName)->getAttachedObject(bulletName)->getBoundingBox().contains(coord);
     if(collisionHandler->existBulletAt(collisionCoord.first,collisionCoord.second)){
         std::pair<Ogre::Vector3 ,Ogre::String> bulletProperties = collisionHandler->getBulletPropertiesAt(collisionCoord.first,collisionCoord.second);
         Ogre::LogManager::getSingletonPtr()->logMessage("--> TerrainManager: Exist Bullet Here! <--");
@@ -139,6 +136,89 @@ std::pair<int, bool> TerrainManager::getTerrainAt(Ogre::Vector3 coord){
     }
 
     return terrainAt;
+}
+
+std::pair<int, bool> TerrainManager::getTerrainAt(Ogre::Vector3 coord, Ogre::Vector3 lastCoord){
+    std::pair<int,int> collisionCoord = getCollisionCoordinates(coord);
+    std::pair<int,bool> terrainAt = std::make_pair(0,false);
+
+    //Prevents segfault. In release, the clause must not be true anytime.
+    if(coord.x> terrainWorldSizeWidth*0.5 || coord.y > terrainWorldSizeHeight*0.5){
+        return std::make_pair(-1,false);
+    }
+
+    //Obtain terrain type.
+    terrainAt.first = collisionHandler->getPixelEnumeration(collisionCoord.first,collisionCoord.second);
+
+    //Discover if a bullet exists in the terrain point.
+    if(collisionHandler->existBulletAt(collisionCoord.first,collisionCoord.second)){
+        std::pair<Ogre::Vector3 ,Ogre::String> bulletProperties = collisionHandler->getBulletPropertiesAt(collisionCoord.first,collisionCoord.second);
+        Ogre::LogManager::getSingletonPtr()->logMessage("--> TerrainManager: Exist Bullet Here! <--");
+        Ogre::AxisAlignedBox bulletBox = sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->getWorldBoundingBox(true);
+        LOG("Bounding Box have been obtained.");
+//        std::cout << bulletBox.volume() << std::endl;
+//        std::cout << bulletBox.getCenter().x<<" "<<bulletBox.getCenter().y<<" "<<bulletBox.getCenter().z<<std::endl;
+//        std::cout << coord.x<<" "<<coord.y<<" "<<coord.z<<std::endl;
+
+        terrainAt.second = sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->getWorldBoundingBox().intersects(coord);
+        //std::cout << sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->getBoundingBox().intersects(coord)<<std::endl;
+        if(terrainAt.second){
+            sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->setVisible(false);
+            std::vector<std::pair<int,int> > coords = calculateBulletSurroundings(bulletProperties.first);
+            for(int i = 0; i < coords.size();i++){
+                collisionHandler->setBulletState(coords[i].first,coords[i].second,false);
+            }
+        }
+    }
+
+    return terrainAt;
+}
+
+bool TerrainManager::calculateSLBIntersection(Ogre::Vector3 p1, Ogre::Vector3 p2, Ogre::AxisAlignedBox bBox){
+    //Coeficientes related to p1p2 line segment.
+    Ogre::Real a11 = p1.x - p2.x;
+    Ogre::Real a21 = p1.z - p2.z;
+    Ogre::Real alfa, beta;
+    //Coeficients related to bounding box bottom xz parallel face.
+    std::vector<Ogre::Real> a12,a22, c1,c2;
+
+    //Testing FAR_LEFT-NEAR_LEFT edge.
+    a12.push_back(bBox.getCorner(Ogre::AxisAlignedBox::FAR_LEFT_BOTTOM).x - bBox.getCorner(Ogre::AxisAlignedBox::NEAR_LEFT_BOTTOM).x);
+    a22.push_back(bBox.getCorner(Ogre::AxisAlignedBox::FAR_LEFT_BOTTOM).z - bBox.getCorner(Ogre::AxisAlignedBox::NEAR_LEFT_BOTTOM).z);
+    c1.push_back(bBox.getCorner(Ogre::AxisAlignedBox::NEAR_LEFT_BOTTOM).x - p2.x);
+    c2.push_back(bBox.getCorner(Ogre::AxisAlignedBox::NEAR_LEFT_BOTTOM).z - p2.z);
+
+    //Testing FAR_RIGHT-NEAR_RIGHt edge.
+    a12.push_back(bBox.getCorner(Ogre::AxisAlignedBox::FAR_RIGHT_BOTTOM).x - bBox.getCorner(Ogre::AxisAlignedBox::FAR_RIGHT_BOTTOM).x);
+    a22.push_back(bBox.getCorner(Ogre::AxisAlignedBox::FAR_RIGHT_BOTTOM).z - bBox.getCorner(Ogre::AxisAlignedBox::FAR_RIGHT_BOTTOM).z);
+    c1.push_back(bBox.getCorner(Ogre::AxisAlignedBox::FAR_RIGHT_BOTTOM).x - p2.x);
+    c2.push_back(bBox.getCorner(Ogre::AxisAlignedBox::FAR_RIGHT_BOTTOM).z - p2.z);
+
+    //Testing FAR_LEFT-FAR_RIGHT edge.
+    a12.push_back(bBox.getCorner(Ogre::AxisAlignedBox::FAR_LEFT_BOTTOM).x - bBox.getCorner(Ogre::AxisAlignedBox::FAR_RIGHT_BOTTOM).x);
+    a22.push_back(bBox.getCorner(Ogre::AxisAlignedBox::FAR_LEFT_BOTTOM).z - bBox.getCorner(Ogre::AxisAlignedBox::FAR_RIGHT_BOTTOM).z);
+    c1.push_back(bBox.getCorner(Ogre::AxisAlignedBox::FAR_RIGHT_BOTTOM).x - p2.x);
+    c2.push_back(bBox.getCorner(Ogre::AxisAlignedBox::FAR_RIGHT_BOTTOM).z - p2.z);
+
+    //Testing NEAR_LEFT-NEAR_RIGHT edge.
+    a12.push_back(bBox.getCorner(Ogre::AxisAlignedBox::NEAR_LEFT_BOTTOM).x - bBox.getCorner(Ogre::AxisAlignedBox::NEAR_RIGHT_BOTTOM).x);
+    a22.push_back(bBox.getCorner(Ogre::AxisAlignedBox::NEAR_LEFT_BOTTOM).z - bBox.getCorner(Ogre::AxisAlignedBox::NEAR_RIGHT_BOTTOM).z);
+    c1.push_back(bBox.getCorner(Ogre::AxisAlignedBox::NEAR_RIGHT_BOTTOM).x - p2.x);
+    c2.push_back(bBox.getCorner(Ogre::AxisAlignedBox::NEAR_RIGHT_BOTTOM).z - p2.z);
+
+    bool bAlfa;
+    bool bBeta;
+    for(int i = 0; i < c1.size();i++){
+        beta = c2[i] - c1[i]*a21[i]/a11[i];
+        beta = beta/(a22[i]- a21[i]*a12[i]/a11[i]);
+        alfa = c1[i] - a12[i]*beta;
+        alfa = alfa/ a11[i];
+        bAlfa = -1 <= alfa && alfa <= 1 ;
+        bBeta = -1 <= beta && beta <= 1 ;
+        if(bAlfa && bBeta)
+            return true;
+    }
+    return false;
 }
 
 std::vector<Ogre::Vector3> TerrainManager::obtainCircuitControllPoints(){
@@ -228,4 +308,5 @@ void TerrainManager::renderBullets(){
         collisionHandler->compensateBulletRender(calculateBulletSurroundings(renderSettings.second[i]));
     }
 }
+
 }
