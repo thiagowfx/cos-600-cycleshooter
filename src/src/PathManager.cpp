@@ -95,13 +95,8 @@ void PathManager::monsterPathUpdate() {
 
 void PathManager::updateIndex(){
     monsterIndex = monsterNextIndex;
-    if(monsterNextIndex == this->mPoints.size() -1){
-        monsterNextIndex = 0;
-    }
-    else {
-        monsterNextIndex += 1;
-    }
-    std::cout << "Monster index change to = " << monsterNextIndex << std::endl;
+    monsterNextIndex = (monsterNextIndex + 1) % mPoints.size();
+    LOG("Monster index change to %d", monsterNextIndex);
 }
 
 void PathManager::updateSplineStep(double playerVelocity){
@@ -140,11 +135,7 @@ std::vector<Ogre::Real> PathManager::parametricValue(Ogre::Vector3 splinePoint, 
         return result;
     }
     std::vector<Ogre::Real> splineCandidates;
-    std::vector<double>a;
-    std::vector<double>b;
-    std::vector<double>c;
-    std::vector<double>d;
-    std::vector<double>e;
+    std::vector<double>a, b, c, d, e;
     a.push_back(2*point1.x-2*point2.x+tan1.x+tan2.x);
     a.push_back(2*point1.y-2*point2.y+tan1.y+tan2.y);
     a.push_back(2*point1.z-2*point2.z+tan1.x+tan2.z);

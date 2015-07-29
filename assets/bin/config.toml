@@ -47,7 +47,7 @@ crosshair_friction = 25.0
 probability_change_direction = 0.50
 crosshair_scale_size = 0.20
 randomization_square_half_side_relative = 1.1
-randomization_friction_relative = 5.0
+randomization_friction_relative = 7.0
 mapped_heartbeat_minimum = 1.0
 mapped_heartbeat_maximum = 3.2
 

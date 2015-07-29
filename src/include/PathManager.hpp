@@ -7,6 +7,8 @@
 #include <OgreSimpleSpline.h>
 #include <ProceduralPathGenerators.h>
 
+#include "Logging.hpp"
+
 namespace Cycleshooter {
 
 class PathManager: public Ogre::SimpleSpline {
