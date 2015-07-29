@@ -155,6 +155,20 @@ material Cycleshooter/Ground
 	}
 }
 
+material Cycleshooter/Wall
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture brickwall.jpg
+			}
+		}
+	}
+}
+
 material Cycleshooter/BulletShell
 {
 	technique
@@ -221,56 +235,6 @@ material Cycleshooter/Countdown3 : Cycleshooter/Base
             texture_unit
             {
                 texture countdown3.png
-            }
-        }
-    }
-}
-
-
-material Cycleshooter/GrassBlades
-{
-    transparency_casts_shadows on
-    receive_shadows on
-	// Vertex program waving grass
-    technique
-    {
-        pass
-        {
-			vertex_program_ref Examples/GrassWaverVp
-			{
-			}
-			fragment_program_ref Examples/GrassWaverFp
-			{
-			}
-
-			alpha_rejection greater 150
-			scene_blend alpha_blend
-
-		    cull_hardware none
-            cull_software none
-
-            texture_unit
-            {
-				tex_address_mode clamp
-                texture gras_02.png
-            }
-        }
-    }
-    // fallback
-    technique
-    {
-        pass
-        {
-			alpha_rejection greater 150
-			scene_blend alpha_blend
-
-		    cull_hardware none
-            cull_software none
-
-            texture_unit
-            {
-				tex_address_mode clamp
-                texture gras_02.png
             }
         }
     }

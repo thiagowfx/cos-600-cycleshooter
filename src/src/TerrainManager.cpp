@@ -60,9 +60,7 @@ void TerrainManager::createTerrain(){
     sceneManager->getRootSceneNode()->createChildSceneNode()->attachObject(terrainEntity);
 
     // Creating terrain structures
-    createTerrainGrass();
     createTerrainLake();
-    createCircuit();
     createTerrainWall();
 
     //Defining terrain structures
@@ -234,14 +232,6 @@ void TerrainManager::renderBullets(){
         //Compensates sizes defined by bulletBoundingBox.
         collisionHandler->compensateBulletRender(calculateBulletSurroundings(renderSettings.second[i]));
     }
-}
-
-void TerrainManager::createCircuit(){
-
-}
-
-void TerrainManager::createTerrainGrass(){
-
 }
 
 void TerrainManager::createTerrainLake(){
