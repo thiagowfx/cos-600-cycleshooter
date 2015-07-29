@@ -119,7 +119,11 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         pathManager->updateSplineStep(getBicycle()->getGameSpeed());
 
         //Player rotation
-        const std::vector<sf::Keyboard::Key> rightKeys = {sf::Keyboard::Right, sf::Keyboard::D};
+
+        //  THIS APPROACH USES THE IS KEY DOWN METHOD AND IS THE ONLY WAY TO MAKE ROTATION WORKS
+        //  WITH THE MAXIMUM ANGLE
+
+        /*const std::vector<sf::Keyboard::Key> rightKeys = {sf::Keyboard::Right, sf::Keyboard::D};
         const std::vector<sf::Keyboard::Key> leftKeys = {sf::Keyboard::Left, sf::Keyboard::A};
         bool isKeyRightDown = InputManager::instance().isKeyPressed(rightKeys);
         bool isKeyLeftDown = InputManager::instance().isKeyPressed(leftKeys);
@@ -132,7 +136,7 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         }
         if(!isKeyRightDown && !isKeyLeftDown){
             logicManager->rotateCamera(Ogre::Degree(0),pathManager->getCurrentTangent(),pathManager->getLastTangent());
-        }
+        }*/
 
         //monster update
         //logicManager->updateMonster(pathManager->getMonsterCurrentTangent(),pathManager->getMonsterLastTangent());
@@ -194,6 +198,11 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         InputManager::instance().executeActionsUnbuf(context);
         clockUnbuf.restart();
     }
+
+
+    // camera rotation stuff
+    logicManager->setAngularVelocity(ConfigManager::instance().getDouble("Controller.camera_angle_rotation_step") / evt.timeSinceLastFrame);
+    InputManager::instance().executeActionsRotationUnbuf(context);
 
     // process events (in particular, buffered keys)
     sf::Event event;
@@ -489,6 +498,22 @@ void Controller::setupKeyMappings() {
                                            sf::Keyboard::Down}, CONTEXT_RUNNER, [&]{
         // logicManager->getPlayerNode()->translate(Ogre::Vector3(0.0, 0.0, +10.0), Ogre::SceneNode::TS_LOCAL);
         bicycle->changeSpeed(-BICYCLE_SPEED_CHANGE);
+    });
+
+    //Rotation Mapping
+
+    //WITH THIS APPROACH ROTATION WORKS WITH ITS OWN KEYBOARD MAPPING (NO MAXIMUM ANGLE)
+
+    InputManager::instance().addKeysRotationUnbuf({sf::Keyboard::A,
+                                           sf::Keyboard::Left}, CONTEXT_RUNNER, [&]{
+        Ogre::Degree angle = Ogre::Degree(logicManager->getAngularVelocity());
+        logicManager->rotateCamera(angle,pathManager->getCurrentTangent(),pathManager->getLastTangent());
+    });
+
+    InputManager::instance().addKeysRotationUnbuf({sf::Keyboard::D,
+                                           sf::Keyboard::Right}, CONTEXT_RUNNER, [&]{
+        Ogre::Degree angle = Ogre::Degree(logicManager->getAngularVelocity());
+        logicManager->rotateCamera(-angle,pathManager->getCurrentTangent(),pathManager->getLastTangent());
     });
 
     InputManager::instance().addKey(sf::Keyboard::Q, CONTEXT_RUNNER, [&]{

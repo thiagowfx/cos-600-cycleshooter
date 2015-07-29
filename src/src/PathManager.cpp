@@ -67,6 +67,7 @@ void PathManager::setMonsterNextPosition(const Ogre::Vector3 &value) {
 }
 void PathManager::go(const std::vector<Ogre::Vector3>& controlPoints) {
 
+
     for(int i = 0; i < controlPoints.size(); i++){
         this->addPoint(controlPoints[i]);
     }
