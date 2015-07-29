@@ -159,7 +159,6 @@ std::pair<int, bool> TerrainManager::getTerrainAt(Ogre::Vector3 coord, Ogre::Vec
 //        std::cout << bulletBox.volume() << std::endl;
 //        std::cout << bulletBox.getCenter().x<<" "<<bulletBox.getCenter().y<<" "<<bulletBox.getCenter().z<<std::endl;
 //        std::cout << coord.x<<" "<<coord.y<<" "<<coord.z<<std::endl;
-        Ogre::AxisAlignedBox bulletBox = sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->getWorldBoundingBox();
         terrainAt.second = calculateSLBIntersection(coord,lastCoord,bulletBox);
         //std::cout << sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->getBoundingBox().intersects(coord)<<std::endl;
         if(terrainAt.second){
@@ -209,10 +208,10 @@ bool TerrainManager::calculateSLBIntersection(Ogre::Vector3 p1, Ogre::Vector3 p2
     bool bAlfa;
     bool bBeta;
     for(int i = 0; i < c1.size();i++){
-        beta = c2[i] - c1[i]*a21[i]/a11[i];
-        beta = beta/(a22[i]- a21[i]*a12[i]/a11[i]);
+        beta = c2[i] - c1[i]* a21/a11;
+        beta = beta/(a22[i]- a21*a12[i]/ a11);
         alfa = c1[i] - a12[i]*beta;
-        alfa = alfa/ a11[i];
+        alfa = alfa/a11;
         bAlfa = -1 <= alfa && alfa <= 1 ;
         bBeta = -1 <= beta && beta <= 1 ;
         if(bAlfa && bBeta)

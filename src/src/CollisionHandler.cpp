@@ -156,10 +156,16 @@ std::vector<std::pair<int, int> > CollisionHandler::getPathControllPoints(){
     matrixColNumber = collisionMatrix[0].size();
     matrixRowNumber = collisionMatrix.size();
     std::vector<std::pair<int,int> > pointsLocation;
-
     //Serching the matrix.
-    for(int pixelWidth = 0;pixelWidth<matrixColNumber;pixelWidth++){
-        for(int pixelHeight = 0; pixelHeight < matrixRowNumber;pixelHeight++){
+    for(int pixelWidth = 0;pixelWidth < matrixRowNumber;pixelWidth++){
+        for(int pixelHeight = 0; pixelHeight < matrixColNumber/2;pixelHeight++){
+            if(collisionMatrix[pixelWidth][pixelHeight] == PATH_PIXEL){
+                pointsLocation.push_back(std::pair<int,int> (pixelWidth,pixelHeight));
+            }
+        }
+    }
+    for(int pixelWidth = matrixRowNumber-1;pixelWidth >-1 ;pixelWidth--){
+        for(int pixelHeight = matrixColNumber/2; pixelHeight < matrixColNumber;pixelHeight++){
             if(collisionMatrix[pixelWidth][pixelHeight] == PATH_PIXEL){
                 pointsLocation.push_back(std::pair<int,int> (pixelWidth,pixelHeight));
             }
