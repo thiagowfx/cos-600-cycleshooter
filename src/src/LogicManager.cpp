@@ -17,7 +17,7 @@ LogicManager::LogicManager(Controller* controller) :
 
 void LogicManager::update(const Ogre::FrameEvent &evt) {
     auto elapsedTime = evt.timeSinceLastFrame;
-
+    Ogre::Vector3 lastPosition = getPlayerNode()->getPosition();
     if(controller->getContext() == CONTEXT_RUNNER) {
         updatePlayerPosition(elapsedTime);
     }
@@ -25,6 +25,7 @@ void LogicManager::update(const Ogre::FrameEvent &evt) {
     updateMonsterPosition(elapsedTime);
     //Dealing with terrain Collision;
     std::pair<int,bool> terrainAt = controller->getTerrainManager()->getTerrainAt(getPlayerNode()->getPosition());
+    //std::pair<int,bool> terrainAt = controller->getTerrainManager()->getTerrainAt(getPlayerNode()->getPosition(),lastPosition);
     if(terrainAt.first == 2){
         controller->shutdownNow(GAME_END_WALL_CRASH);
     }

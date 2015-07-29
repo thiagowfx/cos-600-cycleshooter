@@ -157,10 +157,29 @@ public:
     bool existBulletAt(int pixelWidth, int pixelHeight);
 
     /**
+     * @brief existBulletNearAt
+     * @param begin
+     * @param end
+     * @return Returns wheter or not exists a bullet at the quandrangular
+     * grid defined by begin and end pixels.
+     */
+    bool existBulletNearAt(std::pair<int,int> begin, std::pair<int,int> end);
+
+
+    /**
      *  Function that discover bullet's scene node name
      * and center.
      */
     std::pair<Ogre::Vector3,Ogre::String> getBulletPropertiesAt(int pixelWidth, int pixelHeight);
+
+    /**
+     * @brief getPossibleBullets
+     * @param pixelWidth
+     * @param pixelHeight
+     * @return Returns a vector with all possible bullets located near the line defined by the two pixels.
+     *
+     */
+    std::vector<std::pair<Ogre::Vector3,Ogre::String> >getPossibleBullets(std::pair<int,int> begin,std::pair<int,int> end);
 
     /**
      *  Function that obtains all path control points
