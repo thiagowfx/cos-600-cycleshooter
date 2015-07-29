@@ -348,3 +348,18 @@ material Material.007
         }
     }
 }
+
+material Cycleshooter/Matheus
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture matheus.jpg
+                env_map spherical
+			}
+		}
+	}
+}

@@ -99,7 +99,8 @@ class LogicManager {
     double angularVelocity;
     // TODO: create a config out of this hard-coded constant
     Ogre::Degree MAX_ANGLE = Ogre::Degree(45);
-    double ROTATION_FACTOR = 0.5f;
+    double ROTATION_FACTOR = 1.0f;
+    double MONSTER_STEP = 1.0f;
 public:
     LogicManager(Controller* controller);
 
@@ -118,17 +119,14 @@ public:
     // setups
     void setupRunnerMode();
     void setupShooterMode();
-
-    // debug
-    void setDebugOn();
-    void setDebugOff();
+    void setDebug(bool debug);
 
     //Move functions.
-    void translateMonster(int difficulty, Ogre::Vector3 translation);
+    //void translateMonster(int difficulty, Ogre::Vector3 translation);
     void yawCamera();
     void rotateCamera(const Ogre::Degree& angle, const Ogre::Vector3& pathDirection, const Ogre::Vector3& lastPathDirection);
-    void rotateAlongPath(Ogre::Vector3 lastPathDirection, Ogre::Vector3 currentPathDirection);
-
+    void updateMonster(const Ogre::Vector3& tangent,const Ogre::Vector3& lastTangent);
+    void translateMonster(const Ogre::Vector3& monsterNextPosition);
 
     // getters and setters
     Ogre::SceneNode *getPlayerNode() const;

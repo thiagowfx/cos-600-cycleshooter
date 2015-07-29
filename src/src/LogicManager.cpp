@@ -48,7 +48,7 @@ void LogicManager::shoot() {
         controller->getSceneManager()->setSkyDomeEnabled(false);
         controller->getSceneManager()->getRootSceneNode()->flipVisibility();
         bool debug = controller->getDebug();
-	setDebugOff();
+        setDebug(false);
 
         rttRenderTarget->update();
 
@@ -62,7 +62,9 @@ void LogicManager::shoot() {
             decrementMonsterHealth();
         }
 
-        if(debug) setDebugOn();
+        if(debug) {
+            setDebug(true);
+        }
         controller->getSceneManager()->getRootSceneNode()->flipVisibility();
         controller->getSceneManager()->setSkyDomeEnabled(true);
         monsterNode->flipVisibility();
@@ -109,7 +111,7 @@ void LogicManager::updateMonsterPosition(const Ogre::Real &time) {
     // quaternions! upstream: http://stackoverflow.com/questions/4727079/getting-object-direction-in-ogre
     Ogre::Vector3 monsterOrientation = monsterNode->getOrientation() * Ogre::Vector3::UNIT_Z;
 
-    monsterNode->translate(distance * monsterOrientation, Ogre::SceneNode::TS_LOCAL);
+    //monsterNode->translate(distance * monsterOrientation, Ogre::SceneNode::TS_LOCAL);
 }
 
 int LogicManager::calculateFriction(int terrainAt){
@@ -169,7 +171,7 @@ void LogicManager::createSceneNodes() {
     LOG("Creating SceneNodes");
 
     // create scene nodes
-    parentPlayerNode = controller->getSceneManager()->getRootSceneNode()->createChildSceneNode("parentPlayerNode");
+    parentPlayerNode = controller->getSceneManager()->getRootSceneNode()->createChildSceneNode("parentPlayerNode",Ogre::Vector3(11096.2, 0.0, 6577.64));
     frontCameraNode = parentPlayerNode->createChildSceneNode("frontCameraNode");
     rearCameraNode = parentPlayerNode->createChildSceneNode("rearCameraNode");
     playerNode = parentPlayerNode->createChildSceneNode("playerNode");
@@ -247,28 +249,23 @@ void LogicManager::setupShooterMode() {
     controller->getWindow()->removeViewport(1);
 }
 
-void LogicManager::setDebugOn() {
-    controller->getSceneManager()->setDisplaySceneNodes(true);
-    controller->getSceneManager()->showBoundingBoxes(true);
+void LogicManager::setDebug(bool debug) {
+    controller->getSceneManager()->setDisplaySceneNodes(debug);
+    controller->getSceneManager()->showBoundingBoxes(debug);
 }
 
-void LogicManager::setDebugOff() {
-    controller->getSceneManager()->setDisplaySceneNodes(false);
-    controller->getSceneManager()->showBoundingBoxes(false);
-}
-
-void LogicManager::translateMonster(int difficulty, Ogre::Vector3 translation){
+/*void LogicManager::translateMonster(int difficulty, Ogre::Vector3 translation){
     float parameter = 1/difficultyParamenter[difficulty];
     parentPlayerNode->translate(translation*parameter);
-}
+}*/
 
 void LogicManager::rotateCamera(const Ogre::Degree& angle, const Ogre::Vector3& pathDirection, const Ogre::Vector3& lastPathDirection){
     //path rotation
     Ogre::Vector3 crossProductTangents = pathDirection.crossProduct(lastPathDirection);
     Ogre::Real signalAngleBetweenTangents = (crossProductTangents.y < 0) ? (+1) : (-1);
     Ogre::Degree angleBetweenTangents = signalAngleBetweenTangents * pathDirection.angleBetween(lastPathDirection);
-    frontCamera->yaw(angleBetweenTangents);
-    playerNode->yaw(angleBetweenTangents);
+    //frontCamera->yaw(angleBetweenTangents);
+    //playerNode->yaw(angleBetweenTangents);
 
     Ogre::Vector3 cameraDirection = frontCamera->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_Z;
     Ogre::Vector3 crossProduct = cameraDirection.crossProduct(pathDirection);
@@ -277,10 +274,22 @@ void LogicManager::rotateCamera(const Ogre::Degree& angle, const Ogre::Vector3& 
     Ogre::Degree absAngle = Ogre::Math::Abs(angle + angleBetween);
 
     // key rotation
-    if(absAngle < MAX_ANGLE) {
+    //if(absAngle < MAX_ANGLE) {
         frontCamera->yaw(angle);
+        rearCamera->yaw(angle);
         playerNode->yaw(ROTATION_FACTOR * angle);
-    }
+    //}
+}
+
+void LogicManager::updateMonster(const Ogre::Vector3 &tangent, const Ogre::Vector3 &lastTangent){
+    Ogre::Quaternion rot = lastTangent.getRotationTo(tangent);
+    monsterNode->rotate(rot);
+
+}
+
+void LogicManager::translateMonster(const Ogre::Vector3& monsterNextPosition){
+    Ogre::Vector3 monsterPosition = monsterNode->getPosition();
+    monsterNode->setPosition(monsterNextPosition);
 }
 
 }

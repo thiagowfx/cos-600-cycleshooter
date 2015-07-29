@@ -108,11 +108,12 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         return false;
     }
 
+    // camera rotation stuff
+    logicManager->setAngularVelocity(ConfigManager::instance().getDouble("Controller.camera_angle_rotation_step") / evt.timeSinceLastFrame);
 
     if (context == CONTEXT_RUNNER){
         //pathManager updates
-        pathManager->updateParametricPosition();
-        pathManager->updateTangents();
+        pathManager->monsterPathUpdate();
 
         //update increment of spline curve
         pathManager->updateSplineStep(getBicycle()->getGameSpeed());
@@ -132,8 +133,41 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         if(!isKeyRightDown && !isKeyLeftDown){
             logicManager->rotateCamera(Ogre::Degree(0),pathManager->getCurrentTangent(),pathManager->getLastTangent());
         }
-    }
 
+        //monster update
+        //logicManager->updateMonster(pathManager->getMonsterCurrentTangent(),pathManager->getMonsterLastTangent());
+    }
+    logicManager->updateMonster(pathManager->getMonsterCurrentTangent(),pathManager->getMonsterLastTangent());
+    logicManager->translateMonster(pathManager->getMonsterNextPosition());
+
+    /*if (context == CONTEXT_RUNNER){
+        //poligonalPathManager updates
+        poligonalPathManager->updatePlayerPoint(logicManager->getPlayerNode()->getPosition());
+        poligonalPathManager->updateMonsterPoint(getSceneManager()->getSceneNode("monsterNode")->getPosition());
+        //std::cout << "Monster Node position = " << getSceneManager()->getSceneNode("monsterNode")->getPosition() << std::endl;
+        poligonalPathManager->updateTangents();
+
+        //Player rotation
+        const std::vector<sf::Keyboard::Key> rightKeys = {sf::Keyboard::Right, sf::Keyboard::D};
+        const std::vector<sf::Keyboard::Key> leftKeys = {sf::Keyboard::Left, sf::Keyboard::A};
+        bool isKeyRightDown = InputManager::instance().isKeyPressed(rightKeys);
+        bool isKeyLeftDown = InputManager::instance().isKeyPressed(leftKeys);
+        Ogre::Degree angle = Ogre::Degree(logicManager->getAngularVelocity());
+        if(isKeyRightDown){
+            logicManager->rotateCamera(-angle,poligonalPathManager->getPlayerCurrentTangent(),poligonalPathManager->getPlayerLastTangent());
+        }
+        if(isKeyLeftDown){
+            logicManager->rotateCamera(angle,poligonalPathManager->getPlayerCurrentTangent(),poligonalPathManager->getPlayerLastTangent());
+        }
+        if(!isKeyRightDown && !isKeyLeftDown){
+            logicManager->rotateCamera(Ogre::Degree(0),poligonalPathManager->getPlayerCurrentTangent(),poligonalPathManager->getPlayerLastTangent());
+        }
+
+        //monster update
+        //logicManager->updateMonster(poligonalPathManager->getMonsterCurrentTangent(),poligonalPathManager->getMonsterLastTangent());
+    }
+    logicManager->updateMonster(poligonalPathManager->getMonsterCurrentTangent(),poligonalPathManager->getMonsterLastTangent());
+    */
 
     // monster animations
     baseMonsterAnimation->addTime(evt.timeSinceLastFrame);
@@ -189,9 +223,6 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         InputManager::instance().executeActionsUnbuf(context);
         clockUnbuf.restart();
     }
-
-    // camera rotation stuff
-    logicManager->setAngularVelocity(ConfigManager::instance().getDouble("Controller.camera_angle_rotation_step") / evt.timeSinceLastFrame);
 
     // process events (in particular, buffered keys)
     sf::Event event;
@@ -273,7 +304,7 @@ void Controller::go() {
     InputManager::instance().updateJoystickNumber();
     AudioManager::instance().specialAddSound(SOUND_MONSTER_CHASING, true);
     setupRunnerMode();
-    setupDebugOn();
+    setupDebug(true);
     setupKeyMappings();
 
     // Ogre::FrameListener <-- let's begin calling frameRenderingQueued
@@ -324,14 +355,17 @@ void Controller::createGameElements() {
     LOG("Creating Game Elements");
 
     //Creating the path manager
-    pathManager = std::unique_ptr<PathManager>(new PathManager());
+    pathManager = std::unique_ptr<PathManager>(new PathManager("track1.txt"));
+    //poligonalPathManager = std::unique_ptr<PoligonalPathManager>(new PoligonalPathManager("track1.txt"));
 
     // upstream documentation: http://www.ogre3d.org/tikiwiki/Sinbad+Model
     Ogre::Entity* monsterEntity = getSceneManager()->createEntity("monsterEntity", "Sinbad.mesh");
-    Ogre::SceneNode* monsterNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("monsterNode", Ogre::Vector3(0.0, 0.0, +200.0));
-    double monsterScale = 3.0;
+    Ogre::SceneNode* monsterNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("monsterNode", Ogre::Vector3(11096.2, 0.0, 4577.64));
+    double monsterScale = 5.0;
     monsterNode->scale(monsterScale, monsterScale, monsterScale);
     monsterNode->attachObject(monsterEntity);
+    monsterNode->yaw(Ogre::Degree(180));
+
 
     // attention: logic manager should be created before any threads that will update it
     logicManager = std::unique_ptr<LogicManager>(new LogicManager(this));
@@ -756,24 +790,24 @@ void Controller::toggleMode() {
     }
 }
 
-void Controller::setupDebugOn() {
-    LOG("Turning Debug Mode On");
-    debug = true;
+void Controller::setupDebug(bool debug) {
+    if(debug) {
+        LOG("Turning Debug Mode ON");
+    }
+    else {
+        LOG("Turning Debug Mode OFF");
+    }
 
-    logicManager->setDebugOn();
-    hud->setDebug(true);
-}
+    this->debug = debug;
 
-void Controller::setupDebugOff() {
-    LOG("Turning Debug Mode Off");
-    debug = false;
-
-    logicManager->setDebugOff();
-    hud->setDebug(false);
+    logicManager->setDebug(debug);
+    hud->setDebug(debug);
+    pathManager->setDebug(debug);
+    //poligonalPathManager->setDebug(debug);
 }
 
 void Controller::toggleDebug() {
-    debug ? setupDebugOff() : setupDebugOn();
+    setupDebug(!debug);
 }
 
 std::string Controller::getElapsedTimeAsString() const {
