@@ -30,6 +30,9 @@ void TerrainManager::defineTerrainProperties(){
     terrainWorldSizeWidth   = 25000;
     terrainWidth    = 1;
     terrainHeight   = 1;
+    GRASS_HEIGHT = 200;
+    GRASS_WIDTH = 200;
+
 }
 
 void TerrainManager::createTerrain(){
@@ -49,14 +52,20 @@ void TerrainManager::createTerrain(){
       Ogre::Vector3::UNIT_Z);
 
     //Transforming planar mesh to treatable entity.
-    Ogre::Entity* terrainEntity = sceneManager->createEntity("groundTerrain");
+    Ogre::Entity* terrainEntity = sceneManager->createEntity("Ground","groundTerrain");
+    terrainEntity->setMaterialName("Cycleshooter/Ground");
 
     //Adding entity to the scene.
-    sceneManager->getRootSceneNode()->createChildSceneNode()->attachObject(terrainEntity);
     terrainEntity->setCastShadows(false);
+    sceneManager->getRootSceneNode()->createChildSceneNode()->attachObject(terrainEntity);
 
-    //Defines which texture will be used. 
-    terrainEntity->setMaterialName("Cycleshooter/Ground");
+    // Creating terrain structures
+    createTerrainGrass();
+    createTerrainLake();
+    createCircuit();
+    createTerrainWall();
+
+    //Defining terrain structures
     generateBullets(13);
     renderBullets();
     obtainCircuitControllPoints();
@@ -68,11 +77,9 @@ void TerrainManager::setCollisionTransformation(){
     int collisionHeigth = collisionHandler->getCollisionMatrixHeight();
     collisionHeigth -= 1;
     collisionWidth -= 1;
-    
-    std::cout << "Collision Lengths " << collisionWidth << "," << collisionHeigth << std::endl;
-    
-    heightScale = collisionHeigth/terrainWorldSizeHeight;
-    widthScale = collisionWidth/terrainWorldSizeWidth;
+
+    heightScale = collisionHeigth / terrainWorldSizeHeight;
+    widthScale = collisionWidth /terrainWorldSizeWidth;
     
     terrainTranslation.x = terrainWorldSizeWidth*0.5;
     terrainTranslation.y = 0;
@@ -227,5 +234,21 @@ void TerrainManager::renderBullets(){
         //Compensates sizes defined by bulletBoundingBox.
         collisionHandler->compensateBulletRender(calculateBulletSurroundings(renderSettings.second[i]));
     }
+}
+
+void TerrainManager::createCircuit(){
+
+}
+
+void TerrainManager::createTerrainGrass(){
+
+}
+
+void TerrainManager::createTerrainLake(){
+
+}
+
+void TerrainManager::createTerrainWall(){
+
 }
 }

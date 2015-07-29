@@ -171,7 +171,7 @@ void LogicManager::createSceneNodes() {
     LOG("Creating SceneNodes");
 
     // create scene nodes
-    parentPlayerNode = controller->getSceneManager()->getRootSceneNode()->createChildSceneNode("parentPlayerNode",Ogre::Vector3(11096.2, 0.0, 6577.64));
+    parentPlayerNode = controller->getSceneManager()->getRootSceneNode()->createChildSceneNode("parentPlayerNode", Ogre::Vector3(11084,0.0,5261.23));
     frontCameraNode = parentPlayerNode->createChildSceneNode("frontCameraNode");
     rearCameraNode = parentPlayerNode->createChildSceneNode("rearCameraNode");
     playerNode = parentPlayerNode->createChildSceneNode("playerNode");

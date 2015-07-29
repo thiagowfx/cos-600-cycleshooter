@@ -15,47 +15,75 @@ private:
 
     /**
      * Terrain properties
-     *  #Ligth of terrain (Not be confused with the sun light)
      *  
      */
-    Ogre::Light* terrainLight = NULL;
     Ogre::String terrainType = "Plane";
     Ogre::Real terrainWorldSizeHeight,terrainWorldSizeWidth;
     
     /**
-     * 
+     * Scale between image and terrain size.
      */
     Ogre::Real widthScale, heightScale;
     
     /**
-     * 
+     * Vector to help with the system coordinator in Ogre3D
      */
     Ogre::Vector3 terrainTranslation;
     
     /**
-     * 
+     *
+     */
+    Ogre::Real GRASS_WIDTH, GRASS_HEIGHT;
+    /**
+     * Terrain size
      */
     int terrainWidth, terrainHeight;
     
     /**
-     * 
+     * Matrix to check position of elements in terrain
+     * and check for collisions.
      */
     CollisionHandler* collisionHandler = NULL;
 
     /**
-     *
+     * Set the environment variables to create the terrain.
      */
     void defineTerrainProperties();
     
     /**
-     * 
+     * Method to create and populate the terrain.
      */
     void createTerrain();
+
+    /**
+     *
+     */
+    void createTerrainWall();
+
+    /**
+     *
+     */
+    struct GrassVertex{
+        float x, y, z;
+        float nx, ny, nz;
+        float u, v;
+    };
+    void createTerrainGrass();
+
+    /**
+     *
+     */
+    void createTerrainLake();
+
+    /**
+     *
+     */
+    void createCircuit();
     
     /**
-     * 
+     * Defines translation and scale to collision coordinates
+     * (maps continous rectangles in  discrete rectangles).
      */
-    //Defines translation and scale to collision coordinates(maps continous rectangles in  discrete rectangles).
     void setCollisionTransformation();
 
 public:
@@ -66,8 +94,8 @@ public:
      * Returns the data structure coordinates to
      * a given world point.
      */
-    std::pair<int,int> getCollisionCoordinates(Ogre::Vector3 point);//Transfors Ogre 3d point in data structure indexes.
-    
+    std::pair<int,int> getCollisionCoordinates(Ogre::Vector3 point);
+
     /**
      * Returns the WorldCoordinates of
      * a given Collision Coordinate.
@@ -75,29 +103,28 @@ public:
     Ogre::Vector3 getWorldCoordinates(std::pair<int,int> collisionCoord);
 
     /**
-     * 
+     * Method to discover terrain property and bullet existence.
      */
-    std::pair<int,bool> getTerrainAt(Ogre::Vector3 coord); //Method to discover terrain property and bullet existence.
+    std::pair<int,bool> getTerrainAt(Ogre::Vector3 coord);
 
     /**
      * Obtain circuits controll points in world coordinates.
      */
     std::vector<Ogre::Vector3> obtainCircuitControllPoints();
+
     /**
-     * 
+     * Check if the player catch the bullet.
      */
-
     std::vector<std::pair<int,int> > calculateBulletSurroundings(Ogre::Vector3 center,Ogre::AxisAlignedBox boundingBox);
-
     std::vector<std::pair<int,int> > calculateBulletSurroundings(Ogre::Vector3 center);
 
     /**
-     *
+     * Randonly generates the bullets in the region of the circuit.
      */
-    void generateBullets(int numOfBullets);//Random bullets Generator.
+    void generateBullets(int numOfBullets);
     
     /**
-     * 
+     * Render bullets in the specific position.
      */
     void renderBullets();
 
@@ -106,14 +133,10 @@ public:
     /////////////////////
     
     /**
-     * 
+     * Print the Collision transformation (Image -> Ogre World)
      */
     void printCollisionTransformation();
     
-    /**
-     * 
-     */
-    void sampleCollisionTransformation();
 };
 }
 
