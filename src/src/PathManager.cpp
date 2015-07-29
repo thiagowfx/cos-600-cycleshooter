@@ -87,8 +87,10 @@ void PathManager::monsterPathUpdate() {
     Ogre::Vector3 monsterTangentFirstPoint = this->interpolate(monsterIndex, monsterSplineStep);
     Ogre::Vector3 monsterTangentSecondPoint = this->interpolate(monsterIndex, monsterSplineStep + epsilon);
     setMonsterNextPosition(monsterTangentFirstPoint);
-    //monsterCurrentTangent = this->mPoints[monsterNextIndex] - this->mPoints[monsterIndex];
-    monsterCurrentTangent = monsterTangentSecondPoint - monsterTangentFirstPoint;
+    //LOG("index = %d, nextIndex = %d",monsterIndex,monsterNextIndex);
+
+    monsterCurrentTangent = this->mPoints[monsterNextIndex] - this->mPoints[monsterIndex];
+    //monsterCurrentTangent = monsterTangentSecondPoint - monsterTangentFirstPoint;
     monsterCurrentTangent.normalise();
 }
 

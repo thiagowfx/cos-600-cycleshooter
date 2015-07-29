@@ -140,35 +140,6 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     logicManager->updateMonster(pathManager->getMonsterCurrentTangent(),pathManager->getMonsterLastTangent());
     logicManager->translateMonster(pathManager->getMonsterNextPosition());
 
-    /*if (context == CONTEXT_RUNNER){
-        //poligonalPathManager updates
-        poligonalPathManager->updatePlayerPoint(logicManager->getPlayerNode()->getPosition());
-        poligonalPathManager->updateMonsterPoint(getSceneManager()->getSceneNode("monsterNode")->getPosition());
-        //std::cout << "Monster Node position = " << getSceneManager()->getSceneNode("monsterNode")->getPosition() << std::endl;
-        poligonalPathManager->updateTangents();
-
-        //Player rotation
-        const std::vector<sf::Keyboard::Key> rightKeys = {sf::Keyboard::Right, sf::Keyboard::D};
-        const std::vector<sf::Keyboard::Key> leftKeys = {sf::Keyboard::Left, sf::Keyboard::A};
-        bool isKeyRightDown = InputManager::instance().isKeyPressed(rightKeys);
-        bool isKeyLeftDown = InputManager::instance().isKeyPressed(leftKeys);
-        Ogre::Degree angle = Ogre::Degree(logicManager->getAngularVelocity());
-        if(isKeyRightDown){
-            logicManager->rotateCamera(-angle,poligonalPathManager->getPlayerCurrentTangent(),poligonalPathManager->getPlayerLastTangent());
-        }
-        if(isKeyLeftDown){
-            logicManager->rotateCamera(angle,poligonalPathManager->getPlayerCurrentTangent(),poligonalPathManager->getPlayerLastTangent());
-        }
-        if(!isKeyRightDown && !isKeyLeftDown){
-            logicManager->rotateCamera(Ogre::Degree(0),poligonalPathManager->getPlayerCurrentTangent(),poligonalPathManager->getPlayerLastTangent());
-        }
-
-        //monster update
-        //logicManager->updateMonster(poligonalPathManager->getMonsterCurrentTangent(),poligonalPathManager->getMonsterLastTangent());
-    }
-    logicManager->updateMonster(poligonalPathManager->getMonsterCurrentTangent(),poligonalPathManager->getMonsterLastTangent());
-    */
-
     // monster animations
     baseMonsterAnimation->addTime(evt.timeSinceLastFrame);
     topMonsterAnimation->addTime(evt.timeSinceLastFrame);
@@ -364,7 +335,7 @@ void Controller::createGameElements() {
     double monsterScale = 5.0;
     monsterNode->scale(monsterScale, monsterScale, monsterScale);
     monsterNode->attachObject(monsterEntity);
-    monsterNode->yaw(Ogre::Degree(180));
+    monsterNode->yaw(Ogre::Degree(90));
 
 
     // attention: logic manager should be created before any threads that will update it

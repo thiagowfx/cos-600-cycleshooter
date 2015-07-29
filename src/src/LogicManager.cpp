@@ -282,8 +282,10 @@ void LogicManager::rotateCamera(const Ogre::Degree& angle, const Ogre::Vector3& 
 }
 
 void LogicManager::updateMonster(const Ogre::Vector3 &tangent, const Ogre::Vector3 &lastTangent){
-    Ogre::Quaternion rot = lastTangent.getRotationTo(tangent);
-    monsterNode->rotate(rot);
+    Ogre::Vector3 crossProductTangents = tangent.crossProduct(lastTangent);
+    Ogre::Real signalAngleBetweenTangents = (crossProductTangents.y < 0) ? (+1) : (-1);
+    Ogre::Degree angleBetweenTangents = signalAngleBetweenTangents * tangent.angleBetween(lastTangent);
+    monsterNode->yaw(angleBetweenTangents);
 
 }
 
