@@ -113,8 +113,7 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
 
     if (context == CONTEXT_RUNNER){
         //pathManager updates
-        pathManager->updateTangents();
-        //pathManager->updateIndex(getSceneManager()->getSceneNode("monsterNode")->getPosition());
+        pathManager->monsterPathUpdate();
 
         //update increment of spline curve
         pathManager->updateSplineStep(getBicycle()->getGameSpeed());
@@ -365,18 +364,7 @@ void Controller::createGameElements() {
     double monsterScale = 5.0;
     monsterNode->scale(monsterScale, monsterScale, monsterScale);
     monsterNode->attachObject(monsterEntity);
-
-    //Spheres for poligonal path class
-    /*Ogre::SceneNode* debugPoligonalPathManagerSceneNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("debugPoligonalPathManagerSceneNode");
-    for(const auto& point: poligonalPathManager->controlPoints) {
-        const double DEBUG_NODE_SCALE = 0.25;
-        Ogre::Entity* entity = getSceneManager()->createEntity("sphere.mesh");
-        entity->setMaterialName("Cycleshooter/Matheus");
-        Ogre::SceneNode* sceneNode = debugPoligonalPathManagerSceneNode->createChildSceneNode();
-        sceneNode->translate(point);
-        sceneNode->scale(Ogre::Vector3(DEBUG_NODE_SCALE, DEBUG_NODE_SCALE, DEBUG_NODE_SCALE));
-        sceneNode->attachObject(entity);
-    }*/
+    monsterNode->yaw(Ogre::Degree(180));
 
 
     // attention: logic manager should be created before any threads that will update it
