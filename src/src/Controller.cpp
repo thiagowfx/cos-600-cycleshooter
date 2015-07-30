@@ -254,6 +254,7 @@ void Controller::go() {
     // initialize core OGRE elements
     createSFMLWindow();
     createRoot();
+    Ogre::LogManager::getSingleton().setLogDetail(Ogre::LL_LOW);
     createSceneManager();
     createOverlaySystem();
     setupResources();
