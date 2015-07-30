@@ -97,16 +97,14 @@ void LogicManager::updatePlayerPosition(const Ogre::Real &time) {
     // distance = speed x time (Physics I, yay!)
     double distance = controller->getBicycle()->getGameSpeed() * time;
 
-    Ogre::Vector3 playerOrientation = playerNode->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_Z;
+    Ogre::Vector3 playerOrientation = frontCamera->getDirection();
 
     getPlayerNode()->translate(distance * playerOrientation, Ogre::SceneNode::TS_LOCAL);
 }
 
 void LogicManager::updateMonsterPosition(const Ogre::Real &time) {
-    double monsterSpeed = 50.0;
-
     // distance = speed x time (Physics I, yay!)
-    double distance = monsterSpeed * time;
+    double distance = MONSTER_SPEED * time;
 
     // quaternions! upstream: http://stackoverflow.com/questions/4727079/getting-object-direction-in-ogre
     Ogre::Vector3 monsterOrientation = monsterNode->getOrientation() * Ogre::Vector3::UNIT_Z;

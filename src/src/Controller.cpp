@@ -313,7 +313,7 @@ void Controller::go() {
     InputManager::instance().updateJoystickNumber();
     AudioManager::instance().specialAddSound(SOUND_MONSTER_CHASING, true);
     setupRunnerMode();
-    setupDebug(true);
+    setDebug(!ConfigManager::instance().getBool("Release.game_release"));
     setupKeyMappings();
 
     // Ogre::FrameListener <-- let's begin calling frameRenderingQueued
@@ -776,6 +776,7 @@ void Controller::createRoot() {
     // note: window title and size are not important here, so we use blank (dummy) values for them
     oWindow = oRoot->createRenderWindow("", 0, 0, false, &misc);
     oWindow->setVisible(true);
+    Ogre::Root::getSingleton().setFrameSmoothingPeriod(1.0 / 60.0);
 
     LOG("Render Window has been (manually) created");
 }
@@ -825,7 +826,7 @@ void Controller::toggleMode() {
     }
 }
 
-void Controller::setupDebug(bool debug) {
+void Controller::setDebug(bool debug) {
     if(debug) {
         LOG("Turning Debug Mode ON");
     }
@@ -842,7 +843,7 @@ void Controller::setupDebug(bool debug) {
 }
 
 void Controller::toggleDebug() {
-    setupDebug(!debug);
+    setDebug(!debug);
 }
 
 std::string Controller::getElapsedTimeAsString() const {

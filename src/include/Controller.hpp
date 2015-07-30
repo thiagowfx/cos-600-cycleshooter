@@ -384,7 +384,7 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     /**
      * Enable/Disable the debug mode.
      */
-    void setupDebug(bool debug);
+    void setDebug(bool debug);
 
     /**
      * Toggle the debug mode ON/OFF.
