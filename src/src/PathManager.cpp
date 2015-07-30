@@ -83,8 +83,8 @@ void PathManager::monsterPathUpdate() {
     setMonsterNextPosition(monsterTangentFirstPoint);
     //LOG("index = %d, nextIndex = %d",monsterIndex,monsterNextIndex);
 
-    monsterTangent = this->mPoints[monsterNextIndex] - this->mPoints[monsterIndex];
-    //monsterCurrentTangent = monsterTangentSecondPoint - monsterTangentFirstPoint;
+
+    monsterTangent = monsterTangentSecondPoint - monsterTangentFirstPoint;
     monsterTangent.normalise();
 }
 
