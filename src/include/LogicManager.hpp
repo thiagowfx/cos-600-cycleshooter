@@ -23,9 +23,11 @@ class LogicManager {
     Ogre::SceneNode* frontCameraNode = NULL;
     Ogre::SceneNode* rearCameraNode = NULL;
     Ogre::SceneNode* monsterNode = NULL;
+    Ogre::SceneNode* fakePathNode = NULL;
 
     Ogre::Camera *frontCamera = NULL;
     Ogre::Camera *rearCamera = NULL;
+    Ogre::Camera *shootCamera = NULL;
 
     /*
      *  RTT.
@@ -126,6 +128,7 @@ public:
     void yawCamera();
     void rotateCamera(const Ogre::Degree& angle, const Ogre::Vector3& pathDirection, const Ogre::Vector3& lastPathDirection);
     void updateMonster(const Ogre::Vector3& tangent,const Ogre::Vector3& monsterNextPosition);
+    void updateFakePath(const Ogre::Vector3 &tangent, const Ogre::Vector3& fakePathNextPosition);
 
     // getters and setters
     Ogre::SceneNode *getPlayerNode() const;

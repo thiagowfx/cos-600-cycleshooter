@@ -177,6 +177,12 @@ void LogicManager::createSceneNodes() {
     playerNode = parentPlayerNode->createChildSceneNode("playerNode");
     rearCameraNode->yaw(Ogre::Radian(Ogre::Degree(180.0)));
 
+    fakePathNode = controller->getSceneManager()->getRootSceneNode()->createChildSceneNode("fakePathNode", Ogre::Vector3(11084,0.0,5261.23));
+    Ogre::Entity* fakePathEntity = controller->getSceneManager()->createEntity("fakePathEntity", "Sinbad.mesh");
+    fakePathNode->attachObject(fakePathEntity);
+    double fakeScale = 10.0;
+    fakePathNode->scale(fakeScale, fakeScale, fakeScale);
+    //fakePathNode->attachObject(shootCamera);
     // attach scene nodes
     frontCameraNode->attachObject(frontCamera);
     rearCameraNode->attachObject(rearCamera);
@@ -264,6 +270,10 @@ void LogicManager::rotateCamera(const Ogre::Degree& angle, const Ogre::Vector3& 
     Ogre::Vector3 crossProductTangents = pathDirection.crossProduct(lastPathDirection);
     Ogre::Real signalAngleBetweenTangents = (crossProductTangents.y < 0) ? (+1) : (-1);
     Ogre::Degree angleBetweenTangents = signalAngleBetweenTangents * pathDirection.angleBetween(lastPathDirection);
+
+    Ogre::Vector3 currentFacing = fakePathNode->getOrientation() * Ogre::Vector3::UNIT_Z;
+    Ogre::Quaternion quat = currentFacing.getRotationTo(pathDirection);
+    //fakePathNode->rotate(quat);
     //frontCamera->yaw(angleBetweenTangents);
     //playerNode->yaw(angleBetweenTangents);
 
@@ -286,6 +296,13 @@ void LogicManager::updateMonster(const Ogre::Vector3 &tangent, const Ogre::Vecto
     Ogre::Quaternion quat = currentFacing.getRotationTo(tangent);
     monsterNode->rotate(quat);
     monsterNode->setPosition(monsterNextPosition);
+}
+
+void LogicManager::updateFakePath(const Ogre::Vector3 &tangent, const Ogre::Vector3& fakePathNextPosition){
+    Ogre::Vector3 currentFacing = fakePathNode->getOrientation() * Ogre::Vector3::UNIT_Z;
+    Ogre::Quaternion quat = currentFacing.getRotationTo(tangent);
+    fakePathNode->rotate(quat);
+    fakePathNode->setPosition(fakePathNextPosition);
 }
 
 }

@@ -116,7 +116,11 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         pathManager->monsterPathUpdate();
 
         //update increment of spline curve
-        pathManager->updateSplineStep(getBicycle()->getGameSpeed());
+        pathManager->fakePathSplineStepUpdate(getBicycle()->getGameSpeed(),evt.timeSinceLastFrame);
+        pathManager->fakePathUpdate();
+
+        //Fake path Node update
+        logicManager->updateFakePath(pathManager->getFakePathTangent(),pathManager->getFakePathNextPosition());
 
         //Player rotation
 
@@ -506,13 +510,13 @@ void Controller::setupKeyMappings() {
     InputManager::instance().addKeysRotationUnbuf({sf::Keyboard::A,
                                            sf::Keyboard::Left}, CONTEXT_RUNNER, [&]{
         Ogre::Degree angle = Ogre::Degree(logicManager->getAngularVelocity());
-        logicManager->rotateCamera(angle,pathManager->getCurrentTangent(),pathManager->getLastTangent());
+        logicManager->rotateCamera(angle,Ogre::Vector3(0,0,0),Ogre::Vector3(0,0,0));
     });
 
     InputManager::instance().addKeysRotationUnbuf({sf::Keyboard::D,
                                            sf::Keyboard::Right}, CONTEXT_RUNNER, [&]{
         Ogre::Degree angle = Ogre::Degree(logicManager->getAngularVelocity());
-        logicManager->rotateCamera(-angle,pathManager->getCurrentTangent(),pathManager->getLastTangent());
+        logicManager->rotateCamera(-angle,Ogre::Vector3(0,0,0),Ogre::Vector3(0,0,0));
     });
 
     InputManager::instance().addKey(sf::Keyboard::Q, CONTEXT_RUNNER, [&]{

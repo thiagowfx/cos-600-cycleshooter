@@ -15,18 +15,20 @@ class PathManager: public Ogre::SimpleSpline {
 
     Ogre::Real epsilon = 0.0001;
 
-    //Player
-    Ogre::Vector3 currentTangent;
-    Ogre::Vector3 lastTangent;
-    Ogre::Real startPlayerPosition = Ogre::Real(0.001);
-    Ogre::Real VELOCITY_FACTOR = 0.00000001;
-    Ogre::Real splineStep = 0.0001;
+    //Fake path
+    Ogre::Real VELOCITY_FACTOR = 0.00005;
+    Ogre::Vector3 fakePathTangent;
+    Ogre::Real fakePathSplineParameter = 0;
+    unsigned int fakePathIndex = 1;
+    unsigned int fakePathNextIndex = 2;
+    Ogre::Vector3 fakePathNextPosition;
 
     //Monster
     Ogre::Vector3 monsterTangent;
-    Ogre::Real monsterSplineStep = 0;
+    Ogre::Real monsterSplineParameter = 0;
     unsigned int monsterIndex = 0;
     unsigned int monsterNextIndex = 1;
+    double monsterSplineStep = 0.001;
     Ogre::Vector3 monsterNextPosition;
 
     //for debugging
@@ -41,20 +43,22 @@ public:
     PathManager(const std::vector<Ogre::Vector3>& controlPoints);
 
     void monsterPathUpdate();
-
     void updateIndex();
-    void updateSplineStep(double playerVelocity);
+
+    void fakePathUpdate();
+    void fakePathSplineStepUpdate(const double& playerVelocity, Ogre::Real time);
+    void fakePathUpdateIndex();
+
     std::vector<Ogre::Real> parametricValue(Ogre::Vector3 splinePoint, unsigned int fromIndex);
 
 
     void setDebug(bool debug);
 
-    Ogre::Vector3 getCurrentTangent() const;
-    Ogre::Vector3 getLastTangent() const;
     Ogre::Vector3 getMonsterTangent() const;
-
     Ogre::Vector3 getMonsterNextPosition() const;
     void setMonsterNextPosition(const Ogre::Vector3 &value);
+    Ogre::Vector3 getFakePathTangent() const;
+    Ogre::Vector3 getFakePathNextPosition() const;
 };
 
 }

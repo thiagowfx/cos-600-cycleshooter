@@ -2,15 +2,6 @@
 
 namespace Cycleshooter {
 
-
-Ogre::Vector3 PathManager::getCurrentTangent() const {
-    return currentTangent;
-}
-
-Ogre::Vector3 PathManager::getLastTangent() const {
-    return lastTangent;
-}
-
 Ogre::Vector3 PathManager::getMonsterTangent() const {
     return monsterTangent;
 }
@@ -61,6 +52,16 @@ Ogre::Vector3 PathManager::getMonsterNextPosition() const{
 void PathManager::setMonsterNextPosition(const Ogre::Vector3 &value) {
     monsterNextPosition = value;
 }
+
+Ogre::Vector3 PathManager::getFakePathTangent() const
+{
+    return fakePathTangent;
+}
+
+Ogre::Vector3 PathManager::getFakePathNextPosition() const
+{
+    return fakePathNextPosition;
+}
 void PathManager::go(const std::vector<Ogre::Vector3>& controlPoints) {
 
 
@@ -71,21 +72,26 @@ void PathManager::go(const std::vector<Ogre::Vector3>& controlPoints) {
 }
 
 void PathManager::monsterPathUpdate() {
-    if(monsterSplineStep + 0.001 < 1){
-        monsterSplineStep += 0.001;
+    if(monsterSplineParameter + monsterSplineStep < 1){
+        monsterSplineParameter += monsterSplineStep;
     }
     else {
-        monsterSplineStep = 0;
+        monsterSplineParameter = 0;
         updateIndex();
     }
-    Ogre::Vector3 monsterTangentFirstPoint = this->interpolate(monsterIndex, monsterSplineStep);
-    Ogre::Vector3 monsterTangentSecondPoint = this->interpolate(monsterIndex, monsterSplineStep + epsilon);
+    Ogre::Vector3 monsterTangentFirstPoint = this->interpolate(monsterIndex, monsterSplineParameter);
+    Ogre::Vector3 monsterTangentSecondPoint = this->interpolate(monsterIndex, monsterSplineParameter + epsilon);
     setMonsterNextPosition(monsterTangentFirstPoint);
-    //LOG("index = %d, nextIndex = %d",monsterIndex,monsterNextIndex);
-
-    monsterTangent = this->mPoints[monsterNextIndex] - this->mPoints[monsterIndex];
-    //monsterCurrentTangent = monsterTangentSecondPoint - monsterTangentFirstPoint;
+    monsterTangent = monsterTangentSecondPoint - monsterTangentFirstPoint;
     monsterTangent.normalise();
+}
+
+void PathManager::fakePathUpdate() {
+    Ogre::Vector3 fakePathTangentFirstPoint = this->interpolate(fakePathIndex, fakePathSplineParameter);
+    Ogre::Vector3 fakePathTangentSecondPoint = this->interpolate(fakePathIndex, fakePathSplineParameter + epsilon);
+    fakePathNextPosition = fakePathTangentFirstPoint;
+    fakePathTangent = fakePathTangentSecondPoint - fakePathTangentFirstPoint;
+    fakePathTangent.normalise();
 }
 
 
@@ -95,8 +101,19 @@ void PathManager::updateIndex(){
     LOG("Monster index change to %d", monsterNextIndex);
 }
 
-void PathManager::updateSplineStep(double playerVelocity){
-    splineStep = VELOCITY_FACTOR * playerVelocity;
+void PathManager::fakePathSplineStepUpdate(const double& playerVelocity, Ogre::Real time){
+    if(fakePathSplineParameter + VELOCITY_FACTOR * playerVelocity < 1) {
+        fakePathSplineParameter += VELOCITY_FACTOR * playerVelocity;
+    }
+    else {
+        fakePathSplineParameter = 0;
+        fakePathUpdateIndex();
+    }
+}
+
+void PathManager::fakePathUpdateIndex(){
+    fakePathIndex = fakePathNextIndex;
+    fakePathNextIndex = (fakePathNextIndex + 1) % mPoints.size();
 }
 
 void PathManager::setDebug(bool debug) {
