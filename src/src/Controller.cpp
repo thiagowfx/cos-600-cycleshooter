@@ -112,18 +112,20 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     logicManager->setAngularVelocity(ConfigManager::instance().getDouble("Controller.camera_angle_rotation_step") / evt.timeSinceLastFrame);
 
     if (context == CONTEXT_RUNNER){
-        //pathManager updates
+        // pathManager updates
         pathManager->monsterPathUpdate();
 
-        //update increment of spline curve
+        // update increment of spline curve
         pathManager->updateSplineStep(getBicycle()->getGameSpeed());
 
-        //Player rotation
+        /*
+         * Player Rotation
+         * THIS APPROACH USES THE IS KEY DOWN METHOD AND IS THE ONLY WAY TO MAKE ROTATIONS WORK
+         * WITH THE MAXIMUM ANGLE
+         */
 
-        //  THIS APPROACH USES THE IS KEY DOWN METHOD AND IS THE ONLY WAY TO MAKE ROTATION WORKS
-        //  WITH THE MAXIMUM ANGLE
-
-        /*const std::vector<sf::Keyboard::Key> rightKeys = {sf::Keyboard::Right, sf::Keyboard::D};
+        /*
+        const std::vector<sf::Keyboard::Key> rightKeys = {sf::Keyboard::Right, sf::Keyboard::D};
         const std::vector<sf::Keyboard::Key> leftKeys = {sf::Keyboard::Left, sf::Keyboard::A};
         bool isKeyRightDown = InputManager::instance().isKeyPressed(rightKeys);
         bool isKeyLeftDown = InputManager::instance().isKeyPressed(leftKeys);
@@ -136,17 +138,19 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         }
         if(!isKeyRightDown && !isKeyLeftDown){
             logicManager->rotateCamera(Ogre::Degree(0),pathManager->getCurrentTangent(),pathManager->getLastTangent());
-        }*/
+        }
+        */
 
         //monster update
         //logicManager->updateMonster(pathManager->getMonsterTangent(),pathManager->getMonsterNextPosition());
     }
-    logicManager->updateMonster(pathManager->getMonsterTangent(),pathManager->getMonsterNextPosition());
+
+    logicManager->updateMonster(pathManager->getMonsterTangent(), pathManager->getMonsterNextPosition());
 
     // monster animations
     baseMonsterAnimation->addTime(evt.timeSinceLastFrame);
     topMonsterAnimation->addTime(evt.timeSinceLastFrame);
-    swordsMonsterAnimation->addTime(evt.timeSinceLastFrame / 12.0);
+    swordsMonsterAnimation->addTime(evt.timeSinceLastFrame / 11.0);
 
     // update game logic
     logicManager->update(evt);
@@ -214,18 +218,18 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
             sWindow->close();
             break;
 
-            // key pressed
+        // key pressed
         case sf::Event::KeyPressed:
             InputManager::instance().executeKeyAction(event.key.code, context);
             break;
 
-            // joystick button pressed
+        // joystick button pressed
         case sf::Event::JoystickButtonPressed:
             InputManager::instance().executeJoystickButtonAction(event.joystickButton.button, context);
             break;
 	
-	default:
-	    break;
+        default:
+            break;
         }
     }
 
@@ -692,7 +696,7 @@ void Controller::doSaveStats(const char* file, const char* totalGameTime) {
 
     ofs << "* Other Statistics" << std::endl <<
            "- Total game time: " << totalGameTime << std::endl <<
-           "- End Game type: " << endGameTypeToString(endGameType) << std::endl;
+           "- End Game type: " << EndGameTypeToString(endGameType) << std::endl;
 
     ofs << "===== SESSION ENDS: " << std::chrono::system_clock::now() << std::endl << std::endl;
 }

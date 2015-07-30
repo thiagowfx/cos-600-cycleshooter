@@ -27,8 +27,6 @@ class InputManager {
      */
     int JOYSTICK_NUMBER;
 
-    const bool DETECT_JOYSTICK = ConfigManager::instance().getBool("InputManager.try_detect_joystick");
-
     /** Buffered keyboard keys. */
     std::map<sf::Keyboard::Key, std::function<void(void)> > keyboardMap[2];
 

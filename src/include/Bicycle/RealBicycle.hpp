@@ -228,12 +228,6 @@ public:
         writeToSerialPort(command.str());
     }
 
-    virtual void changeFriction(const int& value) {
-        friction = std::max(0, friction + value);
-        friction = std::min(400, friction);
-        setFriction(friction);
-    }
-
 };
 }
 

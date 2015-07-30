@@ -256,7 +256,7 @@ void InputManager::reset() {
 }
 
 void InputManager::updateJoystickNumber() {
-    if(DETECT_JOYSTICK) {
+    if(ConfigManager::instance().getBool("InputManager.try_detect_joystick")) {
         LOG("Trying to detect a Joystick");
         bool joystickDetected = false;
 

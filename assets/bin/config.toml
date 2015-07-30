@@ -22,6 +22,7 @@ rpm_to_logical_speed = 10.0
 [RealBicycle]
 max_string_response = 16
 reading_retry_time_ms = 10
+maximum_load = 400
 
 [RealPolar]
 max_string_response = 140

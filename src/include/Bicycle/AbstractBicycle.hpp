@@ -56,6 +56,11 @@ protected:
         }
     }
 
+    /**
+     * The maximum load/friction we can set the bicycle to.
+     */
+    const int MAXIMUM_LOAD = ConfigManager::instance().getInt("RealBicycle.maximum_load");
+
 public:
     AbstractBicycle(){}
 
@@ -104,13 +109,17 @@ public:
      */
     virtual void setFriction(const int& value) = 0;
 
+    /**
+     * Changes (increments or decrements) the friction of the bicycle by the specified value.
+     */
     virtual void changeFriction(const int& value) {
         friction = std::max(0, friction + value);
-        friction = std::min(400, friction);
+        friction = std::min(MAXIMUM_LOAD, friction);
+        setFriction(friction);
     }
 
     /**
-     * Change (increment or decrement) the speed by the specified value.
+     * Changes (increments or decrements) the speed by the specified value.
      */
     virtual void changeSpeed(const int& amount) {}
 };
