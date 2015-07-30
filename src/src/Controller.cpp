@@ -150,7 +150,8 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     // process unbuffered keys
     static sf::Clock clockUnbuf;
     if(clockUnbuf.getElapsedTime() >= THRESHOLD_UNBUF_KEYS_MS) {
-        InputManager::instance().executeActionsUnbuf(context);
+        InputManager::instance().executeJoystickActionsUnbuf(context);
+        InputManager::instance().executeKeyboardActionsUnbuf(context);
         clockUnbuf.restart();
     }
 

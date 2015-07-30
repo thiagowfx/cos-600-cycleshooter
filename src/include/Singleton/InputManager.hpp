@@ -128,7 +128,9 @@ public:
 
     void executeJoystickButtonAction(int button, const Context& mode);
 
-    void executeActionsUnbuf(const Context& mode);
+    void executeKeyboardActionsUnbuf(const Context& mode);
+
+    void executeJoystickActionsUnbuf(const Context& mode);
 
     void executeActionsRotationUnbuf(const Context &mode);
 

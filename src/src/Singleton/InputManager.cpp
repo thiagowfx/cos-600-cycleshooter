@@ -214,15 +214,17 @@ void InputManager::executeJoystickButtonAction(int button, const Context &mode) 
     }
 }
 
-void InputManager::executeActionsUnbuf(const Context &mode) {
-    sf::Joystick::update();
-
+void InputManager::executeKeyboardActionsUnbuf(const Context &mode) {
     // keyboard
     for(std::map<sf::Keyboard::Key, std::function<void(void)> >::iterator it = uKeyboardMap[mode].begin(); it != uKeyboardMap[mode].end(); ++it) {
         if(sf::Keyboard::isKeyPressed(it->first)) {
             it->second();
         }
     }
+}
+
+void InputManager::executeJoystickActionsUnbuf(const Context& mode) {
+    sf::Joystick::update();
 
     // joystick axis
     for(std::map<sf::Joystick::Axis, std::function<void(float)> >::iterator it = uJoystickAxisMap[mode].begin(); it != uJoystickAxisMap[mode].end(); ++it) {
