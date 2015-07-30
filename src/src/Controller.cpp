@@ -24,8 +24,8 @@ Controller::Controller(int argc, char *argv[]) {
                                              "    -h:      show this help\n"
                                              "    -f:      set fullscreen (1 = ON, 0 = OFF; default = ON)\n"
                                              "    -r | -s: set resolution/size (e.g. 1366x768, default = maximum possible)\n"
-                     "Examples: " << argv[0] << " -r 1366x768\n"
-                     "          " << argv[0] << " -f 0 -r 800x600" << std::endl;
+                                             "Examples: " << argv[0] << " -r 1366x768\n"
+                                                                        "          " << argv[0] << " -f 0 -r 800x600" << std::endl;
     };
 
     int opt;
@@ -182,16 +182,16 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
             sWindow->close();
             break;
 
-        // key pressed
+            // key pressed
         case sf::Event::KeyPressed:
             InputManager::instance().executeKeyAction(event.key.code, context);
             break;
 
-        // joystick button pressed
+            // joystick button pressed
         case sf::Event::JoystickButtonPressed:
             InputManager::instance().executeJoystickButtonAction(event.joystickButton.button, context);
             break;
-	
+
         default:
             break;
         }
@@ -475,6 +475,8 @@ void Controller::createSwords() {
 void Controller::setupKeyMappings() {
     LOG("Setting up mappings");
 
+    if(!ConfigManager::instance().getBool("Release.game_release")) {
+
 #define bicycleSpeedChange(signal_sensibility) bicycle->changeSpeed(static_cast<float>(signal_sensibility) * BICYCLE_SPEED_CHANGE);
 #define bicycleRotationChange(signal_sensibility)\
     Ogre::Degree angle = Ogre::Degree(logicManager->getAngularVelocity());\
@@ -482,92 +484,93 @@ void Controller::setupKeyMappings() {
 #define scrollCrosshair(x_sensibility, y_sensibility)\
     crosshairManager->scrollVirtualCrosshair(polar->getHeartRate(), x_sensibility, y_sensibility);
 
-    /*
+        /*
      * Runner mode mappings;
      */
-    InputManager::instance().addKeysUnbuf({sf::Keyboard::W,
-                                           sf::Keyboard::Up}, CONTEXT_RUNNER, [&]{
-        bicycleSpeedChange(+1);
+        InputManager::instance().addKeysUnbuf({sf::Keyboard::W,
+                                               sf::Keyboard::Up}, CONTEXT_RUNNER, [&]{
+            bicycleSpeedChange(+1);
 
-    });
+        });
 
-    InputManager::instance().addKeysUnbuf({sf::Keyboard::S,
-                                           sf::Keyboard::Down}, CONTEXT_RUNNER, [&]{
-        bicycleSpeedChange(-1);
-    });
+        InputManager::instance().addKeysUnbuf({sf::Keyboard::S,
+                                               sf::Keyboard::Down}, CONTEXT_RUNNER, [&]{
+            bicycleSpeedChange(-1);
+        });
 
-    /*
+        /*
      * Rotation Mapping
      * WITH THIS APPROACH ROTATION WORKS WITH ITS OWN KEYBOARD MAPPING (NO MAXIMUM ANGLE)
      */
-    InputManager::instance().addKeysRotationUnbuf({sf::Keyboard::A,
-                                                   sf::Keyboard::Left}, CONTEXT_RUNNER, [&]{
-        bicycleRotationChange(+1);
-    });
+        InputManager::instance().addKeysRotationUnbuf({sf::Keyboard::A,
+                                                       sf::Keyboard::Left}, CONTEXT_RUNNER, [&]{
+            bicycleRotationChange(+1);
+        });
 
-    InputManager::instance().addKeysRotationUnbuf({sf::Keyboard::D,
-                                                   sf::Keyboard::Right}, CONTEXT_RUNNER, [&]{
-        bicycleRotationChange(-1);
-    });
+        InputManager::instance().addKeysRotationUnbuf({sf::Keyboard::D,
+                                                       sf::Keyboard::Right}, CONTEXT_RUNNER, [&]{
+            bicycleRotationChange(-1);
+        });
 
-    InputManager::instance().addKey(sf::Keyboard::Q, CONTEXT_RUNNER, [&]{
-        bicycle->changeFriction(-BICYCLE_FRICTION_CHANGE);
-    });
+        InputManager::instance().addKey(sf::Keyboard::Q, CONTEXT_RUNNER, [&]{
+            bicycle->changeFriction(-BICYCLE_FRICTION_CHANGE);
+        });
 
-    InputManager::instance().addKey(sf::Keyboard::E, CONTEXT_RUNNER, [&]{
-        bicycle->changeFriction(BICYCLE_FRICTION_CHANGE);
-    });
+        InputManager::instance().addKey(sf::Keyboard::E, CONTEXT_RUNNER, [&]{
+            bicycle->changeFriction(BICYCLE_FRICTION_CHANGE);
+        });
 
-    /*
+        /*
      * Shooter mode mappings.
      */
-    InputManager::instance().addKeysUnbuf({sf::Keyboard::A,
-                                           sf::Keyboard::Left}, CONTEXT_SHOOTER, [&]{
-        scrollCrosshair(-1.0, 0.0);
-    });
+        InputManager::instance().addKeysUnbuf({sf::Keyboard::A,
+                                               sf::Keyboard::Left}, CONTEXT_SHOOTER, [&]{
+            scrollCrosshair(-1.0, 0.0);
+        });
 
-    InputManager::instance().addKeysUnbuf({sf::Keyboard::D,
-                                           sf::Keyboard::Right}, CONTEXT_SHOOTER, [&]{
-        scrollCrosshair(+1.0, 0.0);
-    });
+        InputManager::instance().addKeysUnbuf({sf::Keyboard::D,
+                                               sf::Keyboard::Right}, CONTEXT_SHOOTER, [&]{
+            scrollCrosshair(+1.0, 0.0);
+        });
 
-    InputManager::instance().addKeysUnbuf({sf::Keyboard::W,
-                                           sf::Keyboard::Up}, CONTEXT_SHOOTER, [&]{
-        scrollCrosshair(0.0, +1.0);
-    });
+        InputManager::instance().addKeysUnbuf({sf::Keyboard::W,
+                                               sf::Keyboard::Up}, CONTEXT_SHOOTER, [&]{
+            scrollCrosshair(0.0, +1.0);
+        });
 
-    InputManager::instance().addKeysUnbuf({sf::Keyboard::S,
-                                           sf::Keyboard::Down}, CONTEXT_SHOOTER, [&]{
-        scrollCrosshair(0.0, -1.0);
-    });
+        InputManager::instance().addKeysUnbuf({sf::Keyboard::S,
+                                               sf::Keyboard::Down}, CONTEXT_SHOOTER, [&]{
+            scrollCrosshair(0.0, -1.0);
+        });
 
-    InputManager::instance().addKey(sf::Keyboard::Space, CONTEXT_SHOOTER, [&]{
-        logicManager->shoot();
-    });
+        InputManager::instance().addKey(sf::Keyboard::Space, CONTEXT_SHOOTER, [&]{
+            logicManager->shoot();
+        });
 
-    /*
+        /*
      * Both modes mappings.
      */
-    InputManager::instance().addKey(sf::Keyboard::Num1, [&]{
-        toggleMode();
-    });
+        InputManager::instance().addKey(sf::Keyboard::Num1, [&]{
+            toggleMode();
+        });
 
-    InputManager::instance().addKey(sf::Keyboard::Num2, [&]{
-        toggleDebug();
-    });
+        InputManager::instance().addKey(sf::Keyboard::Num2, [&]{
+            toggleDebug();
+        });
 
-    InputManager::instance().addKey(sf::Keyboard::LBracket, [&]{
-        polar->changePeaks(-POLAR_PEAK_CHANGE);
-    });
+        InputManager::instance().addKey(sf::Keyboard::LBracket, [&]{
+            polar->changePeaks(-POLAR_PEAK_CHANGE);
+        });
 
-    InputManager::instance().addKey(sf::Keyboard::RBracket, [&]{
-        polar->changePeaks(POLAR_PEAK_CHANGE);
-    });
+        InputManager::instance().addKey(sf::Keyboard::RBracket, [&]{
+            polar->changePeaks(POLAR_PEAK_CHANGE);
+        });
 
-    // refresh all textures
-    InputManager::instance().addKey(sf::Keyboard::F5, [&] {
-        Ogre::TextureManager::getSingleton().reloadAll();
-    });
+        // refresh all textures
+        InputManager::instance().addKey(sf::Keyboard::F5, [&] {
+            Ogre::TextureManager::getSingleton().reloadAll();
+        });
+    }
 
     InputManager::instance().addKey(sf::Keyboard::M, [&] {
         AudioManager::instance().toggleMute();
@@ -608,13 +611,15 @@ void Controller::setupKeyMappings() {
         bicycleRotationChange(-f / 100.0);
     });
 
-    InputManager::instance().addJoystickAxisUnbuf({sf::Joystick::Y,
-                                                   sf::Joystick::V,
-                                                   sf::Joystick::PovY},
-                                                   CONTEXT_RUNNER, [&](float f) {
-        // note: Y axis is reversed
-        bicycleSpeedChange(-f / 100.0);
-    });
+    if(!ConfigManager::instance().getBool("Release.game_release")) {
+        InputManager::instance().addJoystickAxisUnbuf({sf::Joystick::Y,
+                                                       sf::Joystick::V,
+                                                       sf::Joystick::PovY},
+                                                      CONTEXT_RUNNER, [&](float f) {
+            // note: Y axis is reversed
+            bicycleSpeedChange(-f / 100.0);
+        });
+    }
 
     InputManager::instance().addJoystickAxisUnbuf({sf::Joystick::X,
                                                    sf::Joystick::U,
@@ -626,7 +631,7 @@ void Controller::setupKeyMappings() {
     InputManager::instance().addJoystickAxisUnbuf({sf::Joystick::Y,
                                                    sf::Joystick::V,
                                                    sf::Joystick::PovY},
-                                                   CONTEXT_SHOOTER, [&](float f) {
+                                                  CONTEXT_SHOOTER, [&](float f) {
         scrollCrosshair(0.0, -f / 100.0);
     });
 
