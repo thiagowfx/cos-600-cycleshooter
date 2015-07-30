@@ -267,7 +267,7 @@ void Controller::go() {
     setupTextures();
 
     if(ConfigManager::instance().getBool("Release.game_release")) {
-        startCountdown();
+        doCountdown();
     }
 
     // initialize our objects and our game overall
@@ -662,37 +662,42 @@ void Controller::doGameEnd() {
     LOG("Removing all viewports");
     oWindow->removeAllViewports();
 
-    LOG("Creating the final scene");
+    if(ConfigManager::instance().getBool("Release.game_release")) {
+        LOG("Creating the final scene");
 
-    // create a background, for cleaning purposes
-    Ogre::Camera* endCamera = oSceneManager->createCamera("endCamera");
-    Ogre::Viewport* endViewport = oWindow->addViewport(endCamera);
-    endViewport->setBackgroundColour(gameVictory ? Ogre::ColourValue::Green : Ogre::ColourValue::Red);
+        // create a background, for cleaning purposes
+        Ogre::Camera* endCamera = oSceneManager->createCamera("endCamera");
+        Ogre::Viewport* endViewport = oWindow->addViewport(endCamera);
+        endViewport->setBackgroundColour(gameVictory ? Ogre::ColourValue::Green : Ogre::ColourValue::Red);
 
-    // render final game image
-    Ogre::OverlayManager::getSingleton().getByName(gameVictory ? "Cycleshooter/GameVictory" : "Cycleshooter/GameOver")->show();
-    oWindow->update();
+        // render final game image
+        Ogre::OverlayManager::getSingleton().getByName(gameVictory ? "Cycleshooter/GameVictory" : "Cycleshooter/GameOver")->show();
+        oWindow->update();
 
-    Soundname endSound = gameVictory ? SOUND_GAME_VICTORY : SOUND_GAME_LOSS;
-    AudioManager::instance().playSound(endSound);
+        Soundname endSound = gameVictory ? SOUND_GAME_VICTORY : SOUND_GAME_LOSS;
+        AudioManager::instance().playSound(endSound);
+        sf::sleep(AudioManager::instance().getSoundDuration(endSound));
+    }
 
-    std::ofstream ofs(ConfigManager::instance().getStr("Controller.statistics_file"), std::ios_base::app | std::ios_base::out);
+    doSaveStats(ConfigManager::instance().getStr("Controller.statistics_file").c_str(), totalGameTime.c_str());
+}
+
+void Controller::doSaveStats(const char* file, const char* totalGameTime) {
+    std::ofstream ofs(file, std::ios_base::app | std::ios_base::out);
 
     ofs << "===== SESSION STARTS: " << gameStartClock << std::endl;
 
     polar->printStatistics(ofs);
     bicycle->printStatistics(ofs);
 
-    ofs << "* Other Statistics\n"
+    ofs << "* Other Statistics" << std::endl <<
            "- Total game time: " << totalGameTime << std::endl <<
            "- End Game type: " << endGameTypeToString(endGameType) << std::endl;
 
     ofs << "===== SESSION ENDS: " << std::chrono::system_clock::now() << std::endl << std::endl;
-
-    sf::sleep(AudioManager::instance().getSoundDuration(endSound));
 }
 
-void Controller::startCountdown() {
+void Controller::doCountdown() {
     LOG("Starting countdown");
 
     AudioManager::instance().playSound(SOUND_GAME_BATTLE_PREPARE_DOTA);

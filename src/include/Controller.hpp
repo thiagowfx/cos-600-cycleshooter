@@ -327,9 +327,14 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     void doGameEnd();
 
     /**
-     * @brief startCountdown Start the game countdown to its beginning.
+     * @brief doCountdown Start the game countdown to its beginning.
      */
-    void startCountdown();
+    void doCountdown();
+
+    /**
+     * @brief doSaveStats Save the game statistics.
+     */
+    void doSaveStats(const char* file, const char* totalGameTime);
 
     /**
      * Setup the context mode to the runner mode.
