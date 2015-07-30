@@ -34,9 +34,8 @@ Controller::Controller(int argc, char *argv[]) {
         switch(opt) {
         case 'f':
             if(!(!strcmp(optarg, "0") || !strcmp(optarg, "1"))) {
-                LOG_FATAL("unrecognized fullscreen parameter");
                 usage();
-                exit(EXIT_FAILURE);
+                LOG_FATAL("unrecognized fullscreen parameter");
             }
             fullscreen = atoi(optarg);
             break;
@@ -44,9 +43,8 @@ Controller::Controller(int argc, char *argv[]) {
         case 's':
         case 'r':
             if (sscanf(optarg, "%dx%d", &width, &height) != 2) {
-                LOG_FATAL("unrecognized resolution format");
                 usage();
-                exit(EXIT_FAILURE);
+                LOG_FATAL("unrecognized resolution format");
             }
             break;
 
@@ -70,7 +68,6 @@ Controller::Controller(int argc, char *argv[]) {
         }
         else {
             LOG_FATAL("invalid fullscreen resolution specified (%d x %d). Please either set a valid resolution or disable fullscreen", width, height);
-            exit(EXIT_FAILURE);
         }
     }
 

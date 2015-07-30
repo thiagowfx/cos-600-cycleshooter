@@ -91,7 +91,6 @@ void AudioManager::populateSounds() {
 
     auto error = [](const std::string& soundname) {
         LOG_FATAL("Couldn't load the %s sound", soundname.c_str());
-        exit(EXIT_FAILURE);
     };
 
 #define LOAD_TEMPLATE(soundname, soundfile)\
@@ -137,7 +136,6 @@ void AudioManager::populateMusics() {
 
     auto error = [](const std::string& musicname) {
         LOG_FATAL("Couldn't load the %s music", musicname.c_str());
-        exit(EXIT_FAILURE);
     };
 
 #define LOAD_TEMPLATE(musicname, musicfile)\

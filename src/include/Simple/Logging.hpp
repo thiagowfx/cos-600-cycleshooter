@@ -2,6 +2,7 @@
 #define _LOGGING_HPP_
 
 #include <cstdio>
+#include <stdexcept>
 
 namespace Cycleshooter {
 
@@ -24,12 +25,18 @@ namespace Cycleshooter {
 
 #endif
 
-#define LOG_FATAL(...)\
-    do{\
-        printf("FATAL: ");\
-        printf(__VA_ARGS__);\
-        printf("\n");\
-    } while(false);
+[[ noreturn ]]
+inline void LOG_FATAL(const char* reason, ...) {
+    char buf[1024];
+    va_list va;
+    printf("FATAL: ");
+    va_start(va, reason);
+    vsprintf(buf, reason, va);
+    va_end(va);
+    puts("");
+
+    throw std::runtime_error(buf);
+}
 
 }
 

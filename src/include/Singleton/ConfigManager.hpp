@@ -30,7 +30,6 @@ public:
             return v.get<T>(key);
         } catch (...) {
             LOG_FATAL("No such key exists: %s", key.c_str());
-            exit(EXIT_FAILURE);
         }
     }
 };
