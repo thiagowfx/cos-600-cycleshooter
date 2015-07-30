@@ -28,7 +28,7 @@ void LogicManager::update(const Ogre::FrameEvent &evt) {
     if(terrainAt.first == 2){
         controller->shutdownNow(GAME_END_WALL_CRASH);
     }
-    controller->getBicycle()->changeFriction(calculateFriction(terrainAt.first));
+    controller->getBicycle()->setFriction(calculateFriction(terrainAt.first));
     if(terrainAt.second){
         incrementPlayerAmmo();
         AudioManager::instance().playSound(SOUND_RELOAD);
