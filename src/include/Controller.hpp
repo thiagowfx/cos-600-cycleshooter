@@ -369,8 +369,6 @@ public:
      */
     void shutdownNow(const EndGameType& endGameType);
 
-    void incrementPlayerAmmo();
-
     // getters and setters
     LogicManager* getLogicManager() const;
     Context getContext() const;

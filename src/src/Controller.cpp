@@ -237,14 +237,6 @@ bool Controller::getShutdown() const {
     return shutdown;
 }
 
-void Controller::incrementPlayerAmmo(){
-    Ogre::Vector3 realCoord = logicManager->getPlayerNode()->getPosition();
-    if(terrainManager->getTerrainAt(realCoord).second){
-        Ogre::LogManager::getSingletonPtr()->logMessage("--> Controller: Incresgin player ammo! <--");
-        logicManager->externalIncrement();
-    }
-}
-
 bool Controller::getDebug() const {
     return debug;
 }
