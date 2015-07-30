@@ -247,8 +247,8 @@ bool Controller::getDebug() const {
     return debug;
 }
 
-std::string Controller::generateCurrentDate() const {
-    std::time_t in_time_t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+std::string Controller::chronoToDateString(decltype(std::chrono::system_clock::now()) clock) const {
+    std::time_t in_time_t = std::chrono::system_clock::to_time_t(clock);
     std::stringstream ss;
     /**
      * @brief CURRENT_DATE_FORMAT The format of the date and time for the dump log.
@@ -256,6 +256,10 @@ std::string Controller::generateCurrentDate() const {
     const char* CURRENT_DATE_FORMAT = ConfigManager::instance().getStr("Controller.current_date_format").c_str();
     ss << std::put_time(std::localtime(&in_time_t), CURRENT_DATE_FORMAT);
     return ss.str();
+}
+
+std::string Controller::generateCurrentDate() const {
+    return chronoToDateString(std::chrono::system_clock::now());
 }
 
 void Controller::dumpLog() {
@@ -715,7 +719,7 @@ void Controller::doGameEnd() {
 void Controller::doSaveStats(const char* file, const char* totalGameTime) {
     std::ofstream ofs(file, std::ios_base::app | std::ios_base::out);
 
-    ofs << "===== SESSION STARTS: " << gameStartClock << std::endl;
+    ofs << "===== SESSION STARTS: " << chronoToDateString(gameStartClock) << std::endl;
 
     polar->printStatistics(ofs);
     bicycle->printStatistics(ofs);
@@ -724,7 +728,7 @@ void Controller::doSaveStats(const char* file, const char* totalGameTime) {
            "- Total game time: " << totalGameTime << std::endl <<
            "- End Game type: " << EndGameTypeToString(endGameType) << std::endl;
 
-    ofs << "===== SESSION ENDS: " << std::chrono::system_clock::now() << std::endl << std::endl;
+    ofs << "===== SESSION ENDS: " << generateCurrentDate() << std::endl << std::endl;
 }
 
 void Controller::doCountdown() {

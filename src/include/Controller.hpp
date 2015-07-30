@@ -94,9 +94,14 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     EndGameType endGameType;
 
     /**
-     * Generate a filename to dump log statistics continuously through the game.
+     * Generate the current date in the format specified in the config file.
      */
     std::string generateCurrentDate() const;
+
+    /**
+     * Format a time_point / chrono clock to a string in the format specified in the config file.
+     */
+    std::string chronoToDateString(decltype(std::chrono::system_clock::now()) clock) const;
 
     /**
      * @brief DUMP_LOG_FILENAME Filename of the log that will be dumped from time to time.
