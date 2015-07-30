@@ -76,7 +76,7 @@ void LogicManager::shoot() {
 }
 
 Ogre::SceneNode *LogicManager::getPlayerNode() const {
-    return parentPlayerNode;
+    return playerNode;
 }
 
 int LogicManager::getMonsterHealth() const {
@@ -125,7 +125,7 @@ int LogicManager::calculateFriction(int terrainAt){
 
 bool LogicManager::checkPlayerMonsterCollision() {
     Ogre::Real thresholdDistance = controller->getSceneManager()->getEntity("monsterEntity")->getBoundingRadius();
-    return monsterNode->getPosition().squaredDistance(parentPlayerNode->getPosition()) < thresholdDistance * thresholdDistance;
+    return monsterNode->getPosition().squaredDistance(playerNode->getPosition()) < thresholdDistance * thresholdDistance;
 }
 
 void LogicManager::incrementPlayerAmmo(int quantity) {
@@ -168,10 +168,9 @@ void LogicManager::createSceneNodes() {
     LOG("Creating SceneNodes");
 
     // create scene nodes
-    parentPlayerNode = controller->getSceneManager()->getRootSceneNode()->createChildSceneNode("parentPlayerNode", Ogre::Vector3(11084,0.0,5261.23));
-    frontCameraNode = parentPlayerNode->createChildSceneNode("frontCameraNode");
-    rearCameraNode = parentPlayerNode->createChildSceneNode("rearCameraNode");
-    playerNode = parentPlayerNode->createChildSceneNode("playerNode");
+    playerNode = controller->getSceneManager()->getRootSceneNode()->createChildSceneNode("parentPlayerNode", Ogre::Vector3(11084,0.0,5261.23));
+    frontCameraNode = playerNode->createChildSceneNode("frontCameraNode");
+    rearCameraNode = playerNode->createChildSceneNode("rearCameraNode");
     rearCameraNode->yaw(Ogre::Radian(Ogre::Degree(180.0)));
 
     // attach scene nodes
@@ -247,31 +246,8 @@ void LogicManager::setDebug(bool debug) {
     controller->getSceneManager()->showBoundingBoxes(debug);
 }
 
-/*void LogicManager::translateMonster(int difficulty, Ogre::Vector3 translation){
-    float parameter = 1/difficultyParamenter[difficulty];
-    parentPlayerNode->translate(translation*parameter);
-}*/
-
-void LogicManager::rotateCamera(const Ogre::Degree& angle, const Ogre::Vector3& pathDirection, const Ogre::Vector3& lastPathDirection){
-    //path rotation
-    Ogre::Vector3 crossProductTangents = pathDirection.crossProduct(lastPathDirection);
-    Ogre::Real signalAngleBetweenTangents = (crossProductTangents.y < 0) ? (+1) : (-1);
-    Ogre::Degree angleBetweenTangents = signalAngleBetweenTangents * pathDirection.angleBetween(lastPathDirection);
-    //frontCamera->yaw(angleBetweenTangents);
-    //playerNode->yaw(angleBetweenTangents);
-
-    Ogre::Vector3 cameraDirection = frontCamera->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_Z;
-    Ogre::Vector3 crossProduct = cameraDirection.crossProduct(pathDirection);
-    Ogre::Real signalAngleBetween = (crossProduct.y < 0) ? (+1) : (-1);
-    Ogre::Degree angleBetween = signalAngleBetween * cameraDirection.angleBetween(pathDirection);
-    Ogre::Degree absAngle = Ogre::Math::Abs(angle + angleBetween);
-
-    // key rotation
-    //if(absAngle < MAX_ANGLE) {
-        frontCamera->yaw(angle);
-        rearCamera->yaw(angle);
-        playerNode->yaw(ROTATION_FACTOR * angle);
-    //}
+void LogicManager::rotateCamera(const Ogre::Degree& angle) {
+    playerNode->yaw(angle);
 }
 
 void LogicManager::updateMonster(const Ogre::Vector3 &tangent, const Ogre::Vector3& monsterNextPosition){
@@ -282,7 +258,7 @@ void LogicManager::updateMonster(const Ogre::Vector3 &tangent, const Ogre::Vecto
 }
 
 double LogicManager::getDistanceToMonster() const {
-    return monsterNode->getPosition().distance(parentPlayerNode->getPosition());
+    return monsterNode->getPosition().distance(playerNode->getPosition());
 }
 
 }

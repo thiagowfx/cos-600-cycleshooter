@@ -105,49 +105,18 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         return false;
     }
 
-    // camera rotation stuff
-    logicManager->setAngularVelocity(ConfigManager::instance().getDouble("Controller.camera_angle_rotation_step") / evt.timeSinceLastFrame);
+    // pathManager updates
+    pathManager->monsterPathUpdate();
 
-    if (context == CONTEXT_RUNNER){
-        // pathManager updates
-        pathManager->monsterPathUpdate();
-
-        // update increment of spline curve
-        pathManager->updateSplineStep(getBicycle()->getGameSpeed());
-
-        /*
-         * Player Rotation
-         * THIS APPROACH USES THE IS KEY DOWN METHOD AND IS THE ONLY WAY TO MAKE ROTATIONS WORK
-         * WITH THE MAXIMUM ANGLE
-         */
-
-        /*
-        const std::vector<sf::Keyboard::Key> rightKeys = {sf::Keyboard::Right, sf::Keyboard::D};
-        const std::vector<sf::Keyboard::Key> leftKeys = {sf::Keyboard::Left, sf::Keyboard::A};
-        bool isKeyRightDown = InputManager::instance().isKeyPressed(rightKeys);
-        bool isKeyLeftDown = InputManager::instance().isKeyPressed(leftKeys);
-        Ogre::Degree angle = Ogre::Degree(logicManager->getAngularVelocity());
-        if(isKeyRightDown){
-            logicManager->rotateCamera(-angle,pathManager->getCurrentTangent(),pathManager->getLastTangent());
-        }
-        if(isKeyLeftDown){
-            logicManager->rotateCamera(angle,pathManager->getCurrentTangent(),pathManager->getLastTangent());
-        }
-        if(!isKeyRightDown && !isKeyLeftDown){
-            logicManager->rotateCamera(Ogre::Degree(0),pathManager->getCurrentTangent(),pathManager->getLastTangent());
-        }
-        */
-
-        //monster update
-        //logicManager->updateMonster(pathManager->getMonsterTangent(),pathManager->getMonsterNextPosition());
-    }
+    // update increment of spline curve
+    pathManager->updateSplineStep(getBicycle()->getGameSpeed());
 
     logicManager->updateMonster(pathManager->getMonsterTangent(), pathManager->getMonsterNextPosition());
 
     // monster animations
     baseMonsterAnimation->addTime(evt.timeSinceLastFrame);
     topMonsterAnimation->addTime(evt.timeSinceLastFrame);
-    swordsMonsterAnimation->addTime(evt.timeSinceLastFrame / 11.0);
+    swordsMonsterAnimation->addTime(evt.timeSinceLastFrame / 10.0);
 
     // update game logic
     logicManager->update(evt);
@@ -164,25 +133,11 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
             clockHeartbeat.restart();
         }
 
-        // (maybe) randomize the crosshair
+        // randomize the crosshair if no movement key is pressed
         static sf::Clock clockRandomizeCrosshair;
         if(clockRandomizeCrosshair.getElapsedTime() >= RANDOMIZE_CROSSHAIR_TIME_MS) {
 
-            auto movementKeyPressed = []() -> bool {
-                static const std::vector<sf::Keyboard::Key> movementKeys = {
-                    sf::Keyboard::W,
-                    sf::Keyboard::A,
-                    sf::Keyboard::S,
-                    sf::Keyboard::D,
-                    sf::Keyboard::Left,
-                    sf::Keyboard::Right,
-                    sf::Keyboard::Up,
-                    sf::Keyboard::Down
-                };
-                return InputManager::instance().isKeyPressed(movementKeys) || InputManager::instance().isJoystickLeftAxisPressed();
-            };
-
-            if(!movementKeyPressed()) {
+            if(!(InputManager::instance().isMovementKeyPressed() || InputManager::instance().isJoystickMovementAxisPressed())) {
                 crosshairManager->randomizeRedCrosshair();
             }
             clockRandomizeCrosshair.restart();
@@ -514,35 +469,39 @@ void Controller::createSwords() {
 void Controller::setupKeyMappings() {
     LOG("Setting up mappings");
 
+#define bicycleSpeedChange(signal_sensibility) bicycle->changeSpeed(static_cast<float>(signal_sensibility) * BICYCLE_SPEED_CHANGE);
+#define bicycleRotationChange(signal_sensibility)\
+    Ogre::Degree angle = Ogre::Degree(logicManager->getAngularVelocity());\
+    logicManager->rotateCamera(static_cast<float>(signal_sensibility) * angle);
+#define scrollCrosshair(x_sensibility, y_sensibility)\
+    crosshairManager->scrollVirtualCrosshair(polar->getHeartRate(), x_sensibility, y_sensibility);
+
     /*
      * Runner mode mappings;
      */
     InputManager::instance().addKeysUnbuf({sf::Keyboard::W,
                                            sf::Keyboard::Up}, CONTEXT_RUNNER, [&]{
-        // logicManager->getPlayerNode()->translate(Ogre::Vector3(0.0, 0.0, -10.0), Ogre::SceneNode::TS_LOCAL);
-        bicycle->changeSpeed(BICYCLE_SPEED_CHANGE);
+        bicycleSpeedChange(+1);
+
     });
 
     InputManager::instance().addKeysUnbuf({sf::Keyboard::S,
                                            sf::Keyboard::Down}, CONTEXT_RUNNER, [&]{
-        // logicManager->getPlayerNode()->translate(Ogre::Vector3(0.0, 0.0, +10.0), Ogre::SceneNode::TS_LOCAL);
-        bicycle->changeSpeed(-BICYCLE_SPEED_CHANGE);
+        bicycleSpeedChange(-1);
     });
 
-    //Rotation Mapping
-
-    //WITH THIS APPROACH ROTATION WORKS WITH ITS OWN KEYBOARD MAPPING (NO MAXIMUM ANGLE)
-
+    /*
+     * Rotation Mapping
+     * WITH THIS APPROACH ROTATION WORKS WITH ITS OWN KEYBOARD MAPPING (NO MAXIMUM ANGLE)
+     */
     InputManager::instance().addKeysRotationUnbuf({sf::Keyboard::A,
-                                           sf::Keyboard::Left}, CONTEXT_RUNNER, [&]{
-        Ogre::Degree angle = Ogre::Degree(logicManager->getAngularVelocity());
-        logicManager->rotateCamera(angle,pathManager->getCurrentTangent(),pathManager->getLastTangent());
+                                                   sf::Keyboard::Left}, CONTEXT_RUNNER, [&]{
+        bicycleRotationChange(+1);
     });
 
     InputManager::instance().addKeysRotationUnbuf({sf::Keyboard::D,
-                                           sf::Keyboard::Right}, CONTEXT_RUNNER, [&]{
-        Ogre::Degree angle = Ogre::Degree(logicManager->getAngularVelocity());
-        logicManager->rotateCamera(-angle,pathManager->getCurrentTangent(),pathManager->getLastTangent());
+                                                   sf::Keyboard::Right}, CONTEXT_RUNNER, [&]{
+        bicycleRotationChange(-1);
     });
 
     InputManager::instance().addKey(sf::Keyboard::Q, CONTEXT_RUNNER, [&]{
@@ -558,22 +517,22 @@ void Controller::setupKeyMappings() {
      */
     InputManager::instance().addKeysUnbuf({sf::Keyboard::A,
                                            sf::Keyboard::Left}, CONTEXT_SHOOTER, [&]{
-        crosshairManager->scrollVirtualCrosshair(polar->getHeartRate(), -1.0, 0.0);
+        scrollCrosshair(-1.0, 0.0);
     });
 
     InputManager::instance().addKeysUnbuf({sf::Keyboard::D,
                                            sf::Keyboard::Right}, CONTEXT_SHOOTER, [&]{
-        crosshairManager->scrollVirtualCrosshair(polar->getHeartRate(), +1.0, 0.0);
+        scrollCrosshair(+1.0, 0.0);
     });
 
     InputManager::instance().addKeysUnbuf({sf::Keyboard::W,
                                            sf::Keyboard::Up}, CONTEXT_SHOOTER, [&]{
-        crosshairManager->scrollVirtualCrosshair(polar->getHeartRate(), 0.0, +1.0);
+        scrollCrosshair(0.0, +1.0);
     });
 
     InputManager::instance().addKeysUnbuf({sf::Keyboard::S,
                                            sf::Keyboard::Down}, CONTEXT_SHOOTER, [&]{
-        crosshairManager->scrollVirtualCrosshair(polar->getHeartRate(), 0.0, -1.0);
+        scrollCrosshair(0.0, -1.0);
     });
 
     InputManager::instance().addKey(sf::Keyboard::Space, CONTEXT_SHOOTER, [&]{
@@ -621,19 +580,80 @@ void Controller::setupKeyMappings() {
     /*
      * Joystick mappings.
      */
-    InputManager::instance().addJoystickAxisUnbuf(sf::Joystick::X, CONTEXT_SHOOTER, [&](float f) {
-        crosshairManager->scrollVirtualCrosshair(polar->getHeartRate(), +1.0 * (f / 100.0), 0.0);
+
+    /*
+     * Xbox Controller
+     * 8 axes:
+     *
+     * X = horizontal, left pad
+     * Y = vertical, left pad
+     * U = horizontal, right pad
+     * V = vertical, right pad
+     * PovX = horizontal, left directional controls
+     * PovY = vertical, right directional controls
+     * Z = "L2"
+     * R = "R2"
+     *
+     */
+    InputManager::instance().addJoystickAxisUnbuf({sf::Joystick::X,
+                                                   sf::Joystick::U,
+                                                   sf::Joystick::PovX},
+                                                  CONTEXT_RUNNER, [&](float f) {
+        bicycleRotationChange(-f / 100.0);
     });
 
-    InputManager::instance().addJoystickAxisUnbuf(sf::Joystick::Y, CONTEXT_SHOOTER, [&](float f) {
-        crosshairManager->scrollVirtualCrosshair(polar->getHeartRate(), 0.0, +1.0 * (f / 100.0));
+    InputManager::instance().addJoystickAxisUnbuf({sf::Joystick::Y,
+                                                   sf::Joystick::V,
+                                                   sf::Joystick::PovY},
+                                                   CONTEXT_RUNNER, [&](float f) {
+        // note: Y axis is reversed
+        bicycleSpeedChange(-f / 100.0);
     });
 
-    InputManager::instance().addJoystickButtons({0}, CONTEXT_SHOOTER, [&]() {
+    InputManager::instance().addJoystickAxisUnbuf({sf::Joystick::X,
+                                                   sf::Joystick::U,
+                                                   sf::Joystick::PovX},
+                                                  CONTEXT_SHOOTER, [&](float f) {
+        scrollCrosshair(+f / 100.0, 0.0);
+    });
+
+    InputManager::instance().addJoystickAxisUnbuf({sf::Joystick::Y,
+                                                   sf::Joystick::V,
+                                                   sf::Joystick::PovY},
+                                                   CONTEXT_SHOOTER, [&](float f) {
+        scrollCrosshair(0.0, -f / 100.0);
+    });
+
+    /*
+     * Xbox Controller
+     * 11 buttons:
+     *
+     * 0 = A
+     * 1 = B
+     * 2 = X
+     * 3 = Y
+     * 4 = "R1"
+     * 5 = "L1"
+     * 6 = "select"
+     * 7 = "start"
+     * 8 = "xbox"
+     * 9 = "L3" (normal state: -1.0)
+     * 10 = "R3" (normal state: -1.0)
+     *
+     */
+    InputManager::instance().addJoystickButtons({0, 1, 2, 5}, CONTEXT_SHOOTER, [&]() {
         logicManager->shoot();
     });
 
-    InputManager::instance().addJoystickButtons({1}, [&]() {
+    InputManager::instance().addJoystickAxisUnbuf({sf::Joystick::Z,
+                                                   sf::Joystick::R},
+                                                  CONTEXT_SHOOTER, [&](float f) {
+        if(f > -1.0) {
+            logicManager->shoot();
+        }
+    });
+
+    InputManager::instance().addJoystickButtons({3, 4, 6, 8}, [&]() {
         toggleMode();
     });
 }

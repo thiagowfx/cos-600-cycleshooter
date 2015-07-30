@@ -79,6 +79,12 @@ void InputManager::addJoystickButtons(const std::vector<int> &buttons, const std
     }
 }
 
+void InputManager::addJoystickAxisUnbuf(const std::vector<sf::Joystick::Axis> &axises, const std::function<void(float)> &action) {
+    for(const auto& axis: axises) {
+        addJoystickAxisUnbuf(axis, action);
+    }
+}
+
 void InputManager::addKeysUnbuf(const std::vector<sf::Keyboard::Key> &keys, const std::function<void ()> &action) {
     for(const auto& key: keys) {
         addKeyUnbuf(key, action);
@@ -100,6 +106,12 @@ void InputManager::addKeys(const std::vector<sf::Keyboard::Key> &keys, const Con
 void InputManager::addJoystickButtons(const std::vector<int> &buttons, const Context &mode, const std::function<void ()> &action) {
     for(const auto& button: buttons) {
         addJoystickButton(button, mode, action);
+    }
+}
+
+void InputManager::addJoystickAxisUnbuf(const std::vector<sf::Joystick::Axis> &axises, const Context &mode, const std::function<void(float)> &action) {
+    for(const auto& axis: axises) {
+        addJoystickAxisUnbuf(axis, mode, action);
     }
 }
 
@@ -234,9 +246,40 @@ void InputManager::setJoystickNumber(int number) {
     JOYSTICK_NUMBER = number;
 }
 
-bool InputManager::isJoystickLeftAxisPressed() const {
+bool InputManager::isMovementKeyPressed() const {
+    static const std::vector<sf::Keyboard::Key> movementKeys = {
+        sf::Keyboard::W,
+        sf::Keyboard::A,
+        sf::Keyboard::S,
+        sf::Keyboard::D,
+        sf::Keyboard::Left,
+        sf::Keyboard::Right,
+        sf::Keyboard::Up,
+        sf::Keyboard::Down
+    };
+
+    return isKeyPressed(movementKeys);
+}
+
+bool InputManager::isJoystickMovementAxisPressed() const {
     sf::Joystick::update();
-    return (sf::Joystick::getAxisPosition(JOYSTICK_NUMBER, sf::Joystick::X) != 0.0) || (sf::Joystick::getAxisPosition(JOYSTICK_NUMBER, sf::Joystick::Y) != 0.0);
+
+    static const std::vector<sf::Joystick::Axis> movementAxis = {
+        sf::Joystick::X,
+        sf::Joystick::Y,
+        sf::Joystick::U,
+        sf::Joystick::V,
+        sf::Joystick::PovX,
+        sf::Joystick::PovY
+    };
+
+    for(const auto& axis: movementAxis) {
+        if(sf::Joystick::getAxisPosition(JOYSTICK_NUMBER, axis) != 0.0) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 bool InputManager::isKeyPressed(const std::vector<sf::Keyboard::Key> &keys) const {

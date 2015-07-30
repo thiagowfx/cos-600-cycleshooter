@@ -78,6 +78,8 @@ public:
 
     void addJoystickButtons(const std::vector<int>& buttons, const std::function<void(void)> &action);
 
+    void addJoystickAxisUnbuf(const std::vector<sf::Joystick::Axis>& axises, const std::function<void(float)> &action);
+
     void addKeysUnbuf(const std::vector<sf::Keyboard::Key>& keys, const std::function<void(void)> &action);
 
     void addKeysRotationUnbuf(const std::vector<sf::Keyboard::Key>& keys, const std::function<void(void)> &action);
@@ -85,6 +87,8 @@ public:
     void addKeys(const std::vector<sf::Keyboard::Key>& keys, const Context& mode, const std::function<void(void)> &action);
 
     void addJoystickButtons(const std::vector<int>& buttons, const Context& mode, const std::function<void(void)> &action);
+
+    void addJoystickAxisUnbuf(const std::vector<sf::Joystick::Axis>& axises, const Context& mode, const std::function<void(float)> &action);
 
     void addKeysUnbuf(const std::vector<sf::Keyboard::Key>& keys, const Context& mode, const std::function<void(void)> &action);
 
@@ -130,7 +134,9 @@ public:
 
     void setJoystickNumber(int number);
 
-    bool isJoystickLeftAxisPressed() const;
+    bool isMovementKeyPressed() const;
+
+    bool isJoystickMovementAxisPressed() const;
 
     bool isKeyPressed(const std::vector<sf::Keyboard::Key>& keys) const;
 

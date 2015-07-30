@@ -17,7 +17,6 @@ class LogicManager {
     Ogre::Viewport *viewportFull = NULL;
     Ogre::Viewport *viewportMirror = NULL;
 
-    Ogre::SceneNode* parentPlayerNode = NULL;
     Ogre::SceneNode* playerNode = NULL;
     Ogre::SceneNode* frontCameraNode = NULL;
     Ogre::SceneNode* rearCameraNode = NULL;
@@ -122,7 +121,7 @@ public:
     //Move functions.
     //void translateMonster(int difficulty, Ogre::Vector3 translation);
     void yawCamera();
-    void rotateCamera(const Ogre::Degree& angle, const Ogre::Vector3& pathDirection, const Ogre::Vector3& lastPathDirection);
+    void rotateCamera(const Ogre::Degree& angle);
     void updateMonster(const Ogre::Vector3& tangent,const Ogre::Vector3& monsterNextPosition);
     double getDistanceToMonster() const;
 
