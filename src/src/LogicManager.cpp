@@ -228,10 +228,6 @@ void LogicManager::setDifficultyParamenter() {
     difficultyParamenter[6] = 4.0f;
 }
 
-void LogicManager::externalIncrement(){
-    incrementPlayerAmmo(1);
-}
-
 void LogicManager::setupRunnerMode() {
     viewportFull->setCamera(frontCamera);
     frontCamera->setAspectRatio(Ogre::Real(viewportFull->getActualWidth()) / Ogre::Real(viewportFull->getActualHeight()));
