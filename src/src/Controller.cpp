@@ -150,7 +150,6 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     // process unbuffered keys
     static sf::Clock clockUnbuf;
     if(clockUnbuf.getElapsedTime() >= THRESHOLD_UNBUF_KEYS_MS) {
-        InputManager::instance().executeJoystickActionsUnbuf(context);
         InputManager::instance().executeKeyboardActionsUnbuf(context);
         clockUnbuf.restart();
     }
@@ -163,8 +162,14 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     }
 
     // camera rotation stuff
-    logicManager->setAngularVelocity(ConfigManager::instance().getDouble("Controller.camera_angle_rotation_step") / evt.timeSinceLastFrame);
-    InputManager::instance().executeActionsRotationUnbuf(context);
+    static sf::Clock rotationUnbufClock;
+    sf::Time ROTATION_UNBUF_TIME_MS = sf::milliseconds(ConfigManager::instance().getInt("Controller.threshold_rotation_keys_ms"));
+    if(rotationUnbufClock.getElapsedTime() >= ROTATION_UNBUF_TIME_MS) {
+        logicManager->setAngularVelocity(ConfigManager::instance().getDouble("Controller.camera_angle_rotation_step") / evt.timeSinceLastFrame);
+        InputManager::instance().executeJoystickActionsUnbuf(context);
+        InputManager::instance().executeActionsRotationUnbuf(context);
+        rotationUnbufClock.restart();
+    }
 
     // process events (in particular, buffered keys)
     sf::Event event;

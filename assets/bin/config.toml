@@ -33,6 +33,7 @@ bicycle_sleep_time_ms = 500
 polar_sleep_time_ms = 500
 randomize_crosshair_time_ms = 100
 threshold_unbuf_keys_ms = 80
+threshold_rotation_keys_ms = 15
 countdown_time_ms = 1000
 dump_log_time_ms = 500
 
