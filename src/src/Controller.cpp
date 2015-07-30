@@ -266,12 +266,8 @@ void Controller::go() {
     setupResources();
     setupTextures();
 
-    if(ConfigManager::instance().getBool("Controller.countdown_enabled")) {
-        AudioManager::instance().playSound(SOUND_GAME_BATTLE_PREPARE_DOTA);
-        sf::sleep(AudioManager::instance().getSoundDuration(SOUND_GAME_BATTLE_PREPARE_DOTA));
+    if(ConfigManager::instance().getBool("Release.game_release")) {
         startCountdown();
-        AudioManager::instance().playSound(SOUND_GAME_BATTLE_BEGINS_DOTA);
-        sf::sleep(AudioManager::instance().getSoundDuration(SOUND_GAME_BATTLE_PREPARE_DOTA));
     }
 
     // initialize our objects and our game overall
@@ -699,8 +695,10 @@ void Controller::doGameEnd() {
 void Controller::startCountdown() {
     LOG("Starting countdown");
 
+    AudioManager::instance().playSound(SOUND_GAME_BATTLE_PREPARE_DOTA);
+    sf::sleep(AudioManager::instance().getSoundDuration(SOUND_GAME_BATTLE_PREPARE_DOTA));
+
     oWindow->addViewport(oSceneManager->createCamera("countdownCamera"), 0);
-    int COUNTDOWN_TIME_MS = ConfigManager::instance().getInt("Controller.countdown_time_ms");
 
     std::vector<Ogre::String> countdowns = {
         "Cycleshooter/Countdown3",
@@ -709,16 +707,19 @@ void Controller::startCountdown() {
         "Cycleshooter/Countdown0"
     };
 
-    for (auto countdown : countdowns) {
+    for (const auto& countdown : countdowns) {
         Ogre::OverlayManager::getSingleton().getByName(countdown)->show();
         oWindow->update();
         AudioManager::instance().playSound(SOUND_COUNTDOWN);
-        sf::sleep(sf::milliseconds(COUNTDOWN_TIME_MS));
+        sf::sleep(sf::milliseconds(ConfigManager::instance().getInt("Controller.countdown_time_ms")));
         Ogre::OverlayManager::getSingleton().getByName(countdown)->hide();
     }
 
     oWindow->removeViewport(0);
     oSceneManager->destroyCamera("countdownCamera");
+
+    AudioManager::instance().playSound(SOUND_GAME_BATTLE_BEGINS_DOTA);
+    sf::sleep(AudioManager::instance().getSoundDuration(SOUND_GAME_BATTLE_PREPARE_DOTA));
 }
 
 void Controller::createRoot() {

@@ -3,6 +3,7 @@ use_real_polar = false
 polar_port = "/dev/ttyUSB0"
 use_real_bicycle = false
 bicycle_port = "/dev/ttyUSB1"
+game_release = false
 
 [AudioManager]
 sound_path = "../audio/sounds/"
@@ -31,15 +32,17 @@ bicycle_sleep_time_ms = 500
 polar_sleep_time_ms = 500
 randomize_crosshair_time_ms = 100
 threshold_unbuf_keys_ms = 80
+countdown_time_ms = 1000
+
 heartbeat_minimum_assumed = 60
 heartbeat_maximum_assumed = 150
 polar_peak_change = 5
+
 bicycle_friction_change = 25
 bicycle_speed_change = 5.0
+
 application_name = "Cycleshooter"
 statistics_file = "stats.txt"
-countdown_time_ms = 1000
-countdown_enabled = true
 camera_angle_rotation_step = 0.025
 
 [CrosshairManager]
