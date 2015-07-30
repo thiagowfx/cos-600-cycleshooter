@@ -127,7 +127,6 @@ int LogicManager::calculateFriction(int terrainAt){
 
 bool LogicManager::checkPlayerMonsterCollision() {
     Ogre::Real thresholdDistance = controller->getSceneManager()->getEntity("monsterEntity")->getBoundingRadius();
-
     return monsterNode->getPosition().squaredDistance(parentPlayerNode->getPosition()) < thresholdDistance * thresholdDistance;
 }
 
@@ -282,6 +281,10 @@ void LogicManager::updateMonster(const Ogre::Vector3 &tangent, const Ogre::Vecto
     Ogre::Quaternion quat = currentFacing.getRotationTo(tangent);
     monsterNode->rotate(quat);
     monsterNode->setPosition(monsterNextPosition);
+}
+
+double LogicManager::getDistanceToMonster() const {
+    return monsterNode->getPosition().distance(parentPlayerNode->getPosition());
 }
 
 }

@@ -94,6 +94,31 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     EndGameType endGameType;
 
     /**
+     * Generate a filename to dump log statistics continuously through the game.
+     */
+    std::string generateCurrentDate() const;
+
+    /**
+     * @brief DUMP_LOG_FILENAME Filename of the log that will be dumped from time to time.
+     */
+    std::string DUMP_LOG_FILENAME;
+
+    /**
+     * @brief DUMPS_DIRECTORY The directory to where dumps/logs will be saved to. It MUST have a trailing slash.
+     */
+    const std::string DUMPS_DIRECTORY = ConfigManager::instance().getStr("Controller.dumps_directory");
+
+    /**
+     * Dump log with game statistics at the time of the dump.
+     */
+    void dumpLog();
+
+    /**
+     * Initialize/prepare the dump log appropriately.
+     */
+    void initializeDumpLog();
+
+    /**
      * Wait for other threads to finish. Like 'join' for C++11 threads.
      */
     void waitThreads() const;
@@ -308,7 +333,7 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     /**
      * To mark the time the game started.
      */
-    std::chrono::high_resolution_clock::time_point gameStartClock = std::chrono::high_resolution_clock::now();
+    std::chrono::high_resolution_clock::time_point gameStartClock;
 
     /**
      * @brief frameRenderingQueued Overriden from Ogre::FrameListener.

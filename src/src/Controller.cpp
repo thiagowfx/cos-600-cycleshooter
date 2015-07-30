@@ -199,6 +199,12 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         clockUnbuf.restart();
     }
 
+    static sf::Clock dumpLogClock;
+    sf::Time DUMP_LOG_TIME_MS = sf::milliseconds(ConfigManager::instance().getInt("Controller.dump_log_time_ms"));
+    if(dumpLogClock.getElapsedTime() >= DUMP_LOG_TIME_MS) {
+        dumpLog();
+        dumpLogClock.restart();
+    }
 
     // camera rotation stuff
     logicManager->setAngularVelocity(ConfigManager::instance().getDouble("Controller.camera_angle_rotation_step") / evt.timeSinceLastFrame);
@@ -241,8 +247,38 @@ bool Controller::getDebug() const {
     return debug;
 }
 
+std::string Controller::generateCurrentDate() const {
+    std::time_t in_time_t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+    std::stringstream ss;
+    /**
+     * @brief CURRENT_DATE_FORMAT The format of the date and time for the dump log.
+     */
+    const char* CURRENT_DATE_FORMAT = ConfigManager::instance().getStr("Controller.current_date_format").c_str();
+    ss << std::put_time(std::localtime(&in_time_t), CURRENT_DATE_FORMAT);
+    return ss.str();
+}
+
+void Controller::dumpLog() {
+    std::stringstream ss;
+    ss << getPolar()->getHeartRate() << ","
+       << getBicycle()->getRpmSpeed() << ","
+       << getBicycle()->getFriction() << ","
+       << getLogicManager()->getPlayerAmmo() << ","
+       << getLogicManager()->getDistanceToMonster() << ","
+       << getLogicManager()->getMonsterHealth();
+    Ogre::LogManager::getSingleton().getLog(DUMP_LOG_FILENAME)->logMessage(ss.str());
+}
+
+void Controller::initializeDumpLog() {
+    LOG("Initializing the dump log");
+    DUMP_LOG_FILENAME = DUMPS_DIRECTORY + generateCurrentDate() + ".csv";
+    Ogre::Log* dumpLog = Ogre::LogManager::getSingleton().createLog(DUMP_LOG_FILENAME, false, false);
+    dumpLog->setTimeStampEnabled(false);
+    dumpLog->logMessage("polar,rpm_speed,friction,ammo,dist_to_monster,monster_health");
+}
+
 void Controller::waitThreads() const {
-    LOG("Wait Threads");
+    LOG("Waiting for Threads");
 
     bicycleUpdater->wait();
     polarUpdater->wait();
@@ -604,7 +640,7 @@ AbstractPolar* Controller::getPolar() const {
 
 void Controller::gameMainLoop() {
     LOG("Entering the Game Main Loop");
-
+    initializeDumpLog();
     gameStartClock = std::chrono::high_resolution_clock::now();
 
     while(!shutdown) {

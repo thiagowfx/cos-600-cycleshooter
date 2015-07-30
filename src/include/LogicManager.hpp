@@ -126,6 +126,7 @@ public:
     void yawCamera();
     void rotateCamera(const Ogre::Degree& angle, const Ogre::Vector3& pathDirection, const Ogre::Vector3& lastPathDirection);
     void updateMonster(const Ogre::Vector3& tangent,const Ogre::Vector3& monsterNextPosition);
+    double getDistanceToMonster() const;
 
     // getters and setters
     Ogre::SceneNode *getPlayerNode() const;
