@@ -220,15 +220,12 @@ void TerrainManager::generateBullets(int numOfBullets){
 
     //Generating random values.
     for(int i = 0; i < numOfBullets; i++){
+        std::cout << "Random ID = " << idx[i] << std::endl << std::endl << std::endl;
         Ogre::Vector3 coord(controlpts.at(idx[i]));
         std::pair<int,int> location = getCollisionCoordinates(coord);
         
         //Adding bullet to the dataStructure in CollisionHandler.
         collisionHandler->insertBulletAt(location.first,location.second,true,coord);
-        std::cout<<"Testing inverse Transformation for terrain Coordinates." << std::endl;
-        std::cout<< getWorldCoordinates(location).x<< "," <<
-                    getWorldCoordinates(location).y<< "," <<
-                    getWorldCoordinates(location).z<< std::endl;
     }
 }
 
