@@ -71,6 +71,12 @@ private:
      */
     void setCollisionTransformation();
 
+    /**
+     *  Function to return random IDs to calculate random positions for the bullets
+     * inside the terrain.
+     */
+    std::vector<int> randomIdOfBullets(int maxvalue, int numOfPoints);
+
 public:
     TerrainManager(Ogre::SceneManager* sceneManager, std::string collisionTexturePath);
     virtual ~TerrainManager();
