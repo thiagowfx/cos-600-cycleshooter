@@ -209,14 +209,16 @@ bool Controller::getDebug() const {
 }
 
 std::string Controller::chronoToDateString(decltype(std::chrono::system_clock::now()) clock) const {
-    std::time_t in_time_t = std::chrono::system_clock::to_time_t(clock);
-    std::stringstream ss;
     /**
      * @brief CURRENT_DATE_FORMAT The format of the date and time for the dump log.
      */
     const char* CURRENT_DATE_FORMAT = ConfigManager::instance().getStr("Controller.current_date_format").c_str();
-    ss << std::put_time(std::localtime(&in_time_t), CURRENT_DATE_FORMAT);
-    return ss.str();
+    const int BUFFER_SIZE = 32;
+    std::time_t t = std::chrono::system_clock::to_time_t(clock);
+    char s[BUFFER_SIZE];
+    std::strftime(s, sizeof(s), CURRENT_DATE_FORMAT, std::localtime(&t));
+
+    return s;
 }
 
 std::string Controller::generateCurrentDate() const {
