@@ -24,8 +24,8 @@ Controller::Controller(int argc, char *argv[]) {
                                              "    -h:      show this help\n"
                                              "    -f:      set fullscreen (1 = ON, 0 = OFF; default = ON)\n"
                                              "    -r | -s: set resolution/size (e.g. 1366x768, default = maximum possible)\n"
-                     "Examples: " << argv[0] << " -r 1366x768\n"
-                     "          " << argv[0] << " -f 0 -r 800x600" << std::endl;
+                                             "Examples: " << argv[0] << " -r 1366x768\n"
+                                                                        "          " << argv[0] << " -f 0 -r 800x600" << std::endl;
     };
 
     int opt;
@@ -34,9 +34,8 @@ Controller::Controller(int argc, char *argv[]) {
         switch(opt) {
         case 'f':
             if(!(!strcmp(optarg, "0") || !strcmp(optarg, "1"))) {
-                LOG_FATAL("unrecognized fullscreen parameter");
                 usage();
-                exit(EXIT_FAILURE);
+                LOG_FATAL("unrecognized fullscreen parameter");
             }
             fullscreen = atoi(optarg);
             break;
@@ -44,9 +43,8 @@ Controller::Controller(int argc, char *argv[]) {
         case 's':
         case 'r':
             if (sscanf(optarg, "%dx%d", &width, &height) != 2) {
-                LOG_FATAL("unrecognized resolution format");
                 usage();
-                exit(EXIT_FAILURE);
+                LOG_FATAL("unrecognized resolution format");
             }
             break;
 
@@ -70,7 +68,6 @@ Controller::Controller(int argc, char *argv[]) {
         }
         else {
             LOG_FATAL("invalid fullscreen resolution specified (%d x %d). Please either set a valid resolution or disable fullscreen", width, height);
-            exit(EXIT_FAILURE);
         }
     }
 
@@ -108,37 +105,18 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         return false;
     }
 
+    // pathManager updates
+    pathManager->monsterPathUpdate();
 
-    if (context == CONTEXT_RUNNER){
-        //pathManager updates
-        pathManager->updateParametricPosition();
-        pathManager->updateTangents();
+    // update increment of spline curve
+    pathManager->updateSplineStep(getBicycle()->getGameSpeed());
 
-        //update increment of spline curve
-        pathManager->updateSplineStep(getBicycle()->getGameSpeed());
-
-        //Player rotation
-        const std::vector<sf::Keyboard::Key> rightKeys = {sf::Keyboard::Right, sf::Keyboard::D};
-        const std::vector<sf::Keyboard::Key> leftKeys = {sf::Keyboard::Left, sf::Keyboard::A};
-        bool isKeyRightDown = InputManager::instance().isKeyPressed(rightKeys);
-        bool isKeyLeftDown = InputManager::instance().isKeyPressed(leftKeys);
-        Ogre::Degree angle = Ogre::Degree(logicManager->getAngularVelocity());
-        if(isKeyRightDown){
-            logicManager->rotateCamera(-angle,pathManager->getCurrentTangent(),pathManager->getLastTangent());
-        }
-        if(isKeyLeftDown){
-            logicManager->rotateCamera(angle,pathManager->getCurrentTangent(),pathManager->getLastTangent());
-        }
-        if(!isKeyRightDown && !isKeyLeftDown){
-            logicManager->rotateCamera(Ogre::Degree(0),pathManager->getCurrentTangent(),pathManager->getLastTangent());
-        }
-    }
-
+    logicManager->updateMonster(pathManager->getMonsterTangent(), pathManager->getMonsterNextPosition());
 
     // monster animations
     baseMonsterAnimation->addTime(evt.timeSinceLastFrame);
     topMonsterAnimation->addTime(evt.timeSinceLastFrame);
-    swordsMonsterAnimation->addTime(evt.timeSinceLastFrame / 12.0);
+    swordsMonsterAnimation->addTime(evt.timeSinceLastFrame / 10.0);
 
     // update game logic
     logicManager->update(evt);
@@ -155,25 +133,11 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
             clockHeartbeat.restart();
         }
 
-        // (maybe) randomize the crosshair
+        // randomize the crosshair if no movement key is pressed
         static sf::Clock clockRandomizeCrosshair;
         if(clockRandomizeCrosshair.getElapsedTime() >= RANDOMIZE_CROSSHAIR_TIME_MS) {
 
-            auto movementKeyPressed = []() -> bool {
-                static const std::vector<sf::Keyboard::Key> movementKeys = {
-                    sf::Keyboard::W,
-                    sf::Keyboard::A,
-                    sf::Keyboard::S,
-                    sf::Keyboard::D,
-                    sf::Keyboard::Left,
-                    sf::Keyboard::Right,
-                    sf::Keyboard::Up,
-                    sf::Keyboard::Down
-                };
-                return InputManager::instance().isKeyPressed(movementKeys) || InputManager::instance().isJoystickLeftAxisPressed();
-            };
-
-            if(!movementKeyPressed()) {
+            if(!(InputManager::instance().isMovementKeyPressed() || InputManager::instance().isJoystickMovementAxisPressed())) {
                 crosshairManager->randomizeRedCrosshair();
             }
             clockRandomizeCrosshair.restart();
@@ -186,12 +150,26 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     // process unbuffered keys
     static sf::Clock clockUnbuf;
     if(clockUnbuf.getElapsedTime() >= THRESHOLD_UNBUF_KEYS_MS) {
-        InputManager::instance().executeActionsUnbuf(context);
+        InputManager::instance().executeKeyboardActionsUnbuf(context);
         clockUnbuf.restart();
     }
 
+    static sf::Clock dumpLogClock;
+    sf::Time DUMP_LOG_TIME_MS = sf::milliseconds(ConfigManager::instance().getInt("Controller.dump_log_time_ms"));
+    if(dumpLogClock.getElapsedTime() >= DUMP_LOG_TIME_MS) {
+        dumpLog();
+        dumpLogClock.restart();
+    }
+
     // camera rotation stuff
-    logicManager->setAngularVelocity(ConfigManager::instance().getDouble("Controller.camera_angle_rotation_step") / evt.timeSinceLastFrame);
+    static sf::Clock rotationUnbufClock;
+    sf::Time ROTATION_UNBUF_TIME_MS = sf::milliseconds(ConfigManager::instance().getInt("Controller.threshold_rotation_keys_ms"));
+    if(rotationUnbufClock.getElapsedTime() >= ROTATION_UNBUF_TIME_MS) {
+        logicManager->setAngularVelocity(ConfigManager::instance().getDouble("Controller.camera_angle_rotation_step") / evt.timeSinceLastFrame);
+        InputManager::instance().executeJoystickActionsUnbuf(context);
+        InputManager::instance().executeActionsRotationUnbuf(context);
+        rotationUnbufClock.restart();
+    }
 
     // process events (in particular, buffered keys)
     sf::Event event;
@@ -213,9 +191,9 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         case sf::Event::JoystickButtonPressed:
             InputManager::instance().executeJoystickButtonAction(event.joystickButton.button, context);
             break;
-	
-	default:
-	    break;
+
+        default:
+            break;
         }
     }
 
@@ -226,20 +204,46 @@ bool Controller::getShutdown() const {
     return shutdown;
 }
 
-void Controller::incrementPlayerAmmo(){
-    Ogre::Vector3 realCoord = logicManager->getPlayerNode()->getPosition();
-    if(terrainManager->getTerrainAt(realCoord).second){
-        Ogre::LogManager::getSingletonPtr()->logMessage("--> Controller: Incresgin player ammo! <--");
-        logicManager->externalIncrement();
-    }
-}
-
 bool Controller::getDebug() const {
     return debug;
 }
 
+std::string Controller::chronoToDateString(decltype(std::chrono::system_clock::now()) clock) const {
+    std::time_t in_time_t = std::chrono::system_clock::to_time_t(clock);
+    std::stringstream ss;
+    /**
+     * @brief CURRENT_DATE_FORMAT The format of the date and time for the dump log.
+     */
+    const char* CURRENT_DATE_FORMAT = ConfigManager::instance().getStr("Controller.current_date_format").c_str();
+    ss << std::put_time(std::localtime(&in_time_t), CURRENT_DATE_FORMAT);
+    return ss.str();
+}
+
+std::string Controller::generateCurrentDate() const {
+    return chronoToDateString(std::chrono::system_clock::now());
+}
+
+void Controller::dumpLog() {
+    std::stringstream ss;
+    ss << getPolar()->getHeartRate() << ","
+       << getBicycle()->getRpmSpeed() << ","
+       << getBicycle()->getFriction() << ","
+       << getLogicManager()->getPlayerAmmo() << ","
+       << getLogicManager()->getDistanceToMonster() << ","
+       << getLogicManager()->getMonsterHealth();
+    Ogre::LogManager::getSingleton().getLog(DUMP_LOG_FILENAME)->logMessage(ss.str());
+}
+
+void Controller::initializeDumpLog() {
+    LOG("Initializing the dump log");
+    DUMP_LOG_FILENAME = DUMPS_DIRECTORY + generateCurrentDate() + ".csv";
+    Ogre::Log* dumpLog = Ogre::LogManager::getSingleton().createLog(DUMP_LOG_FILENAME, false, false);
+    dumpLog->setTimeStampEnabled(false);
+    dumpLog->logMessage("polar,rpm_speed,friction,ammo,dist_to_monster,monster_health");
+}
+
 void Controller::waitThreads() const {
-    LOG("Wait Threads");
+    LOG("Waiting for Threads");
 
     bicycleUpdater->wait();
     polarUpdater->wait();
@@ -251,17 +255,14 @@ void Controller::go() {
     // initialize core OGRE elements
     createSFMLWindow();
     createRoot();
+    Ogre::LogManager::getSingleton().setLogDetail(Ogre::LL_LOW);
     createSceneManager();
     createOverlaySystem();
     setupResources();
     setupTextures();
 
-    if(ConfigManager::instance().getBool("Controller.countdown_enabled")) {
-        AudioManager::instance().playSound(SOUND_GAME_BATTLE_PREPARE_DOTA);
-        sf::sleep(AudioManager::instance().getSoundDuration(SOUND_GAME_BATTLE_PREPARE_DOTA));
-        startCountdown();
-        AudioManager::instance().playSound(SOUND_GAME_BATTLE_BEGINS_DOTA);
-        sf::sleep(AudioManager::instance().getSoundDuration(SOUND_GAME_BATTLE_PREPARE_DOTA));
+    if(ConfigManager::instance().getBool("Release.game_release")) {
+        doCountdown();
     }
 
     // initialize our objects and our game overall
@@ -273,7 +274,7 @@ void Controller::go() {
     InputManager::instance().updateJoystickNumber();
     AudioManager::instance().specialAddSound(SOUND_MONSTER_CHASING, true);
     setupRunnerMode();
-    setupDebugOn();
+    setDebug(!ConfigManager::instance().getBool("Release.game_release"));
     setupKeyMappings();
 
     // Ogre::FrameListener <-- let's begin calling frameRenderingQueued
@@ -324,14 +325,17 @@ void Controller::createGameElements() {
     LOG("Creating Game Elements");
 
     //Creating the path manager
-    pathManager = std::unique_ptr<PathManager>(new PathManager());
+    pathManager = std::unique_ptr<PathManager>(new PathManager("track1.txt"));
+    //poligonalPathManager = std::unique_ptr<PoligonalPathManager>(new PoligonalPathManager("track1.txt"));
 
     // upstream documentation: http://www.ogre3d.org/tikiwiki/Sinbad+Model
     Ogre::Entity* monsterEntity = getSceneManager()->createEntity("monsterEntity", "Sinbad.mesh");
-    Ogre::SceneNode* monsterNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("monsterNode", Ogre::Vector3(0.0, 0.0, +200.0));
-    double monsterScale = 3.0;
+    Ogre::SceneNode* monsterNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("monsterNode", Ogre::Vector3(11096.2, 0.0, 4577.64));
+    double monsterScale = 5.0;
     monsterNode->scale(monsterScale, monsterScale, monsterScale);
     monsterNode->attachObject(monsterEntity);
+    monsterNode->yaw(Ogre::Degree(90));
+
 
     // attention: logic manager should be created before any threads that will update it
     logicManager = std::unique_ptr<LogicManager>(new LogicManager(this));
@@ -471,79 +475,102 @@ void Controller::createSwords() {
 void Controller::setupKeyMappings() {
     LOG("Setting up mappings");
 
-    /*
+    if(!ConfigManager::instance().getBool("Release.game_release")) {
+
+#define bicycleSpeedChange(signal_sensibility) bicycle->changeSpeed(static_cast<float>(signal_sensibility) * BICYCLE_SPEED_CHANGE);
+#define bicycleRotationChange(signal_sensibility)\
+    Ogre::Degree angle = Ogre::Degree(logicManager->getAngularVelocity());\
+    logicManager->rotateCamera(static_cast<float>(signal_sensibility) * angle);
+#define scrollCrosshair(x_sensibility, y_sensibility)\
+    crosshairManager->scrollVirtualCrosshair(polar->getHeartRate(), x_sensibility, y_sensibility);
+
+        /*
      * Runner mode mappings;
      */
-    InputManager::instance().addKeysUnbuf({sf::Keyboard::W,
-                                           sf::Keyboard::Up}, CONTEXT_RUNNER, [&]{
-        // logicManager->getPlayerNode()->translate(Ogre::Vector3(0.0, 0.0, -10.0), Ogre::SceneNode::TS_LOCAL);
-        bicycle->changeSpeed(BICYCLE_SPEED_CHANGE);
-    });
+        InputManager::instance().addKeysUnbuf({sf::Keyboard::W,
+                                               sf::Keyboard::Up}, CONTEXT_RUNNER, [&]{
+            bicycleSpeedChange(+1);
 
-    InputManager::instance().addKeysUnbuf({sf::Keyboard::S,
-                                           sf::Keyboard::Down}, CONTEXT_RUNNER, [&]{
-        // logicManager->getPlayerNode()->translate(Ogre::Vector3(0.0, 0.0, +10.0), Ogre::SceneNode::TS_LOCAL);
-        bicycle->changeSpeed(-BICYCLE_SPEED_CHANGE);
-    });
+        });
 
-    InputManager::instance().addKey(sf::Keyboard::Q, CONTEXT_RUNNER, [&]{
-        bicycle->changeFriction(-BICYCLE_FRICTION_CHANGE);
-    });
+        InputManager::instance().addKeysUnbuf({sf::Keyboard::S,
+                                               sf::Keyboard::Down}, CONTEXT_RUNNER, [&]{
+            bicycleSpeedChange(-1);
+        });
 
-    InputManager::instance().addKey(sf::Keyboard::E, CONTEXT_RUNNER, [&]{
-        bicycle->changeFriction(BICYCLE_FRICTION_CHANGE);
-    });
+        /*
+     * Rotation Mapping
+     * WITH THIS APPROACH ROTATION WORKS WITH ITS OWN KEYBOARD MAPPING (NO MAXIMUM ANGLE)
+     */
+        InputManager::instance().addKeysRotationUnbuf({sf::Keyboard::A,
+                                                       sf::Keyboard::Left}, CONTEXT_RUNNER, [&]{
+            bicycleRotationChange(+1);
+        });
 
-    /*
+        InputManager::instance().addKeysRotationUnbuf({sf::Keyboard::D,
+                                                       sf::Keyboard::Right}, CONTEXT_RUNNER, [&]{
+            bicycleRotationChange(-1);
+        });
+
+        InputManager::instance().addKey(sf::Keyboard::Q, CONTEXT_RUNNER, [&]{
+            bicycle->changeFriction(-BICYCLE_FRICTION_CHANGE);
+        });
+
+        InputManager::instance().addKey(sf::Keyboard::E, CONTEXT_RUNNER, [&]{
+            bicycle->changeFriction(BICYCLE_FRICTION_CHANGE);
+        });
+
+        /*
      * Shooter mode mappings.
      */
-    InputManager::instance().addKeysUnbuf({sf::Keyboard::A,
-                                           sf::Keyboard::Left}, CONTEXT_SHOOTER, [&]{
-        crosshairManager->scrollVirtualCrosshair(polar->getHeartRate(), -1.0, 0.0);
-    });
+        InputManager::instance().addKeysUnbuf({sf::Keyboard::A,
+                                               sf::Keyboard::Left}, CONTEXT_SHOOTER, [&]{
+            scrollCrosshair(-1.0, 0.0);
+        });
 
-    InputManager::instance().addKeysUnbuf({sf::Keyboard::D,
-                                           sf::Keyboard::Right}, CONTEXT_SHOOTER, [&]{
-        crosshairManager->scrollVirtualCrosshair(polar->getHeartRate(), +1.0, 0.0);
-    });
+        InputManager::instance().addKeysUnbuf({sf::Keyboard::D,
+                                               sf::Keyboard::Right}, CONTEXT_SHOOTER, [&]{
+            scrollCrosshair(+1.0, 0.0);
+        });
 
-    InputManager::instance().addKeysUnbuf({sf::Keyboard::W,
-                                           sf::Keyboard::Up}, CONTEXT_SHOOTER, [&]{
-        crosshairManager->scrollVirtualCrosshair(polar->getHeartRate(), 0.0, +1.0);
-    });
+        InputManager::instance().addKeysUnbuf({sf::Keyboard::W,
+                                               sf::Keyboard::Up}, CONTEXT_SHOOTER, [&]{
+            scrollCrosshair(0.0, +1.0);
+        });
 
-    InputManager::instance().addKeysUnbuf({sf::Keyboard::S,
-                                           sf::Keyboard::Down}, CONTEXT_SHOOTER, [&]{
-        crosshairManager->scrollVirtualCrosshair(polar->getHeartRate(), 0.0, -1.0);
-    });
+        InputManager::instance().addKeysUnbuf({sf::Keyboard::S,
+                                               sf::Keyboard::Down}, CONTEXT_SHOOTER, [&]{
+            scrollCrosshair(0.0, -1.0);
+        });
 
-    InputManager::instance().addKey(sf::Keyboard::Space, CONTEXT_SHOOTER, [&]{
-        logicManager->shoot();
-    });
+        InputManager::instance().addKey(sf::Keyboard::Space, CONTEXT_SHOOTER, [&]{
+            logicManager->shoot();
+        });
 
-    /*
+        /*
      * Both modes mappings.
      */
-    InputManager::instance().addKey(sf::Keyboard::Num1, [&]{
-        toggleMode();
-    });
+        InputManager::instance().addKey(sf::Keyboard::Num1, [&]{
+            toggleMode();
+        });
 
-    InputManager::instance().addKey(sf::Keyboard::Num2, [&]{
-        toggleDebug();
-    });
+        InputManager::instance().addKey(sf::Keyboard::Num2, [&]{
+            toggleDebug();
+        });
 
-    InputManager::instance().addKey(sf::Keyboard::LBracket, [&]{
-        polar->changePeaks(-POLAR_PEAK_CHANGE);
-    });
+        InputManager::instance().addKey(sf::Keyboard::LBracket, [&]{
+            polar->changePeaks(-POLAR_PEAK_CHANGE);
+        });
 
-    InputManager::instance().addKey(sf::Keyboard::RBracket, [&]{
-        polar->changePeaks(POLAR_PEAK_CHANGE);
-    });
+        InputManager::instance().addKey(sf::Keyboard::RBracket, [&]{
+            polar->changePeaks(POLAR_PEAK_CHANGE);
+        });
 
-    // refresh all textures
-    InputManager::instance().addKey(sf::Keyboard::F5, [&] {
-        Ogre::TextureManager::getSingleton().reloadAll();
-    });
+        // refresh all textures
+        InputManager::instance().addKey(sf::Keyboard::F5, [&] {
+            Ogre::TextureManager::getSingleton().reloadAll();
+        });
+    }
 
     InputManager::instance().addKey(sf::Keyboard::M, [&] {
         AudioManager::instance().toggleMute();
@@ -562,19 +589,82 @@ void Controller::setupKeyMappings() {
     /*
      * Joystick mappings.
      */
-    InputManager::instance().addJoystickAxisUnbuf(sf::Joystick::X, CONTEXT_SHOOTER, [&](float f) {
-        crosshairManager->scrollVirtualCrosshair(polar->getHeartRate(), +1.0 * (f / 100.0), 0.0);
+
+    /*
+     * Xbox Controller
+     * 8 axes:
+     *
+     * X = horizontal, left pad
+     * Y = vertical, left pad
+     * U = horizontal, right pad
+     * V = vertical, right pad
+     * PovX = horizontal, left directional controls
+     * PovY = vertical, right directional controls
+     * Z = "L2"
+     * R = "R2"
+     *
+     */
+    InputManager::instance().addJoystickAxisUnbuf({sf::Joystick::X,
+                                                   sf::Joystick::U,
+                                                   sf::Joystick::PovX},
+                                                  CONTEXT_RUNNER, [&](float f) {
+        bicycleRotationChange(-f / 100.0);
     });
 
-    InputManager::instance().addJoystickAxisUnbuf(sf::Joystick::Y, CONTEXT_SHOOTER, [&](float f) {
-        crosshairManager->scrollVirtualCrosshair(polar->getHeartRate(), 0.0, +1.0 * (f / 100.0));
+    if(!ConfigManager::instance().getBool("Release.game_release")) {
+        InputManager::instance().addJoystickAxisUnbuf({sf::Joystick::Y,
+                                                       sf::Joystick::V,
+                                                       sf::Joystick::PovY},
+                                                      CONTEXT_RUNNER, [&](float f) {
+            // note: Y axis is reversed
+            bicycleSpeedChange(-f / 100.0);
+        });
+    }
+
+    InputManager::instance().addJoystickAxisUnbuf({sf::Joystick::X,
+                                                   sf::Joystick::U,
+                                                   sf::Joystick::PovX},
+                                                  CONTEXT_SHOOTER, [&](float f) {
+        scrollCrosshair(+f / 100.0, 0.0);
     });
 
-    InputManager::instance().addJoystickButtons({0}, CONTEXT_SHOOTER, [&]() {
+    InputManager::instance().addJoystickAxisUnbuf({sf::Joystick::Y,
+                                                   sf::Joystick::V,
+                                                   sf::Joystick::PovY},
+                                                  CONTEXT_SHOOTER, [&](float f) {
+        scrollCrosshair(0.0, -f / 100.0);
+    });
+
+    /*
+     * Xbox Controller
+     * 11 buttons:
+     *
+     * 0 = A
+     * 1 = B
+     * 2 = X
+     * 3 = Y
+     * 4 = "R1"
+     * 5 = "L1"
+     * 6 = "select"
+     * 7 = "start"
+     * 8 = "xbox"
+     * 9 = "L3" (normal state: -1.0)
+     * 10 = "R3" (normal state: -1.0)
+     *
+     */
+    InputManager::instance().addJoystickButtons({0, 1, 2, 5}, CONTEXT_SHOOTER, [&]() {
         logicManager->shoot();
     });
 
-    InputManager::instance().addJoystickButtons({1}, [&]() {
+    InputManager::instance().addJoystickAxisUnbuf({sf::Joystick::Z,
+                                                   sf::Joystick::R},
+                                                  CONTEXT_SHOOTER, [&](float f) {
+        if(f > -1.0) {
+            logicManager->shoot();
+        }
+    });
+
+    InputManager::instance().addJoystickButtons({3, 4, 6, 8}, [&]() {
         toggleMode();
     });
 }
@@ -585,7 +675,7 @@ AbstractPolar* Controller::getPolar() const {
 
 void Controller::gameMainLoop() {
     LOG("Entering the Game Main Loop");
-
+    initializeDumpLog();
     gameStartClock = std::chrono::high_resolution_clock::now();
 
     while(!shutdown) {
@@ -637,41 +727,48 @@ void Controller::doGameEnd() {
     LOG("Removing all viewports");
     oWindow->removeAllViewports();
 
-    LOG("Creating the final scene");
+    if(ConfigManager::instance().getBool("Release.game_release")) {
+        LOG("Creating the final scene");
 
-    // create a background, for cleaning purposes
-    Ogre::Camera* endCamera = oSceneManager->createCamera("endCamera");
-    Ogre::Viewport* endViewport = oWindow->addViewport(endCamera);
-    endViewport->setBackgroundColour(gameVictory ? Ogre::ColourValue::Green : Ogre::ColourValue::Red);
+        // create a background, for cleaning purposes
+        Ogre::Camera* endCamera = oSceneManager->createCamera("endCamera");
+        Ogre::Viewport* endViewport = oWindow->addViewport(endCamera);
+        endViewport->setBackgroundColour(gameVictory ? Ogre::ColourValue::Green : Ogre::ColourValue::Red);
 
-    // render final game image
-    Ogre::OverlayManager::getSingleton().getByName(gameVictory ? "Cycleshooter/GameVictory" : "Cycleshooter/GameOver")->show();
-    oWindow->update();
+        // render final game image
+        Ogre::OverlayManager::getSingleton().getByName(gameVictory ? "Cycleshooter/GameVictory" : "Cycleshooter/GameOver")->show();
+        oWindow->update();
 
-    Soundname endSound = gameVictory ? SOUND_GAME_VICTORY : SOUND_GAME_LOSS;
-    AudioManager::instance().playSound(endSound);
+        Soundname endSound = gameVictory ? SOUND_GAME_VICTORY : SOUND_GAME_LOSS;
+        AudioManager::instance().playSound(endSound);
+        sf::sleep(AudioManager::instance().getSoundDuration(endSound));
+    }
 
-    std::ofstream ofs(ConfigManager::instance().getStr("Controller.statistics_file"), std::ios_base::app | std::ios_base::out);
+    doSaveStats(ConfigManager::instance().getStr("Controller.statistics_file").c_str(), totalGameTime.c_str());
+}
 
-    ofs << "===== SESSION STARTS: " << gameStartClock << std::endl;
+void Controller::doSaveStats(const char* file, const char* totalGameTime) {
+    std::ofstream ofs(file, std::ios_base::app | std::ios_base::out);
+
+    ofs << "===== SESSION STARTS: " << chronoToDateString(gameStartClock) << std::endl;
 
     polar->printStatistics(ofs);
     bicycle->printStatistics(ofs);
 
-    ofs << "* Other Statistics\n"
+    ofs << "* Other Statistics" << std::endl <<
            "- Total game time: " << totalGameTime << std::endl <<
-           "- End Game type: " << endGameTypeToString(endGameType) << std::endl;
+           "- End Game type: " << EndGameTypeToString(endGameType) << std::endl;
 
-    ofs << "===== SESSION ENDS: " << std::chrono::system_clock::now() << std::endl << std::endl;
-
-    sf::sleep(AudioManager::instance().getSoundDuration(endSound));
+    ofs << "===== SESSION ENDS: " << generateCurrentDate() << std::endl << std::endl;
 }
 
-void Controller::startCountdown() {
+void Controller::doCountdown() {
     LOG("Starting countdown");
 
+    AudioManager::instance().playSound(SOUND_GAME_BATTLE_PREPARE_DOTA);
+    sf::sleep(AudioManager::instance().getSoundDuration(SOUND_GAME_BATTLE_PREPARE_DOTA));
+
     oWindow->addViewport(oSceneManager->createCamera("countdownCamera"), 0);
-    int COUNTDOWN_TIME_MS = ConfigManager::instance().getInt("Controller.countdown_time_ms");
 
     std::vector<Ogre::String> countdowns = {
         "Cycleshooter/Countdown3",
@@ -680,16 +777,19 @@ void Controller::startCountdown() {
         "Cycleshooter/Countdown0"
     };
 
-    for (auto countdown : countdowns) {
+    for (const auto& countdown : countdowns) {
         Ogre::OverlayManager::getSingleton().getByName(countdown)->show();
         oWindow->update();
         AudioManager::instance().playSound(SOUND_COUNTDOWN);
-        sf::sleep(sf::milliseconds(COUNTDOWN_TIME_MS));
+        sf::sleep(sf::milliseconds(ConfigManager::instance().getInt("Controller.countdown_time_ms")));
         Ogre::OverlayManager::getSingleton().getByName(countdown)->hide();
     }
 
     oWindow->removeViewport(0);
     oSceneManager->destroyCamera("countdownCamera");
+
+    AudioManager::instance().playSound(SOUND_GAME_BATTLE_BEGINS_DOTA);
+    sf::sleep(AudioManager::instance().getSoundDuration(SOUND_GAME_BATTLE_PREPARE_DOTA));
 }
 
 void Controller::createRoot() {
@@ -707,6 +807,7 @@ void Controller::createRoot() {
     // note: window title and size are not important here, so we use blank (dummy) values for them
     oWindow = oRoot->createRenderWindow("", 0, 0, false, &misc);
     oWindow->setVisible(true);
+    Ogre::Root::getSingleton().setFrameSmoothingPeriod(1.0 / 60.0);
 
     LOG("Render Window has been (manually) created");
 }
@@ -756,24 +857,24 @@ void Controller::toggleMode() {
     }
 }
 
-void Controller::setupDebugOn() {
-    LOG("Turning Debug Mode On");
-    debug = true;
+void Controller::setDebug(bool debug) {
+    if(debug) {
+        LOG("Turning Debug Mode ON");
+    }
+    else {
+        LOG("Turning Debug Mode OFF");
+    }
 
-    logicManager->setDebugOn();
-    hud->setDebug(true);
-}
+    this->debug = debug;
 
-void Controller::setupDebugOff() {
-    LOG("Turning Debug Mode Off");
-    debug = false;
-
-    logicManager->setDebugOff();
-    hud->setDebug(false);
+    logicManager->setDebug(debug);
+    hud->setDebug(debug);
+    pathManager->setDebug(debug);
+    //poligonalPathManager->setDebug(debug);
 }
 
 void Controller::toggleDebug() {
-    debug ? setupDebugOff() : setupDebugOn();
+    setDebug(!debug);
 }
 
 std::string Controller::getElapsedTimeAsString() const {

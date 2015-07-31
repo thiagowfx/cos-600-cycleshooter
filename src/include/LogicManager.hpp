@@ -10,7 +10,6 @@
 namespace Cycleshooter {
 class Controller;
 
-// TODO: add members related to the current difficulty --> terrain and crosshair accuracy
 class LogicManager {
 
     Controller* const controller = NULL;
@@ -18,7 +17,6 @@ class LogicManager {
     Ogre::Viewport *viewportFull = NULL;
     Ogre::Viewport *viewportMirror = NULL;
 
-    Ogre::SceneNode* parentPlayerNode = NULL;
     Ogre::SceneNode* playerNode = NULL;
     Ogre::SceneNode* frontCameraNode = NULL;
     Ogre::SceneNode* rearCameraNode = NULL;
@@ -39,6 +37,8 @@ class LogicManager {
     int monsterHealth = ConfigManager::instance().getInt("LogicManager.initial_monster_health");
 
     void decrementMonsterHealth(int quantity = 1);
+
+    double MONSTER_SPEED = 50.0;
 
     /*
      * Player section.
@@ -97,9 +97,7 @@ class LogicManager {
 
     // Rotation variables
     double angularVelocity;
-    // TODO: create a config out of this hard-coded constant
-    Ogre::Degree MAX_ANGLE = Ogre::Degree(45);
-    double ROTATION_FACTOR = 0.5f;
+
 public:
     LogicManager(Controller* controller);
 
@@ -118,24 +116,20 @@ public:
     // setups
     void setupRunnerMode();
     void setupShooterMode();
-
-    // debug
-    void setDebugOn();
-    void setDebugOff();
+    void setDebug(bool debug);
 
     //Move functions.
-    void translateMonster(int difficulty, Ogre::Vector3 translation);
+    //void translateMonster(int difficulty, Ogre::Vector3 translation);
     void yawCamera();
-    void rotateCamera(const Ogre::Degree& angle, const Ogre::Vector3& pathDirection, const Ogre::Vector3& lastPathDirection);
-    void rotateAlongPath(Ogre::Vector3 lastPathDirection, Ogre::Vector3 currentPathDirection);
-
+    void rotateCamera(const Ogre::Degree& angle);
+    void updateMonster(const Ogre::Vector3& tangent,const Ogre::Vector3& monsterNextPosition);
+    double getDistanceToMonster() const;
 
     // getters and setters
     Ogre::SceneNode *getPlayerNode() const;
     int getPlayerAmmo() const;
     int getMonsterHealth() const;
     void setDifficultyParamenter();
-    void externalIncrement();
     double getAngularVelocity() const;
     void setAngularVelocity(double value);
 };

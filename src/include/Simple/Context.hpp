@@ -33,7 +33,7 @@ inline bool isGameVictory(const EndGameType& type) {
     return type == GAME_END_MONSTER_KILLED;
 }
 
-static const char* endGameTypeToString(const EndGameType& type) {
+static const char* EndGameTypeToString(const EndGameType& type) {
     static const char* names[] = {
         "Game VICTORY :: Monster killed",
         "Game LOSS :: Caught by monster",

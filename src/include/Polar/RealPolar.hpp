@@ -40,19 +40,16 @@ class RealPolar : public AbstractPolar {
         // open the serial port
         if ((serialDescriptor = open(deviceFilePath, O_RDWR | O_NOCTTY )) == -1) {
             LOG_FATAL("Polar: Error opening serial port %s -- %s (%d)", deviceFilePath, strerror(errno), errno);
-            exit(EXIT_FAILURE);
         }
 
         // prevent other processes from opening the serial port
         if (ioctl(serialDescriptor, TIOCEXCL) == -1) {
             LOG_FATAL("Polar: Error setting TIOCEXCL on port %s -- %s (%d)", deviceFilePath, strerror(errno), errno);
-            exit(EXIT_FAILURE);
         }
 
         // get the current serial port options and save them to restore on exit
         if (tcgetattr(serialDescriptor, &originalTTYAttributes) == -1) {
             LOG_FATAL("Polar: Error getting tty attributes on port %s -- %s (%d)", deviceFilePath, strerror(errno), errno);
-            exit(EXIT_FAILURE);
         }
 
         // serial port configuration options
@@ -71,7 +68,6 @@ class RealPolar : public AbstractPolar {
         // cause new options to take effect immediately
         if (tcsetattr(serialDescriptor, TCSANOW, &options) == -1) {
             LOG_FATAL("Polar: Error setting tty attributes on %s -- %s (%d)", deviceFilePath, strerror(errno), errno);
-            exit(EXIT_FAILURE);
         }
     }
 
@@ -84,13 +80,11 @@ class RealPolar : public AbstractPolar {
         // block until all written output has been sent from the device
         if (tcdrain(serialDescriptor) == -1) {
             LOG_FATAL("Polar: Error waiting for drain - %s (%d)", strerror(errno), errno);
-            exit(EXIT_FAILURE);
         }
 
         // reset the serial port back to the state in which we found it
         if (tcsetattr(serialDescriptor, TCSANOW, &originalTTYAttributes) == -1) {
             LOG_FATAL("Polar: Error restoring tty attributes - %s (%d)", strerror(errno), errno);
-            exit(EXIT_FAILURE);
         }
 
         // close the port
@@ -115,7 +109,6 @@ class RealPolar : public AbstractPolar {
         // send the command string
         if (write(serialDescriptor, sendCommand, cmdLength) != cmdLength) {
             LOG_FATAL("Polar: Error sending the command string %s -- %s (%d)", sendCommand, strerror(errno), errno);
-            exit(EXIT_FAILURE);
         }
     }
 
@@ -132,7 +125,6 @@ class RealPolar : public AbstractPolar {
 
             if (n == -1) {
                 LOG_FATAL("Polar: Error getting the response string %s -- %s (%d)", responseString, strerror(errno), errno);
-                exit(EXIT_FAILURE);
             }
 
             // no chars available for reading right now

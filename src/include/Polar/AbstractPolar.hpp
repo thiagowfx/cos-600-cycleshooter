@@ -47,7 +47,7 @@ protected:
      */
     void updateStatistics(const long long int& heartRate) {
         if(!heartRate) {
-            LOG_FATAL("Heartrate is ZERO");
+            LOG("Heartrate is ZERO. Someone please call an ambulance!!");
             return;
         }
 

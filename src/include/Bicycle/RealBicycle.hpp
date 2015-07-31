@@ -52,19 +52,16 @@ class RealBicycle : public AbstractBicycle {
         // open the serial port
         if ((serialDescriptor = open(deviceFilePath, O_RDWR | O_NOCTTY )) == -1) {
             LOG_FATAL("Bicycle: Error opening serial port %s -- %s (%d)", deviceFilePath, strerror(errno), errno);
-            exit(EXIT_FAILURE);
         }
 
         // prevent other processes from opening the serial port
         if (ioctl(serialDescriptor, TIOCEXCL) == -1) {
             LOG_FATAL("Bicycle: Error setting TIOCEXCL on port %s -- %s (%d)", deviceFilePath, strerror(errno), errno);
-            exit(EXIT_FAILURE);
         }
 
         // get the current serial port options and save them to restore on exit
         if (tcgetattr(serialDescriptor, &originalTTYAttributes) == -1) {
             LOG_FATAL("Bicycle: Error getting tty attributes on port %s -- %s (%d)", deviceFilePath, strerror(errno), errno);
-            exit(EXIT_FAILURE);
         }
 
         // serial port configuration options
@@ -83,7 +80,6 @@ class RealBicycle : public AbstractBicycle {
         // cause new options to take effect immediately
         if (tcsetattr(serialDescriptor, TCSANOW, &options) == -1) {
             LOG_FATAL("Bicycle: Error setting tty attributes on %s -- %s (%d)", deviceFilePath, strerror(errno), errno);
-            exit(EXIT_FAILURE);
         }
     }
 
@@ -96,13 +92,11 @@ class RealBicycle : public AbstractBicycle {
         // block until all written output has been sent from the device
         if (tcdrain(serialDescriptor) == -1) {
             LOG_FATAL("Bicycle: Error waiting for drain - %s (%d)", strerror(errno), errno);
-            exit(EXIT_FAILURE);
         }
 
         // reset the serial port back to the state in which we found it
         if (tcsetattr(serialDescriptor, TCSANOW, &originalTTYAttributes) == -1) {
             LOG_FATAL("Bicycle: Error restoring tty attributes - %s (%d)", strerror(errno), errno);
-            exit(EXIT_FAILURE);
         }
 
         // close the port
@@ -126,7 +120,6 @@ class RealBicycle : public AbstractBicycle {
             // if serial is not available
             if (n == -1) {
                 LOG_FATAL("Bicycle: Error getting the response string -- %s (%d)", strerror(errno), errno);
-                exit(EXIT_FAILURE);
             }
 
             if (n == 0) {
@@ -138,7 +131,6 @@ class RealBicycle : public AbstractBicycle {
             ++i;
             if(i > MAX_STRING_RESPONSE) {
                 LOG_FATAL("Bicycle: Error: read more than MAX_STRING_RESPONSE characters -- %s (%d)", strerror(errno), errno);
-                exit(EXIT_FAILURE);
             }
 
         } while(detectB[0] != 'B');
@@ -157,7 +149,6 @@ class RealBicycle : public AbstractBicycle {
             // if serial is not available
             if (n == -1) {
                 LOG_FATAL("Bicycle: Error (2) getting the response string -- %s (%d)", strerror(errno), errno);
-                exit(EXIT_FAILURE);
             }
 
             if (n == 0) {
@@ -178,7 +169,6 @@ class RealBicycle : public AbstractBicycle {
     void writeToSerialPort(const std::string& command) {
         if (write(serialDescriptor, command.c_str(), command.size()) != command.size()) {
             LOG_FATAL("Bicycle: Error sending the command string %s -- %s (%d)", command.c_str(), strerror(errno), errno);
-            exit(EXIT_FAILURE);
         }
     }
 
@@ -226,12 +216,6 @@ public:
 
         friction = value;
         writeToSerialPort(command.str());
-    }
-
-    virtual void changeFriction(const int& value) {
-        friction = std::max(0, friction + value);
-        friction = std::min(400, friction);
-        setFriction(friction);
     }
 
 };

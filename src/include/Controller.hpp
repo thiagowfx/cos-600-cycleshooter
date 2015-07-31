@@ -30,6 +30,7 @@
 #include "CrosshairManager.hpp"
 #include "HUD.hpp"
 #include "PathManager.hpp"
+#include "PoligonalPathManager.hpp"
 
 #include "CollisionHandler.hpp"
 #include "TerrainManager.hpp"
@@ -91,6 +92,36 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
      * @brief gameWon Determines whether the player won or lost the game should it end.
      */
     EndGameType endGameType;
+
+    /**
+     * Generate the current date in the format specified in the config file.
+     */
+    std::string generateCurrentDate() const;
+
+    /**
+     * Format a time_point / chrono clock to a string in the format specified in the config file.
+     */
+    std::string chronoToDateString(decltype(std::chrono::system_clock::now()) clock) const;
+
+    /**
+     * @brief DUMP_LOG_FILENAME Filename of the log that will be dumped from time to time.
+     */
+    std::string DUMP_LOG_FILENAME;
+
+    /**
+     * @brief DUMPS_DIRECTORY The directory to where dumps/logs will be saved to. It MUST have a trailing slash.
+     */
+    const std::string DUMPS_DIRECTORY = ConfigManager::instance().getStr("Controller.dumps_directory");
+
+    /**
+     * Dump log with game statistics at the time of the dump.
+     */
+    void dumpLog();
+
+    /**
+     * Initialize/prepare the dump log appropriately.
+     */
+    void initializeDumpLog();
 
     /**
      * Wait for other threads to finish. Like 'join' for C++11 threads.
@@ -295,6 +326,11 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     std::unique_ptr<PathManager> pathManager;
 
     /**
+     * Poligonal Path Manager.
+     */
+    std::unique_ptr<PoligonalPathManager> poligonalPathManager;
+
+    /**
      * @brief hud responsible for rendering overlay elements with useful information for the player
      */
     std::unique_ptr<HUD> hud;
@@ -302,7 +338,7 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     /**
      * To mark the time the game started.
      */
-    std::chrono::high_resolution_clock::time_point gameStartClock = std::chrono::high_resolution_clock::now();
+    std::chrono::high_resolution_clock::time_point gameStartClock;
 
     /**
      * @brief frameRenderingQueued Overriden from Ogre::FrameListener.
@@ -321,9 +357,14 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     void doGameEnd();
 
     /**
-     * @brief startCountdown Start the game countdown to its beginning.
+     * @brief doCountdown Start the game countdown to its beginning.
      */
-    void startCountdown();
+    void doCountdown();
+
+    /**
+     * @brief doSaveStats Save the game statistics.
+     */
+    void doSaveStats(const char* file, const char* totalGameTime);
 
     /**
      * Setup the context mode to the runner mode.
@@ -341,14 +382,9 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     void toggleMode();
 
     /**
-     * Enable the debug mode.
+     * Enable/Disable the debug mode.
      */
-    void setupDebugOn();
-
-    /**
-     * Disable the debug mode.
-     */
-    void setupDebugOff();
+    void setDebug(bool debug);
 
     /**
      * Toggle the debug mode ON/OFF.
@@ -362,8 +398,6 @@ public:
      * Finish/shutdown the game cleanly.
      */
     void shutdownNow(const EndGameType& endGameType);
-
-    void incrementPlayerAmmo();
 
     // getters and setters
     LogicManager* getLogicManager() const;

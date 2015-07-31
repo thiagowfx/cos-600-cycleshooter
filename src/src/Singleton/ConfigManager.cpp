@@ -8,7 +8,6 @@ ConfigManager::ConfigManager() {
     std::ifstream ifs(configFile);
     if(!ifs) {
         LOG_FATAL("No such file exists: %s", configFile.c_str());
-        exit(EXIT_FAILURE);
     }
 
     toml::Parser parser(ifs);
@@ -16,7 +15,6 @@ ConfigManager::ConfigManager() {
 
     if(!v.valid()) {
         LOG_FATAL("Couldn't parse the %s config file: %s", configFile.c_str(), parser.errorReason().c_str());
-        exit(EXIT_FAILURE);
     }
 }
 

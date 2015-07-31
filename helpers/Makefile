@@ -1,12 +1,9 @@
-all: solution1
-
-solution1:
-	cp 51-cycleshooter-udev.rules /etc/udev/rules.d/51-cycleshooter-udev.rules
-
-solution2:
-	gpasswd -a ${USER} dialout # uucp
+all:
+	@getent group dialout &>/dev/null && gpasswd -a $(shell logname) dialout || true
+	@getent group uucp &>/dev/null && gpasswd -a $(shell logname) uucp || true
 
 clean:
-	$(RM) /etc/udev/rules.d/51-cycleshooter-udev.rules
+	@getent group dialout &>/dev/null && gpasswd -d $(shell logname) dialout || true
+	@getent group uucp &>/dev/null && gpasswd -d $(shell logname) uucp || true
 
-.PHONY: all clean solution1 solution2
+.PHONY: all clean
