@@ -161,7 +161,7 @@ void LogicManager::createCameras() {
     frontCamera->setNearClipDistance(CAMERA_NEAR_CLIP_DISTANCE);
     frontCamera->setFarClipDistance(CAMERA_FAR_CLIP_DISTANCE);
     rearCamera->setNearClipDistance(CAMERA_NEAR_CLIP_DISTANCE);
-    frontCamera->setFarClipDistance(CAMERA_FAR_CLIP_DISTANCE);
+    rearCamera->setFarClipDistance(CAMERA_FAR_CLIP_DISTANCE);
 }
 
 void LogicManager::createSceneNodes() {
