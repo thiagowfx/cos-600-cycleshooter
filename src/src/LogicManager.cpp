@@ -22,7 +22,6 @@ void LogicManager::update(const Ogre::FrameEvent &evt) {
         updatePlayerPosition(elapsedTime);
     }
 
-    updateMonsterPosition(elapsedTime);
     //Dealing with terrain Collision;
     std::pair<int,bool> terrainAt = controller->getTerrainManager()->getTerrainAt(getPlayerNode()->getPosition());
     if(terrainAt.first == 2){
@@ -102,16 +101,6 @@ void LogicManager::updatePlayerPosition(const Ogre::Real &time) {
     getPlayerNode()->translate(distance * playerOrientation, Ogre::SceneNode::TS_LOCAL);
 }
 
-void LogicManager::updateMonsterPosition(const Ogre::Real &time) {
-    // distance = speed x time (Physics I, yay!)
-    double distance = MONSTER_SPEED * time;
-
-    // quaternions! upstream: http://stackoverflow.com/questions/4727079/getting-object-direction-in-ogre
-    Ogre::Vector3 monsterOrientation = monsterNode->getOrientation() * Ogre::Vector3::UNIT_Z;
-
-    //monsterNode->translate(distance * monsterOrientation, Ogre::SceneNode::TS_LOCAL);
-}
-
 int LogicManager::calculateFriction(int terrainAt){
     if(terrainAt == ROAD_PIXEL)
         return 25;
@@ -119,8 +108,9 @@ int LogicManager::calculateFriction(int terrainAt){
         return 75;
     else if(terrainAt == SAND_PIXEL)
         return 50;
-    else
+    else {
         return 0;
+    }
 }
 
 bool LogicManager::checkPlayerMonsterCollision() {

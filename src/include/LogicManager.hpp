@@ -39,8 +39,6 @@ class LogicManager {
 
     void decrementMonsterHealth(int quantity = 1);
 
-    double MONSTER_SPEED = 50.0;
-
     /*
      * Player section.
      */
@@ -49,11 +47,6 @@ class LogicManager {
      * Update the player position according to the passed time.
      */
     void updatePlayerPosition(const Ogre::Real& time);
-
-    /**
-     * Update the monster position according to the passed time.
-     */
-    void updateMonsterPosition(const Ogre::Real& time);
 
     /**
      * Calculate Bicycle Friction based on terrain properties.
