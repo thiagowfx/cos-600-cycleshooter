@@ -128,20 +128,20 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
         //  THIS APPROACH USES THE IS KEY DOWN METHOD AND IS THE ONLY WAY TO MAKE ROTATION WORKS
         //  WITH THE MAXIMUM ANGLE
 
-        /*const std::vector<sf::Keyboard::Key> rightKeys = {sf::Keyboard::Right, sf::Keyboard::D};
+        const std::vector<sf::Keyboard::Key> rightKeys = {sf::Keyboard::Right, sf::Keyboard::D};
         const std::vector<sf::Keyboard::Key> leftKeys = {sf::Keyboard::Left, sf::Keyboard::A};
         bool isKeyRightDown = InputManager::instance().isKeyPressed(rightKeys);
         bool isKeyLeftDown = InputManager::instance().isKeyPressed(leftKeys);
         Ogre::Degree angle = Ogre::Degree(logicManager->getAngularVelocity());
         if(isKeyRightDown){
-            logicManager->rotateCamera(-angle,pathManager->getCurrentTangent(),pathManager->getLastTangent());
+            logicManager->rotateCamera(-angle,pathManager->getFakePathTangent());
         }
         if(isKeyLeftDown){
-            logicManager->rotateCamera(angle,pathManager->getCurrentTangent(),pathManager->getLastTangent());
+            logicManager->rotateCamera(angle,pathManager->getFakePathTangent());
         }
         if(!isKeyRightDown && !isKeyLeftDown){
-            logicManager->rotateCamera(Ogre::Degree(0),pathManager->getCurrentTangent(),pathManager->getLastTangent());
-        }*/
+            logicManager->rotateCamera(Ogre::Degree(0),pathManager->getFakePathTangent());
+        }
 
         //monster update
         //logicManager->updateMonster(pathManager->getMonsterTangent(),pathManager->getMonsterNextPosition());
@@ -511,13 +511,13 @@ void Controller::setupKeyMappings() {
     InputManager::instance().addKeysRotationUnbuf({sf::Keyboard::A,
                                            sf::Keyboard::Left}, CONTEXT_RUNNER, [&]{
         Ogre::Degree angle = Ogre::Degree(logicManager->getAngularVelocity());
-        logicManager->rotateCamera(angle,Ogre::Vector3(0,0,0),Ogre::Vector3(0,0,0));
+        //logicManager->rotateCamera(angle,Ogre::Vector3(0,0,0),Ogre::Vector3(0,0,0));
     });
 
     InputManager::instance().addKeysRotationUnbuf({sf::Keyboard::D,
                                            sf::Keyboard::Right}, CONTEXT_RUNNER, [&]{
         Ogre::Degree angle = Ogre::Degree(logicManager->getAngularVelocity());
-        logicManager->rotateCamera(-angle,Ogre::Vector3(0,0,0),Ogre::Vector3(0,0,0));
+        //logicManager->rotateCamera(-angle,Ogre::Vector3(0,0,0),Ogre::Vector3(0,0,0));
     });
 
     InputManager::instance().addKey(sf::Keyboard::Q, CONTEXT_RUNNER, [&]{

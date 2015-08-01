@@ -128,7 +128,7 @@ public:
     //Move functions.
     //void translateMonster(int difficulty, Ogre::Vector3 translation);
     void yawCamera();
-    void rotateCamera(const Ogre::Degree& angle, const Ogre::Vector3& pathDirection, const Ogre::Vector3& lastPathDirection);
+    void rotateCamera(const Ogre::Degree& angle, const Ogre::Vector3& pathDirection);
     void updateMonster(const Ogre::Vector3& tangent,const Ogre::Vector3& monsterNextPosition);
     void updateFakePath(const Ogre::Vector3 &tangent, const Ogre::Vector3& fakePathNextPosition);
     void updatePlayerVelocity();

@@ -16,8 +16,8 @@ class PathManager: public Ogre::SimpleSpline {
     Ogre::Real epsilon = 0.0001;
 
     //Fake path
-    Ogre::Real VELOCITY_FACTOR = 0.00001;
-    Ogre::Vector3 fakePathTangent;
+    Ogre::Real VELOCITY_FACTOR = 0.00005;
+    Ogre::Vector3 fakePathTangent = Ogre::Vector3(0,0,1);
     Ogre::Real fakePathSplineParameter = 0;
     unsigned int fakePathIndex = 1;
     unsigned int fakePathNextIndex = 2;

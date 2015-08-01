@@ -276,30 +276,27 @@ void LogicManager::updatePlayerVelocity(){
     playerVelocity = magnitude * orientation;
 }
 
-void LogicManager::rotateCamera(const Ogre::Degree& angle, const Ogre::Vector3& pathDirection, const Ogre::Vector3& lastPathDirection){
+void LogicManager::rotateCamera(const Ogre::Degree& angle, const Ogre::Vector3& pathDirection){
     //path rotation
-    Ogre::Vector3 crossProductTangents = pathDirection.crossProduct(lastPathDirection);
-    Ogre::Real signalAngleBetweenTangents = (crossProductTangents.y < 0) ? (+1) : (-1);
-    Ogre::Degree angleBetweenTangents = signalAngleBetweenTangents * pathDirection.angleBetween(lastPathDirection);
-
     Ogre::Vector3 currentFacing = fakePathNode->getOrientation() * Ogre::Vector3::UNIT_Z;
     Ogre::Quaternion quat = currentFacing.getRotationTo(pathDirection);
-    //fakePathNode->rotate(quat);
-    //frontCamera->yaw(angleBetweenTangents);
-    //playerNode->yaw(angleBetweenTangents);
+    fakePathNode->rotate(quat);
+    frontCamera->rotate(quat);
+    rearCamera->rotate(quat);
+    playerNode->rotate(quat);
 
-    Ogre::Vector3 cameraDirection = frontCamera->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_Z;
+    Ogre::Vector3 cameraDirection = frontCamera->getOrientation() * Ogre::Vector3::UNIT_Z;
     Ogre::Vector3 crossProduct = cameraDirection.crossProduct(pathDirection);
     Ogre::Real signalAngleBetween = (crossProduct.y < 0) ? (+1) : (-1);
     Ogre::Degree angleBetween = signalAngleBetween * cameraDirection.angleBetween(pathDirection);
     Ogre::Degree absAngle = Ogre::Math::Abs(angle + angleBetween);
 
     // key rotation
-    //if(absAngle < MAX_ANGLE) {
+    if(absAngle < MAX_ANGLE) {
         frontCamera->yaw(angle);
         rearCamera->yaw(angle);
         playerNode->yaw(ROTATION_FACTOR * angle);
-    //}
+    }
 }
 
 void LogicManager::updateMonster(const Ogre::Vector3 &tangent, const Ogre::Vector3& monsterNextPosition){
