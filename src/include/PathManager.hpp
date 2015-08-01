@@ -19,6 +19,7 @@ class PathManager: public Ogre::SimpleSpline {
     Ogre::Vector3 monsterTangent;
     Ogre::Real monsterParametricPosition = 0;
     Ogre::Real monsterSplineStep = 0.001;
+    Ogre::Real monsterSplineVelocity = 0.1;
     unsigned int monsterIndex = 0;
     unsigned int monsterNextIndex = 1;
     Ogre::Vector3 monsterNextPosition;
@@ -33,7 +34,7 @@ public:
     PathManager(const char* file);
     PathManager(const std::vector<Ogre::Vector3>& controlPoints);
 
-    void monsterPathUpdate();
+    void monsterPathUpdate(Ogre::Real timeSinceLastFrame);
     void updateIndex();
     void setDebug(bool debug);
     Ogre::Vector3 getMonsterTangent() const;

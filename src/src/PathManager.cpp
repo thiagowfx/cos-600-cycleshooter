@@ -111,7 +111,8 @@ void PathManager::go(const std::vector<Ogre::Vector3>& controlPoints) {
     }
 }
 
-void PathManager::monsterPathUpdate() {
+void PathManager::monsterPathUpdate(Ogre::Real timeSinceLastFrame) {
+    monsterSplineStep = monsterSplineVelocity * timeSinceLastFrame;
     if(monsterParametricPosition + monsterSplineStep < 1.0){
         monsterParametricPosition += monsterSplineStep;
     }
