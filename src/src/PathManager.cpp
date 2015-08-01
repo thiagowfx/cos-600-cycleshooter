@@ -18,6 +18,41 @@ Ogre::Vector3 PathManager::getTangent(unsigned index, double t) const {
 }
 
 Ogre::Vector3 PathManager::getAntiTangentFromPoint(const Ogre::Vector3 &point) const {
+    std::pair<unsigned,double> target = binSearchNearestPointOnSpline(point);
+    return getTangent(target.first, target.second);
+}
+
+PathManager::PathManager(const char *file) {
+    std::ifstream ifs(file);
+    std::string line;
+    std::vector<Ogre::Vector3> controlPoints;
+
+    while(std::getline(ifs, line)) {
+        std::stringstream ss;
+        ss << line;
+        double x, y, z;
+        ss >> x >> y >> z;
+        controlPoints.push_back(Ogre::Vector3(x, y, z));
+    }
+
+    ifs.close();
+    go(controlPoints);
+}
+
+PathManager::PathManager(const std::vector<Ogre::Vector3>& controlPoints){
+    go(controlPoints);
+}
+
+
+Ogre::Vector3 PathManager::getMonsterNextPosition() const{
+    return monsterNextPosition;
+}
+
+void PathManager::setMonsterNextPosition(const Ogre::Vector3 &value) {
+    monsterNextPosition = value;
+}
+
+std::pair<unsigned,double> PathManager::binSearchNearestPointOnSpline(const Ogre::Vector3 &point) const {
     int nearestPointIndex;
     double squaredDistance = std::numeric_limits<double>::max();
 
@@ -66,43 +101,7 @@ Ogre::Vector3 PathManager::getAntiTangentFromPoint(const Ogre::Vector3 &point) c
     int targetIndex = (bse1.second < bse2.second) ? previousIndex : nearestPointIndex;
     double targetT = (bse1.second < bse2.second) ? bse1.first : bse2.first;
 
-//    std::cout << "index: " << nearestPointIndex << std::endl;
-//    std::cout << "distance^2:" << squaredDistance << std::endl;
-//    std::cout << "point:" << mPoints[nearestPointIndex] << std::endl;
-//    std::cout << "targetIndex: " << targetIndex << std::endl;
-//    std::cout << "targetT: " << targetT << std::endl;
-
-    return getTangent(targetIndex, targetT);
-}
-
-PathManager::PathManager(const char *file) {
-    std::ifstream ifs(file);
-    std::string line;
-    std::vector<Ogre::Vector3> controlPoints;
-
-    while(std::getline(ifs, line)) {
-        std::stringstream ss;
-        ss << line;
-        double x, y, z;
-        ss >> x >> y >> z;
-        controlPoints.push_back(Ogre::Vector3(x, y, z));
-    }
-
-    ifs.close();
-    go(controlPoints);
-}
-
-PathManager::PathManager(const std::vector<Ogre::Vector3>& controlPoints){
-    go(controlPoints);
-}
-
-
-Ogre::Vector3 PathManager::getMonsterNextPosition() const{
-    return monsterNextPosition;
-}
-
-void PathManager::setMonsterNextPosition(const Ogre::Vector3 &value) {
-    monsterNextPosition = value;
+    return std::pair<unsigned,double>(targetIndex, targetT);
 }
 
 void PathManager::go(const std::vector<Ogre::Vector3>& controlPoints) {

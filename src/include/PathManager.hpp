@@ -45,6 +45,15 @@ public:
     Ogre::Vector3 getAntiTangentFromPoint(const Ogre::Vector3& point) const;
     Ogre::Vector3 getMonsterNextPosition() const;
     void setMonsterNextPosition(const Ogre::Vector3 &value);
+
+    /**
+     * Binary searches the nearest point on the spline in relation to the specified point.
+     * Time complexity: O(mPoints.size() + 2 * NUM_STEP)
+     * Return:
+     * - first: index (unsigned)
+     * - second: t (double)
+     */
+    std::pair<unsigned,double> binSearchNearestPointOnSpline(const Ogre::Vector3& point) const;
 };
 
 }
