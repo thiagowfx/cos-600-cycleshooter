@@ -175,7 +175,7 @@ std::vector<Ogre::Vector3> TerrainManager::obtainCircuitControllPoints(){
             else if(pts.at(i).z >= 0  && pts.at(i).x < 0) fourthQuad.push_back(pts.at(i));
         }
 
-        // Sort the elements by they tangents
+        // Sort the elements by they tangents and reverse them
         auto sortOgrePoints = [](const Ogre::Vector3 a, const Ogre::Vector3 b){
             return (std::abs(a.z)/std::abs(a.x)) < (std::abs(b.z)/std::abs(b.x));
         };
@@ -184,6 +184,11 @@ std::vector<Ogre::Vector3> TerrainManager::obtainCircuitControllPoints(){
         std::sort(secondQuad.begin(),secondQuad.end(),sortOgrePoints);
         std::sort(thirdQuad.begin(),thirdQuad.end(),sortOgrePoints);
         std::sort(fourthQuad.begin(),fourthQuad.end(),sortOgrePoints);
+
+        std::reverse(firstQuad.begin(),firstQuad.end());
+        std::reverse(secondQuad.begin(),secondQuad.end());
+        std::reverse(thirdQuad.begin(),thirdQuad.end());
+        std::reverse(fourthQuad.begin(),fourthQuad.end());
 
         // Concatenate the vectors ordenaded
         pts.clear();
