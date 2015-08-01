@@ -477,7 +477,7 @@ void Controller::setupKeyMappings() {
 
 #define bicycleSpeedChange(signal_sensibility) bicycle->changeSpeed(static_cast<float>(signal_sensibility) * BICYCLE_SPEED_CHANGE);
 #define bicycleRotationChange(signal_sensibility)\
-    Ogre::Degree angle = Ogre::Degree(1.5);\
+    Ogre::Degree angle = Ogre::Degree(ConfigManager::instance().getDouble("Controller.camera_rotation_angle_per_frame"));\
     logicManager->rotateCamera(static_cast<float>(signal_sensibility) * angle);
 #define scrollCrosshair(x_sensibility, y_sensibility)\
     crosshairManager->scrollVirtualCrosshair(polar->getHeartRate(), x_sensibility, y_sensibility);
