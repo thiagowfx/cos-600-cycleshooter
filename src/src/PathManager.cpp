@@ -2,15 +2,6 @@
 
 namespace Cycleshooter {
 
-
-Ogre::Vector3 PathManager::getCurrentTangent() const {
-    return currentTangent;
-}
-
-Ogre::Vector3 PathManager::getLastTangent() const {
-    return lastTangent;
-}
-
 Ogre::Vector3 PathManager::getMonsterTangent() const {
     return monsterTangent;
 }
@@ -93,10 +84,6 @@ void PathManager::updateIndex(){
     monsterIndex = monsterNextIndex;
     monsterNextIndex = (monsterNextIndex + 1) % mPoints.size();
     LOG("Monster index change to %d", monsterNextIndex);
-}
-
-void PathManager::updateSplineStep(double playerVelocity){
-    splineStep = VELOCITY_FACTOR * playerVelocity;
 }
 
 void PathManager::setDebug(bool debug) {
