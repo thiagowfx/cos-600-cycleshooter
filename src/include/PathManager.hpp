@@ -52,6 +52,7 @@ public:
     Ogre::Vector3 getCurrentTangent() const;
     Ogre::Vector3 getLastTangent() const;
     Ogre::Vector3 getMonsterTangent() const;
+    Ogre::Vector3 getAntiTangentFromPoint(const Ogre::Vector3& point) const;
 
     Ogre::Vector3 getMonsterNextPosition() const;
     void setMonsterNextPosition(const Ogre::Vector3 &value);

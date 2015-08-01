@@ -671,6 +671,10 @@ void Controller::setupKeyMappings() {
     });
 }
 
+PathManager* Controller::getPathManager() const {
+    return pathManager.get();
+}
+
 AbstractPolar* Controller::getPolar() const {
     return polar.get();
 }

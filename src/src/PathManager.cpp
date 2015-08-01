@@ -15,6 +15,62 @@ Ogre::Vector3 PathManager::getMonsterTangent() const {
     return monsterTangent;
 }
 
+Ogre::Vector3 PathManager::getAntiTangentFromPoint(const Ogre::Vector3 &point) const {
+    int nearestPointIndex;
+    double squaredDistance = std::numeric_limits<double>::max();
+
+    for(unsigned i = 0; i < mPoints.size(); ++i) {
+        double d = point.squaredDistance(mPoints[i]);
+        if(d < squaredDistance) {
+            squaredDistance = d;
+            nearestPointIndex = i;
+        }
+    }
+
+//    std::cout << "index: " << nearestPointIndex << std::endl;
+//    std::cout << "distance^2:" << squaredDistance << std::endl;
+//    std::cout << "point:" << mPoints[nearestPointIndex] << std::endl;
+
+    int previousIndex = (nearestPointIndex + mPoints.size() - 1) % mPoints.size();
+    int nextIndex = (nearestPointIndex + 1) % mPoints.size();
+
+    auto binSearch = [&](int leftIndex, int rightIndex, const int NUM_STEPS = 10) {
+        double tbegin, tend, tavg;
+        double dbegin, dend, davg;
+
+        for(int i = 0,
+            tbegin = 0.0,
+            tend = 1.0,
+            dbegin = point.squaredDistance(mPoints[leftIndex]),
+            dend = point.squaredDistance(mPoints[rightIndex])
+            ; i < NUM_STEPS; ++i) {
+
+            tavg = (tbegin + tend) / 2.0;
+            davg = point.squaredDistance(interpolate(leftIndex, tavg));
+
+            if(dbegin < davg) {
+                tend = tavg;
+                dend = davg;
+            }
+            else {
+                tbegin = tavg;
+                dbegin = davg;
+            }
+        }
+
+        return std::pair<double,double>(tavg, davg);
+    };
+
+    std::pair<double,double> bse1 = binSearch(previousIndex, nearestPointIndex);
+    std::pair<double,double> bse2 = binSearch(nearestPointIndex, nextIndex);
+
+    int targetIndex = (bse1.second < bse2.second) ? previousIndex : nearestPointIndex;
+    double targetT = (bse1.second < bse2.second) ? bse1.first : bse2.first;
+
+    // TODO: return antitangent from targetIndex and targetT
+    return mPoints[nearestPointIndex]; // this return is just a placeholder at the moment
+}
+
 PathManager::PathManager() {
 
     //Circular curve for debugging

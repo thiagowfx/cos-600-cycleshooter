@@ -156,12 +156,15 @@ void LogicManager::createCameras() {
     // create cameras
     frontCamera = controller->getSceneManager()->createCamera("frontCamera");
     rearCamera = controller->getSceneManager()->createCamera("rearCamera");
+    shooterCamera = controller->getSceneManager()->createCamera("shooterCamera");
 
     // adjust clip distances in cameras
     frontCamera->setNearClipDistance(CAMERA_NEAR_CLIP_DISTANCE);
     frontCamera->setFarClipDistance(CAMERA_FAR_CLIP_DISTANCE);
     rearCamera->setNearClipDistance(CAMERA_NEAR_CLIP_DISTANCE);
     rearCamera->setFarClipDistance(CAMERA_FAR_CLIP_DISTANCE);
+    shooterCamera->setNearClipDistance(CAMERA_NEAR_CLIP_DISTANCE);
+    shooterCamera->setFarClipDistance(CAMERA_FAR_CLIP_DISTANCE);
 }
 
 void LogicManager::createSceneNodes() {
@@ -235,9 +238,13 @@ void LogicManager::setupRunnerMode() {
 }
 
 void LogicManager::setupShooterMode() {
-    viewportFull->setCamera(rearCamera);
-    rearCamera->setAspectRatio(Ogre::Real(viewportFull->getActualWidth()) / Ogre::Real(viewportFull->getActualHeight()));
+    Ogre::Vector3 shooterDirection = controller->getPathManager()->getAntiTangentFromPoint(playerNode->getPosition());
+    shooterCamera->setDirection(shooterDirection);
 
+    viewportFull->setCamera(shooterCamera);
+    shooterCamera->setAspectRatio(Ogre::Real(viewportFull->getActualWidth()) / Ogre::Real(viewportFull->getActualHeight()));
+
+    // remove mirror viewport
     controller->getWindow()->removeViewport(1);
 }
 

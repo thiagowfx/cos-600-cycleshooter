@@ -24,6 +24,7 @@ class LogicManager {
 
     Ogre::Camera *frontCamera = NULL;
     Ogre::Camera *rearCamera = NULL;
+    Ogre::Camera *shooterCamera = NULL;
 
     /*
      *  RTT.

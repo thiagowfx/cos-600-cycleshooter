@@ -415,6 +415,7 @@ public:
      * Return the elapsed time in MM:SS form, as a string.
      */
     std::string getElapsedTimeAsString() const;
+    PathManager* getPathManager() const;
 };
 
 }
