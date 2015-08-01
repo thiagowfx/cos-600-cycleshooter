@@ -55,14 +55,10 @@ void CollisionHandler::loadTensor(){
             // Outside Circuit Materials
             else if(collisionPixel == START_COLOR)
                 collisionMatrix[row][col] = START_PIXEL;
-            else if (collisionPixel == PATH_COLOR){
-                //std::cout <<-row*(25000.0/2048) + 12500 << " 0.0 " << -col*(25000.0/2048) + 12500 << std::endl;
+            else if (collisionPixel == PATH_COLOR)
                 collisionMatrix[row][col] = PATH_PIXEL;
-            }
             else if(collisionPixel == GRASS_COLOR)
                 collisionMatrix[row][col] = GRASS_PIXEL;
-            else if(collisionPixel == WATER_COLOR)
-                collisionMatrix[row][col] = WATER_PIXEL;
         }
     }
 }
