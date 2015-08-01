@@ -24,6 +24,8 @@ class PathManager: public Ogre::SimpleSpline {
     unsigned monsterIndex = 0;
     unsigned monsterNextIndex = monsterIndex + 1;
     Ogre::Vector3 monsterNextPosition;
+    bool isPlayerClose = false;
+    Ogre::Real monsterVelocity = 50.0;
 
     //for debugging
     Procedural::Path proceduralPath;
@@ -35,7 +37,7 @@ public:
     PathManager(const char* file);
     PathManager(const std::vector<Ogre::Vector3>& controlPoints);
 
-    void monsterPathUpdate(Ogre::Real timeSinceLastFrame);
+    void monsterPathUpdate(Ogre::Real timeSinceLastFrame, const Ogre::Vector3& playerPosition, const Ogre::Vector3& monsterPosition);
     void updateIndex();
     void setDebug(bool debug);
     Ogre::Vector3 getMonsterTangent() const;

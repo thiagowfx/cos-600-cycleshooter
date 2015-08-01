@@ -251,4 +251,12 @@ double LogicManager::getDistanceToMonster() const {
     return monsterNode->getPosition().distance(playerNode->getPosition());
 }
 
+Ogre::Vector3 LogicManager::getPlayerPosition() const {
+    return playerNode->getPosition();
+}
+
+Ogre::Vector3 LogicManager::getMonsterPosition() const {
+    return monsterNode->getPosition();
+}
+
 }

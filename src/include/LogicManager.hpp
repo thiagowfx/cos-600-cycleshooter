@@ -118,6 +118,8 @@ public:
 
     // getters and setters
     Ogre::SceneNode *getPlayerNode() const;
+    Ogre::Vector3 getPlayerPosition() const;
+    Ogre::Vector3 getMonsterPosition() const;
     int getPlayerAmmo() const;
     int getMonsterHealth() const;
     void setDifficultyParamenter();

@@ -111,22 +111,31 @@ void PathManager::go(const std::vector<Ogre::Vector3>& controlPoints) {
     }
 }
 
-void PathManager::monsterPathUpdate(Ogre::Real timeSinceLastFrame) {
-    monsterSplineStep = monsterSplineVelocity * timeSinceLastFrame;
-    if(monsterParametricPosition + monsterSplineStep < 1.0){
-        monsterParametricPosition += monsterSplineStep;
+void PathManager::monsterPathUpdate(Ogre::Real timeSinceLastFrame, const Ogre::Vector3& playerPosition, const Ogre::Vector3& monsterPosition) {
+    if(!isPlayerClose){
+        monsterSplineStep = monsterSplineVelocity * timeSinceLastFrame;
+        if(monsterParametricPosition + monsterSplineStep < 1.0){
+            monsterParametricPosition += monsterSplineStep;
+        }
+        else {
+            monsterParametricPosition = 0.0;
+            updateIndex();
+        }
+        Ogre::Vector3 monsterTangentFirstPoint = this->interpolate(monsterIndex, monsterParametricPosition);
+        Ogre::Vector3 monsterTangentSecondPoint = this->interpolate(monsterIndex, monsterParametricPosition + epsilon);
+        setMonsterNextPosition(monsterTangentFirstPoint);
+        //LOG("index = %d, nextIndex = %d",monsterIndex,monsterNextIndex);
+
+        monsterTangent = monsterTangentSecondPoint - monsterTangentFirstPoint;
+        monsterTangent.normalise();
     }
     else {
-        monsterParametricPosition = 0.0;
-        updateIndex();
+        monsterTangent = playerPosition - monsterPosition;
+        monsterTangent.normalise();
+        Ogre::Vector3 distance = monsterVelocity * timeSinceLastFrame * monsterTangent;
+        setMonsterNextPosition(monsterNextPosition + distance);
     }
-    Ogre::Vector3 monsterTangentFirstPoint = this->interpolate(monsterIndex, monsterParametricPosition);
-    Ogre::Vector3 monsterTangentSecondPoint = this->interpolate(monsterIndex, monsterParametricPosition + epsilon);
-    setMonsterNextPosition(monsterTangentFirstPoint);
-    //LOG("index = %d, nextIndex = %d",monsterIndex,monsterNextIndex);
-
-    monsterTangent = monsterTangentSecondPoint - monsterTangentFirstPoint;
-    monsterTangent.normalise();
+    isPlayerClose = (playerPosition - monsterPosition).length() < 100 ? true: false;
 }
 
 
