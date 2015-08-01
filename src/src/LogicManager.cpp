@@ -179,6 +179,7 @@ void LogicManager::createSceneNodes() {
     // attach scene nodes
     frontCameraNode->attachObject(frontCamera);
     rearCameraNode->attachObject(rearCamera);
+    playerNode->attachObject(shooterCamera);
 
     monsterNode = controller->getSceneManager()->getSceneNode("monsterNode");
 }

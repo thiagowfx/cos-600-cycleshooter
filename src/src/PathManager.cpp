@@ -18,23 +18,20 @@ Ogre::Vector3 PathManager::getAntiTangentFromPoint(const Ogre::Vector3 &point) c
         }
     }
 
-//    std::cout << "index: " << nearestPointIndex << std::endl;
-//    std::cout << "distance^2:" << squaredDistance << std::endl;
-//    std::cout << "point:" << mPoints[nearestPointIndex] << std::endl;
-
     int previousIndex = (nearestPointIndex + mPoints.size() - 1) % mPoints.size();
     int nextIndex = (nearestPointIndex + 1) % mPoints.size();
 
     auto binSearch = [&](int leftIndex, int rightIndex, const int NUM_STEPS = 10) {
-        double tbegin, tend, tavg;
+        int step;
+        double tbegin, tavg, tend;
         double dbegin, dend, davg;
 
-        for(int i = 0,
+        for(step = 0,
             tbegin = 0.0,
             tend = 1.0,
             dbegin = point.squaredDistance(mPoints[leftIndex]),
             dend = point.squaredDistance(mPoints[rightIndex])
-            ; i < NUM_STEPS; ++i) {
+            ; step < NUM_STEPS; ++step) {
 
             tavg = (tbegin + tend) / 2.0;
             davg = point.squaredDistance(interpolate(leftIndex, tavg));
@@ -58,11 +55,20 @@ Ogre::Vector3 PathManager::getAntiTangentFromPoint(const Ogre::Vector3 &point) c
     int targetIndex = (bse1.second < bse2.second) ? previousIndex : nearestPointIndex;
     double targetT = (bse1.second < bse2.second) ? bse1.first : bse2.first;
 
-    Ogre::Vector3 firstPoint = this->interpolate(targetIndex, targetT);
-    Ogre::Vector3 secondPoint = this->interpolate(targetIndex, targetT + epsilon);
-    Ogre::Vector3 antiTangent = firstPoint - secondPoint;
-    antiTangent.normalise();
-    return antiTangent;
+//    std::cout << "index: " << nearestPointIndex << std::endl;
+//    std::cout << "distance^2:" << squaredDistance << std::endl;
+//    std::cout << "point:" << mPoints[nearestPointIndex] << std::endl;
+//    std::cout << "targetIndex: " << targetIndex << std::endl;
+//    std::cout << "targetT: " << targetT << std::endl;
+
+    if ((targetT + epsilon) > 1.0) {
+        return (mTangents[(targetIndex + 1) % mPoints.size()]).normalisedCopy();
+    }
+    else {
+        Ogre::Vector3 firstPoint = interpolate(targetIndex, targetT);
+        Ogre::Vector3 secondPoint =  interpolate(targetIndex, targetT + epsilon);
+        return (firstPoint - secondPoint).normalisedCopy();
+    }
 }
 
 PathManager::PathManager() {
