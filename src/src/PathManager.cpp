@@ -67,8 +67,11 @@ Ogre::Vector3 PathManager::getAntiTangentFromPoint(const Ogre::Vector3 &point) c
     int targetIndex = (bse1.second < bse2.second) ? previousIndex : nearestPointIndex;
     double targetT = (bse1.second < bse2.second) ? bse1.first : bse2.first;
 
-    // TODO: return antitangent from targetIndex and targetT
-    return mPoints[nearestPointIndex]; // this return is just a placeholder at the moment
+    Ogre::Vector3 firstPoint = this->interpolate(targetIndex, targetT);
+    Ogre::Vector3 secondPoint = this->interpolate(targetIndex, targetT + epsilon);
+    Ogre::Vector3 antiTangent = firstPoint - secondPoint;
+    antiTangent.normalise();
+    return antiTangent;
 }
 
 PathManager::PathManager() {
