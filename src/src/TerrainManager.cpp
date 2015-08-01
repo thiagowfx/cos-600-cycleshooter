@@ -221,8 +221,8 @@ bool TerrainManager::calculateSLBIntersection(Ogre::Vector3 p1, Ogre::Vector3 p2
         beta = beta/(a22[i]- a21*a12[i]/ a11);
         alfa = c1[i] - a12[i]*beta;
         alfa = alfa/a11;
-        bAlfa = -1 <= alfa && alfa <= 1 ;
-        bBeta = -1 <= beta && beta <= 1 ;
+        bAlfa = 0 <= alfa && alfa <= 1 ;
+        bBeta = 0 <= beta && beta <= 1 ;
         if(bAlfa && bBeta)
             return true;
     }
