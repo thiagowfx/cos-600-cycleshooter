@@ -146,7 +146,7 @@ void LogicManager::createCameras() {
     // create cameras
     frontCamera = controller->getSceneManager()->createCamera("frontCamera");
     rearCamera = controller->getSceneManager()->createCamera("rearCamera");
-    antiTangentShooterCamera = controller->getSceneManager()->createCamera("shooterCamera");
+    antiTangentShooterCamera = controller->getSceneManager()->createCamera("antiTangentShooterCamera");
 
     // adjust clip distances in cameras
     frontCamera->setNearClipDistance(CAMERA_NEAR_CLIP_DISTANCE);
