@@ -16,7 +16,7 @@ class PathManager: public Ogre::SimpleSpline {
     Ogre::Real epsilon = 0.0001;
 
     //Fake path
-    Ogre::Real VELOCITY_FACTOR = 0.00005;
+    Ogre::Real VELOCITY_FACTOR = 0.00001;
     Ogre::Vector3 fakePathTangent;
     Ogre::Real fakePathSplineParameter = 0;
     unsigned int fakePathIndex = 1;
@@ -46,7 +46,7 @@ public:
     void updateIndex();
 
     void fakePathUpdate();
-    void fakePathSplineStepUpdate(const double& playerVelocity, Ogre::Real time);
+    void fakePathSplineStepUpdate(const Ogre::Vector3& playerVelocity);
     void fakePathUpdateIndex();
 
     std::vector<Ogre::Real> parametricValue(Ogre::Vector3 splinePoint, unsigned int fromIndex);

@@ -97,6 +97,8 @@ class LogicManager {
     // Data structure for difficulty mapping.
     std::vector<float> difficultyParamenter;
 
+    Ogre::Vector3 playerVelocity;
+
     // Rotation variables
     double angularVelocity;
     // TODO: create a config out of this hard-coded constant
@@ -129,6 +131,7 @@ public:
     void rotateCamera(const Ogre::Degree& angle, const Ogre::Vector3& pathDirection, const Ogre::Vector3& lastPathDirection);
     void updateMonster(const Ogre::Vector3& tangent,const Ogre::Vector3& monsterNextPosition);
     void updateFakePath(const Ogre::Vector3 &tangent, const Ogre::Vector3& fakePathNextPosition);
+    void updatePlayerVelocity();
 
     // getters and setters
     Ogre::SceneNode *getPlayerNode() const;
@@ -138,6 +141,7 @@ public:
     void externalIncrement();
     double getAngularVelocity() const;
     void setAngularVelocity(double value);
+    Ogre::Vector3 getPlayerVelocity() const;
 };
 }
 

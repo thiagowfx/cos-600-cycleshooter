@@ -215,6 +215,11 @@ void LogicManager::createRtt() {
     rttRenderTarget->getViewport(0)->setOverlaysEnabled(false);
     rttRenderTarget->getViewport(0)->setBackgroundColour(Ogre::ColourValue::Black);
 }
+Ogre::Vector3 LogicManager::getPlayerVelocity() const
+{
+    return playerVelocity;
+}
+
 
 double LogicManager::getAngularVelocity() const {
     return angularVelocity;
@@ -264,6 +269,12 @@ void LogicManager::setDebug(bool debug) {
     float parameter = 1/difficultyParamenter[difficulty];
     parentPlayerNode->translate(translation*parameter);
 }*/
+void LogicManager::updatePlayerVelocity(){
+    Ogre::Vector3 orientation = playerNode->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_Z;
+    orientation.normalise();
+    double magnitude = controller->getBicycle()->getGameSpeed();
+    playerVelocity = magnitude * orientation;
+}
 
 void LogicManager::rotateCamera(const Ogre::Degree& angle, const Ogre::Vector3& pathDirection, const Ogre::Vector3& lastPathDirection){
     //path rotation

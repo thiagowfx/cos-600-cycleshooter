@@ -86,6 +86,12 @@ void PathManager::monsterPathUpdate() {
     monsterTangent.normalise();
 }
 
+void PathManager::updateIndex(){
+    monsterIndex = monsterNextIndex;
+    monsterNextIndex = (monsterNextIndex + 1) % mPoints.size();
+    LOG("Monster index change to %d", monsterNextIndex);
+}
+
 void PathManager::fakePathUpdate() {
     Ogre::Vector3 fakePathTangentFirstPoint = this->interpolate(fakePathIndex, fakePathSplineParameter);
     Ogre::Vector3 fakePathTangentSecondPoint = this->interpolate(fakePathIndex, fakePathSplineParameter + epsilon);
@@ -94,16 +100,10 @@ void PathManager::fakePathUpdate() {
     fakePathTangent.normalise();
 }
 
-
-void PathManager::updateIndex(){
-    monsterIndex = monsterNextIndex;
-    monsterNextIndex = (monsterNextIndex + 1) % mPoints.size();
-    LOG("Monster index change to %d", monsterNextIndex);
-}
-
-void PathManager::fakePathSplineStepUpdate(const double& playerVelocity, Ogre::Real time){
-    if(fakePathSplineParameter + VELOCITY_FACTOR * playerVelocity < 1) {
-        fakePathSplineParameter += VELOCITY_FACTOR * playerVelocity;
+void PathManager::fakePathSplineStepUpdate(const Ogre::Vector3& playerVelocity){
+    double projection = (1/fakePathTangent.length()) * fakePathTangent.dotProduct(playerVelocity);
+    if(fakePathSplineParameter + VELOCITY_FACTOR * projection < 1) {
+        fakePathSplineParameter += VELOCITY_FACTOR * projection;
     }
     else {
         fakePathSplineParameter = 0;
