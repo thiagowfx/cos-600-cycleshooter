@@ -112,15 +112,15 @@ void PathManager::go(const std::vector<Ogre::Vector3>& controlPoints) {
 }
 
 void PathManager::monsterPathUpdate() {
-    if(monsterSplineStep + 0.001 < 1.0){
-        monsterSplineStep += 0.001;
+    if(monsterParametricPosition + monsterSplineStep < 1.0){
+        monsterParametricPosition += monsterSplineStep;
     }
     else {
-        monsterSplineStep = 0.0;
+        monsterParametricPosition = 0.0;
         updateIndex();
     }
-    Ogre::Vector3 monsterTangentFirstPoint = this->interpolate(monsterIndex, monsterSplineStep);
-    Ogre::Vector3 monsterTangentSecondPoint = this->interpolate(monsterIndex, monsterSplineStep + epsilon);
+    Ogre::Vector3 monsterTangentFirstPoint = this->interpolate(monsterIndex, monsterParametricPosition);
+    Ogre::Vector3 monsterTangentSecondPoint = this->interpolate(monsterIndex, monsterParametricPosition + epsilon);
     setMonsterNextPosition(monsterTangentFirstPoint);
     //LOG("index = %d, nextIndex = %d",monsterIndex,monsterNextIndex);
 

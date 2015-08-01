@@ -17,7 +17,8 @@ class PathManager: public Ogre::SimpleSpline {
 
     // Monster
     Ogre::Vector3 monsterTangent;
-    Ogre::Real monsterSplineStep = 0;
+    Ogre::Real monsterParametricPosition = 0;
+    Ogre::Real monsterSplineStep = 0.001;
     unsigned int monsterIndex = 0;
     unsigned int monsterNextIndex = 1;
     Ogre::Vector3 monsterNextPosition;
