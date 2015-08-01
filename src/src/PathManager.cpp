@@ -127,6 +127,9 @@ void PathManager::monsterPathUpdate(Ogre::Real timeSinceLastFrame, const Ogre::V
 
         monsterTangent = monsterTangentSecondPoint - monsterTangentFirstPoint;
         monsterTangent.normalise();
+        if((playerPosition - monsterPosition).length() < MINIMUM_DISTANCE){
+            AudioManager::instance().playSound(SOUND_MONSTER_PROXIMITY);
+        }
     }
     else {
         monsterTangent = playerPosition - monsterPosition;

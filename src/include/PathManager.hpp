@@ -9,6 +9,7 @@
 
 #include "ConfigManager.hpp"
 #include "Logging.hpp"
+#include "AudioManager.hpp"
 
 namespace Cycleshooter {
 
