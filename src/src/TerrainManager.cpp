@@ -149,6 +149,7 @@ std::pair<int, bool> TerrainManager::getTerrainAt(Ogre::Vector3 coord){
 std::vector<Ogre::Vector3> TerrainManager::obtainCircuitControllPoints(){
     std::vector<std::pair<int,int> > locations = collisionHandler->getPathControllPoints();
     std::vector<Ogre::Vector3> points;
+    std::vector<Ogre::Vector3> sortedpoints;
 
     for(int i = 0; i< locations.size();i++){
         points.push_back(getWorldCoordinates(locations[i]));
@@ -177,7 +178,12 @@ std::vector<Ogre::Vector3> TerrainManager::obtainCircuitControllPoints(){
 
         // Sort the elements by they tangents and reverse them
         auto sortOgrePoints = [](const Ogre::Vector3 a, const Ogre::Vector3 b){
-            return (std::abs(a.z)/std::abs(a.x)) < (std::abs(b.z)/std::abs(b.x));
+            if(std::abs(a.z) < std::abs(b.z))
+                return true;
+            else if ((std::abs(a.z) == std::abs(b.z)) && std::abs(a.x) < std::abs(b.x))
+                return true;
+            else
+                return false;
         };
 
         std::sort(firstQuad.begin(),firstQuad.end(),sortOgrePoints);
@@ -185,10 +191,9 @@ std::vector<Ogre::Vector3> TerrainManager::obtainCircuitControllPoints(){
         std::sort(thirdQuad.begin(),thirdQuad.end(),sortOgrePoints);
         std::sort(fourthQuad.begin(),fourthQuad.end(),sortOgrePoints);
 
+        // Notice that we don't need reverse for the second and the fourth quadrant
         std::reverse(firstQuad.begin(),firstQuad.end());
-        std::reverse(secondQuad.begin(),secondQuad.end());
         std::reverse(thirdQuad.begin(),thirdQuad.end());
-        std::reverse(fourthQuad.begin(),fourthQuad.end());
 
         // Concatenate the vectors ordenaded
         pts.clear();
@@ -205,7 +210,16 @@ std::vector<Ogre::Vector3> TerrainManager::obtainCircuitControllPoints(){
         return pts;
     };
 
-    return sortControllPoints(points);
+    sortedpoints = sortControllPoints(points);
+
+    std::cout << std::endl <<"====== Printing sorted Ogre Control Points ======" << std::endl;
+    for(int i = 0; i < sortedpoints.size(); i++){
+        std::cout << sortedpoints.at(i).x <<" "
+                  << sortedpoints.at(i).y <<" "
+                  << sortedpoints.at(i).z << std::endl;
+    }
+
+    return sortedpoints;
 }
 
 std::vector<std::pair<int, int> > TerrainManager::calculateBulletSurroundings(Ogre::Vector3 center,Ogre::AxisAlignedBox boundingBox){
