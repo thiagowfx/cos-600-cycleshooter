@@ -134,11 +134,11 @@ void PathManager::monsterPathUpdate(Ogre::Real timeSinceLastFrame, const Ogre::V
         monsterTangent.normalise();
         Ogre::Vector3 distance = monsterVelocity * timeSinceLastFrame * monsterTangent;
         setMonsterNextPosition(monsterNextPosition + distance);
-        if ((playerPosition - monsterPosition).length() < 1000) { //player escaped
+        if ((playerPosition - monsterPosition).length() < 500) { //player escaped
         //Update spline index and t with binary search
         }
     }
-    isPlayerClose = (playerPosition - monsterPosition).length() < 1000 ? true: false;
+    isPlayerClose = (playerPosition - monsterPosition).length() < 500 ? true: false;
 }
 
 
