@@ -200,14 +200,6 @@ void LogicManager::createRtt() {
     rttRenderTarget->getViewport(0)->setBackgroundColour(Ogre::ColourValue::Black);
 }
 
-double LogicManager::getAngularVelocity() const {
-    return angularVelocity;
-}
-
-void LogicManager::setAngularVelocity(double value) {
-    angularVelocity = value;
-}
-
 void LogicManager::setDifficultyParamenter() {
     difficultyParamenter[0] = 1.0f;
     difficultyParamenter[1] = 1.0f;

@@ -162,7 +162,6 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     static sf::Clock rotationUnbufClock;
     sf::Time ROTATION_UNBUF_TIME_MS = sf::milliseconds(ConfigManager::instance().getInt("Controller.threshold_rotation_keys_ms"));
     if(rotationUnbufClock.getElapsedTime() >= ROTATION_UNBUF_TIME_MS) {
-        logicManager->setAngularVelocity(ConfigManager::instance().getDouble("Controller.camera_angle_rotation_step") / evt.timeSinceLastFrame);
         InputManager::instance().executeJoystickActionsUnbuf(context);
         InputManager::instance().executeActionsRotationUnbuf(context);
         rotationUnbufClock.restart();
@@ -478,7 +477,7 @@ void Controller::setupKeyMappings() {
 
 #define bicycleSpeedChange(signal_sensibility) bicycle->changeSpeed(static_cast<float>(signal_sensibility) * BICYCLE_SPEED_CHANGE);
 #define bicycleRotationChange(signal_sensibility)\
-    Ogre::Degree angle = Ogre::Degree(logicManager->getAngularVelocity());\
+    Ogre::Degree angle = Ogre::Degree(1.5);\
     logicManager->rotateCamera(static_cast<float>(signal_sensibility) * angle);
 #define scrollCrosshair(x_sensibility, y_sensibility)\
     crosshairManager->scrollVirtualCrosshair(polar->getHeartRate(), x_sensibility, y_sensibility);

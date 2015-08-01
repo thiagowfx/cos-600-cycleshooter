@@ -89,9 +89,6 @@ class LogicManager {
     // Data structure for difficulty mapping.
     std::vector<float> difficultyParamenter;
 
-    // Rotation variables
-    double angularVelocity;
-
 public:
     LogicManager(Controller* controller);
 
