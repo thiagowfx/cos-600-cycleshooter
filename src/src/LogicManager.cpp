@@ -146,15 +146,15 @@ void LogicManager::createCameras() {
     // create cameras
     frontCamera = controller->getSceneManager()->createCamera("frontCamera");
     rearCamera = controller->getSceneManager()->createCamera("rearCamera");
-    shooterCamera = controller->getSceneManager()->createCamera("shooterCamera");
+    antiTangentShooterCamera = controller->getSceneManager()->createCamera("shooterCamera");
 
     // adjust clip distances in cameras
     frontCamera->setNearClipDistance(CAMERA_NEAR_CLIP_DISTANCE);
     frontCamera->setFarClipDistance(CAMERA_FAR_CLIP_DISTANCE);
     rearCamera->setNearClipDistance(CAMERA_NEAR_CLIP_DISTANCE);
     rearCamera->setFarClipDistance(CAMERA_FAR_CLIP_DISTANCE);
-    shooterCamera->setNearClipDistance(CAMERA_NEAR_CLIP_DISTANCE);
-    shooterCamera->setFarClipDistance(CAMERA_FAR_CLIP_DISTANCE);
+    antiTangentShooterCamera->setNearClipDistance(CAMERA_NEAR_CLIP_DISTANCE);
+    antiTangentShooterCamera->setFarClipDistance(CAMERA_FAR_CLIP_DISTANCE);
 }
 
 void LogicManager::createSceneNodes() {
@@ -169,7 +169,7 @@ void LogicManager::createSceneNodes() {
     // attach scene nodes
     frontCameraNode->attachObject(frontCamera);
     rearCameraNode->attachObject(rearCamera);
-    playerNode->attachObject(shooterCamera);
+    playerNode->attachObject(antiTangentShooterCamera);
 
     monsterNode = controller->getSceneManager()->getSceneNode("monsterNode");
 }
@@ -221,8 +221,16 @@ void LogicManager::setupRunnerMode() {
 }
 
 void LogicManager::setupShooterMode() {
-    Ogre::Vector3 shooterDirection = controller->getPathManager()->getAntiTangentFromPoint(playerNode->getPosition());
-    shooterCamera->setDirection(shooterDirection);
+    Ogre::Camera* shooterCamera;
+
+    if(ConfigManager::instance().getBool("LogicManager.use_antitangent_shooter_camera")) {
+        Ogre::Vector3 shooterDirection = controller->getPathManager()->getAntiTangentFromPoint(playerNode->getPosition());
+        antiTangentShooterCamera->setDirection(shooterDirection);
+        shooterCamera = antiTangentShooterCamera;
+    }
+    else {
+        shooterCamera = rearCamera;
+    }
 
     viewportFull->setCamera(shooterCamera);
     shooterCamera->setAspectRatio(Ogre::Real(viewportFull->getActualWidth()) / Ogre::Real(viewportFull->getActualHeight()));

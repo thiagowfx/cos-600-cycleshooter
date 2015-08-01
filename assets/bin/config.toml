@@ -61,6 +61,7 @@ mapped_heartbeat_minimum = 1.0
 mapped_heartbeat_maximum = 3.2
 
 [LogicManager]
+use_antitangent_shooter_camera = false
 initial_player_ammo = 30
 initial_monster_health = 10
 mirror_percentage_h = 0.675
