@@ -108,9 +108,6 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     // pathManager updates
     pathManager->monsterPathUpdate();
 
-    // update increment of spline curve
-    pathManager->updateSplineStep(getBicycle()->getGameSpeed());
-
     logicManager->updateMonster(pathManager->getMonsterTangent(), pathManager->getMonsterNextPosition());
 
     // monster animations

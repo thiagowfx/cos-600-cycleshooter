@@ -56,35 +56,26 @@ private:
     void createTerrain();
 
     /**
-     *
+     * Creating a wall to close the terrain.
      */
     void createTerrainWall();
 
     /**
-     *
-     */
-    struct GrassVertex{
-        float x, y, z;
-        float nx, ny, nz;
-        float u, v;
-    };
-    void createTerrainGrass();
-
-    /**
-     *
+     * Create the terrain lake
      */
     void createTerrainLake();
 
-    /**
-     *
-     */
-    void createCircuit();
-    
     /**
      * Defines translation and scale to collision coordinates
      * (maps continous rectangles in  discrete rectangles).
      */
     void setCollisionTransformation();
+
+    /**
+     *  Function to return random IDs to calculate random positions for the bullets
+     * inside the terrain.
+     */
+    std::vector<int> randomIdOfBullets(int maxvalue, int numOfPoints);
 
 public:
     TerrainManager(Ogre::SceneManager* sceneManager, std::string collisionTexturePath);

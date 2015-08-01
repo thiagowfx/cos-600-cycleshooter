@@ -60,9 +60,7 @@ void TerrainManager::createTerrain(){
     sceneManager->getRootSceneNode()->createChildSceneNode()->attachObject(terrainEntity);
 
     // Creating terrain structures
-    createTerrainGrass();
     createTerrainLake();
-    createCircuit();
     createTerrainWall();
 
     //Defining terrain structures
@@ -192,56 +190,61 @@ std::vector<std::pair<int, int> > TerrainManager::calculateBulletSurroundings(Og
     return coords;
 }
 
+std::vector<int> TerrainManager::randomIdOfBullets(int maxvalue, int numOfPoints){
+    std::srand(std::time(NULL));
+    std::vector<int> IDList;
+
+    auto checkInList = [](std::vector<int> &list, int value) -> bool{
+        for (int i = 0; i < list.size(); ++i){
+            if (list.at(i) == value)
+                return true;
+        }
+        return false;
+    };
+
+    while (IDList.size() < numOfPoints) {
+        int num = rand() % maxvalue;
+
+        if (!checkInList(IDList, num)){
+            IDList.push_back(num);
+        }
+    }
+
+    return IDList;
+}
+
 void TerrainManager::generateBullets(int numOfBullets){
     Ogre::LogManager::getSingletonPtr()->logMessage("--> TerrainManager: Generatig Random Values <--");
-    std::default_random_engine randomGenerator;
-    
-    //Defining limits on terrain where bullets will appear.
-    Ogre::Real wlimit = terrainWorldSizeWidth*0.125;
-    Ogre::Real hLimit = terrainWorldSizeHeight*0.125;
-    
-    //Initializing pseudo-random generators.
-    std::uniform_real_distribution<float> randomWidthDistribution (-wlimit,wlimit);
-    std::uniform_real_distribution<float> randomHeightDistribution (-hLimit,hLimit);
-    float randomWidth, randomHeight = 0.0f;
-    
+    std::vector<Ogre::Vector3> controlpts = obtainCircuitControllPoints();
+    std::vector<int> idx = randomIdOfBullets(controlpts.size(), numOfBullets);
+
     //Generating random values.
-    for(int i= 0; i<numOfBullets; i++){
-        randomWidth = randomWidthDistribution(randomGenerator);
-        randomHeight = randomHeightDistribution(randomGenerator);
-        Ogre::Vector3 coord(randomWidth,0,randomHeight);
+    for(int i = 0; i < numOfBullets; i++){
+        Ogre::Vector3 coord(controlpts.at(idx[i]));
         std::pair<int,int> location = getCollisionCoordinates(coord);
         
         //Adding bullet to the dataStructure in CollisionHandler.
         collisionHandler->insertBulletAt(location.first,location.second,true,coord);
         std::cout<<"Testing inverse Transformation for terrain Coordinates." << std::endl;
-        std::cout<< getWorldCoordinates(location).x<< ","<< getWorldCoordinates(location).y<<","<< getWorldCoordinates(location).z<< std::endl;
+        std::cout<< getWorldCoordinates(location).x<< "," <<
+                    getWorldCoordinates(location).y<< "," <<
+                    getWorldCoordinates(location).z<< std::endl;
     }
-    
-    Ogre::LogManager::getSingletonPtr()->logMessage("--> TerrainManager: Rendering Bullets <--");
 }
 
 void TerrainManager::renderBullets(){
     Ogre::LogManager::getSingletonPtr()->logMessage("--> TerrainManager: Preparing Bullets <--");
     std::pair<std::vector<Ogre::String> , std::vector<Ogre::Vector3> > renderSettings = collisionHandler-> getBulletsForRender();
+
     for(int i = 0;i < renderSettings.first.size();i++){
         Ogre::Entity* bulletEntity = sceneManager->createEntity(renderSettings.first[i], "bullet.mesh");
         bulletEntity->setMaterialName("Cycleshooter/BulletShell");
-        Ogre::LogManager::getSingletonPtr()->logMessage("--> TerrainManger: Rendering Bullet <--");
         Ogre::SceneNode* bulletNode = sceneManager->getRootSceneNode()->createChildSceneNode(renderSettings.first[i], renderSettings.second[i]);
-        Ogre::LogManager::getSingletonPtr()->logMessage(renderSettings.first[i]);
         bulletNode->attachObject(bulletEntity);
+
         //Compensates sizes defined by bulletBoundingBox.
         collisionHandler->compensateBulletRender(calculateBulletSurroundings(renderSettings.second[i]));
     }
-}
-
-void TerrainManager::createCircuit(){
-
-}
-
-void TerrainManager::createTerrainGrass(){
-
 }
 
 void TerrainManager::createTerrainLake(){
