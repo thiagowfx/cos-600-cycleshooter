@@ -30,9 +30,6 @@ void TerrainManager::defineTerrainProperties(){
     terrainWorldSizeWidth   = 25000;
     terrainWidth    = 1;
     terrainHeight   = 1;
-    GRASS_HEIGHT = 200;
-    GRASS_WIDTH = 200;
-
 }
 
 void TerrainManager::createTerrain(){
