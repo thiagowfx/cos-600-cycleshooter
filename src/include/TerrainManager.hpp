@@ -22,11 +22,15 @@ private:
     
     /**
      * Scale between image and terrain size.
+     * Scales between the terrain
+     * and collision data structure.
      */
     Ogre::Real widthScale, heightScale;
     
     /**
      * Vector to help with the system coordinator in Ogre3D
+     * Translation from terrain in Ogre dimensions
+     * to collision dimensions.
      */
     Ogre::Vector3 terrainTranslation;
     
@@ -94,9 +98,22 @@ public:
     Ogre::Vector3 getWorldCoordinates(std::pair<int,int> collisionCoord);
 
     /**
-     * Method to discover terrain property and bullet existence.
+     * Discover terrain type and bullet existence
+     * by point-bounding box intersection in a given terrain point.
      */
     std::pair<int,bool> getTerrainAt(Ogre::Vector3 coord);
+
+    /**
+     * Discover terrain type and bullet existence by
+     * line-bounding box intersection in a given terrain point.
+     */
+    std::pair<int,bool> getTerrainAt(Ogre::Vector3 coord, Ogre::Vector3 lastCoord);
+
+    /**
+     * Defines if a line segment delimeted by p1 and p2 intersects
+     * the bounding box bBox.
+     */
+    bool calculateSLBIntersection(Ogre::Vector3 p1,Ogre::Vector3 p2, Ogre::AxisAlignedBox bBox);
 
     /**
      * Obtain circuits controll points in world coordinates.
@@ -118,7 +135,6 @@ public:
      * Render bullets in the specific position.
      */
     void renderBullets();
-
       /////////////////////
      // Debug functions //
     /////////////////////

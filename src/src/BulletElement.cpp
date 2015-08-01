@@ -19,6 +19,10 @@ void BulletElement::setCoordinate(const Ogre::Vector3 &value){
     coordinate = value;
 }
 
+std::pair<Ogre::Vector3, Ogre::String> BulletElement::getProperties(){
+    return std::pair<Ogre::Vector3, Ogre::String> (this->coordinate,this->scenenodeName);
+}
+
 void BulletElement::setNewBullet(Ogre::Vector3 coord, int bulletNum){
     setCoordinate(coord);
     //Create bullet's scene node name base on the standard scene node name.

@@ -144,11 +144,35 @@ bool CollisionHandler::existBulletAt(int pixelWidth, int pixelHeight){
     return bulletMatrix[pixelWidth][pixelHeight].first;
 }
 
+bool CollisionHandler::existBulletNearAt(std::pair<int, int> begin, std::pair<int, int> end){
+    int minW = std::min(begin.first,end.first);
+    int minH = std::min(begin.second,end.second);
+    for(int w = 0; w < abs(begin.first-end.first);w++){
+        for(int h = 0; h< abs(begin.second-end.second);h++){
+            if(bulletMatrix[minW+w][minH+h].first)
+                return true;
+        }
+    }
+    return false;
+}
+
 std::pair<Ogre::Vector3,Ogre::String> CollisionHandler::getBulletPropertiesAt(int pixelWidth, int pixelHeight){
     Ogre::LogManager::getSingletonPtr()->logMessage("--> CollisionHandler: getBulletNameAt <--");
     Ogre::LogManager::getSingletonPtr()->logMessage(bulletMatrix[pixelWidth][pixelHeight].second.getScenenodeName());
 
     return std::make_pair(bulletMatrix[pixelWidth][pixelHeight].second.getCoordinate(),bulletMatrix[pixelWidth][pixelHeight].second.getScenenodeName());
+}
+
+std::vector<std::pair<Ogre::Vector3, Ogre::String> > CollisionHandler::getPossibleBullets(std::pair<int, int> begin, std::pair<int, int> end){
+    std::vector<std::pair<Ogre::Vector3, Ogre::String> > possibleBullets;
+    int minW = std::min(begin.first,end.first);
+    int minH = std::min(begin.second,end.second);
+    for(int w = 0; w < abs(begin.first-end.first);w++){
+        for(int h = 0; h< abs(begin.second-end.second);h++){
+            possibleBullets.push_back(bulletMatrix[minW+w][minH+h].second.getProperties());
+        }
+    }
+    return possibleBullets;
 }
 
 std::vector<std::pair<int, int> > CollisionHandler::getPathControllPoints(){
@@ -158,10 +182,16 @@ std::vector<std::pair<int, int> > CollisionHandler::getPathControllPoints(){
     matrixColNumber = collisionMatrix[0].size();
     matrixRowNumber = collisionMatrix.size();
     std::vector<std::pair<int,int> > pointsLocation;
-
     //Serching the matrix.
-    for(int pixelWidth = 0;pixelWidth<matrixColNumber;pixelWidth++){
-        for(int pixelHeight = 0; pixelHeight < matrixRowNumber;pixelHeight++){
+    for(int pixelWidth = 0;pixelWidth < matrixRowNumber;pixelWidth++){
+        for(int pixelHeight = (matrixColNumber/2)-1; pixelHeight >-1;pixelHeight--){
+            if(collisionMatrix[pixelWidth][pixelHeight] == PATH_PIXEL){
+                pointsLocation.push_back(std::pair<int,int> (pixelWidth,pixelHeight));
+            }
+        }
+    }
+    for(int pixelWidth = matrixRowNumber-1;pixelWidth >-1 ;pixelWidth--){
+        for(int pixelHeight = matrixColNumber/2; pixelHeight < matrixColNumber;pixelHeight++){
             if(collisionMatrix[pixelWidth][pixelHeight] == PATH_PIXEL){
                 pointsLocation.push_back(std::pair<int,int> (pixelWidth,pixelHeight));
             }
