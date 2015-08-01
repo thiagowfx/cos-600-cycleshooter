@@ -26,6 +26,7 @@ class PathManager: public Ogre::SimpleSpline {
     Ogre::Vector3 monsterNextPosition;
     bool isPlayerClose = false;
     Ogre::Real monsterVelocity = 50.0;
+    Ogre::Real MINIMUM_DISTANCE = 500;
 
     //for debugging
     Procedural::Path proceduralPath;
