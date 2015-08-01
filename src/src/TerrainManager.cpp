@@ -149,14 +149,58 @@ std::pair<int, bool> TerrainManager::getTerrainAt(Ogre::Vector3 coord){
 std::vector<Ogre::Vector3> TerrainManager::obtainCircuitControllPoints(){
     std::vector<std::pair<int,int> > locations = collisionHandler->getPathControllPoints();
     std::vector<Ogre::Vector3> points;
+
     for(int i = 0; i< locations.size();i++){
         points.push_back(getWorldCoordinates(locations[i]));
     }
+
     LOG("Controll Points.");
     for(int i= 0; i < points.size();i++){
-        std::cout<<points[i].x<<" "<<points[i].y<<" "<<points[i].z<<std::endl;
+        std::cout<< points[i].x << " " << points[i].y << " " << points[i].z << std::endl;
     }
-    return points;
+
+    auto sortControllPoints = [](std::vector<Ogre::Vector3>& pts)
+                              -> std::vector<Ogre::Vector3>
+    {
+        std::vector<Ogre::Vector3> firstQuad;
+        std::vector<Ogre::Vector3> secondQuad;
+        std::vector<Ogre::Vector3> thirdQuad;
+        std::vector<Ogre::Vector3> fourthQuad;
+
+        // Separate the points in quadrants
+        for(int i = 0; i < pts.size(); i++){
+            if(pts.at(i).z >= 0  && pts.at(i).x >= 0)     firstQuad.push_back(pts.at(i));
+            else if(pts.at(i).z < 0  && pts.at(i).x >= 0) secondQuad.push_back(pts.at(i));
+            else if(pts.at(i).z < 0  && pts.at(i).x < 0)  thirdQuad.push_back(pts.at(i));
+            else if(pts.at(i).z >= 0  && pts.at(i).x < 0) fourthQuad.push_back(pts.at(i));
+        }
+
+        // Sort the elements by they tangents
+        auto sortOgrePoints = [](const Ogre::Vector3 a, const Ogre::Vector3 b){
+            return (std::abs(a.z)/std::abs(a.x)) < (std::abs(b.z)/std::abs(b.x));
+        };
+
+        std::sort(firstQuad.begin(),firstQuad.end(),sortOgrePoints);
+        std::sort(secondQuad.begin(),secondQuad.end(),sortOgrePoints);
+        std::sort(thirdQuad.begin(),thirdQuad.end(),sortOgrePoints);
+        std::sort(fourthQuad.begin(),fourthQuad.end(),sortOgrePoints);
+
+        // Concatenate the vectors ordenaded
+        pts.clear();
+        pts.reserve(firstQuad.size()  +
+                    secondQuad.size() +
+                    thirdQuad.size()  +
+                    fourthQuad.size());
+
+        pts.insert(pts.end(), firstQuad.begin(), firstQuad.end());
+        pts.insert(pts.end(), secondQuad.begin(), secondQuad.end());
+        pts.insert(pts.end(), thirdQuad.begin(), thirdQuad.end());
+        pts.insert(pts.end(), fourthQuad.begin(), fourthQuad.end());
+
+        return pts;
+    };
+
+    return sortControllPoints(points);
 }
 
 std::vector<std::pair<int, int> > TerrainManager::calculateBulletSurroundings(Ogre::Vector3 center,Ogre::AxisAlignedBox boundingBox){
@@ -168,6 +212,7 @@ std::vector<std::pair<int, int> > TerrainManager::calculateBulletSurroundings(Og
     std::pair<int,int> coord3 = getCollisionCoordinates(boundingBox.getCorner(Ogre::AxisAlignedBox::FAR_LEFT_BOTTOM));
     std::pair<int,int> coord4 = getCollisionCoordinates(boundingBox.getCorner(Ogre::AxisAlignedBox::FAR_RIGHT_BOTTOM));
     std::vector<std::pair<int,int> > coords;
+
     //Adding center at first position.
     coords.push_back(coord0);
     coords.push_back(coord1);coords.push_back(coord2);coords.push_back(coord3);coords.push_back(coord4);
@@ -175,6 +220,7 @@ std::vector<std::pair<int, int> > TerrainManager::calculateBulletSurroundings(Og
     for(int i = 1; i< coords.size();i++){
         std::cout << "Compensation at "<<coords[i].first << ","<< coords[i].second<< std::endl;
     }
+
     return coords;
 }
 
@@ -191,7 +237,6 @@ std::vector<std::pair<int, int> > TerrainManager::calculateBulletSurroundings(Og
 }
 
 std::vector<int> TerrainManager::randomIdOfBullets(int maxvalue, int numOfPoints){
-    std::srand(std::time(NULL));
     std::vector<int> IDList;
 
     auto checkInList = [](std::vector<int> &list, int value) -> bool{
