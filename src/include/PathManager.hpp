@@ -7,6 +7,7 @@
 #include <OgreSimpleSpline.h>
 #include <ProceduralPathGenerators.h>
 
+#include "ConfigManager.hpp"
 #include "Logging.hpp"
 
 namespace Cycleshooter {
@@ -17,11 +18,11 @@ class PathManager: public Ogre::SimpleSpline {
 
     // Monster
     Ogre::Vector3 monsterTangent;
-    Ogre::Real monsterParametricPosition = 0;
+    Ogre::Real monsterParametricPosition = 0.0;
     Ogre::Real monsterSplineStep = 0.001;
-    Ogre::Real monsterSplineVelocity = 0.1;
-    unsigned int monsterIndex = 0;
-    unsigned int monsterNextIndex = 1;
+    Ogre::Real monsterSplineVelocity = ConfigManager::instance().getDouble("PathManager.monster_spline_velocity_percent");
+    unsigned monsterIndex = 0;
+    unsigned monsterNextIndex = monsterIndex + 1;
     Ogre::Vector3 monsterNextPosition;
 
     //for debugging
