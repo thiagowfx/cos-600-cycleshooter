@@ -6,7 +6,7 @@
 
 int main(int argc, char *argv[]) {
     try {
-        // early initialization of our singletons, for performance purporses
+        // early initialization of *some* singletons, for performance purporses
         Cycleshooter::AudioManager::instance();
         Cycleshooter::ConfigManager::instance();
         Cycleshooter::InputManager::instance();
