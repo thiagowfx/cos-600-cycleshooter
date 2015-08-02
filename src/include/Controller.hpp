@@ -30,7 +30,6 @@
 #include "CrosshairManager.hpp"
 #include "HUD.hpp"
 #include "PathManager.hpp"
-#include "PoligonalPathManager.hpp"
 
 #include "CollisionHandler.hpp"
 #include "TerrainManager.hpp"
@@ -326,11 +325,6 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     std::unique_ptr<PathManager> pathManager;
 
     /**
-     * Poligonal Path Manager.
-     */
-    std::unique_ptr<PoligonalPathManager> poligonalPathManager;
-
-    /**
      * @brief hud responsible for rendering overlay elements with useful information for the player
      */
     std::unique_ptr<HUD> hud;
@@ -415,6 +409,7 @@ public:
      * Return the elapsed time in MM:SS form, as a string.
      */
     std::string getElapsedTimeAsString() const;
+    PathManager* getPathManager() const;
 };
 
 }

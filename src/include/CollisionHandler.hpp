@@ -34,11 +34,6 @@ class CollisionHandler {
     /**
      * RGB value associated with the lake on the game.
      */
-    const Ogre::ColourValue WATER_COLOR = Ogre::ColourValue(setOgreScale(255), setOgreScale(0), setOgreScale(0));
-
-    /**
-     * RGB value associated with the lake on the game.
-     */
     Ogre::ColourValue GRASS_COLOR = Ogre::ColourValue(setOgreScale(0), setOgreScale(0), setOgreScale(0));
     
     /**
@@ -49,7 +44,7 @@ class CollisionHandler {
     /**
      * RGB value associated with the Rocks on the road.
      */
-    const Ogre::ColourValue ROCK_COLOR = Ogre::ColourValue(setOgreScale(0), setOgreScale(255), setOgreScale(0));
+    const Ogre::ColourValue ROCK_COLOR = Ogre::ColourValue(setOgreScale(0), setOgreScale(0), setOgreScale(255));
 
     /**
      * RGB value associated with the Sand on the road.
@@ -59,7 +54,7 @@ class CollisionHandler {
     /**
      * RGB value associated with the Ice on the road.
      */
-    const Ogre::ColourValue ICE_COLOR = Ogre::ColourValue(setOgreScale(0), setOgreScale(0), setOgreScale(255));
+    const Ogre::ColourValue ICE_COLOR = Ogre::ColourValue(setOgreScale(0), setOgreScale(255), setOgreScale(0));
 
     /**
      * RGB value associated with the Start Point of the player.

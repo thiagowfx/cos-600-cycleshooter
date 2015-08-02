@@ -106,26 +106,26 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     }
 
     // pathManager updates
-    pathManager->monsterPathUpdate();
+    pathManager->monsterPathUpdate(evt.timeSinceLastFrame, logicManager->getPlayerPosition(), logicManager->getMonsterPosition());
 
     logicManager->updateMonster(pathManager->getMonsterTangent(), pathManager->getMonsterNextPosition());
 
     // monster animations
     baseMonsterAnimation->addTime(evt.timeSinceLastFrame);
     topMonsterAnimation->addTime(evt.timeSinceLastFrame);
-    swordsMonsterAnimation->addTime(evt.timeSinceLastFrame / 10.0);
+    swordsMonsterAnimation->addTime(evt.timeSinceLastFrame / 3.5);
 
     // update game logic
     logicManager->update(evt);
 
     if(context == CONTEXT_SHOOTER) {
         static sf::Clock clockHeartbeat;
-        static int next_heartbeat_waiting_time_ms = 0;
+        static int NEXT_HEARTBEAT_WAITING_TIME_MS = 0;
 
         // (maybe) play a heartbeat sound
-        if(clockHeartbeat.getElapsedTime().asMilliseconds() >= next_heartbeat_waiting_time_ms) {
+        if(clockHeartbeat.getElapsedTime().asMilliseconds() >= NEXT_HEARTBEAT_WAITING_TIME_MS) {
             int heartRate = polar->getHeartRate();
-            next_heartbeat_waiting_time_ms = (60.0 * 1000.0) / double(heartRate);
+            NEXT_HEARTBEAT_WAITING_TIME_MS = (60.0 * 1000.0) / double(heartRate);
             AudioManager::instance().playHeartbeat(heartRate, HEARTBEAT_MINIMUM_ASSUMED, HEARTBEAT_MAXIMUM_ASSUMED);
             clockHeartbeat.restart();
         }
@@ -162,7 +162,6 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     static sf::Clock rotationUnbufClock;
     sf::Time ROTATION_UNBUF_TIME_MS = sf::milliseconds(ConfigManager::instance().getInt("Controller.threshold_rotation_keys_ms"));
     if(rotationUnbufClock.getElapsedTime() >= ROTATION_UNBUF_TIME_MS) {
-        logicManager->setAngularVelocity(ConfigManager::instance().getDouble("Controller.camera_angle_rotation_step") / evt.timeSinceLastFrame);
         InputManager::instance().executeJoystickActionsUnbuf(context);
         InputManager::instance().executeActionsRotationUnbuf(context);
         rotationUnbufClock.restart();
@@ -325,15 +324,20 @@ void Controller::createGameElements() {
 
     //Creating the path manager
     pathManager = std::unique_ptr<PathManager>(new PathManager("track1.txt"));
-    //poligonalPathManager = std::unique_ptr<PoligonalPathManager>(new PoligonalPathManager("track1.txt"));
+
+    unsigned monsterInitialIndex = ConfigManager::instance().getInt("Controller.monster_start_index") % getPathManager()->getNumPoints();
+    Ogre::Vector3 monsterInitialPosition = pathManager->getPoint(monsterInitialIndex);
+    Ogre::Vector3 monsterInitialLookAt = pathManager->getPoint((monsterInitialIndex + 1) % getPathManager()->getNumPoints()) - monsterInitialPosition;
+    monsterInitialLookAt.normalise();
 
     // upstream documentation: http://www.ogre3d.org/tikiwiki/Sinbad+Model
     Ogre::Entity* monsterEntity = getSceneManager()->createEntity("monsterEntity", "Sinbad.mesh");
-    Ogre::SceneNode* monsterNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("monsterNode", Ogre::Vector3(11096.2, 0.0, 4577.64));
-    double monsterScale = 5.0;
-    monsterNode->scale(monsterScale, monsterScale, monsterScale);
+    Ogre::SceneNode* monsterNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("monsterNode", monsterInitialPosition);
+
+    double MONSTER_SCALE_SIZE = ConfigManager::instance().getDouble("Controller.monster_scale_size");
+    monsterNode->scale(MONSTER_SCALE_SIZE, MONSTER_SCALE_SIZE, MONSTER_SCALE_SIZE);
     monsterNode->attachObject(monsterEntity);
-    monsterNode->yaw(Ogre::Degree(90));
+    monsterNode->setDirection(monsterInitialLookAt);
 
 
     // attention: logic manager should be created before any threads that will update it
@@ -345,7 +349,7 @@ void Controller::createGameElements() {
     }
     else {
         LOG("Using the ConstantBicycle class");
-        bicycle = std::unique_ptr<AbstractBicycle>(new ConstantBicycle(1));
+        bicycle = std::unique_ptr<AbstractBicycle>(new ConstantBicycle(0));
     }
 
     bicycleUpdater = std::unique_ptr<sf::Thread>(new sf::Thread([&](){
@@ -380,7 +384,7 @@ void Controller::createGameElements() {
     //terrainManager->sampleCollisionTransformation();
 
     // create a skybox
-    getSceneManager()->setSkyDome(true, "Cycleshooter/CloudySky");
+    getSceneManager()->setSkyDome(true, "Cycleshooter/NightySky", 3, 4);
 
     createAnimations();
     createSwords();
@@ -478,7 +482,7 @@ void Controller::setupKeyMappings() {
 
 #define bicycleSpeedChange(signal_sensibility) bicycle->changeSpeed(static_cast<float>(signal_sensibility) * BICYCLE_SPEED_CHANGE);
 #define bicycleRotationChange(signal_sensibility)\
-    Ogre::Degree angle = Ogre::Degree(logicManager->getAngularVelocity());\
+    Ogre::Degree angle = Ogre::Degree(ConfigManager::instance().getDouble("Controller.camera_rotation_angle_per_frame"));\
     logicManager->rotateCamera(static_cast<float>(signal_sensibility) * angle);
 #define scrollCrosshair(x_sensibility, y_sensibility)\
     crosshairManager->scrollVirtualCrosshair(polar->getHeartRate(), x_sensibility, y_sensibility);
@@ -666,6 +670,10 @@ void Controller::setupKeyMappings() {
     InputManager::instance().addJoystickButtons({3, 4, 6, 8}, [&]() {
         toggleMode();
     });
+}
+
+PathManager* Controller::getPathManager() const {
+    return pathManager.get();
 }
 
 AbstractPolar* Controller::getPolar() const {
@@ -869,7 +877,6 @@ void Controller::setDebug(bool debug) {
     logicManager->setDebug(debug);
     hud->setDebug(debug);
     pathManager->setDebug(debug);
-    //poligonalPathManager->setDebug(debug);
 }
 
 void Controller::toggleDebug() {

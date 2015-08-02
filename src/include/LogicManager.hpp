@@ -24,6 +24,9 @@ class LogicManager {
 
     Ogre::Camera *frontCamera = NULL;
     Ogre::Camera *rearCamera = NULL;
+    Ogre::Camera *antiTangentShooterCamera = NULL;
+
+    int lastFriction = 0;
 
     /*
      *  RTT.
@@ -38,8 +41,6 @@ class LogicManager {
 
     void decrementMonsterHealth(int quantity = 1);
 
-    double MONSTER_SPEED = 50.0;
-
     /*
      * Player section.
      */
@@ -48,11 +49,6 @@ class LogicManager {
      * Update the player position according to the passed time.
      */
     void updatePlayerPosition(const Ogre::Real& time);
-
-    /**
-     * Update the monster position according to the passed time.
-     */
-    void updateMonsterPosition(const Ogre::Real& time);
 
     /**
      * Calculate Bicycle Friction based on terrain properties.
@@ -95,9 +91,6 @@ class LogicManager {
     // Data structure for difficulty mapping.
     std::vector<float> difficultyParamenter;
 
-    // Rotation variables
-    double angularVelocity;
-
 public:
     LogicManager(Controller* controller);
 
@@ -127,6 +120,8 @@ public:
 
     // getters and setters
     Ogre::SceneNode *getPlayerNode() const;
+    Ogre::Vector3 getPlayerPosition() const;
+    Ogre::Vector3 getMonsterPosition() const;
     int getPlayerAmmo() const;
     int getMonsterHealth() const;
     void setDifficultyParamenter();

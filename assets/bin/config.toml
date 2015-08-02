@@ -37,6 +37,11 @@ threshold_rotation_keys_ms = 15
 countdown_time_ms = 1000
 dump_log_time_ms = 500
 
+camera_rotation_angle_per_frame = 1.5
+monster_scale_size = 10.0
+player_start_index = 30
+monster_start_index = 25
+
 heartbeat_minimum_assumed = 60
 heartbeat_maximum_assumed = 150
 polar_peak_change = 5
@@ -48,7 +53,6 @@ application_name = "Cycleshooter"
 current_date_format = "%Y-%m-%d-%H-%M-%S"
 dumps_directory = "dumps/"
 statistics_file = "dumps/stats.log"
-camera_angle_rotation_step = 0.025
 
 [CrosshairManager]
 crosshair_friction = 25.0
@@ -60,9 +64,18 @@ mapped_heartbeat_minimum = 1.0
 mapped_heartbeat_maximum = 3.2
 
 [LogicManager]
+use_antitangent_shooter_camera = false
 initial_player_ammo = 30
 initial_monster_health = 10
 mirror_percentage_h = 0.675
 mirror_percentage_v = 0.135
 camera_near_clip_distance = 5.0
 camera_far_clip_distance = 10000.0
+
+[PathManager]
+monster_spline_velocity_percent = 1.2
+monster_velocity_if_close_to_player = 400.0
+monster_close_distance = 700.0
+
+[TerrainManager]
+initial_number_of_bullets = 15

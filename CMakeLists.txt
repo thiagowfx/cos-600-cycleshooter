@@ -56,16 +56,6 @@ if(DEPENDENCIES_READY)
         )
 
 
-    # OgreProcedural
-    find_package(OgreProcedural REQUIRED)
-
-    if(NOT OgreProcedural_FOUND)
-        message(SEND_ERROR "Failed to find OgreProcedural.")
-    endif()
-
-    include_directories(${OgreProcedural_INCLUDE_DIR})
-
-
     # Project
     file(
         GLOB_RECURSE PROJECT_HEADERS
@@ -97,7 +87,6 @@ if(DEPENDENCIES_READY)
         ${PROJECT_NAME}
         ${SFML_LIBRARIES}
         ${OGRE_LIBRARIES}
-        ${OgreProcedural_LIBRARIES}
         )
 
     add_custom_command(
