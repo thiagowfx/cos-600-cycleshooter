@@ -39,3 +39,8 @@ Notes
 -----
 
 Binaries are placed on `<project_build_root>/dest/bin` assets are placed on `<project_build_root>/dest`. There is an additional `run` target to run the main executable of the project.
+
+Rolling release
+---------------
+
+    git submodule foreach --recursive git pull origin master
