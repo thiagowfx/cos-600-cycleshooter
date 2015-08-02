@@ -127,7 +127,7 @@ void PathManager::monsterPathUpdate(Ogre::Real timeSinceLastFrame, const Ogre::V
 
         monsterTangent = monsterTangentSecondPoint - monsterTangentFirstPoint;
         monsterTangent.normalise();
-        if((playerPosition - monsterPosition).length() < MINIMUM_DISTANCE){
+        if((playerPosition - monsterPosition).length() < MONSTER_CLOSE_MINIMUM_DISTANCE){
             AudioManager::instance().playSound(SOUND_MONSTER_PROXIMITY);
         }
     }
@@ -136,14 +136,14 @@ void PathManager::monsterPathUpdate(Ogre::Real timeSinceLastFrame, const Ogre::V
         monsterTangent.normalise();
         Ogre::Vector3 distance = monsterVelocityIfCloseToPlayer * timeSinceLastFrame * monsterTangent;
         setMonsterNextPosition(monsterNextPosition + distance);
-        if ((playerPosition - monsterPosition).length() < MINIMUM_DISTANCE) { //player escaped
+        if ((playerPosition - monsterPosition).length() < MONSTER_CLOSE_MINIMUM_DISTANCE) { //player escaped
             std::pair<unsigned,double> indexParameter = binSearchNearestPointOnSpline(monsterPosition);
             monsterIndex = indexParameter.first;
             monsterParametricPosition = indexParameter.second;
         }
     }
     //update condition
-    isPlayerClose = (playerPosition - monsterPosition).length() < MINIMUM_DISTANCE ? true: false;
+    isPlayerClose = (playerPosition - monsterPosition).length() < MONSTER_CLOSE_MINIMUM_DISTANCE ? true: false;
 }
 
 

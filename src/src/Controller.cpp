@@ -329,8 +329,8 @@ void Controller::createGameElements() {
     // upstream documentation: http://www.ogre3d.org/tikiwiki/Sinbad+Model
     Ogre::Entity* monsterEntity = getSceneManager()->createEntity("monsterEntity", "Sinbad.mesh");
     Ogre::SceneNode* monsterNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("monsterNode", Ogre::Vector3(11096.2, 0.0, 4577.64));
-    double monsterScale = 5.0;
-    monsterNode->scale(monsterScale, monsterScale, monsterScale);
+    double MONSTER_SCALE_SIZE = ConfigManager::instance().getDouble("Controller.monster_scale_size");
+    monsterNode->scale(MONSTER_SCALE_SIZE, MONSTER_SCALE_SIZE, MONSTER_SCALE_SIZE);
     monsterNode->attachObject(monsterEntity);
     monsterNode->yaw(Ogre::Degree(90));
 
