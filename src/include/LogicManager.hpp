@@ -26,6 +26,8 @@ class LogicManager {
     Ogre::Camera *rearCamera = NULL;
     Ogre::Camera *antiTangentShooterCamera = NULL;
 
+    int lastFriction = 0;
+
     /*
      *  RTT.
      */

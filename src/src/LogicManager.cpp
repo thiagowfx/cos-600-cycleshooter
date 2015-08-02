@@ -102,15 +102,24 @@ void LogicManager::updatePlayerPosition(const Ogre::Real &time) {
 }
 
 int LogicManager::calculateFriction(int terrainAt){
-    if(terrainAt == ROAD_PIXEL)
-        return 25;
-    else if(terrainAt == ROCK_PIXEL)
-        return 75;
-    else if(terrainAt == SAND_PIXEL)
-        return 50;
-    else {
-        return 0;
+    if(terrainAt == ROAD_PIXEL){
+        lastFriction = 25;
+        return lastFriction;
     }
+    else if(terrainAt == ROCK_PIXEL){
+        lastFriction = 75;
+        return lastFriction;
+    }
+    else if(terrainAt == SAND_PIXEL){
+        lastFriction = 50;
+        return lastFriction;
+    }
+    else if(terrainAt == ICE_PIXEL){
+        lastFriction = 0;
+        return lastFriction;
+    }
+    else
+        return lastFriction;
 }
 
 bool LogicManager::checkPlayerMonsterCollision() {
