@@ -26,7 +26,7 @@ class PathManager: public Ogre::SimpleSpline {
     unsigned monsterNextIndex = monsterIndex + 1;
     Ogre::Vector3 monsterNextPosition;
     bool isPlayerClose = false;
-    Ogre::Real monsterVelocity = 50.0;
+    Ogre::Real monsterVelocityIfCloseToPlayer = ConfigManager::instance().getDouble("PathManager.monster_velocity_if_close_to_player");
     Ogre::Real MINIMUM_DISTANCE = 500;
 
     //for debugging
