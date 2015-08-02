@@ -139,6 +139,7 @@ void PathManager::monsterPathUpdate(Ogre::Real timeSinceLastFrame, const Ogre::V
         if ((playerPosition - monsterPosition).length() < MONSTER_CLOSE_MINIMUM_DISTANCE) { //player escaped
             std::pair<unsigned,double> indexParameter = binSearchNearestPointOnSpline(monsterPosition);
             monsterIndex = indexParameter.first;
+            monsterNextIndex = indexParameter.first + 1;
             monsterParametricPosition = indexParameter.second;
         }
     }
