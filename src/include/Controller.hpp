@@ -30,7 +30,6 @@
 #include "CrosshairManager.hpp"
 #include "HUD.hpp"
 #include "PathManager.hpp"
-#include "PoligonalPathManager.hpp"
 
 #include "CollisionHandler.hpp"
 #include "TerrainManager.hpp"
@@ -324,11 +323,6 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
      * Path Manager.
      */
     std::unique_ptr<PathManager> pathManager;
-
-    /**
-     * Poligonal Path Manager.
-     */
-    std::unique_ptr<PoligonalPathManager> poligonalPathManager;
 
     /**
      * @brief hud responsible for rendering overlay elements with useful information for the player

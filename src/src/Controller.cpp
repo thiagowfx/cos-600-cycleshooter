@@ -877,7 +877,6 @@ void Controller::setDebug(bool debug) {
     logicManager->setDebug(debug);
     hud->setDebug(debug);
     pathManager->setDebug(debug);
-    //poligonalPathManager->setDebug(debug);
 }
 
 void Controller::toggleDebug() {

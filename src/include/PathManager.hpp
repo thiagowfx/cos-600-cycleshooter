@@ -3,9 +3,9 @@
 
 #include <vector>
 
-#include <OgreVector3.h>
+#include <Ogre.h>
+#include <OgreSceneManager.h>
 #include <OgreSimpleSpline.h>
-#include <ProceduralPathGenerators.h>
 
 #include "ConfigManager.hpp"
 #include "Logging.hpp"
@@ -28,10 +28,6 @@ class PathManager: public Ogre::SimpleSpline {
     bool isPlayerClose = false;
     Ogre::Real monsterVelocityIfCloseToPlayer = ConfigManager::instance().getDouble("PathManager.monster_velocity_if_close_to_player");
     Ogre::Real MONSTER_CLOSE_MINIMUM_DISTANCE = ConfigManager::instance().getDouble("PathManager.monster_close_distance");
-
-    //for debugging
-    Procedural::Path proceduralPath;
-    Ogre::MeshPtr splineMesh;
 
     void go(const std::vector<Ogre::Vector3>& controlPoints);
 
