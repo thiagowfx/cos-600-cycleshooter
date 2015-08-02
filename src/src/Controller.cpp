@@ -113,19 +113,19 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     // monster animations
     baseMonsterAnimation->addTime(evt.timeSinceLastFrame);
     topMonsterAnimation->addTime(evt.timeSinceLastFrame);
-    swordsMonsterAnimation->addTime(evt.timeSinceLastFrame / 10.0);
+    swordsMonsterAnimation->addTime(evt.timeSinceLastFrame / 5.0);
 
     // update game logic
     logicManager->update(evt);
 
     if(context == CONTEXT_SHOOTER) {
         static sf::Clock clockHeartbeat;
-        static int next_heartbeat_waiting_time_ms = 0;
+        static int NEXT_HEARTBEAT_WAITING_TIME_MS = 0;
 
         // (maybe) play a heartbeat sound
-        if(clockHeartbeat.getElapsedTime().asMilliseconds() >= next_heartbeat_waiting_time_ms) {
+        if(clockHeartbeat.getElapsedTime().asMilliseconds() >= NEXT_HEARTBEAT_WAITING_TIME_MS) {
             int heartRate = polar->getHeartRate();
-            next_heartbeat_waiting_time_ms = (60.0 * 1000.0) / double(heartRate);
+            NEXT_HEARTBEAT_WAITING_TIME_MS = (60.0 * 1000.0) / double(heartRate);
             AudioManager::instance().playHeartbeat(heartRate, HEARTBEAT_MINIMUM_ASSUMED, HEARTBEAT_MAXIMUM_ASSUMED);
             clockHeartbeat.restart();
         }
@@ -349,7 +349,7 @@ void Controller::createGameElements() {
     }
     else {
         LOG("Using the ConstantBicycle class");
-        bicycle = std::unique_ptr<AbstractBicycle>(new ConstantBicycle(1));
+        bicycle = std::unique_ptr<AbstractBicycle>(new ConstantBicycle(0));
     }
 
     bicycleUpdater = std::unique_ptr<sf::Thread>(new sf::Thread([&](){
