@@ -7,7 +7,9 @@
 #include <OgreSimpleSpline.h>
 #include <ProceduralPathGenerators.h>
 
+#include "ConfigManager.hpp"
 #include "Logging.hpp"
+#include "AudioManager.hpp"
 
 namespace Cycleshooter {
 
@@ -15,12 +17,17 @@ class PathManager: public Ogre::SimpleSpline {
 
     Ogre::Real epsilon = 0.0001;
 
-    //Monster
+    // Monster
     Ogre::Vector3 monsterTangent;
-    Ogre::Real monsterSplineStep = 0;
-    unsigned int monsterIndex = 0;
-    unsigned int monsterNextIndex = 1;
+    Ogre::Real monsterParametricPosition = 0.0;
+    Ogre::Real monsterSplineStep = 0.001;
+    Ogre::Real monsterSplineVelocity = ConfigManager::instance().getDouble("PathManager.monster_spline_velocity_percent");
+    unsigned monsterIndex = 0;
+    unsigned monsterNextIndex = monsterIndex + 1;
     Ogre::Vector3 monsterNextPosition;
+    bool isPlayerClose = false;
+    Ogre::Real monsterVelocityIfCloseToPlayer = ConfigManager::instance().getDouble("PathManager.monster_velocity_if_close_to_player");
+    Ogre::Real MONSTER_CLOSE_MINIMUM_DISTANCE = ConfigManager::instance().getDouble("PathManager.monster_close_distance");
 
     //for debugging
     Procedural::Path proceduralPath;
@@ -29,18 +36,26 @@ class PathManager: public Ogre::SimpleSpline {
     void go(const std::vector<Ogre::Vector3>& controlPoints);
 
 public:
-    PathManager();
     PathManager(const char* file);
     PathManager(const std::vector<Ogre::Vector3>& controlPoints);
 
-    void monsterPathUpdate();
+    void monsterPathUpdate(Ogre::Real timeSinceLastFrame, const Ogre::Vector3& playerPosition, const Ogre::Vector3& monsterPosition);
     void updateIndex();
-    std::vector<Ogre::Real> parametricValue(Ogre::Vector3 splinePoint, unsigned int fromIndex);
     void setDebug(bool debug);
     Ogre::Vector3 getMonsterTangent() const;
-
+    Ogre::Vector3 getTangent(unsigned index, double t) const;
+    Ogre::Vector3 getAntiTangentFromPoint(const Ogre::Vector3& point) const;
     Ogre::Vector3 getMonsterNextPosition() const;
     void setMonsterNextPosition(const Ogre::Vector3 &value);
+
+    /**
+     * Binary searches the nearest point on the spline in relation to the specified point.
+     * Time complexity: O(mPoints.size() + 2 * NUM_STEP)
+     * Return:
+     * - first: index (unsigned)
+     * - second: t (double)
+     */
+    std::pair<unsigned,double> binSearchNearestPointOnSpline(const Ogre::Vector3& point) const;
 };
 
 }

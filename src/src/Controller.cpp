@@ -106,7 +106,7 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     }
 
     // pathManager updates
-    pathManager->monsterPathUpdate();
+    pathManager->monsterPathUpdate(evt.timeSinceLastFrame, logicManager->getPlayerPosition(), logicManager->getMonsterPosition());
 
     logicManager->updateMonster(pathManager->getMonsterTangent(), pathManager->getMonsterNextPosition());
 
@@ -162,7 +162,6 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     static sf::Clock rotationUnbufClock;
     sf::Time ROTATION_UNBUF_TIME_MS = sf::milliseconds(ConfigManager::instance().getInt("Controller.threshold_rotation_keys_ms"));
     if(rotationUnbufClock.getElapsedTime() >= ROTATION_UNBUF_TIME_MS) {
-        logicManager->setAngularVelocity(ConfigManager::instance().getDouble("Controller.camera_angle_rotation_step") / evt.timeSinceLastFrame);
         InputManager::instance().executeJoystickActionsUnbuf(context);
         InputManager::instance().executeActionsRotationUnbuf(context);
         rotationUnbufClock.restart();
@@ -329,9 +328,9 @@ void Controller::createGameElements() {
 
     // upstream documentation: http://www.ogre3d.org/tikiwiki/Sinbad+Model
     Ogre::Entity* monsterEntity = getSceneManager()->createEntity("monsterEntity", "Sinbad.mesh");
-    Ogre::SceneNode* monsterNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("monsterNode", Ogre::Vector3(3710.94,0,11242.7));
-    double monsterScale = 5.0;
-    monsterNode->scale(monsterScale, monsterScale, monsterScale);
+    Ogre::SceneNode* monsterNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("monsterNode", Ogre::Vector3(11096.2, 0.0, 4577.64));
+    double MONSTER_SCALE_SIZE = ConfigManager::instance().getDouble("Controller.monster_scale_size");
+    monsterNode->scale(MONSTER_SCALE_SIZE, MONSTER_SCALE_SIZE, MONSTER_SCALE_SIZE);
     monsterNode->attachObject(monsterEntity);
     monsterNode->yaw(Ogre::Degree(90));
 
@@ -478,7 +477,7 @@ void Controller::setupKeyMappings() {
 
 #define bicycleSpeedChange(signal_sensibility) bicycle->changeSpeed(static_cast<float>(signal_sensibility) * BICYCLE_SPEED_CHANGE);
 #define bicycleRotationChange(signal_sensibility)\
-    Ogre::Degree angle = Ogre::Degree(logicManager->getAngularVelocity());\
+    Ogre::Degree angle = Ogre::Degree(ConfigManager::instance().getDouble("Controller.camera_rotation_angle_per_frame"));\
     logicManager->rotateCamera(static_cast<float>(signal_sensibility) * angle);
 #define scrollCrosshair(x_sensibility, y_sensibility)\
     crosshairManager->scrollVirtualCrosshair(polar->getHeartRate(), x_sensibility, y_sensibility);
@@ -666,6 +665,10 @@ void Controller::setupKeyMappings() {
     InputManager::instance().addJoystickButtons({3, 4, 6, 8}, [&]() {
         toggleMode();
     });
+}
+
+PathManager* Controller::getPathManager() const {
+    return pathManager.get();
 }
 
 AbstractPolar* Controller::getPolar() const {

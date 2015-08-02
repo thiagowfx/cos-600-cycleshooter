@@ -22,7 +22,6 @@ void LogicManager::update(const Ogre::FrameEvent &evt) {
         updatePlayerPosition(elapsedTime);
     }
 
-    updateMonsterPosition(elapsedTime);
     //Dealing with terrain Collision;
     std::pair<int,bool> terrainAt = controller->getTerrainManager()->getTerrainAt(getPlayerNode()->getPosition());
     if(terrainAt.first == 2){
@@ -102,16 +101,6 @@ void LogicManager::updatePlayerPosition(const Ogre::Real &time) {
     getPlayerNode()->translate(distance * playerOrientation, Ogre::SceneNode::TS_LOCAL);
 }
 
-void LogicManager::updateMonsterPosition(const Ogre::Real &time) {
-    // distance = speed x time (Physics I, yay!)
-    double distance = MONSTER_SPEED * time;
-
-    // quaternions! upstream: http://stackoverflow.com/questions/4727079/getting-object-direction-in-ogre
-    Ogre::Vector3 monsterOrientation = monsterNode->getOrientation() * Ogre::Vector3::UNIT_Z;
-
-    //monsterNode->translate(distance * monsterOrientation, Ogre::SceneNode::TS_LOCAL);
-}
-
 int LogicManager::calculateFriction(int terrainAt){
     if(terrainAt == ROAD_PIXEL)
         return 25;
@@ -119,8 +108,9 @@ int LogicManager::calculateFriction(int terrainAt){
         return 75;
     else if(terrainAt == SAND_PIXEL)
         return 50;
-    else
+    else {
         return 0;
+    }
 }
 
 bool LogicManager::checkPlayerMonsterCollision() {
@@ -156,12 +146,15 @@ void LogicManager::createCameras() {
     // create cameras
     frontCamera = controller->getSceneManager()->createCamera("frontCamera");
     rearCamera = controller->getSceneManager()->createCamera("rearCamera");
+    antiTangentShooterCamera = controller->getSceneManager()->createCamera("antiTangentShooterCamera");
 
     // adjust clip distances in cameras
     frontCamera->setNearClipDistance(CAMERA_NEAR_CLIP_DISTANCE);
     frontCamera->setFarClipDistance(CAMERA_FAR_CLIP_DISTANCE);
     rearCamera->setNearClipDistance(CAMERA_NEAR_CLIP_DISTANCE);
     rearCamera->setFarClipDistance(CAMERA_FAR_CLIP_DISTANCE);
+    antiTangentShooterCamera->setNearClipDistance(CAMERA_NEAR_CLIP_DISTANCE);
+    antiTangentShooterCamera->setFarClipDistance(CAMERA_FAR_CLIP_DISTANCE);
 }
 
 void LogicManager::createSceneNodes() {
@@ -176,6 +169,7 @@ void LogicManager::createSceneNodes() {
     // attach scene nodes
     frontCameraNode->attachObject(frontCamera);
     rearCameraNode->attachObject(rearCamera);
+    playerNode->attachObject(antiTangentShooterCamera);
 
     monsterNode = controller->getSceneManager()->getSceneNode("monsterNode");
 }
@@ -206,14 +200,6 @@ void LogicManager::createRtt() {
     rttRenderTarget->getViewport(0)->setBackgroundColour(Ogre::ColourValue::Black);
 }
 
-double LogicManager::getAngularVelocity() const {
-    return angularVelocity;
-}
-
-void LogicManager::setAngularVelocity(double value) {
-    angularVelocity = value;
-}
-
 void LogicManager::setDifficultyParamenter() {
     difficultyParamenter[0] = 1.0f;
     difficultyParamenter[1] = 1.0f;
@@ -235,9 +221,21 @@ void LogicManager::setupRunnerMode() {
 }
 
 void LogicManager::setupShooterMode() {
-    viewportFull->setCamera(rearCamera);
-    rearCamera->setAspectRatio(Ogre::Real(viewportFull->getActualWidth()) / Ogre::Real(viewportFull->getActualHeight()));
+    Ogre::Camera* shooterCamera;
 
+    if(ConfigManager::instance().getBool("LogicManager.use_antitangent_shooter_camera")) {
+        Ogre::Vector3 shooterDirection = controller->getPathManager()->getAntiTangentFromPoint(playerNode->getPosition());
+        antiTangentShooterCamera->setDirection(shooterDirection);
+        shooterCamera = antiTangentShooterCamera;
+    }
+    else {
+        shooterCamera = rearCamera;
+    }
+
+    viewportFull->setCamera(shooterCamera);
+    shooterCamera->setAspectRatio(Ogre::Real(viewportFull->getActualWidth()) / Ogre::Real(viewportFull->getActualHeight()));
+
+    // remove mirror viewport
     controller->getWindow()->removeViewport(1);
 }
 
@@ -259,6 +257,14 @@ void LogicManager::updateMonster(const Ogre::Vector3 &tangent, const Ogre::Vecto
 
 double LogicManager::getDistanceToMonster() const {
     return monsterNode->getPosition().distance(playerNode->getPosition());
+}
+
+Ogre::Vector3 LogicManager::getPlayerPosition() const {
+    return playerNode->getPosition();
+}
+
+Ogre::Vector3 LogicManager::getMonsterPosition() const {
+    return monsterNode->getPosition();
 }
 
 }
