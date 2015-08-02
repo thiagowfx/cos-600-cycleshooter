@@ -4,9 +4,12 @@
 #include <Ogre.h>
 #include <OgreTerrain.h>
 #include <OgreTerrainGroup.h>
-#include <CollisionHandler.hpp>
 #include <OgreSceneManager.h>
-#include <Logging.hpp>
+
+#include "CollisionHandler.hpp"
+#include "ConfigManager.hpp"
+#include "Logging.hpp"
+
 namespace Cycleshooter {
 
 class TerrainManager {

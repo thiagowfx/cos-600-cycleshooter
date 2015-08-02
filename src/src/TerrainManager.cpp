@@ -61,7 +61,8 @@ void TerrainManager::createTerrain(){
     createTerrainWall();
 
     //Defining terrain structures
-    generateBullets(13);
+    const int INITIAL_NUMBER_OF_BULLETS = ConfigManager::instance().getInt("TerrainManager.initial_number_of_bullets");
+    generateBullets(INITIAL_NUMBER_OF_BULLETS);
     renderBullets();
     obtainCircuitControllPoints();
 }
