@@ -168,7 +168,7 @@ void LogicManager::createCameras() {
 
 void LogicManager::createSceneNodes() {
     LOG("Creating SceneNodes");
-    unsigned playerStartIndex  = 5;
+    unsigned playerStartIndex  = ConfigManager::instance().getInt("Controller.player_start_index") % controller->getPathManager()->getNumPoints();
 
     Ogre::Vector3 initialPlayerPosition = controller->getPathManager()->getPoint(playerStartIndex);
     Ogre::Vector3 playerInitialLookAt = controller->getPathManager()->getPoint((playerStartIndex + 1) % controller->getPathManager()->getNumPoints())
@@ -177,10 +177,10 @@ void LogicManager::createSceneNodes() {
 
     // create scene nodes
     playerNode = controller->getSceneManager()->getRootSceneNode()->createChildSceneNode("parentPlayerNode", initialPlayerPosition);
+    playerNode->setDirection(playerInitialLookAt);
     frontCameraNode = playerNode->createChildSceneNode("frontCameraNode");
     rearCameraNode = playerNode->createChildSceneNode("rearCameraNode");
     rearCameraNode->yaw(Ogre::Radian(Ogre::Degree(180.0)));
-    playerNode->setDirection(playerInitialLookAt);
 
     // attach scene nodes
     frontCameraNode->attachObject(frontCamera);

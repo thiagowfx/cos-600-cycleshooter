@@ -39,6 +39,7 @@ dump_log_time_ms = 500
 
 camera_rotation_angle_per_frame = 1.5
 monster_scale_size = 10.0
+player_start_index = 5
 
 heartbeat_minimum_assumed = 60
 heartbeat_maximum_assumed = 150
