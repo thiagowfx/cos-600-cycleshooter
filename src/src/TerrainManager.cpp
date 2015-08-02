@@ -175,12 +175,7 @@ std::vector<Ogre::Vector3> TerrainManager::obtainCircuitControllPoints(){
 
         // Sort the elements by they tangents and reverse them
         auto sortOgrePoints = [](const Ogre::Vector3 a, const Ogre::Vector3 b){
-            if(std::abs(a.z) < std::abs(b.z))
-                return true;
-            else if ((std::abs(a.z) == std::abs(b.z)) && std::abs(a.x) < std::abs(b.x))
-                return true;
-            else
-                return false;
+            return std::abs(a.z/a.x) < std::abs(b.z/b.x);
         };
 
         std::sort(firstQuad.begin(),firstQuad.end(),sortOgrePoints);
@@ -204,7 +199,16 @@ std::vector<Ogre::Vector3> TerrainManager::obtainCircuitControllPoints(){
         pts.insert(pts.end(), thirdQuad.begin(), thirdQuad.end());
         pts.insert(pts.end(), fourthQuad.begin(), fourthQuad.end());
 
-        return pts;
+        std::vector<Ogre::Vector3> filteredpts;
+
+        std::cout << "Total Points: " << pts.size() << std::endl;
+        std::cout << " Percentage : " << std::floor(0.2*(pts.size())) << std::endl;
+
+        for(int i = 0; i < pts.size(); i = i + std::floor(0.01*(pts.size()))){
+            filteredpts.push_back(pts.at(i));
+        }
+
+        return filteredpts;
     };
 
     sortedpoints = sortControllPoints(points);
@@ -216,6 +220,7 @@ std::vector<Ogre::Vector3> TerrainManager::obtainCircuitControllPoints(){
                   << sortedpoints.at(i).z << std::endl;
     }
 
+    std::cout << "End of Sorted Ogre Control Points" << std::endl;
     return sortedpoints;
 }
 
