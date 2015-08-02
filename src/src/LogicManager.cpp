@@ -160,8 +160,10 @@ void LogicManager::createCameras() {
 void LogicManager::createSceneNodes() {
     LOG("Creating SceneNodes");
 
+    Ogre::Vector3 initialPlayerPosition = controller->getPathManager()->getPoint(1);
+
     // create scene nodes
-    playerNode = controller->getSceneManager()->getRootSceneNode()->createChildSceneNode("parentPlayerNode", Ogre::Vector3(2258.3, 0, 11230.5));
+    playerNode = controller->getSceneManager()->getRootSceneNode()->createChildSceneNode("parentPlayerNode", initialPlayerPosition);
     frontCameraNode = playerNode->createChildSceneNode("frontCameraNode");
     rearCameraNode = playerNode->createChildSceneNode("rearCameraNode");
     rearCameraNode->yaw(Ogre::Radian(Ogre::Degree(180.0)));
