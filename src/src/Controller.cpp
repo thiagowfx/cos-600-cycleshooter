@@ -379,7 +379,7 @@ void Controller::createGameElements() {
     //terrainManager->sampleCollisionTransformation();
 
     // create a skybox
-    getSceneManager()->setSkyDome(true, "Cycleshooter/CloudySky");
+    getSceneManager()->setSkyDome(true, "Cycleshooter/NightySky", 3, 4);
 
     createAnimations();
     createSwords();
