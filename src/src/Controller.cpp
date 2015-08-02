@@ -113,7 +113,7 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     // monster animations
     baseMonsterAnimation->addTime(evt.timeSinceLastFrame);
     topMonsterAnimation->addTime(evt.timeSinceLastFrame);
-    swordsMonsterAnimation->addTime(evt.timeSinceLastFrame / 5.0);
+    swordsMonsterAnimation->addTime(evt.timeSinceLastFrame / 3.5);
 
     // update game logic
     logicManager->update(evt);
