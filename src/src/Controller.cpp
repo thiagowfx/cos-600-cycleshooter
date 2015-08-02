@@ -325,14 +325,16 @@ void Controller::createGameElements() {
     //Creating the path manager
     pathManager = std::unique_ptr<PathManager>(new PathManager("track1.txt"));
     //poligonalPathManager = std::unique_ptr<PoligonalPathManager>(new PoligonalPathManager("track1.txt"));
-
+    unsigned monsterInitialIndex = 0;
+    Ogre::Vector3 monsterInitialPosition = pathManager->getPoint(monsterInitialIndex);
+    Ogre::Vector3 monsterInitialLookAt = pathManager->getPoint(monsterInitialIndex + 1) - pathManager->getPoint(monsterInitialIndex);
     // upstream documentation: http://www.ogre3d.org/tikiwiki/Sinbad+Model
     Ogre::Entity* monsterEntity = getSceneManager()->createEntity("monsterEntity", "Sinbad.mesh");
-    Ogre::SceneNode* monsterNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("monsterNode", Ogre::Vector3(0,0,11059.6));
+    Ogre::SceneNode* monsterNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("monsterNode", monsterInitialPosition);
     double MONSTER_SCALE_SIZE = ConfigManager::instance().getDouble("Controller.monster_scale_size");
     monsterNode->scale(MONSTER_SCALE_SIZE, MONSTER_SCALE_SIZE, MONSTER_SCALE_SIZE);
     monsterNode->attachObject(monsterEntity);
-    monsterNode->yaw(Ogre::Degree(90));
+    monsterNode->setDirection(monsterInitialLookAt);
 
 
     // attention: logic manager should be created before any threads that will update it
