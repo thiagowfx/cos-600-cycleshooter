@@ -41,7 +41,7 @@ void TerrainManager::createTerrain(){
     setCollisionTransformation();
     printCollisionTransformation();
 
-    Ogre::Plane plane(Ogre::Vector3::UNIT_Y, -100);
+    Ogre::Plane plane(Ogre::Vector3::UNIT_Y, -50);
     Ogre::MeshManager::getSingleton().createPlane(
       "groundTerrain",
       Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
@@ -166,9 +166,11 @@ std::pair<int, bool> TerrainManager::getTerrainAt(Ogre::Vector3 coord, Ogre::Vec
             //        std::cout << bulletBox.getCenter().x<<" "<<bulletBox.getCenter().y<<" "<<bulletBox.getCenter().z<<std::endl;
             //        std::cout << coord.x<<" "<<coord.y<<" "<<coord.z<<std::endl;
             terrainAt.second = calculateSLBIntersection(coord,lastCoord,bulletBox);
+            LOG("CaluclateSLB passed.");
             //std::cout << sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->getBoundingBox().intersects(coord)<<std::endl;
             //Optimization can be done in order to a bounding box be tested only once.
             if(terrainAt.second){
+                LOG("Bullet has been found.");
                 sceneManager->getSceneNode(bulletProperties[i].second)->getAttachedObject(bulletProperties[i].second)->setVisible(false);
                 std::vector<std::pair<int,int> > coords = calculateBulletSurroundings(bulletProperties[i].first);
                 for(int i = 0; i < coords.size();i++){
@@ -228,6 +230,7 @@ bool TerrainManager::calculateSLBIntersection(Ogre::Vector3 p1, Ogre::Vector3 p2
         alfa = alfa/a11;
         bAlfa = 0 <= alfa && alfa <= 1 ;
         bBeta = 0 <= beta && beta <= 1 ;
+        std::cout << "Testing bounding collision: "<< bAlfa << "," << bBeta << std::endl;
         if(bAlfa && bBeta)
             return true;
     }
