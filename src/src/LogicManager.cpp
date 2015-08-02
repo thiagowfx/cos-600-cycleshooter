@@ -159,9 +159,11 @@ void LogicManager::createCameras() {
 
 void LogicManager::createSceneNodes() {
     LOG("Creating SceneNodes");
-    unsigned playerStartIndex = 1;
+    unsigned playerStartIndex  = 5;
+
     Ogre::Vector3 initialPlayerPosition = controller->getPathManager()->getPoint(playerStartIndex);
-    Ogre::Vector3 playerInitialLookAt = controller->getPathManager()->getPoint(playerStartIndex + 1) - controller->getPathManager()->getPoint(playerStartIndex);
+    Ogre::Vector3 playerInitialLookAt = controller->getPathManager()->getPoint((playerStartIndex + 1) % controller->getPathManager()->getNumPoints())
+            - controller->getPathManager()->getPoint(playerStartIndex);
     playerInitialLookAt.normalise();
 
     // create scene nodes
