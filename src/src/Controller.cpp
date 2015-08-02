@@ -324,13 +324,16 @@ void Controller::createGameElements() {
 
     //Creating the path manager
     pathManager = std::unique_ptr<PathManager>(new PathManager("track1.txt"));
-    //poligonalPathManager = std::unique_ptr<PoligonalPathManager>(new PoligonalPathManager("track1.txt"));
-    unsigned monsterInitialIndex = 0;
+
+    unsigned monsterInitialIndex = ConfigManager::instance().getInt("Controller.monster_start_index") % getPathManager()->getNumPoints();
     Ogre::Vector3 monsterInitialPosition = pathManager->getPoint(monsterInitialIndex);
-    Ogre::Vector3 monsterInitialLookAt = pathManager->getPoint(monsterInitialIndex + 1) - pathManager->getPoint(monsterInitialIndex);
+    Ogre::Vector3 monsterInitialLookAt = pathManager->getPoint((monsterInitialIndex + 1) % getPathManager()->getNumPoints()) - monsterInitialPosition;
+    monsterInitialLookAt.normalise();
+
     // upstream documentation: http://www.ogre3d.org/tikiwiki/Sinbad+Model
     Ogre::Entity* monsterEntity = getSceneManager()->createEntity("monsterEntity", "Sinbad.mesh");
     Ogre::SceneNode* monsterNode = getSceneManager()->getRootSceneNode()->createChildSceneNode("monsterNode", monsterInitialPosition);
+
     double MONSTER_SCALE_SIZE = ConfigManager::instance().getDouble("Controller.monster_scale_size");
     monsterNode->scale(MONSTER_SCALE_SIZE, MONSTER_SCALE_SIZE, MONSTER_SCALE_SIZE);
     monsterNode->attachObject(monsterEntity);
