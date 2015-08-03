@@ -6,7 +6,8 @@
 #include <iostream>
 #include <utility>
 #include <random>
-#include <BulletElement.hpp>
+
+#include "BulletElement.hpp"
 #include "Logging.hpp"
 
 namespace Cycleshooter {
@@ -77,7 +78,7 @@ class CollisionHandler {
     Ogre::String collisionTexturePath;
 
     /**
-     * 
+     * @brief bulletCount The current number of bullets in the track.
      */
     int bulletCount;
 
@@ -201,6 +202,9 @@ public:
      * Testing function to allocated matrix dimensions.
      */
     bool testMatrixDimension();
+
+    int getBulletCount() const;
+    void setBulletCount(int value);
 };
 
 }

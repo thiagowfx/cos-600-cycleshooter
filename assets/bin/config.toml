@@ -36,6 +36,7 @@ threshold_unbuf_keys_ms = 80
 threshold_rotation_keys_ms = 15
 countdown_time_ms = 1000
 dump_log_time_ms = 500
+replenish_ammo_s = 30
 
 camera_rotation_angle_per_frame = 1.5
 monster_scale_size = 10.0

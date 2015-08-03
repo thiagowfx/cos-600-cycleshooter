@@ -61,7 +61,6 @@ void TerrainManager::createTerrain(){
     createTerrainWall();
 
     //Defining terrain structures
-    const int INITIAL_NUMBER_OF_BULLETS = ConfigManager::instance().getInt("TerrainManager.initial_number_of_bullets");
     generateBullets(INITIAL_NUMBER_OF_BULLETS);
     renderBullets();
     obtainCircuitControllPoints();
@@ -86,6 +85,21 @@ void TerrainManager::printCollisionTransformation(){
     std::cout << " Translation Vector: " << terrainTranslation.x << "," << terrainTranslation.y << ","
               << terrainTranslation.z << std::endl;
     std::cout << "Width,Height Scale: " << widthScale << ","<< heightScale <<std::endl;
+}
+
+void TerrainManager::replenishBullets() {
+    int bullets_to_regen = INITIAL_NUMBER_OF_BULLETS - collisionHandler->getBulletCount();
+    generateBullets(bullets_to_regen);
+}
+
+void TerrainManager::decrementBulletCount(int quantity) {
+    int bullets = collisionHandler->getBulletCount();
+    bullets = std::max(0, bullets - quantity);
+    collisionHandler->setBulletCount(bullets);
+}
+
+int TerrainManager::getBulletCount() const {
+    return collisionHandler->getBulletCount();
 }
 
 std::pair<int, int> TerrainManager::getCollisionCoordinates(Ogre::Vector3 point){

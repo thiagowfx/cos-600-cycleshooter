@@ -144,6 +144,11 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     // update game HUD
     hud->update(evt);
 
+    if(replenishAmmoClock.getElapsedTime() >= REPLENISH_AMMO_S) {
+        terrainManager->replenishBullets();
+        replenishAmmoClock.restart();
+    }
+
     // process unbuffered keys
     static sf::Clock clockUnbuf;
     if(clockUnbuf.getElapsedTime() >= THRESHOLD_UNBUF_KEYS_MS) {
@@ -672,6 +677,13 @@ void Controller::setupKeyMappings() {
         toggleMode();
     });
 }
+
+std::string Controller::getReplenishAmmoRemainingClockAsSeconds() const {
+    std::stringstream ss;
+    ss << "0:" << std::setfill('0') << std::setw(2) << static_cast<int>(REPLENISH_AMMO_S.asSeconds() - replenishAmmoClock.getElapsedTime().asSeconds());
+    return ss.str();
+}
+
 
 PathManager* Controller::getPathManager() const {
     return pathManager.get();

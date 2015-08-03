@@ -41,6 +41,8 @@ private:
      * Terrain size
      */
     int terrainWidth, terrainHeight;
+
+    const int INITIAL_NUMBER_OF_BULLETS = ConfigManager::instance().getInt("TerrainManager.initial_number_of_bullets");
     
     /**
      * Matrix to check position of elements in terrain
@@ -130,6 +132,10 @@ public:
      * Print the Collision transformation (Image -> Ogre World)
      */
     void printCollisionTransformation();
+
+    void replenishBullets();
+    void decrementBulletCount(int quantity = 1);
+    int getBulletCount() const;
     
 };
 }
