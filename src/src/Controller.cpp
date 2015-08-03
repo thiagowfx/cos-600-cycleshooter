@@ -390,8 +390,8 @@ void Controller::createGameElements() {
     // create a skybox
     getSceneManager()->setSkyBox(true, "Cycleshooter/MorningSkyBox");
 
-    // create a skydome
-    getSceneManager()->setSkyDome(true, "Cycleshooter/NightySkyDome", 3, 4);
+    // create another skybox
+    getSceneManager()->setSkyBox(true, "Cycleshooter/NightySkyDome");
 
     createAnimations();
     createSwords();

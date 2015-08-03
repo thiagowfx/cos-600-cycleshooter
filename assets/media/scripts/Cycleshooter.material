@@ -115,10 +115,7 @@ material Cycleshooter/NightySkyDome
 
 			texture_unit
 			{
-                texture night.jpg
-                scroll_anim 0.0 0.00002
-                rotate_anim 0.002
-
+                		cubic_texture grimmnight.tga separateUV
 			}
 		}
 	}
