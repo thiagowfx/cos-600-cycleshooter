@@ -38,12 +38,12 @@ void TerrainManager::createTerrain(){
     setCollisionTransformation();
     printCollisionTransformation();
 
-    Ogre::Plane plane(Ogre::Vector3::UNIT_Y, -100);
+    Ogre::Plane plane(Ogre::Vector3::UNIT_Y, -46.0);
     Ogre::MeshManager::getSingleton().createPlane(
       "groundTerrain",
       Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
       plane,
-      terrainWorldSizeWidth, terrainWorldSizeHeight, terrainWidth,terrainHeight,
+      terrainWorldSizeWidth, terrainWorldSizeHeight, terrainWidth, terrainHeight,
       true,
       1, 1,1,
       Ogre::Vector3::UNIT_Z);
