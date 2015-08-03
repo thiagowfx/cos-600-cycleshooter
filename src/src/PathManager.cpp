@@ -108,6 +108,8 @@ void PathManager::go(const std::vector<Ogre::Vector3>& controlPoints) {
     for(int i = 0; i < controlPoints.size(); i++){
         this->addPoint(controlPoints[i]);
     }
+    monsterIndex = ConfigManager::instance().getInt("Controller.monster_start_index") % this->getNumPoints();
+    monsterNextIndex = monsterIndex + 1;
 }
 
 void PathManager::monsterPathUpdate(Ogre::Real timeSinceLastFrame, const Ogre::Vector3& playerPosition, const Ogre::Vector3& monsterPosition, Context context) {
