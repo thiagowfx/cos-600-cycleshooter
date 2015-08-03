@@ -30,6 +30,7 @@ void LogicManager::update(const Ogre::FrameEvent &evt) {
     controller->getBicycle()->setFriction(calculateFriction(terrainAt.first));
     if(terrainAt.second){
         incrementPlayerAmmo();
+        controller->getTerrainManager()->decrementBulletCount();
         AudioManager::instance().playSound(SOUND_RELOAD);
     }
     if(checkPlayerMonsterCollision()) {

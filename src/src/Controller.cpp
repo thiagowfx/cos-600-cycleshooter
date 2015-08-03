@@ -144,6 +144,13 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     // update game HUD
     hud->update(evt);
 
+    static sf::Clock replenishAmmoClock;
+    sf::Time REPLENISH_AMMO_S = sf::seconds(ConfigManager::instance().getInt("Controller.replenish_ammo_s"));
+    if(replenishAmmoClock.getElapsedTime() >= REPLENISH_AMMO_S) {
+        terrainManager->replenishBullets();
+        replenishAmmoClock.restart();
+    }
+
     // process unbuffered keys
     static sf::Clock clockUnbuf;
     if(clockUnbuf.getElapsedTime() >= THRESHOLD_UNBUF_KEYS_MS) {
