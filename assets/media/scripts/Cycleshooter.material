@@ -101,7 +101,30 @@ material Cycleshooter/GameVictory : Cycleshooter/Base
     }
 }
 
-material Cycleshooter/NightySky
+material Cycleshooter/NightySkyDome
+{
+	receive_shadows off
+
+	technique
+	{
+		pass
+		{
+			lighting off
+			depth_write off
+			fog_override true
+
+			texture_unit
+			{
+                texture night.jpg
+                scroll_anim 0.0 0.00002
+                rotate_anim 0.002
+
+			}
+		}
+	}
+}
+
+material Cycleshooter/MorningSkyBox
 {
 	receive_shadows off
 

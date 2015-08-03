@@ -388,7 +388,10 @@ void Controller::createGameElements() {
     terrainManager = std::unique_ptr<TerrainManager>(new TerrainManager(oSceneManager, "racecircuit.png"));
 
     // create a skybox
-    getSceneManager()->setSkyBox(true, "Cycleshooter/NightySky");
+    getSceneManager()->setSkyBox(true, "Cycleshooter/MorningSkyBox");
+
+    // create a skydome
+    getSceneManager()->setSkyDome(true, "Cycleshooter/NightySkyDome", 3, 4);
 
     createAnimations();
     createSwords();
