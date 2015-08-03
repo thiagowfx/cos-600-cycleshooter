@@ -69,6 +69,11 @@ private:
     void createTerrainLake();
 
     /**
+     * Create trees in the grass texture of the terrain.
+     */
+    void createTrees(int numberOfTrees);
+
+    /**
      * Defines translation and scale to collision coordinates
      * (maps continous rectangles in  discrete rectangles).
      */
@@ -78,7 +83,7 @@ private:
      *  Function to return random IDs to calculate random positions for the bullets
      * inside the terrain.
      */
-    std::vector<int> randomIdOfBullets(int maxvalue, int numOfPoints);
+    std::vector<int> randomIdOfPoints(int maxvalue, int numOfPoints);
 
 public:
     TerrainManager(Ogre::SceneManager* sceneManager, std::string collisionTexturePath);
@@ -121,6 +126,8 @@ public:
      * Render bullets in the specific position.
      */
     void renderBullets();
+
+    void resetBullets();
 
       /////////////////////
      // Debug functions //

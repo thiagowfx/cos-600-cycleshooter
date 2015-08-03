@@ -162,6 +162,11 @@ public:
      * in the CollisionMatrix.
      */
     std::vector<std::pair<int,int> > getPathControllPoints();
+
+    /**
+     * Function to obtains all grass points in the collision Matrix.
+     */
+    std::vector<std::pair<int, int> > getGrassPoints();
     
     /**
      * Functions to add bullets in bullet's Matrix.

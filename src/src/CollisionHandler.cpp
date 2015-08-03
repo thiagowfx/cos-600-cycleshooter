@@ -164,7 +164,25 @@ std::vector<std::pair<int, int> > CollisionHandler::getPathControllPoints(){
         }
     }
     return pointsLocation;
+}
 
+std::vector<std::pair<int, int> > CollisionHandler::getGrassPoints(){
+    int matrixColNumber, matrixRowNumber;
+
+    //Grabing matrix dimensions.
+    matrixColNumber = collisionMatrix[0].size();
+    matrixRowNumber = collisionMatrix.size();
+    std::vector<std::pair<int,int> > pointsLocation;
+
+    //Serching the matrix.
+    for(int pixelWidth = 0;pixelWidth<matrixColNumber;pixelWidth++){
+        for(int pixelHeight = 0; pixelHeight < matrixRowNumber;pixelHeight++){
+            if(collisionMatrix[pixelWidth][pixelHeight] == GRASS_PIXEL){
+                pointsLocation.push_back(std::pair<int,int> (pixelWidth,pixelHeight));
+            }
+        }
+    }
+    return pointsLocation;
 }
 
 void CollisionHandler::insertBulletAt(int width, int height,bool exist, Ogre::Vector3 coord){

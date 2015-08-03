@@ -57,6 +57,7 @@ void TerrainManager::createTerrain(){
     sceneManager->getRootSceneNode()->createChildSceneNode()->attachObject(terrainEntity);
 
     // Creating terrain structures
+    createTrees(100);
     createTerrainLake();
     createTerrainWall();
 
@@ -258,7 +259,7 @@ std::vector<std::pair<int, int> > TerrainManager::calculateBulletSurroundings(Og
     return coords;
 }
 
-std::vector<int> TerrainManager::randomIdOfBullets(int maxvalue, int numOfPoints){
+std::vector<int> TerrainManager::randomIdOfPoints(int maxvalue, int numOfPoints){
     std::vector<int> IDList;
 
     auto checkInList = [](std::vector<int> &list, int value) -> bool{
@@ -283,7 +284,7 @@ std::vector<int> TerrainManager::randomIdOfBullets(int maxvalue, int numOfPoints
 void TerrainManager::generateBullets(int numOfBullets){
     Ogre::LogManager::getSingletonPtr()->logMessage("--> TerrainManager: Generatig Random Values <--");
     std::vector<Ogre::Vector3> controlpts = obtainCircuitControllPoints();
-    std::vector<int> idx = randomIdOfBullets(controlpts.size(), numOfBullets);
+    std::vector<int> idx = randomIdOfPoints(controlpts.size(), numOfBullets);
 
     //Generating random values.
     for(int i = 0; i < numOfBullets; i++){
@@ -316,6 +317,28 @@ void TerrainManager::createTerrainLake(){
 }
 
 void TerrainManager::createTerrainWall(){
+
+}
+
+void TerrainManager::createTrees(int numberOfTrees){
+
+    std::vector<std::pair<int,int> > locations = collisionHandler->getGrassPoints();
+    std::vector<Ogre::Vector3> points;
+
+    for(int i = 0; i< locations.size();i++){
+        points.push_back(getWorldCoordinates(locations[i]));
+    }
+
+    std::vector<int> idx = randomIdOfPoints(points.size(), numberOfTrees);
+
+    /*for(int i = 0;i < idx.size();i++){
+        Ogre::Entity* treeEntity = sceneManager->createEntity("treeEntity", "tree.mesh");
+        Ogre::SceneNode* treeNode = sceneManager->getRootSceneNode()->createChildSceneNode("treeNode", points.at(idx.at(i)));
+        treeNode->attachObject(treeEntity);
+    }*/
+}
+
+void TerrainManager::resetBullets(){
 
 }
 }
