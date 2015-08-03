@@ -127,20 +127,20 @@ std::pair<int, bool> TerrainManager::getTerrainAt(Ogre::Vector3 coord){
         Ogre::LogManager::getSingletonPtr()->logMessage("--> TerrainManager: Exist Bullet Here! <--");
         Ogre::AxisAlignedBox bulletBox = sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->getWorldBoundingBox(true);
         LOG("Bounding Box have been obtained.");
-        std::cout << bulletBox.volume() << std::endl;
+        //std::cout << bulletBox.volume() << std::endl;
         std::cout << bulletBox.getCenter().x<<" "<<bulletBox.getCenter().y<<" "<<bulletBox.getCenter().z<<std::endl;
         std::cout << coord.x<<" "<<coord.y<<" "<<coord.z<<std::endl;
-        terrainAt.second = sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->getWorldBoundingBox().intersects(coord);
-        std::cout << sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->getBoundingBox().intersects(coord)<<std::endl;
-        if(terrainAt.second){
+        //terrainAt.second = sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->getWorldBoundingBox(true).intersects(coord);
+        terrainAt.second = true;
+        std::cout << sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->getWorldBoundingBox(true).intersects(coord)<<std::endl;
+        //if(terrainAt.second){
             sceneManager->getSceneNode(bulletProperties.second)->getAttachedObject(bulletProperties.second)->setVisible(false);
             std::vector<std::pair<int,int> > coords = calculateBulletSurroundings(bulletProperties.first);
             for(int i = 0; i < coords.size();i++){
                 collisionHandler->setBulletState(coords[i].first,coords[i].second,false);
-            }
+            //}
         }
     }
-
     return terrainAt;
 }
 
@@ -250,10 +250,13 @@ std::vector<std::pair<int, int> > TerrainManager::calculateBulletSurroundings(Og
     std::pair<int,int> coord0 = getCollisionCoordinates(center);
     std::vector<std::pair<int,int> > coords;
     coords.push_back(coord0);
-    for(int i = -5;i<6;i++){
-        for(int j = -5;j<6;j++){
+    for(int i = -4;i<5;i++){
+        for(int j = -4;j<5;j++){
             coords.push_back(std::pair<int,int> (coord0.first+i,coord0.second+j));
         }
+    }
+    for(int i = 1; i< coords.size();i++){
+        std::cout << "Compensation at "<<coords[i].first << ","<< coords[i].second<< std::endl;
     }
     return coords;
 }
