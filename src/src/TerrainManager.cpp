@@ -169,7 +169,7 @@ std::vector<Ogre::Vector3> TerrainManager::obtainCircuitControllPoints(){
 
     LOG("Controll Points.");
     for(int i= 0; i < points.size();i++){
-        std::cout<< points[i].x << " " << points[i].y << " " << points[i].z << std::endl;
+        //std::cout<< points[i].x << " " << points[i].y << " " << points[i].z << std::endl;
     }
 
     auto sortControllPoints = [](std::vector<Ogre::Vector3>& pts)
@@ -230,12 +230,12 @@ std::vector<Ogre::Vector3> TerrainManager::obtainCircuitControllPoints(){
 
     std::cout << std::endl <<"====== Printing sorted Ogre Control Points ======" << std::endl;
     for(int i = 0; i < sortedpoints.size(); i++){
-        std::cout << sortedpoints.at(i).x <<" "
+        /*std::cout << sortedpoints.at(i).x <<" "
                   << sortedpoints.at(i).y <<" "
-                  << sortedpoints.at(i).z << std::endl;
+                  << sortedpoints.at(i).z << std::endl;*/
     }
 
-    std::cout << "End of Sorted Ogre Control Points" << std::endl;
+    //std::cout << "End of Sorted Ogre Control Points" << std::endl;
     return sortedpoints;
 }
 
