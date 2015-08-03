@@ -23,8 +23,8 @@ class PathManager: public Ogre::SimpleSpline {
     Ogre::Real monsterParametricPosition = 0.0;
     Ogre::Real monsterSplineStep = 0.001;
     Ogre::Real monsterSplineVelocity = ConfigManager::instance().getDouble("PathManager.monster_spline_velocity_percent");
-    unsigned monsterIndex = ConfigManager::instance().getInt("Controller.monster_start_index");
-    unsigned monsterNextIndex = monsterIndex + 1;
+    unsigned monsterIndex;
+    unsigned monsterNextIndex;
     Ogre::Vector3 monsterNextPosition;
     bool isPlayerClose = false;
     Ogre::Real monsterVelocityIfCloseToPlayerRunner = ConfigManager::instance().getDouble("PathManager.monster_velocity_if_close_to_player_runner");
