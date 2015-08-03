@@ -8,6 +8,8 @@ set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
 set(VENDOR_DIR "${PROJECT_SOURCE_DIR}/vendor")
 set(LIBRARY_DIR "$ENV{HOME}/.lib")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${DEST_DIR}/bin")
+set(CYCLESHOOTER_LAUNCHER_SOURCE_DIR "${PROJECT_SOURCE_DIR}/cycleshooter-launcher")
+set(CYCLESHOOTER_LAUNCHER_BUILD_DIR "${PROJECT_BINARY_DIR}/cycleshooter-launcher")
 
 
 option(DEPENDENCIES_READY "Are the dependencies ready?" OFF)
@@ -96,10 +98,19 @@ if(DEPENDENCIES_READY)
         )
 
     add_custom_target(
-        run
-        ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target install
-        COMMAND ${PROJECT_NAME}
+        launch
+        DEPENDS ${PROJECT_NAME} cycleshooter-launcher
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target install
+        COMMAND ./CycleshooterLauncher
         WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+        )
+
+    add_custom_target(
+        cycleshooter-launcher
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${CYCLESHOOTER_LAUNCHER_BUILD_DIR}
+        COMMAND ${CMAKE_COMMAND} -E chdir ${CYCLESHOOTER_LAUNCHER_BUILD_DIR} qmake ${CYCLESHOOTER_LAUNCHER_SOURCE_DIR}
+        COMMAND ${CMAKE_COMMAND} -E chdir ${CYCLESHOOTER_LAUNCHER_BUILD_DIR} make -j
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CYCLESHOOTER_LAUNCHER_BUILD_DIR}/CycleshooterLauncher ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/CycleshooterLauncher
         )
 
 

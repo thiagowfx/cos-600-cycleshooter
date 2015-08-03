@@ -38,4 +38,10 @@ If you're experiencing slow compile times, try using either `ccache` or `clang`.
 Notes
 -----
 
-Binaries are placed on `<project_build_root>/dest/bin` assets are placed on `<project_build_root>/dest`. There is an additional `run` target to run the main executable of the project.
+- Binaries are placed on `<project_build_root>/dest/bin` assets are placed on `<project_build_root>/dest`. There is an additional `launch` target to launch the main executable of the project. This target depends on `cycleshooter-launcher`.
+- To build the `cycleshooter-launcher` target, you will need the qt5 libraries.
+
+Rolling release
+---------------
+
+    git submodule init; git submodule sync; git submodule update; git submodule foreach --recursive git pull origin master
