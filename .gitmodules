@@ -1,0 +1,3 @@
+[submodule "cycleshooter-launcher"]
+	path = cycleshooter-launcher
+	url = https://github.com/thiagowfx/cycleshooter-launcher
