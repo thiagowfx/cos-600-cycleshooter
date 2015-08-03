@@ -113,46 +113,63 @@ void PathManager::go(const std::vector<Ogre::Vector3>& controlPoints) {
 }
 
 void PathManager::monsterPathUpdate(Ogre::Real timeSinceLastFrame, const Ogre::Vector3& playerPosition, const Ogre::Vector3& monsterPosition, Context context) {
-    if(!isPlayerClose){
-        monsterSplineStep = monsterSplineVelocity * timeSinceLastFrame;
-        if(monsterParametricPosition + monsterSplineStep < 1.0){
-            monsterParametricPosition += monsterSplineStep;
+    if(!isMonsterWalkingToSpline){
+        if(!isPlayerClose){
+            monsterSplineStep = monsterSplineVelocity * timeSinceLastFrame;
+            if(monsterParametricPosition + monsterSplineStep < 1.0){
+                monsterParametricPosition += monsterSplineStep;
+            }
+            else {
+                monsterParametricPosition = 0.0;
+                updateIndex();
+            }
+            Ogre::Vector3 monsterTangentFirstPoint = this->interpolate(monsterIndex, monsterParametricPosition);
+            Ogre::Vector3 monsterTangentSecondPoint = this->interpolate(monsterIndex, monsterParametricPosition + epsilon);
+            setMonsterNextPosition(monsterTangentFirstPoint);
+            //LOG("index = %d, nextIndex = %d",monsterIndex,monsterNextIndex);
+
+            monsterTangent = monsterTangentSecondPoint - monsterTangentFirstPoint;
+            monsterTangent.normalise();
+            if((playerPosition - monsterPosition).length() < MONSTER_CLOSE_MINIMUM_DISTANCE){
+                //AudioManager::instance().playSound(SOUND_MONSTER_PROXIMITY);
+            }
         }
         else {
-            monsterParametricPosition = 0.0;
-            updateIndex();
+            monsterTangent = playerPosition - monsterPosition;
+            monsterTangent.normalise();
+            Ogre::Vector3 distance;
+            if(context == CONTEXT_RUNNER){
+                distance = monsterVelocityIfCloseToPlayerRunner * timeSinceLastFrame * monsterTangent;
+            }
+            else {
+                distance = monsterVelocityIfCloseToPlayerShooter * timeSinceLastFrame * monsterTangent;
+            }
+            setMonsterNextPosition(monsterNextPosition + distance);
+            if ((playerPosition - monsterPosition).length() >= MONSTER_CLOSE_MINIMUM_DISTANCE) { //player escaped
+                isMonsterWalkingToSpline = true;
+                std::pair<unsigned,double> indexParameter = binSearchNearestPointOnSpline(monsterPosition);
+                monsterIndex = indexParameter.first;
+                monsterNextIndex = indexParameter.first + 1;
+                monsterParametricPosition = indexParameter.second;
+            }
         }
-        Ogre::Vector3 monsterTangentFirstPoint = this->interpolate(monsterIndex, monsterParametricPosition);
-        Ogre::Vector3 monsterTangentSecondPoint = this->interpolate(monsterIndex, monsterParametricPosition + epsilon);
-        setMonsterNextPosition(monsterTangentFirstPoint);
-        //LOG("index = %d, nextIndex = %d",monsterIndex,monsterNextIndex);
-
-        monsterTangent = monsterTangentSecondPoint - monsterTangentFirstPoint;
-        monsterTangent.normalise();
-        if((playerPosition - monsterPosition).length() < MONSTER_CLOSE_MINIMUM_DISTANCE){
-            //AudioManager::instance().playSound(SOUND_MONSTER_PROXIMITY);
-        }
+        //update condition
+        isPlayerClose = (playerPosition - monsterPosition).length() < MONSTER_CLOSE_MINIMUM_DISTANCE ? true: false;
     }
     else {
-        monsterTangent = playerPosition - monsterPosition;
+        Ogre::Vector3 finalPosition = this->interpolate(monsterIndex, monsterParametricPosition);
+        Ogre::Real distanceToDestine = (finalPosition - monsterPosition).length();
+        monsterTangent = finalPosition - monsterPosition;
         monsterTangent.normalise();
-        Ogre::Vector3 distance;
-        if(context == CONTEXT_RUNNER){
-            distance = monsterVelocityIfCloseToPlayerRunner * timeSinceLastFrame * monsterTangent;
+        Ogre::Real distance = monsterVelocityIfCloseToPlayerRunner * timeSinceLastFrame;
+        if(distance >= distanceToDestine){
+            isMonsterWalkingToSpline = false;
+            setMonsterNextPosition(finalPosition);
         }
         else {
-            distance = monsterVelocityIfCloseToPlayerShooter * timeSinceLastFrame * monsterTangent;
-        }
-        setMonsterNextPosition(monsterNextPosition + distance);
-        if ((playerPosition - monsterPosition).length() < MONSTER_CLOSE_MINIMUM_DISTANCE) { //player escaped
-            std::pair<unsigned,double> indexParameter = binSearchNearestPointOnSpline(monsterPosition);
-            monsterIndex = indexParameter.first;
-            monsterNextIndex = indexParameter.first + 1;
-            monsterParametricPosition = indexParameter.second;
+            setMonsterNextPosition(monsterPosition + distance * monsterTangent);
         }
     }
-    //update condition
-    isPlayerClose = (playerPosition - monsterPosition).length() < MONSTER_CLOSE_MINIMUM_DISTANCE ? true: false;
 }
 
 
