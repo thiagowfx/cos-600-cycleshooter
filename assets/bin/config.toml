@@ -73,8 +73,9 @@ camera_near_clip_distance = 5.0
 camera_far_clip_distance = 10000.0
 
 [PathManager]
-monster_spline_velocity_percent = 1.2
-monster_velocity_if_close_to_player = 400.0
+monster_spline_velocity_percent = 1.0
+monster_velocity_if_close_to_player_runner = 400.0
+monster_velocity_if_close_to_player_shooter = 150.0
 monster_close_distance = 700.0
 
 [TerrainManager]

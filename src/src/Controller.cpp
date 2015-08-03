@@ -380,8 +380,7 @@ void Controller::createGameElements() {
     polarUpdater->launch();
 
     // to use a material, the resource group must be initialized
-    terrainManager = std::unique_ptr<TerrainManager>(new TerrainManager(oSceneManager,"racecircuit.png"));
-    //terrainManager->sampleCollisionTransformation();
+    terrainManager = std::unique_ptr<TerrainManager>(new TerrainManager(oSceneManager, "racecircuit.png"));
 
     // create a skybox
     getSceneManager()->setSkyDome(true, "Cycleshooter/NightySky", 3, 4);
@@ -392,8 +391,10 @@ void Controller::createGameElements() {
     getSceneManager()->setAmbientLight(Ogre::ColourValue(0.6, 0.6, 0.6));
 
     getSceneManager()->createLight("mainLight")->setPosition(20.0, 80.0, 50.0);
-    getSceneManager()->createLight("auxLight1")->setPosition(+100.0, +100.0, +100.0);
-    getSceneManager()->createLight("auxLight2")->setPosition(-100.0, +50.0, -100.0);
+
+    Ogre::Light* secLight = getSceneManager()->createLight("secLight");
+    secLight->setDirection(1.0, -0.5, 0.0);
+    secLight->setPosition(0.0, 5000.0, 0.0);
 }
 
 void Controller::createCrosshair() {
