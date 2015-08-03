@@ -135,6 +135,7 @@ public:
 
     void replenishBullets();
     void decrementBulletCount(int quantity = 1);
+    int getBulletCount() const;
     
 };
 }

@@ -280,6 +280,16 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     void setupKeyMappings();
 
     /**
+     * @brief replenishAmmoClock Clock to replenish ammo in the track, from time to time.
+     */
+    sf::Clock replenishAmmoClock;
+
+    /**
+     * @brief REPLENISH_AMMO_S Period to replenish ammo in the track.
+     */
+    sf::Time REPLENISH_AMMO_S = sf::seconds(ConfigManager::instance().getInt("Controller.replenish_ammo_s"));
+
+    /**
      * @brief logicManager Manages the logic of the game.
      */
     std::unique_ptr<LogicManager> logicManager;
@@ -410,6 +420,7 @@ public:
      */
     std::string getElapsedTimeAsString() const;
     PathManager* getPathManager() const;
+    std::string getReplenishAmmoRemainingClockAsSeconds() const;
 };
 
 }

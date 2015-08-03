@@ -98,6 +98,10 @@ void TerrainManager::decrementBulletCount(int quantity) {
     collisionHandler->setBulletCount(bullets);
 }
 
+int TerrainManager::getBulletCount() const {
+    return collisionHandler->getBulletCount();
+}
+
 std::pair<int, int> TerrainManager::getCollisionCoordinates(Ogre::Vector3 point){
     Ogre::Real coordX = terrainTranslation.x - point.x;
     coordX = coordX*widthScale;
