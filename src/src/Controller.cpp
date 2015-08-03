@@ -272,7 +272,7 @@ void Controller::go() {
     setupResources();
     setupTextures();
 
-    if(ConfigManager::instance().getBool("Release.game_release")) {
+    if(ConfigManager::instance().getBool("Release.intros_enabled")) {
         doCountdown();
     }
 
@@ -753,7 +753,7 @@ void Controller::doGameEnd() {
     LOG("Removing all viewports");
     oWindow->removeAllViewports();
 
-    if(ConfigManager::instance().getBool("Release.game_release")) {
+    if(ConfigManager::instance().getBool("Release.intros_enabled")) {
         LOG("Creating the final scene");
 
         // create a background, for cleaning purposes
