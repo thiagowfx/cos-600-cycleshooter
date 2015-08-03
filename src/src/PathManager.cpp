@@ -110,7 +110,7 @@ void PathManager::go(const std::vector<Ogre::Vector3>& controlPoints) {
     }
 }
 
-void PathManager::monsterPathUpdate(Ogre::Real timeSinceLastFrame, const Ogre::Vector3& playerPosition, const Ogre::Vector3& monsterPosition) {
+void PathManager::monsterPathUpdate(Ogre::Real timeSinceLastFrame, const Ogre::Vector3& playerPosition, const Ogre::Vector3& monsterPosition, Context context) {
     if(!isPlayerClose){
         monsterSplineStep = monsterSplineVelocity * timeSinceLastFrame;
         if(monsterParametricPosition + monsterSplineStep < 1.0){
@@ -134,7 +134,13 @@ void PathManager::monsterPathUpdate(Ogre::Real timeSinceLastFrame, const Ogre::V
     else {
         monsterTangent = playerPosition - monsterPosition;
         monsterTangent.normalise();
-        Ogre::Vector3 distance = monsterVelocityIfCloseToPlayer * timeSinceLastFrame * monsterTangent;
+        Ogre::Vector3 distance;
+        if(context == CONTEXT_RUNNER){
+            distance = monsterVelocityIfCloseToPlayerRunner * timeSinceLastFrame * monsterTangent;
+        }
+        else {
+            distance = monsterVelocityIfCloseToPlayerShooter * timeSinceLastFrame * monsterTangent;
+        }
         setMonsterNextPosition(monsterNextPosition + distance);
         if ((playerPosition - monsterPosition).length() < MONSTER_CLOSE_MINIMUM_DISTANCE) { //player escaped
             std::pair<unsigned,double> indexParameter = binSearchNearestPointOnSpline(monsterPosition);

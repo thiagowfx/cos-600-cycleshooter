@@ -106,7 +106,7 @@ bool Controller::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     }
 
     // pathManager updates
-    pathManager->monsterPathUpdate(evt.timeSinceLastFrame, logicManager->getPlayerPosition(), logicManager->getMonsterPosition());
+    pathManager->monsterPathUpdate(evt.timeSinceLastFrame, logicManager->getPlayerPosition(), logicManager->getMonsterPosition(), context);
 
     logicManager->updateMonster(pathManager->getMonsterTangent(), pathManager->getMonsterNextPosition());
 

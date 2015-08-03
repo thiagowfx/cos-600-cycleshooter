@@ -10,6 +10,7 @@
 #include "ConfigManager.hpp"
 #include "Logging.hpp"
 #include "AudioManager.hpp"
+#include "Context.hpp"
 
 namespace Cycleshooter {
 
@@ -26,7 +27,8 @@ class PathManager: public Ogre::SimpleSpline {
     unsigned monsterNextIndex = monsterIndex + 1;
     Ogre::Vector3 monsterNextPosition;
     bool isPlayerClose = false;
-    Ogre::Real monsterVelocityIfCloseToPlayer = ConfigManager::instance().getDouble("PathManager.monster_velocity_if_close_to_player");
+    Ogre::Real monsterVelocityIfCloseToPlayerRunner = ConfigManager::instance().getDouble("PathManager.monster_velocity_if_close_to_player_runner");
+    Ogre::Real monsterVelocityIfCloseToPlayerShooter = ConfigManager::instance().getDouble("PathManager.monster_velocity_if_close_to_player_shooter");
     Ogre::Real MONSTER_CLOSE_MINIMUM_DISTANCE = ConfigManager::instance().getDouble("PathManager.monster_close_distance");
 
     void go(const std::vector<Ogre::Vector3>& controlPoints);
@@ -35,7 +37,7 @@ public:
     PathManager(const char* file);
     PathManager(const std::vector<Ogre::Vector3>& controlPoints);
 
-    void monsterPathUpdate(Ogre::Real timeSinceLastFrame, const Ogre::Vector3& playerPosition, const Ogre::Vector3& monsterPosition);
+    void monsterPathUpdate(Ogre::Real timeSinceLastFrame, const Ogre::Vector3& playerPosition, const Ogre::Vector3& monsterPosition, Context context);
     void updateIndex();
     void setDebug(bool debug);
     Ogre::Vector3 getMonsterTangent() const;
