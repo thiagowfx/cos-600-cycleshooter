@@ -62,8 +62,11 @@ void TerrainManager::createTerrain(){
 
     //Defining terrain structures
     const int INITIAL_NUMBER_OF_BULLETS = ConfigManager::instance().getInt("TerrainManager.initial_number_of_bullets");
+    LOG("Generating Bullets.");
     generateBullets(INITIAL_NUMBER_OF_BULLETS);
+    LOG("Rendering Bullets.");
     renderBullets();
+    LOG("Obtaining circuit controll points.");
     obtainCircuitControllPoints();
 }
 
@@ -188,8 +191,12 @@ bool TerrainManager::calculateSLBIntersection(Ogre::Vector3 p1, Ogre::Vector3 p2
 //    Ogre::Real alfa, beta;
 //    //Coeficients related to bounding box bottom xz parallel face.
 //    std::vector<Ogre::Real> a12,a22, b1,b2;
-    std::cout<<"Testing vector p1 : " << p1.x <<"," << p1.y<< ","<<p1.z<<std::endl;
-    std::cout<<"Testing vector p2 : " << p2.x <<"," << p2.y<< ","<<p2.z<<std::endl;
+    std::cout<<"Testing point p1 : " << p1.x <<"," << p1.y<< ","<<p1.z<<std::endl;
+    std::cout<<"Testing point p2 : " << p2.x <<"," << p2.y<< ","<<p2.z<<std::endl;
+    std::cout<<"Testing point NEAR_RIGHT : " << bBox.getCorner(Ogre::AxisAlignedBox::FAR_LEFT_BOTTOM).x <<"," << bBox.getCorner(Ogre::AxisAlignedBox::FAR_LEFT_BOTTOM).y<< ","<<bBox.getCorner(Ogre::AxisAlignedBox::FAR_LEFT_BOTTOM).z<<std::endl;
+    std::cout<<"Testing point NEAR_LEFT : " << bBox.getCorner(Ogre::AxisAlignedBox::NEAR_LEFT_BOTTOM).x <<"," << bBox.getCorner(Ogre::AxisAlignedBox::NEAR_LEFT_BOTTOM).y<< ","<<bBox.getCorner(Ogre::AxisAlignedBox::NEAR_LEFT_BOTTOM).z<<std::endl;
+    std::cout<<"Testing point FAR_RIGHT : " << bBox.getCorner(Ogre::AxisAlignedBox::FAR_RIGHT_BOTTOM).x <<"," << bBox.getCorner(Ogre::AxisAlignedBox::FAR_RIGHT_BOTTOM).y<< ","<<bBox.getCorner(Ogre::AxisAlignedBox::FAR_RIGHT_BOTTOM).z<<std::endl;
+    std::cout<<"Testing point FAR_LEFT : " << bBox.getCorner(Ogre::AxisAlignedBox::FAR_LEFT_BOTTOM).x <<"," << bBox.getCorner(Ogre::AxisAlignedBox::FAR_LEFT_BOTTOM).y<< ","<<bBox.getCorner(Ogre::AxisAlignedBox::FAR_LEFT_BOTTOM).z<<std::endl;
 //    //Adding FAR_LEFT-NEAR_LEFT edge.
 //    a12.push_back(bBox.getCorner(Ogre::AxisAlignedBox::FAR_LEFT_BOTTOM).x - bBox.getCorner(Ogre::AxisAlignedBox::NEAR_LEFT_BOTTOM).x);
 //    a22.push_back(bBox.getCorner(Ogre::AxisAlignedBox::FAR_LEFT_BOTTOM).z - bBox.getCorner(Ogre::AxisAlignedBox::NEAR_LEFT_BOTTOM).z);
@@ -241,7 +248,8 @@ bool TerrainManager::calculateSLBIntersection(Ogre::Vector3 p1, Ogre::Vector3 p2
     Ogre::Vector3 collisionDirection (p2.x-p1.x,p2.y-p1.y,p2.z-p1.z);
     Ogre::Ray collisionRay (p1,collisionDirection);
     //std::pair<bool, Ogre::Real> collisionTest = collisionRay.intersects(bBox);
-    std::cout <<"Boungin box texting = " << collisionRay.intersects(bBox).first<<std::endl;
+    std::cout << "is Bounding Box finite? : " << bBox.isFinite() <<std::endl;
+    std::cout <<"Boungin box testing = " << collisionRay.intersects(bBox).first<<std::endl;
     return collisionRay.intersects(bBox).first;
 }
 
@@ -329,16 +337,29 @@ std::vector<Ogre::Vector3> TerrainManager::obtainCircuitControllPoints(){
 std::vector<std::pair<int, int> > TerrainManager::calculateBulletSurroundings(Ogre::Vector3 center,Ogre::AxisAlignedBox boundingBox){
     //Finding bullet entities bounding limits.
     //And Calculates transfomations to be passed to collision handler.
+    LOG("Calculating Bullets surrounding.");
     std::pair<int,int> coord0 = getCollisionCoordinates(center);
     std::pair<int,int> coord1 = getCollisionCoordinates(boundingBox.getCorner(Ogre::AxisAlignedBox::NEAR_LEFT_BOTTOM));
     std::pair<int,int> coord2 = getCollisionCoordinates(boundingBox.getCorner(Ogre::AxisAlignedBox::NEAR_RIGHT_BOTTOM));
     std::pair<int,int> coord3 = getCollisionCoordinates(boundingBox.getCorner(Ogre::AxisAlignedBox::FAR_LEFT_BOTTOM));
     std::pair<int,int> coord4 = getCollisionCoordinates(boundingBox.getCorner(Ogre::AxisAlignedBox::FAR_RIGHT_BOTTOM));
     std::vector<std::pair<int,int> > coords;
-
+    int coordX[] = {coord1.first,coord2.first,coord3.first,coord4.first};
+    int coordY[] = {coord1.second,coord2.second,coord3.second,coord4.second};
+    int minX = *std::min_element(coordX,coordX+3);
+    int minY = *std::min_element(coordY,coordX+3);
+    int maxX = *std::max_element(coordX,coordX+3);
+    int maxY = *std::max_element(coordY,coordX+3);
+    LOG("Calculating Bullets surrounding.");
     //Adding center at first position.
     coords.push_back(coord0);
-    coords.push_back(coord1);coords.push_back(coord2);coords.push_back(coord3);coords.push_back(coord4);
+    for(int i = minX; i <= maxX;i++){
+        for(int j = minY; j <= maxY;j++){
+            std::cout << minX+i << "," << minY+j<<std::endl;
+            coords.push_back(std::pair<int,int> (minX+i,minY+j));
+        }
+    }
+    //coords.push_back(coord1);coords.push_back(coord2);coords.push_back(coord3);coords.push_back(coord4);
     std::cout << "Center at "<<coords[0].first << ","<< coords[0].second<< std::endl;
     for(int i = 1; i< coords.size();i++){
         std::cout << "Compensation at "<<coords[i].first << ","<< coords[i].second<< std::endl;
@@ -408,7 +429,9 @@ void TerrainManager::renderBullets(){
         bulletNode->attachObject(bulletEntity);
 
         //Compensates sizes defined by bulletBoundingBox.
-        collisionHandler->compensateBulletRender(calculateBulletSurroundings(renderSettings.second[i]));
+        LOG("Compensatig bullet's size.");LOG("What the fuCK!!");
+        collisionHandler->compensateBulletRender(calculateBulletSurroundings(renderSettings.second[i]));/*,bulletNode->getAttachedObject(renderSettings.first[i])->getWorldBoundingBox(true)));*/
+        LOG("What the fuCK!!");
     }
 }
 void TerrainManager::createTerrainLake(){

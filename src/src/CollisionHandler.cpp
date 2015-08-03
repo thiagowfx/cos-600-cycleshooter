@@ -243,7 +243,7 @@ void CollisionHandler::compensateBulletRender(std::vector<std::pair<int, int> > 
     int cWidth = coords[0].first;
     int cHeight = coords[0].second;
     int width, height;
-    Ogre::LogManager::getSingletonPtr()->logMessage("--> CollisionHandler: Compensating Bullet Render <--");
+    LOG("CollisionHandler: Compensating Bullet Render");
     Ogre::LogManager::getSingletonPtr()->logMessage(bulletMatrix[cWidth][cHeight].second.getScenenodeName());
     for(int i = 1;i < coords.size();i++){
         width = coords[i].first;
