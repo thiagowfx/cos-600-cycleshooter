@@ -166,6 +166,8 @@ std::vector<std::pair<Ogre::Vector3, Ogre::String> > CollisionHandler::getPossib
     for(int w = 0; w < abs(begin.first-end.first);w++){
         for(int h = 0; h< abs(begin.second-end.second);h++){
             possibleBullets.push_back(bulletMatrix[minW+w][minH+h].second.getProperties());
+            LOG("Possible bullet = ");
+            std::cout<<bulletMatrix[minW+w][minH+h].second.getScenenodeName()<<std::endl;
         }
     }
     return possibleBullets;

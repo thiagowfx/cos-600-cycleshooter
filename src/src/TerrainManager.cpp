@@ -182,57 +182,67 @@ std::pair<int, bool> TerrainManager::getTerrainAt(Ogre::Vector3 coord, Ogre::Vec
 }
 
 bool TerrainManager::calculateSLBIntersection(Ogre::Vector3 p1, Ogre::Vector3 p2, Ogre::AxisAlignedBox bBox){
-    //Coeficientes related to p1p2 line segment.
-    Ogre::Real a11 = p1.x - p2.x;
-    Ogre::Real a21 = p1.z - p2.z;
-    Ogre::Real alfa, beta;
-    //Coeficients related to bounding box bottom xz parallel face.
-    std::vector<Ogre::Real> a12,a22, c1,c2;
+//    //Coeficientes related to p1p2 line segment.
+//    Ogre::Real a11 = p1.x - p2.x;
+//    Ogre::Real a21 = p1.z - p2.z;
+//    Ogre::Real alfa, beta;
+//    //Coeficients related to bounding box bottom xz parallel face.
+//    std::vector<Ogre::Real> a12,a22, b1,b2;
+    std::cout<<"Testing vector p1 : " << p1.x <<"," << p1.y<< ","<<p1.z<<std::endl;
+    std::cout<<"Testing vector p2 : " << p2.x <<"," << p2.y<< ","<<p2.z<<std::endl;
+//    //Adding FAR_LEFT-NEAR_LEFT edge.
+//    a12.push_back(bBox.getCorner(Ogre::AxisAlignedBox::FAR_LEFT_BOTTOM).x - bBox.getCorner(Ogre::AxisAlignedBox::NEAR_LEFT_BOTTOM).x);
+//    a22.push_back(bBox.getCorner(Ogre::AxisAlignedBox::FAR_LEFT_BOTTOM).z - bBox.getCorner(Ogre::AxisAlignedBox::NEAR_LEFT_BOTTOM).z);
+//    b1.push_back(bBox.getCorner(Ogre::AxisAlignedBox::NEAR_LEFT_BOTTOM).x - p2.x);
+//    b2.push_back(bBox.getCorner(Ogre::AxisAlignedBox::NEAR_LEFT_BOTTOM).z - p2.z);
 
-    //Adding FAR_LEFT-NEAR_LEFT edge.
-    a12.push_back(bBox.getCorner(Ogre::AxisAlignedBox::FAR_LEFT_BOTTOM).x - bBox.getCorner(Ogre::AxisAlignedBox::NEAR_LEFT_BOTTOM).x);
-    a22.push_back(bBox.getCorner(Ogre::AxisAlignedBox::FAR_LEFT_BOTTOM).z - bBox.getCorner(Ogre::AxisAlignedBox::NEAR_LEFT_BOTTOM).z);
-    c1.push_back(bBox.getCorner(Ogre::AxisAlignedBox::NEAR_LEFT_BOTTOM).x - p2.x);
-    c2.push_back(bBox.getCorner(Ogre::AxisAlignedBox::NEAR_LEFT_BOTTOM).z - p2.z);
+//    //Adding FAR_RIGHT-NEAR_RIGHt edge.
+//    a12.push_back(bBox.getCorner(Ogre::AxisAlignedBox::FAR_RIGHT_BOTTOM).x - bBox.getCorner(Ogre::AxisAlignedBox::NEAR_RIGHT_BOTTOM).x);
+//    a22.push_back(bBox.getCorner(Ogre::AxisAlignedBox::FAR_RIGHT_BOTTOM).z - bBox.getCorner(Ogre::AxisAlignedBox::NEAR_RIGHT_BOTTOM).z);
+//    b1.push_back(bBox.getCorner(Ogre::AxisAlignedBox::NEAR_RIGHT_BOTTOM).x - p2.x);
+//    b2.push_back(bBox.getCorner(Ogre::AxisAlignedBox::NEAR_RIGHT_BOTTOM).z - p2.z);
 
-    //Adding FAR_RIGHT-NEAR_RIGHt edge.
-    a12.push_back(bBox.getCorner(Ogre::AxisAlignedBox::FAR_RIGHT_BOTTOM).x - bBox.getCorner(Ogre::AxisAlignedBox::FAR_RIGHT_BOTTOM).x);
-    a22.push_back(bBox.getCorner(Ogre::AxisAlignedBox::FAR_RIGHT_BOTTOM).z - bBox.getCorner(Ogre::AxisAlignedBox::FAR_RIGHT_BOTTOM).z);
-    c1.push_back(bBox.getCorner(Ogre::AxisAlignedBox::FAR_RIGHT_BOTTOM).x - p2.x);
-    c2.push_back(bBox.getCorner(Ogre::AxisAlignedBox::FAR_RIGHT_BOTTOM).z - p2.z);
+//    //Adding FAR_LEFT-FAR_RIGHT edge.
+//    a12.push_back(bBox.getCorner(Ogre::AxisAlignedBox::FAR_LEFT_BOTTOM).x - bBox.getCorner(Ogre::AxisAlignedBox::FAR_RIGHT_BOTTOM).x);
+//    a22.push_back(bBox.getCorner(Ogre::AxisAlignedBox::FAR_LEFT_BOTTOM).z - bBox.getCorner(Ogre::AxisAlignedBox::FAR_RIGHT_BOTTOM).z);
+//    b1.push_back(bBox.getCorner(Ogre::AxisAlignedBox::FAR_RIGHT_BOTTOM).x - p2.x);
+//    b2.push_back(bBox.getCorner(Ogre::AxisAlignedBox::FAR_RIGHT_BOTTOM).z - p2.z);
 
-    //Adding FAR_LEFT-FAR_RIGHT edge.
-    a12.push_back(bBox.getCorner(Ogre::AxisAlignedBox::FAR_LEFT_BOTTOM).x - bBox.getCorner(Ogre::AxisAlignedBox::FAR_RIGHT_BOTTOM).x);
-    a22.push_back(bBox.getCorner(Ogre::AxisAlignedBox::FAR_LEFT_BOTTOM).z - bBox.getCorner(Ogre::AxisAlignedBox::FAR_RIGHT_BOTTOM).z);
-    c1.push_back(bBox.getCorner(Ogre::AxisAlignedBox::FAR_RIGHT_BOTTOM).x - p2.x);
-    c2.push_back(bBox.getCorner(Ogre::AxisAlignedBox::FAR_RIGHT_BOTTOM).z - p2.z);
+//    //Adding NEAR_LEFT-NEAR_RIGHT edge.
+//    a12.push_back(bBox.getCorner(Ogre::AxisAlignedBox::NEAR_LEFT_BOTTOM).x - bBox.getCorner(Ogre::AxisAlignedBox::NEAR_RIGHT_BOTTOM).x);
+//    a22.push_back(bBox.getCorner(Ogre::AxisAlignedBox::NEAR_LEFT_BOTTOM).z - bBox.getCorner(Ogre::AxisAlignedBox::NEAR_RIGHT_BOTTOM).z);
+//    b1.push_back(bBox.getCorner(Ogre::AxisAlignedBox::NEAR_RIGHT_BOTTOM).x - p2.x);
+//    b2.push_back(bBox.getCorner(Ogre::AxisAlignedBox::NEAR_RIGHT_BOTTOM).z - p2.z);
 
-    //Adding NEAR_LEFT-NEAR_RIGHT edge.
-    a12.push_back(bBox.getCorner(Ogre::AxisAlignedBox::NEAR_LEFT_BOTTOM).x - bBox.getCorner(Ogre::AxisAlignedBox::NEAR_RIGHT_BOTTOM).x);
-    a22.push_back(bBox.getCorner(Ogre::AxisAlignedBox::NEAR_LEFT_BOTTOM).z - bBox.getCorner(Ogre::AxisAlignedBox::NEAR_RIGHT_BOTTOM).z);
-    c1.push_back(bBox.getCorner(Ogre::AxisAlignedBox::NEAR_RIGHT_BOTTOM).x - p2.x);
-    c2.push_back(bBox.getCorner(Ogre::AxisAlignedBox::NEAR_RIGHT_BOTTOM).z - p2.z);
+//    /**
+//     * If the game changes to a 3d movimentation, the test must
+//     * done for all the edges of the bounding box.
+//    */
 
-    /**
-     * If the game changes to a 3d movimentation, the test must
-     * done for all the edges of the bounding box.
-    */
-
-    bool bAlfa;
-    bool bBeta;
-    //Test if p1p2 intercepts one of the edges solving a 2D linear equation.
-    for(int i = 0; i < c1.size();i++){
-        beta = c2[i] - c1[i]* a21/a11;
-        beta = beta/(a22[i]- a21*a12[i]/ a11);
-        alfa = c1[i] - a12[i]*beta;
-        alfa = alfa/a11;
-        bAlfa = 0 <= alfa && alfa <= 1 ;
-        bBeta = 0 <= beta && beta <= 1 ;
-        std::cout << "Testing bounding collision: "<< bAlfa << "," << bBeta << std::endl;
-        if(bAlfa && bBeta)
-            return true;
-    }
-    return false;
+//    bool bAlfa;
+//    bool bBeta;
+//    //Test if p1p2 intercepts one of the edges solving a 2D linear equation.
+//    for(int i = 0; i < b1.size();i++){
+//        std::cout << a11 <<" " << a12[i] << " = " <<b1[i]<<std::endl;
+//        std::cout << a21 <<" " << a22[i] << " = " <<b2[i]<<std::endl;
+//        beta = (b1[i]* a21/a11) - b2[i];
+//        beta = beta/(a22[i]- a21*a12[i]/ a11);
+//        alfa = b1[i] + a12[i]*beta;
+//        alfa = alfa/a11;
+//        bAlfa = 0 <= alfa && alfa <= 1 ;
+//        bBeta = 0 <= beta && beta <= 1 ;
+//        std::cout << "Testing bounding collision: "<< alfa << "," << beta << std::endl;
+//        std::cout << "Testing bounding collision: "<< bAlfa << "," << bBeta << std::endl;
+//        if(bAlfa && bBeta)
+//            return true;
+//    }
+//    return false;
+    LOG("Bounding Collision.");
+    Ogre::Vector3 collisionDirection (p2.x-p1.x,p2.y-p1.y,p2.z-p1.z);
+    Ogre::Ray collisionRay (p1,collisionDirection);
+    //std::pair<bool, Ogre::Real> collisionTest = collisionRay.intersects(bBox);
+    std::cout <<"Boungin box texting = " << collisionRay.intersects(bBox).first<<std::endl;
+    return collisionRay.intersects(bBox).first;
 }
 
 std::vector<Ogre::Vector3> TerrainManager::obtainCircuitControllPoints(){

@@ -5,6 +5,7 @@
 #include <OgreTerrain.h>
 #include <OgreTerrainGroup.h>
 #include <OgreSceneManager.h>
+#include <OgreRay.h>
 
 #include "CollisionHandler.hpp"
 #include "ConfigManager.hpp"
