@@ -4,7 +4,7 @@ polar_port = "/dev/ttyUSB0"
 use_real_bicycle = false
 bicycle_port = "/dev/ttyUSB1"
 game_release = false
-intros_enabled = true
+intros_enabled = false
 
 [AudioManager]
 sound_path = "../audio/sounds/"
