@@ -65,8 +65,8 @@ mapped_heartbeat_maximum = 3.2
 
 [LogicManager]
 use_antitangent_shooter_camera = false
-initial_player_ammo = 30
-initial_monster_health = 10
+initial_player_ammo = 2
+initial_monster_health = 8
 mirror_percentage_h = 0.675
 mirror_percentage_v = 0.135
 camera_near_clip_distance = 5.0
@@ -79,4 +79,4 @@ monster_velocity_if_close_to_player_shooter = 125.0
 monster_close_distance = 750.0
 
 [TerrainManager]
-initial_number_of_bullets = 15
+initial_number_of_bullets = 25
