@@ -27,7 +27,8 @@ class HUD {
     // customizable settings
     const OgreBites::TrayLocation CONTEXT_TL = OgreBites::TL_TOPLEFT;
     const OgreBites::TrayLocation INFO_WIDGETS_TL = OgreBites::TL_BOTTOMRIGHT;
-    const OgreBites::TrayLocation FPS_TL = OgreBites::TL_BOTTOMLEFT;
+    const OgreBites::TrayLocation AMMO_WIDGETS_TL = OgreBites::TL_BOTTOMLEFT;
+    const OgreBites::TrayLocation FPS_TL = OgreBites::TL_RIGHT;
     const OgreBites::TrayLocation DEBUG_PANEL_TL = OgreBites::TL_LEFT;
     const OgreBites::TrayLocation CLOCK_TL = OgreBites::TL_TOPRIGHT;
 
