@@ -235,13 +235,18 @@ void Controller::dumpLog() {
 void Controller::createSky() {
     int hours = atoi(chronoToDateString(std::chrono::system_clock::now(), "%H").c_str());
 
-    if (hours >= 6 && hours <= 18) {
+    if (hours >= 6 && hours <= 12) {
         // create a skybox
         getSceneManager()->setSkyBox(true, "Cycleshooter/MorningSkyBox");
     }
-    else {
-        //getSceneManager()->setSkyBox(true, "Cycleshooter/NightySkyDome");
+    if (hours > 12 && hours <= 18) {
         getSceneManager()->setSkyBox(true, "Cycleshooter/InterstellarSkyBox");
+    }
+    if (hours > 18 && hours <= 21) {
+        getSceneManager()->setSkyBox(true, "Cycleshooter/EveningSkyBox");
+    }
+    if (hours > 21 || hours < 6) {
+        getSceneManager()->setSkyBox(true, "Cycleshooter/NightySkyDome");
     }
 }
 
