@@ -240,8 +240,8 @@ void Controller::createSky() {
         getSceneManager()->setSkyBox(true, "Cycleshooter/MorningSkyBox");
     }
     else {
-        // create a skydome
-        getSceneManager()->setSkyDome(true, "Cycleshooter/NightySkyDome", 3, 4);
+        //getSceneManager()->setSkyBox(true, "Cycleshooter/NightySkyDome");
+        getSceneManager()->setSkyBox(true, "Cycleshooter/InterstellarSkyBox");
     }
 }
 
@@ -396,6 +396,7 @@ void Controller::createGameElements() {
     terrainManager = std::unique_ptr<TerrainManager>(new TerrainManager(oSceneManager, "racecircuit.png"));
 
     createSky();
+
     createAnimations();
     createSwords();
 
