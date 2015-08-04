@@ -46,6 +46,7 @@ void LogicManager::shoot() {
 
         monsterNode->flipVisibility();
         controller->getSceneManager()->setSkyDomeEnabled(false);
+	controller->getSceneManager()->setSkyBoxEnabled(false);
         controller->getSceneManager()->getRootSceneNode()->flipVisibility();
         bool debug = controller->getDebug();
         setDebug(false);
@@ -66,6 +67,7 @@ void LogicManager::shoot() {
             setDebug(true);
         }
         controller->getSceneManager()->getRootSceneNode()->flipVisibility();
+	controller->getSceneManager()->setSkyBoxEnabled(true);
         controller->getSceneManager()->setSkyDomeEnabled(true);
         monsterNode->flipVisibility();
     }
