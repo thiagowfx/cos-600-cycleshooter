@@ -209,21 +209,16 @@ bool Controller::getDebug() const {
     return debug;
 }
 
-std::string Controller::chronoToDateString(decltype(std::chrono::system_clock::now()) clock) const {
-    /**
-     * @brief CURRENT_DATE_FORMAT The format of the date and time for the dump log.
-     */
-    const char* CURRENT_DATE_FORMAT = ConfigManager::instance().getStr("Controller.current_date_format").c_str();
+std::string Controller::chronoToDateString(decltype(std::chrono::system_clock::now()) clock, const char* currentDateFormat) const {
     const int BUFFER_SIZE = 32;
     std::time_t t = std::chrono::system_clock::to_time_t(clock);
     char s[BUFFER_SIZE];
-    std::strftime(s, sizeof(s), CURRENT_DATE_FORMAT, std::localtime(&t));
-
+    std::strftime(s, sizeof(s), currentDateFormat, std::localtime(&t));
     return s;
 }
 
 std::string Controller::generateCurrentDate() const {
-    return chronoToDateString(std::chrono::system_clock::now());
+    return chronoToDateString(std::chrono::system_clock::now(), CURRENT_DATE_FORMAT.c_str());
 }
 
 void Controller::dumpLog() {
@@ -235,6 +230,19 @@ void Controller::dumpLog() {
        << getLogicManager()->getDistanceToMonster() << ","
        << getLogicManager()->getMonsterHealth();
     Ogre::LogManager::getSingleton().getLog(DUMP_LOG_FILENAME)->logMessage(ss.str());
+}
+
+void Controller::createSky() {
+    int hours = atoi(chronoToDateString(std::chrono::system_clock::now(), "%H").c_str());
+
+    if (hours >= 6 && hours <= 18) {
+        // create a skybox
+        getSceneManager()->setSkyBox(true, "Cycleshooter/MorningSkyBox");
+    }
+    else {
+        //getSceneManager()->setSkyBox(true, "Cycleshooter/NightySkyDome");
+        getSceneManager()->setSkyBox(true, "Cycleshooter/InterstellarSkyBox");
+    }
 }
 
 void Controller::initializeDumpLog() {
@@ -264,7 +272,7 @@ void Controller::go() {
     setupResources();
     setupTextures();
 
-    if(ConfigManager::instance().getBool("Release.game_release")) {
+    if(ConfigManager::instance().getBool("Release.intros_enabled")) {
         doCountdown();
     }
 
@@ -387,13 +395,7 @@ void Controller::createGameElements() {
     // to use a material, the resource group must be initialized
     terrainManager = std::unique_ptr<TerrainManager>(new TerrainManager(oSceneManager, "racecircuit.png"));
 
-    // create a skybox
-    //getSceneManager()->setSkyBox(true, "Cycleshooter/MorningSkyBox");
-
-    // create another skybox
-    //getSceneManager()->setSkyBox(true, "Cycleshooter/NightySkyDome");
-
-    getSceneManager()->setSkyBox(true, "Cycleshooter/InterstellarSkyBox");
+    createSky();
 
     createAnimations();
     createSwords();
@@ -489,14 +491,14 @@ void Controller::createSwords() {
 void Controller::setupKeyMappings() {
     LOG("Setting up mappings");
 
-    if(!ConfigManager::instance().getBool("Release.game_release")) {
-
 #define bicycleSpeedChange(signal_sensibility) bicycle->changeSpeed(static_cast<float>(signal_sensibility) * BICYCLE_SPEED_CHANGE);
 #define bicycleRotationChange(signal_sensibility)\
     Ogre::Degree angle = Ogre::Degree(ConfigManager::instance().getDouble("Controller.camera_rotation_angle_per_frame"));\
     logicManager->rotateCamera(static_cast<float>(signal_sensibility) * angle);
 #define scrollCrosshair(x_sensibility, y_sensibility)\
     crosshairManager->scrollVirtualCrosshair(polar->getHeartRate(), x_sensibility, y_sensibility);
+
+    if(!ConfigManager::instance().getBool("Release.use_real_bicycle")) {
 
         /*
      * Runner mode mappings;
@@ -511,21 +513,60 @@ void Controller::setupKeyMappings() {
                                                sf::Keyboard::Down}, CONTEXT_RUNNER, [&]{
             bicycleSpeedChange(-1);
         });
+    }
 
-        /*
+    /*
      * Rotation Mapping
-     * WITH THIS APPROACH ROTATION WORKS WITH ITS OWN KEYBOARD MAPPING (NO MAXIMUM ANGLE)
      */
-        InputManager::instance().addKeysRotationUnbuf({sf::Keyboard::A,
-                                                       sf::Keyboard::Left}, CONTEXT_RUNNER, [&]{
-            bicycleRotationChange(+1);
-        });
+    InputManager::instance().addKeysRotationUnbuf({sf::Keyboard::A,
+                                                   sf::Keyboard::Left}, CONTEXT_RUNNER, [&]{
+        bicycleRotationChange(+1);
+    });
 
-        InputManager::instance().addKeysRotationUnbuf({sf::Keyboard::D,
-                                                       sf::Keyboard::Right}, CONTEXT_RUNNER, [&]{
-            bicycleRotationChange(-1);
-        });
+    InputManager::instance().addKeysRotationUnbuf({sf::Keyboard::D,
+                                                   sf::Keyboard::Right}, CONTEXT_RUNNER, [&]{
+        bicycleRotationChange(-1);
+    });
 
+    /*
+        * Shooter mode mappings.
+        */
+    InputManager::instance().addKeysUnbuf({sf::Keyboard::A,
+                                           sf::Keyboard::Left}, CONTEXT_SHOOTER, [&]{
+        scrollCrosshair(-1.0, 0.0);
+    });
+
+    InputManager::instance().addKeysUnbuf({sf::Keyboard::D,
+                                           sf::Keyboard::Right}, CONTEXT_SHOOTER, [&]{
+        scrollCrosshair(+1.0, 0.0);
+    });
+
+    InputManager::instance().addKeysUnbuf({sf::Keyboard::W,
+                                           sf::Keyboard::Up}, CONTEXT_SHOOTER, [&]{
+        scrollCrosshair(0.0, +1.0);
+    });
+
+    InputManager::instance().addKeysUnbuf({sf::Keyboard::S,
+                                           sf::Keyboard::Down}, CONTEXT_SHOOTER, [&]{
+        scrollCrosshair(0.0, -1.0);
+    });
+
+    InputManager::instance().addKey(sf::Keyboard::Space, CONTEXT_SHOOTER, [&]{
+        logicManager->shoot();
+    });
+
+    /*
+     *  Both modes mappings.
+     */
+    InputManager::instance().addKey(sf::Keyboard::Num1, [&]{
+        toggleMode();
+    });
+
+    InputManager::instance().addKey(sf::Keyboard::Num2, [&]{
+        toggleDebug();
+    });
+
+    if(!ConfigManager::instance().getBool("Release.game_release")) {
         InputManager::instance().addKey(sf::Keyboard::Q, CONTEXT_RUNNER, [&]{
             bicycle->changeFriction(-BICYCLE_FRICTION_CHANGE);
         });
@@ -534,55 +575,12 @@ void Controller::setupKeyMappings() {
             bicycle->changeFriction(BICYCLE_FRICTION_CHANGE);
         });
 
-        /*
-     * Shooter mode mappings.
-     */
-        InputManager::instance().addKeysUnbuf({sf::Keyboard::A,
-                                               sf::Keyboard::Left}, CONTEXT_SHOOTER, [&]{
-            scrollCrosshair(-1.0, 0.0);
-        });
-
-        InputManager::instance().addKeysUnbuf({sf::Keyboard::D,
-                                               sf::Keyboard::Right}, CONTEXT_SHOOTER, [&]{
-            scrollCrosshair(+1.0, 0.0);
-        });
-
-        InputManager::instance().addKeysUnbuf({sf::Keyboard::W,
-                                               sf::Keyboard::Up}, CONTEXT_SHOOTER, [&]{
-            scrollCrosshair(0.0, +1.0);
-        });
-
-        InputManager::instance().addKeysUnbuf({sf::Keyboard::S,
-                                               sf::Keyboard::Down}, CONTEXT_SHOOTER, [&]{
-            scrollCrosshair(0.0, -1.0);
-        });
-
-        InputManager::instance().addKey(sf::Keyboard::Space, CONTEXT_SHOOTER, [&]{
-            logicManager->shoot();
-        });
-
-        /*
-     * Both modes mappings.
-     */
-        InputManager::instance().addKey(sf::Keyboard::Num1, [&]{
-            toggleMode();
-        });
-
-        InputManager::instance().addKey(sf::Keyboard::Num2, [&]{
-            toggleDebug();
-        });
-
         InputManager::instance().addKey(sf::Keyboard::LBracket, [&]{
             polar->changePeaks(-POLAR_PEAK_CHANGE);
         });
 
         InputManager::instance().addKey(sf::Keyboard::RBracket, [&]{
             polar->changePeaks(POLAR_PEAK_CHANGE);
-        });
-
-        // refresh all textures
-        InputManager::instance().addKey(sf::Keyboard::F5, [&] {
-            Ogre::TextureManager::getSingleton().reloadAll();
         });
     }
 
@@ -625,7 +623,7 @@ void Controller::setupKeyMappings() {
         bicycleRotationChange(-f / 100.0);
     });
 
-    if(!ConfigManager::instance().getBool("Release.game_release")) {
+    if(!ConfigManager::instance().getBool("Release.use_real_bicycle")) {
         InputManager::instance().addJoystickAxisUnbuf({sf::Joystick::Y,
                                                        sf::Joystick::V,
                                                        sf::Joystick::PovY},
@@ -752,7 +750,7 @@ void Controller::doGameEnd() {
     LOG("Removing all viewports");
     oWindow->removeAllViewports();
 
-    if(ConfigManager::instance().getBool("Release.game_release")) {
+    if(ConfigManager::instance().getBool("Release.intros_enabled")) {
         LOG("Creating the final scene");
 
         // create a background, for cleaning purposes
@@ -775,7 +773,7 @@ void Controller::doGameEnd() {
 void Controller::doSaveStats(const char* file, const char* totalGameTime) {
     std::ofstream ofs(file, std::ios_base::app | std::ios_base::out);
 
-    ofs << "===== SESSION STARTS: " << chronoToDateString(gameStartClock) << std::endl;
+    ofs << "===== SESSION STARTS: " << chronoToDateString(gameStartClock, CURRENT_DATE_FORMAT.c_str()) << std::endl;
 
     polar->printStatistics(ofs);
     bicycle->printStatistics(ofs);

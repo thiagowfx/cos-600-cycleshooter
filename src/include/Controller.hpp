@@ -98,9 +98,14 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
     std::string generateCurrentDate() const;
 
     /**
+     * @brief CURRENT_DATE_FORMAT The format of the date and time for the dump log.
+     */
+    std::string CURRENT_DATE_FORMAT = ConfigManager::instance().getStr("Controller.current_date_format");
+
+    /**
      * Format a time_point / chrono clock to a string in the format specified in the config file.
      */
-    std::string chronoToDateString(decltype(std::chrono::system_clock::now()) clock) const;
+    std::string chronoToDateString(decltype(std::chrono::system_clock::now()) clock, const char* currentDateFormat) const;
 
     /**
      * @brief DUMP_LOG_FILENAME Filename of the log that will be dumped from time to time.
@@ -116,6 +121,11 @@ class Controller : public sf::NonCopyable, public Ogre::FrameListener {
      * Dump log with game statistics at the time of the dump.
      */
     void dumpLog();
+
+    /**
+     * @brief createSky Create a sky, depending on the time of the day.
+     */
+    void createSky();
 
     /**
      * Initialize/prepare the dump log appropriately.
