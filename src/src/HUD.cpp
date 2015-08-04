@@ -16,17 +16,18 @@ void HUD::createTrayWidgets() {
     trayManager->createLabel(CONTEXT_TL, "contextLabel", "", 150);
     trayManager->createDecorWidget(CONTEXT_TL, "contextLogo", "Cycleshooter/RunningModePanel");
 
-    // information widgets
-    int INFO_SIZE = 140;
-    const int INFO_SIZE2 = INFO_SIZE + 22;
-    trayManager->createLabel(INFO_WIDGETS_TL, "polarLabel", "HR: ", INFO_SIZE);
-    trayManager->createLabel(INFO_WIDGETS_TL, "speedLabel", "Speed: ", INFO_SIZE);
-    trayManager->createLabel(INFO_WIDGETS_TL, "loadLabel", "Speed: ", INFO_SIZE);
-    trayManager->createLabel(INFO_WIDGETS_TL, "ammoLabel", "Ammo: ", INFO_SIZE);
-    trayManager->createLabel(INFO_WIDGETS_TL, "monsterLabel", "Monster: ", INFO_SIZE);
-    trayManager->createLabel(CLOCK_TL, "clockLabel", "Game time: ", INFO_SIZE2);
-    trayManager->createLabel(CLOCK_TL, "ammoInTrackClockLabel", "Ammo refresh: ", INFO_SIZE2);
-    trayManager->createLabel(CLOCK_TL, "ammoInTrackLabel", "Ammo in track: ", INFO_SIZE2);
+    int INFO_PANEL_SIZE = 170;
+    Ogre::StringVector infoParams = {"HeartRate", "Speed(rpm)", "Friction"};
+    Ogre::StringVector infoValues = Ogre::StringVector(infoParams.size(), "");
+    trayManager->createParamsPanel(INFO_WIDGETS_TL, "infoPanel", INFO_PANEL_SIZE, infoParams)->setAllParamValues(infoValues);
+
+    int AMMO_PANEL_SIZE = 240;
+    Ogre::StringVector ammoParams = {"Monster Health", "Ammo", "Ammo in track", "Ammo refreshes in"};
+    Ogre::StringVector ammoValues = Ogre::StringVector(ammoParams.size(), "");
+    trayManager->createParamsPanel(AMMO_WIDGETS_TL, "ammoPanel", AMMO_PANEL_SIZE, ammoParams)->setAllParamValues(ammoValues);
+
+    const int CLOCK_SIZE = 170;
+    trayManager->createLabel(CLOCK_TL, "clockLabel", "", CLOCK_SIZE);
 }
 
 void HUD::update(const Ogre::FrameEvent& evt) {
@@ -34,14 +35,18 @@ void HUD::update(const Ogre::FrameEvent& evt) {
     trayManager->frameRenderingQueued(evt);
 
     // update information widgets
-    dynamic_cast<OgreBites::Label*>(trayManager->getWidget("polarLabel"))->setCaption("HR: " + Ogre::StringConverter::toString(controller->getPolar()->getHeartRate()));
-    dynamic_cast<OgreBites::Label*>(trayManager->getWidget("speedLabel"))->setCaption("Speed: " + Ogre::StringConverter::toString(controller->getBicycle()->getRpmSpeed()));
-    dynamic_cast<OgreBites::Label*>(trayManager->getWidget("loadLabel"))->setCaption("Load: " + Ogre::StringConverter::toString(controller->getBicycle()->getFriction()));
-    dynamic_cast<OgreBites::Label*>(trayManager->getWidget("ammoLabel"))->setCaption("Ammo: " + Ogre::StringConverter::toString(controller->getLogicManager()->getPlayerAmmo()));
-    dynamic_cast<OgreBites::Label*>(trayManager->getWidget("monsterLabel"))->setCaption("Monster: " + Ogre::StringConverter::toString(controller->getLogicManager()->getMonsterHealth()));
-    dynamic_cast<OgreBites::Label*>(trayManager->getWidget("clockLabel"))->setCaption("Game time: " + controller->getElapsedTimeAsString());
-    dynamic_cast<OgreBites::Label*>(trayManager->getWidget("ammoInTrackClockLabel"))->setCaption("Ammo refresh: " + controller->getReplenishAmmoRemainingClockAsSeconds());
-    dynamic_cast<OgreBites::Label*>(trayManager->getWidget("ammoInTrackLabel"))->setCaption("Ammo in track: " + Ogre::StringConverter::toString(controller->getTerrainManager()->getBulletCount()));
+    auto infoPanel = dynamic_cast<OgreBites::ParamsPanel*>(trayManager->getWidget("infoPanel"));
+    infoPanel->setParamValue(0, Ogre::StringConverter::toString(controller->getPolar()->getHeartRate()));
+    infoPanel->setParamValue(1, Ogre::StringConverter::toString(controller->getBicycle()->getRpmSpeed()));
+    infoPanel->setParamValue(2, Ogre::StringConverter::toString(controller->getBicycle()->getFriction()));
+
+    auto ammoPanel = dynamic_cast<OgreBites::ParamsPanel*>(trayManager->getWidget("ammoPanel"));
+    ammoPanel->setParamValue(0, Ogre::StringConverter::toString(controller->getLogicManager()->getMonsterHealth()));
+    ammoPanel->setParamValue(1, Ogre::StringConverter::toString(controller->getLogicManager()->getPlayerAmmo()));
+    ammoPanel->setParamValue(2, Ogre::StringConverter::toString(controller->getTerrainManager()->getBulletCount()));
+    ammoPanel->setParamValue(3, controller->getReplenishAmmoRemainingClockAsSeconds());
+
+    dynamic_cast<OgreBites::Label*>(trayManager->getWidget("clockLabel"))->setCaption("Session Time: " + controller->getElapsedTimeAsString());
 
     // widgets update on debug mode only
     if(controller->getDebug()) {
