@@ -78,7 +78,7 @@ camera_far_clip_distance = 10000.0
 monster_spline_velocity_percent = 1.0
 monster_velocity_if_close_to_player_runner = 400.0
 monster_velocity_if_close_to_player_shooter = 125.0
-monster_close_distance = 750.0
+monster_close_distance = 850.0
 
 [TerrainManager]
 initial_number_of_bullets = 25
