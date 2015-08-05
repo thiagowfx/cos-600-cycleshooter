@@ -3,8 +3,8 @@ use_real_polar = false
 polar_port = "/dev/ttyUSB0"
 use_real_bicycle = false
 bicycle_port = "/dev/ttyUSB1"
-game_release = false
-intros_enabled = false
+game_release = true
+intros_enabled = true
 
 [AudioManager]
 sound_path = "../audio/sounds/"
@@ -73,6 +73,7 @@ mirror_percentage_h = 0.675
 mirror_percentage_v = 0.135
 camera_near_clip_distance = 5.0
 camera_far_clip_distance = 10000.0
+camera_height = 12.0
 
 [PathManager]
 monster_spline_velocity_percent = 1.0

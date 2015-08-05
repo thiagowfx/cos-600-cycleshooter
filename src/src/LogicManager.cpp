@@ -178,8 +178,10 @@ void LogicManager::createSceneNodes() {
     playerNode = controller->getSceneManager()->getRootSceneNode()->createChildSceneNode("parentPlayerNode", initialPlayerPosition);
     playerNode->setDirection(playerInitialLookAt);
     frontCameraNode = playerNode->createChildSceneNode("frontCameraNode");
+    frontCameraNode->translate(Ogre::Vector3(0.0, ConfigManager::instance().getDouble("LogicManager.camera_height"), 0.0));
     rearCameraNode = playerNode->createChildSceneNode("rearCameraNode");
     rearCameraNode->yaw(Ogre::Radian(Ogre::Degree(180.0)));
+    rearCameraNode->translate(Ogre::Vector3(0.0, ConfigManager::instance().getDouble("LogicManager.camera_height"), 0.0));
 
     // attach scene nodes
     frontCameraNode->attachObject(frontCamera);
